@@ -4,24 +4,16 @@ Guidance for Claude Code in this repository. Everything under `.claude/` is comm
 
 ## Product
 
-A GPS navigation app for people who cannot read: refugees accompanied by social workers who miss appointments because mainstream GPS apps need reading, or do not speak their language. The app must work **without any text** in the traveller's interface.
+A GPS navigation app for people who cannot read: refugees accompanied by social workers who miss appointments because mainstream GPS apps need reading, or do not speak their language. Two personas: the **traveller**, whose interface contains **no text and no numbers**, and the **social worker**, who prepares the trip and whose interface may contain text.
 
-Two personas:
+Read `docs/product/personas.md` and `docs/product/principes.md` before any product or UI work. The principles in short: zero text, one screen one decision, every instruction on at least two channels, large targets and high contrast, reassurance and help always one gesture away, culturally neutral pictograms, location stays on the device.
 
-- **Traveller**: cannot read (or not in any language the app could offer). Often a low-end Android phone, limited mobile data, sometimes no data at all. May be stressed, in an unfamiliar city.
-- **Social worker**: literate, prepares the trip for the traveller (destination, appointment time). Their interface may contain text.
+## Session continuity
 
-## Design principles (traveller interface)
+`docs/status.md` is the handoff between sessions: where we are, next step, open product questions, what waits on the user. A `SessionStart` hook injects it with the recent git log.
 
-- **Zero text, zero numbers to read.** Meaning comes from pictograms, photos, colour, shape, sound and vibration. Distances and times are shown as visual quantities (gauges, footsteps, clock faces), never as digits.
-- **One screen, one decision.** Show only what the traveller needs now: the next move. No menus, no settings, no typing.
-- **Redundant signals.** Every instruction uses at least two channels (e.g. arrow + vibration, colour + sound), so it survives sunlight, noise, colour blindness.
-- **Large touch targets**, high contrast, nothing that depends on reading a map.
-- **Reassurance first.** The traveller must always know "am I on the right way?" and must always have a way to call for help (the social worker), one tap away.
-- **Culturally neutral pictograms.** Avoid symbols that only make sense in one culture or that require literacy (letters, arrows-with-labels, flags as languages).
-- **Privacy.** Travellers are vulnerable people: no account for them, no tracking server, location stays on the device unless they explicitly share it.
-
-Product decisions still open are tracked in `docs/` once the project is set up.
+- When the user says "reprenons" (or "on reprend", "où en est-on"), answer from that context: where we are, the next step, the open questions that block it. Then propose to start the next step. Do not re-explore the repo to rebuild that picture.
+- Update `docs/status.md` at the end of every task, in the same commit: move done items, set the next step, add or close open questions and pending user actions.
 
 ## Workflow
 
@@ -29,11 +21,17 @@ The user works alone, directly on `main`. One feature = one commit.
 
 **Spec first, always.** Before building any new feature, screen or user-facing behaviour change, run the `feature` skill: interview the user with questions until no gap remains, write the spec in `docs/specs/`, get it validated, then implement. Never fill a missing requirement with a silent guess; ask, or write it down as an explicit assumption. If a new unknown appears mid-implementation, stop and ask. Exempt: bug fixes restoring specified behaviour, refactors with no visible change, tooling, docs.
 
+Before committing UI work, check it on screen with the `verify-on-device` skill and have the `ux-sans-texte-reviewer` agent review traveller-facing changes.
+
 Specs and product docs are written in French; code, comments and commit messages in English.
 
 ## Technical context
 
 Expo rules, commands and routing conventions live in `AGENTS.md` (imported by the root `CLAUDE.md`). Package manager is **npm**. For Expo work, use the `expo:*` skills, starting with `expo:expo-overview`.
+
+- Traveller UI lives in `src/features/traveller/`, social worker UI in `src/features/social-worker/`. Route files in `src/app/` stay thin and render those.
+- ESLint rule `gps/no-text-in-traveller-ui` (local plugin in `eslint/`) forbids displayed text in `src/features/traveller/`. Do not disable it; if a case seems to need text, ask the user.
+- A `PostToolUse` hook runs Prettier on every file Claude edits in the project.
 
 ## Quality gates
 

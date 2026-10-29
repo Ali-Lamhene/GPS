@@ -69,7 +69,9 @@
       "Bash(adb logcat*)",
       "Bash(adb install *)",
       "Bash(adb reverse *)",
-      "Bash(adb exec-out screencap *)"
+      "Bash(adb exec-out screencap *)",
+      "Bash(curl -s http://localhost:8081*)",
+      "Bash(adb shell input *)"
     ],
     "ask": [
       "Bash(git rebase*)",
@@ -103,6 +105,28 @@
           {
             "type": "command",
             "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"GPS project rule: if this message asks for a new feature, screen or user-facing behaviour change (even casually), run the feature skill first: clarification interview, spec in docs/specs/, user validation, then code. Never fill a missing requirement with a guess.\"}}'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r \".tool_response.filePath // .tool_input.file_path // empty\"); case \"$f\" in \"$CLAUDE_PROJECT_DIR\"/*) \"$CLAUDE_PROJECT_DIR/node_modules/.bin/prettier\" --write --ignore-unknown --log-level warn --ignore-path \"$CLAUDE_PROJECT_DIR/.prettierignore\" \"$f\" ;; esac 2>/dev/null || true",
+            "statusMessage": "Prettier"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd \"$CLAUDE_PROJECT_DIR\" && echo \"# Contexte de reprise (docs/status.md)\" && cat docs/status.md && echo && echo \"# Derniers commits\" && git log --oneline -10 && echo && echo \"# Fichiers non commités\" && git status --short"
           }
         ]
       }
