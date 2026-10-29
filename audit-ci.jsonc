@@ -1,0 +1,11 @@
+{
+  "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
+  // Fail on high and critical advisories in production dependencies.
+  "high": true,
+  "skip-dev": true,
+  "allowlist": [
+    // zod <4.6.6 memory exhaustion, pulled by @expo/cli (build-time tooling, not
+    // in the app bundle). Remove once Expo ships a patched zod.
+    "GHSA-mrhx-c7xc-m3w5",
+  ],
+}

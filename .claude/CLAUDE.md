@@ -26,3 +26,11 @@ Product decisions still open are tracked in `docs/` once the project is set up.
 ## Technical context
 
 Expo rules, commands and routing conventions live in `AGENTS.md` (imported by the root `CLAUDE.md`). Package manager is **npm**. For Expo work, use the `expo:*` skills, starting with `expo:expo-overview`.
+
+## Quality gates
+
+`npm run check` runs lint (zero warnings), typecheck, Prettier check and Jest with coverage. Run it before declaring a task done; CI (`.github/workflows/ci.yml`) runs the same plus `expo-doctor`, a JS bundle export per platform, `npm run audit` (audit-ci, allowlist in `audit-ci.jsonc`) and, on pull requests, dependency review and commitlint.
+
+- Git hooks (husky): pre-commit runs lint-staged, commit-msg enforces Conventional Commits, pre-push runs typecheck and tests. Never bypass them with `--no-verify`.
+- Tests live in `__tests__/` folders as `<name>-test.ts(x)` (jest-expo preset). Never put test files under `src/app/`: every file there is a route.
+- TypeScript is strict with `noUncheckedIndexedAccess`.
