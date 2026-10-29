@@ -23,6 +23,14 @@ Two personas:
 
 Product decisions still open are tracked in `docs/` once the project is set up.
 
+## Workflow
+
+The user works alone, directly on `main`. One feature = one commit.
+
+**Spec first, always.** Before building any new feature, screen or user-facing behaviour change, run the `feature` skill: interview the user with questions until no gap remains, write the spec in `docs/specs/`, get it validated, then implement. Never fill a missing requirement with a silent guess; ask, or write it down as an explicit assumption. If a new unknown appears mid-implementation, stop and ask. Exempt: bug fixes restoring specified behaviour, refactors with no visible change, tooling, docs.
+
+Specs and product docs are written in French; code, comments and commit messages in English.
+
 ## Technical context
 
 Expo rules, commands and routing conventions live in `AGENTS.md` (imported by the root `CLAUDE.md`). Package manager is **npm**. For Expo work, use the `expo:*` skills, starting with `expo:expo-overview`.

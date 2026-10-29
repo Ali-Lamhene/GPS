@@ -95,5 +95,17 @@
       "Bash(adb shell rm *)",
       "Bash(adb uninstall *)"
     ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"UserPromptSubmit\",\"additionalContext\":\"GPS project rule: if this message asks for a new feature, screen or user-facing behaviour change (even casually), run the feature skill first: clarification interview, spec in docs/specs/, user validation, then code. Never fill a missing requirement with a guess.\"}}'"
+          }
+        ]
+      }
+    ]
   }
 }
