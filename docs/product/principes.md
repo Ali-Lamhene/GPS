@@ -8,7 +8,7 @@ Ces principes s'appliquent à tout écran, son ou vibration destiné au voyageur
 4. **Grandes cibles tactiles, fort contraste.** Rien ne dépend de la lecture d'une carte.
 5. **Rassurer d'abord.** Le voyageur sait toujours s'il va dans la bonne direction, et peut toujours appeler à l'aide (le travailleur social) en un geste.
 6. **Pictogrammes culturellement neutres.** Éviter les symboles qui n'ont de sens que dans une culture ou qui supposent de savoir lire (lettres, flèches légendées, drapeaux pour les langues).
-7. **Confidentialité.** Le voyageur est une personne vulnérable : pas de compte pour lui, pas de serveur de suivi, la position reste sur le téléphone sauf s'il la partage explicitement.
+7. **Confidentialité.** Le voyageur est une personne vulnérable, parfois surveillée par son pays d'origine : aucun compte, aucune donnée d'identité, aucun serveur qui stocke trajets ou positions, la position reste sur le téléphone sauf s'il la partage explicitement. Voir `decisions.md` (D1).
 
 ## Code
 

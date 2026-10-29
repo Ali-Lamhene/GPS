@@ -6,7 +6,9 @@ Guidance for Claude Code in this repository. Everything under `.claude/` is comm
 
 A GPS navigation app for people who cannot read: refugees accompanied by social workers who miss appointments because mainstream GPS apps need reading, or do not speak their language. Two personas: the **traveller**, whose interface contains **no text and no numbers**, and the **social worker**, who prepares the trip and whose interface may contain text.
 
-Read `docs/product/personas.md` and `docs/product/principes.md` before any product or UI work. The principles in short: zero text, one screen one decision, every instruction on at least two channels, large targets and high contrast, reassurance and help always one gesture away, culturally neutral pictograms, location stays on the device.
+Read `docs/product/personas.md`, `docs/product/principes.md` and `docs/product/decisions.md` before any product or UI work. The principles in short: zero text, one screen one decision, every instruction on at least two channels, large targets and high contrast, reassurance and help always one gesture away, culturally neutral pictograms, location stays on the device.
+
+**Security is non-negotiable.** Some travellers are watched by their home governments and the associations helping them are frequent hacking targets. No account, no identity data, no server of ours storing routes, addresses or positions, no analytics or crash reporting that sends device data. Routes travel inside the shared link itself. Any third-party call must be justified in the spec with the data it receives. See `docs/product/decisions.md` (D1).
 
 ## Session continuity
 
