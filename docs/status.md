@@ -11,28 +11,35 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 - Méthode : spec d'abord avec le skill `/feature` (entretien de cadrage, spec dans `docs/specs/`, validation, puis code).
 - Outillage Claude : skill `verify-on-device`, sous-agent `ux-sans-texte-reviewer`, règle ESLint « zéro texte », Prettier automatique après chaque édition, hooks de rappel.
 - Docs produit : `docs/product/personas.md`, `docs/product/principes.md`, `docs/product/decisions.md`.
-- Décisions structurantes prises (détail dans `decisions.md`) : aucune donnée d'identité ni compte ni serveur à nous (sécurité, public surveillé) ; à pied, transports en commun et voiture ; trajets préparés par un tiers et transmis dans un lien ou QR code qui contient tout le trajet ; itinéraire calculé à la préparation, suivi GPS en local chez le voyageur ; trajets stockés sur le téléphone, utilisables hors connexion ; carte toujours affichée en plus des signaux sans texte ; services gratuits et libres uniquement.
-- Aucune fonctionnalité produit encore. L'écran d'accueil est celui du template vide.
+- Décisions structurantes (détail dans `decisions.md`) :
+  - D1 sécurité : aucun compte, aucune donnée d'identité, aucun serveur à nous (public surveillé par certains États d'origine).
+  - D3 le **lieu** est l'objet central : le voyageur a une collection de lieux (photo, pictogramme, couleur) et compose ses trajets en choisissant départ et arrivée. Lieux créés sur son téléphone par une personne qui sait lire, ou envoyés à distance par lien.
+  - D4 calcul d'un trajet nouveau en ligne depuis le téléphone du voyageur ; trajets calculés gardés uniquement sur son téléphone, utilisables hors connexion ; suivi GPS en local.
+  - D2 à pied, transports en commun, voiture (à pied livré en premier). D6 carte toujours affichée en plus des signaux sans texte. D7 gratuit et libre, sauf compte Apple. D8 partie préparation dans la même app, appui long caché.
+- Spec 001 « Lieux : créer, partager, recevoir » **validée** (`docs/specs/001-lieux.md`). Pas encore de code.
+- Découpage prévu : 001 lieux, 002 composer un trajet et le garder hors connexion, 003 guidage pendant la marche.
 
 ## Prochaine étape
 
-Trancher la question 1 ci-dessous (une app ou deux), puis cadrer la première fonctionnalité avec `/feature`. Candidate : recevoir un trajet par lien et le suivre à pied.
+Avant tout code : concevoir tous les écrans. Inventaire des écrans (voyageur et préparation, specs 001 à 003) avec leurs états, recherches de références (interfaces sans texte, signalétique, pictogrammes) pour éviter un rendu générique, puis brief pour que l'utilisateur fasse les maquettes avec Claude Design.
 
 ## Questions produit ouvertes
 
-1. Interface de préparation des trajets : un mode dans la même app, ou une app / page web séparée ? Une page web statique (sans serveur de données) permettrait de préparer un trajet depuis un ordinateur.
-2. Zone : France seulement ? Une ville pilote ? (Conditionne les données de transports en commun et la taille des cartes hors connexion.)
-3. Cartes hors connexion : quelle source de tuiles gratuite autorise le téléchargement ? (Les serveurs de tuiles OSM l'interdisent.) Piste : fichiers Protomaps / PMTiles d'une zone, hébergés en statique.
-4. Recalcul quand le voyageur se perd : en ligne via un service public (envoie la position), ou seulement le ramener vers le tracé prévu, sans réseau ?
-5. Voix : audios préenregistrés dans les langues des voyageurs, ou seulement sons et vibrations ?
-6. Heure du rendez-vous : rappel « pars maintenant » ? Comment montrer une heure sans chiffres ?
-7. Bouton d'aide : appel direct à la personne qui a préparé le trajet (numéro et photo transmis dans le lien) ? Partage de position ponctuel ?
-8. Pictogrammes : banque ARASAAC (CC BY-NC-SA) acceptable ? Le projet est non commercial, mais la clause « partage à l'identique » pèse sur le choix de licence.
-9. Distribution : Play Store ou APK installé par les associations ? iOS nécessaire ?
-10. Tests : travailleurs sociaux / voyageurs prêts à tester des maquettes tôt ?
+1. Zone : France seulement ? Une ville pilote ? (Conditionne les données de transports en commun et la taille des cartes hors connexion.)
+2. Cartes hors connexion : quelle source de tuiles gratuite autorise le téléchargement ? (Les serveurs de tuiles OSM l'interdisent.) Piste : fichiers Protomaps / PMTiles d'une zone, hébergés en statique.
+3. Recalcul quand le voyageur se perd : en ligne via un service public (envoie la position), ou seulement le ramener vers le tracé prévu, sans réseau ?
+4. Voix : audios préenregistrés dans les langues des voyageurs, ou seulement sons et vibrations ?
+5. Heure du rendez-vous : rappel « pars maintenant » ? Comment montrer une heure sans chiffres ?
+6. Bouton d'aide : appel direct à l'accompagnateur (numéro et photo enregistrés sur le téléphone du voyageur) ? Partage de position ponctuel ?
+7. Licence du projet : doit être compatible avec ARASAAC (CC BY-NC-SA, partage à l'identique).
+8. Distribution : Play Store et App Store, ou aussi APK installé par les associations ?
+9. Tests : travailleurs sociaux / voyageurs prêts à tester des maquettes tôt ?
+10. Création d'un lieu par le voyageur lui-même (« je suis ici » + photo) : spec ultérieure.
 
 ## En attente côté humain
 
 - Pousser les commits : le shell de Claude n'a pas d'identifiants GitHub. Installer `gh` puis `gh auth login`, ou ajouter la clé SSH à GitHub.
 - Brancher un téléphone Android (débogage USB) pour les vérifications sur appareil. Pas d'émulateur ni de SDK Android installé sur la machine.
-- Choisir une licence pour le projet (le fichier `LICENSE` du template Expo a été supprimé).
+- Choisir une licence pour le projet (le fichier `LICENSE` du template Expo a été supprimé), compatible ARASAAC.
+- Créer le dépôt GitHub Pages `ali-lamhene.github.io` (page du lien de partage, fichiers App Links / Universal Links).
+- Compte Apple développeur, quand on attaquera l'iPhone.
