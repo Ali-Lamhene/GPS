@@ -19,9 +19,13 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 - Spec 001 « Lieux : créer, partager, recevoir » **validée** (`docs/specs/001-lieux.md`). Pas encore de code.
 - Découpage prévu : 001 lieux, 002 composer un trajet et le garder hors connexion, 003 guidage pendant la marche.
 
+- Conception des écrans préparée dans `docs/design/` : `ecrans.md` (inventaire V1-V7, P1-P5, W1, S1, états), `references.md` (pictogrammes ARASAAC revus, études sourcées, tableau des choix remis en cause), `brief.md` (direction « signalétique », liste noire anti-rendu générique, prompt par écran).
+
 ## Prochaine étape
 
-Avant tout code : concevoir tous les écrans. Inventaire des écrans (voyageur et préparation, specs 001 à 003) avec leurs états, recherches de références (interfaces sans texte, signalétique, pictogrammes) pour éviter un rendu générique, puis brief pour que l'utilisateur fasse les maquettes avec Claude Design.
+L'utilisateur fait les maquettes avec Claude Design à partir de `docs/design/brief.md`. Ensuite : revue de chaque maquette (agent `ux-sans-texte-reviewer` + liste noire), puis specs 002 et 003 nourries par les maquettes, puis code de la spec 001.
+
+À trancher avec les maquettes (voir `references.md` section 4) : barre de trajet horizontale avec flèche ou verticale ; défilement de la grille (rangée coupée) ou pagination ; aide proactive pendant le guidage ; chiffres pour les numéros de bus.
 
 ## Questions produit ouvertes
 
