@@ -21,9 +21,11 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 
 - Conception des écrans préparée dans `docs/design/` : `ecrans.md` (inventaire V1-V7, P1-P5, W1, S1, états), `references.md` (pictogrammes ARASAAC revus, études sourcées, tableau des choix remis en cause), `brief.md` (direction « signalétique », liste noire anti-rendu générique, prompt par écran).
 
+- Première maquette Claude Design (V1) jugée « jouet » par l'utilisateur. Nouvelle direction « signalétique » sobre et adulte, portée par un design system Claude Design « GPS sans texte » (https://claude.ai/artifact/T8sKnYwYLZy4rM5vR8ZdXF) : tokens, règles, vraies photos Wikimedia Commons, pictogrammes ARASAAC noir et blanc, composants CarteLieu, BarreTrajet, Confirmation, BoutonAide, EcranAccueil. `brief.md` réécrit écran par écran (mesures, états, wireframes) ; `guide-claude-design.md` explique l'outil.
+
 ## Prochaine étape
 
-L'utilisateur fait les maquettes avec Claude Design à partir de `docs/design/brief.md`. Ensuite : revue de chaque maquette (agent `ux-sans-texte-reviewer` + liste noire), puis specs 002 et 003 nourries par les maquettes, puis code de la spec 001.
+L'utilisateur fait les maquettes avec Claude Design, page par page, à partir de `docs/design/brief.md` (mode d'emploi : `docs/design/guide-claude-design.md`). Ensuite : revue de chaque maquette (agent `ux-sans-texte-reviewer` + liste noire), puis specs 002 et 003 nourries par les maquettes, puis code de la spec 001.
 
 À trancher avec les maquettes (voir `references.md` section 4) : barre de trajet horizontale avec flèche ou verticale ; défilement de la grille (rangée coupée) ou pagination ; aide proactive pendant le guidage ; chiffres pour les numéros de bus.
 
