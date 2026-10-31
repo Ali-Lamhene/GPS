@@ -4,7 +4,7 @@ Guidance for Claude Code in this repository. Everything under `.claude/` is comm
 
 ## Product
 
-A GPS navigation app for people who cannot read: refugees accompanied by social workers who miss appointments because mainstream GPS apps need reading, or do not speak their language. Two personas: the **traveller**, whose interface contains **no text and no numbers**, and the **social worker**, who prepares the trip and whose interface may contain text.
+A GPS navigation app for people who cannot read: refugees accompanied by social workers who miss appointments because mainstream GPS apps need reading, or do not speak their language. Two personas: the **traveller**, whose interface contains **no text and no numbers** (only exceptions, D9: transit line ids, station names, the French help card shown to a passer-by), and the **social worker**, who prepares the trip and whose interface may contain text.
 
 Read `docs/product/personas.md`, `docs/product/principes.md` and `docs/product/decisions.md` before any product or UI work. The principles in short: zero text, one screen one decision, every instruction on at least two channels, large targets and high contrast, reassurance and help always one gesture away, culturally neutral pictograms, location stays on the device.
 
@@ -34,7 +34,8 @@ Expo rules, commands and routing conventions live in `AGENTS.md` (imported by th
 - **Read `docs/engineering/code.md` and `docs/engineering/securite.md` before writing code.** They set the folder layout (`src/app`, `src/features`, `src/domain`, `src/services`, `src/ui`), component, TypeScript, error and test rules, and the security rules derived from D1.
 - Traveller UI lives in `src/features/traveller/`, social worker UI in `src/features/social-worker/`. Route files in `src/app/` stay thin and render those.
 - UI comes from the Claude Design system « GPS sans texte »: tokens and shared components in `src/ui/`, following the `expo:expo-design-system` skill. Use `expo:expo-native-ui`, `expo:expo-ui` and `expo:expo-animation` for native controls, motion and haptics.
-- ESLint rule `gps/no-text-in-traveller-ui` (local plugin in `eslint/`) forbids displayed text in `src/features/traveller/`. Do not disable it; if a case seems to need text, ask the user.
+- ESLint rule `gps/no-text-in-traveller-ui` (local plugin in `eslint/`) forbids displayed text in `src/features/traveller/` and `src/ui/`. Do not disable it; the D9 exception components are listed by name in `eslint.config.js`. If a new case seems to need text, ask the user.
+- Visual reference: the Claude Design mockup v7 (D11) and `docs/screens.md`. It wins over the older design system and `docs/design/brief.md`.
 - ESLint also forbids in `src/`: `console.*`, `any`, non-null `!`, `eval`, and imports of tracking SDKs listed in `eslint/forbidden-packages.js` (a Jest test checks `package.json` against the same list). Do not disable these rules.
 - A `PostToolUse` hook runs Prettier on every file Claude edits in the project.
 

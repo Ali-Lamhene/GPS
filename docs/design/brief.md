@@ -1,5 +1,7 @@
 # Brief des maquettes (Claude Design)
 
+> **Remplacé par la maquette v7 (D11).** Ce brief a servi à la produire ; en cas de conflit, la maquette v7 prévaut.
+
 Instructions précises, écran par écran, à donner à Claude Design. Mode d'emploi de Claude Design : `guide-claude-design.md`. Inventaire et états : `ecrans.md`. Sources : `references.md`.
 
 **Design system à utiliser** : « GPS sans texte », https://claude.ai/artifact/T8sKnYwYLZy4rM5vR8ZdXF. Il contient les couleurs, la typo, les règles, les photos, les pictogrammes ARASAAC noir et blanc et cinq composants de référence (CarteLieu, BarreTrajet, Confirmation, BoutonAide, EcranAccueil). Toute maquette part de là.
@@ -112,7 +114,7 @@ Ensuite, coller les blocs ci-dessous **un par un**, dans l'ordre, en attendant c
 > **Page 2, V7 Permission.** Avant la fenêtre système du téléphone.
 >
 > - **V7-a Demande** : au centre, un téléphone dessiné en contour `ink` 4px (160 × 300) qui affiche une mini carte et l'épingle de position ; sous l'épingle, des ondes concentriques. En dessous, un faux bouton système (rectangle `surface` 200 × 56, contour `ink`) entouré d'un halo `success` qui pulse : « c'est là qu'il faut toucher ». Aucune main dessinée.
-> - **V7-b Refusée** : le même téléphone, l'épingle barrée en `error`, et en bas le BoutonAide en grand (120) : « appelle quelqu'un ». Note : vibration double.
+> - **V7-b Refusée** : le même téléphone, l'épingle barrée en `error`, et en bas le bouton d'aide en grand (120), qui ouvre la carte d'aide (D10). Note : vibration double.
 
 ---
 
@@ -153,7 +155,7 @@ Ensuite, coller les blocs ci-dessous **un par un**, dans l'ordre, en attendant c
 
 ### V6 Aide : 1 artboard
 
-> **Page 3, V6 Aide.** Par-dessus V4-a assombri (voile `ink` 70 %), une feuille `ground` qui occupe les 2/3 bas de l'écran, coins hauts `radius-md`. Au centre, la photo de l'accompagnateur (silhouette du composant BoutonAide) en disque 160 cerclé `ink` 4px. En dessous, un énorme bouton d'appel : disque `success` 120 avec un combiné blanc. En bas, un bouton `surface` cerclé `ink` 328 × 80 qui montre une mini BarreTrajet : « revenir au trajet ».
+> **Page 3, V6 Aide.** Carte d'aide contextuelle plein écran : message en français pour un passant, bouton de lecture à voix haute, bouton pour agrandir. Pas de bouton d'appel (D10). Référence : maquette v7, écran 24.
 
 ---
 

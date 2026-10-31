@@ -8,7 +8,7 @@ Personne réfugiée, accompagnée par un travailleur social. Ne sait pas lire, o
 - **Connexion** : données mobiles limitées, parfois aucune.
 - **Situation** : ville inconnue, souvent stressé, parfois pressé par l'heure du rendez-vous. Peut marcher, être dans un bus, sous la pluie, de nuit.
 - **Compétences** : sait utiliser un téléphone pour appeler, WhatsApp, vidéos. Ne sait pas taper une adresse. Lire une carte n'est pas acquis.
-- **Ce qu'il lui faut** : savoir à tout moment s'il va dans la bonne direction, savoir quand il est arrivé, pouvoir appeler à l'aide.
+- **Ce qu'il lui faut** : savoir à tout moment s'il va dans la bonne direction, savoir quand il est arrivé, pouvoir demander de l'aide à un passant.
 
 Son interface ne contient **aucun texte** (voir [principes](principes.md)).
 

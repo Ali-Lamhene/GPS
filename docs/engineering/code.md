@@ -20,7 +20,7 @@ src/
 - **`src/app/`** : un fichier de route importe un écran de `features/` et le rend. Pas de logique, pas de style. Jamais de test ni d'utilitaire ici : chaque fichier est une route.
 - **`src/domain/`** : TypeScript pur. Aucun import de `react`, `react-native` ou `expo-*`. C'est ce qui rend la logique testable sans téléphone.
 - **`src/services/`** : chaque module natif (stockage, localisation, haptique, audio) est enveloppé dans un petit module à nous. Le reste du code dépend de cette enveloppe, pas du module Expo directement. On change de bibliothèque à un seul endroit, et les tests remplacent l'enveloppe.
-- **`src/ui/`** : le thème et les composants issus du design system Claude Design « GPS sans texte » (CarteLieu, BarreTrajet, Confirmation, BoutonAide…). Suivre le skill `expo:expo-design-system`.
+- **`src/ui/`** : le thème (tokens) et les composants partagés, fidèles à la maquette v7 (D11). Suivre le skill `expo:expo-design-system`.
 - Dans une feature : `components/`, `screens/`, `hooks/`, et `__tests__/` à côté du code testé.
 - Imports par l'alias `@/` (`@/domain/place`), pas de `../../..`.
 

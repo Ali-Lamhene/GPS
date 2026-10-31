@@ -4,7 +4,7 @@
 
 ## 1. Menaces
 
-Ce qu'on protège : où va le voyageur et où il vit (lieux, trajets, positions), qui l'accompagne (numéro et photo de l'accompagnateur, si la spec du bouton d'aide les retient : question ouverte 6 de `docs/status.md`).
+Ce qu'on protège : où va le voyageur et où il vit (lieux, trajets, positions).
 
 Contre qui :
 
@@ -38,7 +38,7 @@ Le lien de partage est une **entrée non fiable** : n'importe qui peut en fabriq
 ## 4. Données sur le téléphone
 
 - Tout est stocké dans le stockage privé de l'app. Rien dans un stockage partagé (galerie, Téléchargements, cartes SD).
-- Numéro de l'accompagnateur, s'il est un jour enregistré : `expo-secure-store` (Keystore / Keychain).
+- Secret éventuel (aucun aujourd'hui, D10 exclut tout numéro de téléphone) : `expo-secure-store` (Keystore / Keychain).
 - Lieux et trajets : stockage privé de l'app. Le chiffrement au repos est une question ouverte (voir plus bas).
 - Photos : copiées dans le stockage privé, métadonnées EXIF (dont la position) supprimées avant enregistrement (spec 001).
 - Pas de stockage plus long que nécessaire : une donnée temporaire (photo choisie puis abandonnée, fichier de partage) est supprimée dès qu'elle ne sert plus.

@@ -1,5 +1,7 @@
 # Inventaire des écrans
 
+> **Remplacé par la maquette v7 (D11)** et `docs/screens.md` pour les écrans du voyageur. Ce document reste pour l'historique des choix.
+
 Base pour les maquettes. Chaque écran : qui le voit, sa décision unique, son contenu, ses états, où il mène.
 
 - **Statut** : `spec` = décrit par une spec validée ; `exploratoire` = la spec n'existe pas encore, les maquettes servent à trancher les questions listées.
@@ -89,10 +91,9 @@ flowchart TD
 
 ### V6 — Aide
 
-- **Statut** : `exploratoire` (question ouverte 6).
-- **Décision unique** : j'appelle.
-- **Contenu** (piste) : photo de l'accompagnateur, grand bouton d'appel. Accessible depuis V3 et V4 (et V1 ?).
-- **Questions ouvertes** : qui enregistre le numéro et la photo (partie préparation) ? Plusieurs contacts ? Partage de position ponctuel ?
+- **Statut** : décidé (D10).
+- **Décision unique** : je montre ce message à un passant.
+- **Contenu** : carte d'aide contextuelle, message en français adapté à l'étape, bouton pour le lire à voix haute, bouton pour l'agrandir. Pas de bouton d'appel. Voir la maquette v7, écran 24.
 
 ### V7 — Permission de localisation
 

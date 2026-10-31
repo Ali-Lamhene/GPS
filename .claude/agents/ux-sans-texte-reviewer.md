@@ -12,7 +12,7 @@ You receive some of: a spec path in `docs/specs/`, changed files or a diff comma
 
 ## What to check
 
-1. **Zero text, zero digits** visible to the traveller, including in images, icons with letters, numbers on gauges, clock faces with numerals, error toasts and system dialogs the app triggers (permission prompts are text: how does the traveller get through them?).
+1. **Zero text, zero digits** visible to the traveller (only exceptions, decision D9: transit line ids, station names, the French help card meant for a passer-by), including in images, icons with letters, numbers on gauges, clock faces with numerals, error toasts and system dialogs the app triggers (permission prompts are text: how does the traveller get through them?).
 2. **One screen, one decision**: is the next move obvious within a second? Anything competing for attention?
 3. **Redundancy**: every instruction on at least two channels (picture, colour, shape, sound, vibration, voice). Does it still work in bright sun, in a noisy street, with colour blindness, with the phone in a pocket?
 4. **Reassurance and help**: does the traveller always know whether they are on the right way? Is help one gesture away from this screen?

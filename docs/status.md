@@ -27,11 +27,23 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 
 ## Prochaine étape
 
-L'utilisateur envoie le lien des maquettes Claude Design et une ligne directrice ; Claude code alors le thème et les composants (`src/ui/`) puis les écrans, spec par spec.
+Implémentation de la maquette v7 (D11) en interface statique fidèle, données factices, sans GPS (option A). Un commit par sous-tâche, sur `main`, chacun avec ses tests :
 
-L'utilisateur fait les maquettes avec Claude Design, page par page, à partir de `docs/design/brief.md` (mode d'emploi : `docs/design/guide-claude-design.md`). Ensuite : revue de chaque maquette (agent `ux-sans-texte-reviewer` + liste noire), puis specs 002 et 003 nourries par les maquettes, puis code de la spec 001.
+1. [x] Décisions D9 (exceptions de texte), D10 (pas de bouton d'appel), D11 (maquette v7 de référence), plan.
+2. [ ] Thème (tokens v7), polices Roboto Flex et Material Symbols Rounded, composant `Icon`.
+3. [ ] Domaine : lieux, trajets, étapes, cadrans de durée, progression, message d'aide ; données factices.
+4. [ ] Composants partagés : boutons, cadrans, badge de ligne, anneau pulsé, tuile de lieu, poignée.
+5. [ ] État du trajet en préparation + accueil E01-E05 (chemin, feuille des lieux, appui long accompagnant).
+6. [ ] E06 choix du transport.
+7. [ ] E07-E08 récapitulatif et détail des étapes (photos des arrêts).
+8. [ ] E09-E20, E22, E23, E17 guidage (consigne, carte ou photo, progression).
+9. [ ] E21 métro hors connexion, E25 problème de connexion, E26 arrivée.
+10. [ ] E24 carte d'aide contextuelle.
+11. [ ] E27-E29 nouveau lieu (voyageur) et E30 adresse (accompagnant).
+12. [ ] Sons, vibrations, lecture des noms (`expo-audio`, `expo-speech`).
+13. [ ] Planche de développement des écrans, test fonctionnel dans le navigateur.
 
-À trancher avec les maquettes (voir `references.md` section 4) : barre de trajet horizontale avec flèche ou verticale ; défilement de la grille (rangée coupée) ou pagination ; aide proactive pendant le guidage ; chiffres pour les numéros de bus.
+Ensuite : specs 002 et 003 avant de brancher GPS et itinéraires réels, puis code de la spec 001.
 
 ## Questions produit ouvertes
 
@@ -40,12 +52,12 @@ L'utilisateur fait les maquettes avec Claude Design, page par page, à partir de
 3. Recalcul quand le voyageur se perd : en ligne via un service public (envoie la position), ou seulement le ramener vers le tracé prévu, sans réseau ?
 4. Voix : audios préenregistrés dans les langues des voyageurs, ou seulement sons et vibrations ?
 5. Heure du rendez-vous : rappel « pars maintenant » ? Comment montrer une heure sans chiffres ?
-6. Bouton d'aide : appel direct à l'accompagnateur (numéro et photo enregistrés sur le téléphone du voyageur) ? Partage de position ponctuel ?
-7. Licence du projet : doit être compatible avec ARASAAC (CC BY-NC-SA, partage à l'identique).
-8. Distribution : Play Store et App Store, ou aussi APK installé par les associations ?
-9. Tests : travailleurs sociaux / voyageurs prêts à tester des maquettes tôt ?
-10. Création d'un lieu par le voyageur lui-même (« je suis ici » + photo) : spec ultérieure.
-11. Sécurité (détail dans `docs/engineering/securite.md`) : chiffrer lieux et trajets au repos ? moyen rapide d'effacer ou cacher les lieux si le téléphone est fouillé ? bloquer les captures d'écran de la partie préparation ?
+6. Licence du projet : la maquette v7 utilise Material Symbols (Apache 2.0) ; si des pictogrammes ARASAAC reviennent, licence compatible CC BY-NC-SA.
+7. Distribution : Play Store et App Store, ou aussi APK installé par les associations ?
+8. Tests : travailleurs sociaux / voyageurs prêts à tester des maquettes tôt ?
+9. Création d'un lieu par le voyageur lui-même (« je suis ici » + photo) : spec ultérieure.
+10. Sécurité (détail dans `docs/engineering/securite.md`) : chiffrer lieux et trajets au repos ? moyen rapide d'effacer ou cacher les lieux si le téléphone est fouillé ? bloquer les captures d'écran de la partie préparation ?
+11. Tuile « Accompagnant · appui 3 s » de la feuille des lieux (E02, E04) : texte visible par le voyageur, hors exceptions D9. Codée comme composant de la partie accompagnant (`src/features/social-worker/`), fidèle à la maquette ; à confirmer.
 
 ## En attente côté humain
 

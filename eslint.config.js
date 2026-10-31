@@ -41,8 +41,16 @@ module.exports = defineConfig([
   },
   {
     // The traveller cannot read: see docs/product/principes.md.
-    files: ['src/features/traveller/**/*.{ts,tsx,js,jsx}'],
-    ignores: ['**/__tests__/**'],
+    files: ['src/features/traveller/**/*.{ts,tsx,js,jsx}', 'src/ui/**/*.{ts,tsx,js,jsx}'],
+    ignores: [
+      '**/__tests__/**',
+      // Draws Material Symbols glyphs through a font: pictograms, not text.
+      'src/ui/icon/icon.tsx',
+      // The only text the traveller sees, decision D9 (docs/product/decisions.md).
+      'src/features/traveller/components/line-badge.tsx',
+      'src/features/traveller/components/station-name.tsx',
+      'src/features/traveller/help/help-message.tsx',
+    ],
     plugins: { gps: gpsPlugin },
     rules: { 'gps/no-text-in-traveller-ui': 'error' },
   },

@@ -56,3 +56,23 @@ Une carte est toujours affichée, **en plus** des signaux sans texte (flèche, p
 Projet non commercial. Seulement des services et bibliothèques gratuits, de préférence libres : OpenStreetMap, MapLibre, moteurs d'itinéraire libres (OSRM, Valhalla, GraphHopper), transports en commun via des services ouverts (Transitous / MOTIS, données GTFS). Pas de Google Maps ni d'API payante.
 
 Exception acceptée : le compte Apple développeur (99 $ par an), nécessaire pour publier sur iPhone.
+
+## D9. Texte dans l'interface du voyageur : trois exceptions (2026-10-31)
+
+L'interface du voyageur reste sans texte ni chiffre (`principes.md`), sauf trois exceptions, les seules autorisées :
+
+1. **Identifiants officiels des lignes** (`C3`, `T2`, `M`, `M1`) : le voyageur les compare à la signalétique du réseau.
+2. **Noms réels des stations et arrêts** : même raison, avec un bouton pour écouter le nom.
+3. **Carte d'aide contextuelle** : un court message en français, destiné au passant à qui le voyageur montre son téléphone, pas au voyageur.
+
+Ces exceptions sont codées dans des composants dédiés, listés nommément dans `eslint.config.js`. La règle `gps/no-text-in-traveller-ui` s'applique partout ailleurs.
+
+## D10. Pas de bouton d'appel (2026-10-31)
+
+Pas de bouton pour appeler un proche ou l'accompagnateur. L'aide, toujours à un geste, est la **carte d'aide contextuelle** (D9) : un message en français adapté à l'étape en cours, à montrer à un passant ou à faire lire à voix haute. Aucun numéro de téléphone n'est enregistré dans l'app.
+
+## D11. Maquette de référence (2026-10-31)
+
+La maquette Claude Design « Navigation sans lecture v7 » (https://claude.ai/design/p/f7239f2c-c8b8-40e7-9b22-92f09ecce9e6, fichier `Navigation sans lecture v7.dc.html`, 30 écrans) et `docs/screens.md` sont la référence visuelle et fonctionnelle. En cas de conflit avec le design system « GPS sans texte » ou avec `docs/design/brief.md` et `ecrans.md`, **la maquette v7 prévaut** : fond crème, noir, bleu d'action, icônes Material Symbols Rounded, police Roboto Flex, cadrans de durée.
+
+Première implémentation : interface statique fidèle, données factices, sans GPS ni calcul d'itinéraire réel. Les specs 002 (composer un trajet) et 003 (guidage) viendront avant de brancher la logique réelle.
