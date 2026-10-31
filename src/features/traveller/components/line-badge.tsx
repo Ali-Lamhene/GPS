@@ -11,6 +11,7 @@ const SIZES = {
   md: { height: 36, minWidth: 52, paddingHorizontal: 10, fontSize: 19 },
   lg: { height: 48, minWidth: 48, paddingHorizontal: 12, fontSize: 24 },
   xl: { height: 52, minWidth: 80, paddingHorizontal: 14, fontSize: 30 },
+  banner: { height: 52, minWidth: 52, paddingHorizontal: 16, fontSize: 28 },
 } as const;
 
 type LineBadgeProps = {

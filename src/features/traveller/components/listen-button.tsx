@@ -6,7 +6,7 @@ type ListenButtonProps = {
   name: string;
   size?: number;
   iconSize?: number;
-  tone?: 'primary' | 'night';
+  tone?: 'primary' | 'nightAccent';
   shape?: 'circle' | 'square';
 };
 
