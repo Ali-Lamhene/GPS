@@ -21,6 +21,7 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 
 - Conception des écrans préparée dans `docs/design/` : `ecrans.md` (inventaire V1-V7, P1-P5, W1, S1, états), `references.md` (pictogrammes ARASAAC revus, études sourcées, tableau des choix remis en cause), `brief.md` (direction « signalétique », liste noire anti-rendu générique, prompt par écran).
 
+- Maquette v7 implémentée (2026-10-31), voir « Prochaine étape ».
 - Première maquette Claude Design (V1) jugée « jouet » par l'utilisateur. Nouvelle direction « signalétique » sobre et adulte, portée par un design system Claude Design « GPS sans texte » (https://claude.ai/artifact/T8sKnYwYLZy4rM5vR8ZdXF) : tokens, règles, vraies photos Wikimedia Commons, pictogrammes ARASAAC noir et blanc, composants CarteLieu, BarreTrajet, Confirmation, BoutonAide, EcranAccueil. `brief.md` réécrit écran par écran (mesures, états, wireframes) ; `guide-claude-design.md` explique l'outil.
 
 - Règles d'ingénierie écrites (2026-10-31) : `docs/engineering/code.md` (dossiers `src/app|features|domain|services|ui`, composants, TypeScript, erreurs, tests, glossaire) et `docs/engineering/securite.md` (menaces, réseau, lien de partage, stockage, logs, permissions, dépendances). ESLint interdit `console.*`, `any`, `!`, `eval` et les SDK de suivi (`eslint/forbidden-packages.js`, aussi vérifié sur `package.json` par un test). Agent `security-reviewer`. `android.allowBackup` à `false`.
@@ -43,9 +44,21 @@ Implémentation de la maquette v7 (D11) en interface statique fidèle, données 
 10. [x] E25 problème de connexion, E26 arrivée.
 11. [x] E24 carte d'aide contextuelle.
 12. [x] E27-E29 nouveau lieu (voyageur) et E30 adresse (accompagnant).
-13. [ ] Planche de développement des écrans, test fonctionnel dans le navigateur.
+13. [x] Planche de développement des écrans, test fonctionnel dans le navigateur.
 
-Ensuite : specs 002 et 003 avant de brancher GPS et itinéraires réels, puis code de la spec 001.
+Les 30 écrans de la maquette v7 sont codés en interface statique (données factices, guidage simulé : toucher la carte de consigne fait avancer). Test fonctionnel complet dans le navigateur réussi (accueil → transport → récapitulatif → 14 étapes de guidage dont E21 → arrivée ; aide contextuelle ; création d'un lieu). Planche de développement : `/dev/screens` (en développement seulement). Lancer : `npx expo start --web` (sans `CI=1`, qui coupe le rechargement).
+
+Prochaine étape : l'utilisateur relit le rendu et tranche les écarts relevés par la revue UX (ci-dessous) ; puis specs 002 (composer un trajet) et 003 (guidage) avant de brancher GPS et itinéraires réels, puis code réel de la spec 001.
+
+Écarts relevés par `ux-sans-texte-reviewer`, non appliqués car la maquette v7 prévaut (D11), à trancher :
+
+- Signaux : « tout droit », « arrivé à l'arrêt », « à bord » et « marche finale » n'ont ni son ni vibration ; l'attente du véhicule et le hors connexion n'ont pas de vibration ; gauche et droite ont le même son et la même vibration.
+- Monter / descendre dessinés avec `login` / `logout` (métaphore informatique) ; « aller à l'arrêt », « attendre » et « à bord » partagent le même grand pictogramme.
+- Orange de l'alerte (#E8710A) : contraste d'environ 3,1:1 avec le texte blanc, faible en plein soleil.
+- E21 montre toujours la même photo de quai, quelle que soit la station.
+- Mise en page de droite à gauche (téléphones en arabe, persan, pachto) : flèches non inversées ; décider de forcer la gauche-à-droite ou d'inverser les glyphes.
+- Pas de retour ni d'accueil sur l'écran de guidage ; la feuille des lieux masque l'aide ; segments à pied peu visibles dans la frise de progression.
+- Déjà corrigé sans changer le rendu : zones tactiles à 64 dp, retour Android qui ferme la feuille, badges de ligne insensibles à la taille de police système.
 
 ## Questions produit ouvertes
 
