@@ -1,3 +1,3 @@
-import { PendingScreen } from '@/ui/screens/pending-screen';
+import { ConnectionErrorScreen } from '@/features/traveller/connection/connection-error-screen';
 
-export default PendingScreen;
+export default ConnectionErrorScreen;

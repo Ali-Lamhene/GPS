@@ -40,7 +40,7 @@ Implémentation de la maquette v7 (D11) en interface statique fidèle, données 
 7. [x] Sons, vibrations, lecture des noms (`expo-audio`, `expo-speech`), avancé pour que les écrans les branchent directement.
 8. [x] E07-E08 récapitulatif et détail des étapes (photos des arrêts).
 9. [x] E09-E23 et E17 guidage (consigne, carte ou photo, progression), E21 métro hors connexion compris.
-10. [ ] E25 problème de connexion, E26 arrivée.
+10. [x] E25 problème de connexion, E26 arrivée.
 11. [ ] E24 carte d'aide contextuelle.
 12. [ ] E27-E29 nouveau lieu (voyageur) et E30 adresse (accompagnant).
 13. [ ] Planche de développement des écrans, test fonctionnel dans le navigateur.

@@ -1,3 +1,3 @@
-import { PendingScreen } from '@/ui/screens/pending-screen';
+import { ArrivedScreen } from '@/features/traveller/arrival/arrived-screen';
 
-export default PendingScreen;
+export default ArrivedScreen;
