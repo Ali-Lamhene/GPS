@@ -9,17 +9,22 @@ import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon } from '@/ui/icon/icon';
 import { colors, shadows } from '@/ui/theme';
 
-import { HomeMapBackdrop } from '../home/home-map-backdrop';
+import { TripMap } from '@/ui/map/trip-map';
+
+import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { usePlaceDraft } from './use-place-draft';
 
-/** E27: the current position, to be saved as a new place. Static until spec 001 (D11). */
+/**
+ * E27: the current position on the real map, to be saved as a new place. The demo position
+ * stands in for GPS until spec 001 (D11).
+ */
 export function PositionScreen() {
   const insets = useSafeAreaInsets();
   const { cancel } = usePlaceDraft();
 
   return (
     <View style={styles.screen}>
-      <HomeMapBackdrop />
+      <TripMap camera={{ center: DEMO_CURRENT_POSITION, zoom: 17.5 }} interactive={false} />
       <View style={styles.center}>
         <View style={styles.accuracy} />
         <View style={styles.dotBox}>
@@ -48,13 +53,13 @@ export function PositionScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.mapGroundHome,
+    backgroundColor: colors.mapGround,
   },
   center: {
     position: 'absolute',
     left: 0,
     right: 0,
-    top: '45%',
+    top: '50%',
     alignItems: 'center',
   },
   accuracy: {

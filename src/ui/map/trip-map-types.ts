@@ -37,6 +37,8 @@ export type TripMapProps = {
   destination?: { point: LngLat; icon: IconName };
   /** Background only (home): softened and without gestures. */
   backdrop?: boolean;
+  /** False keeps the map still, under content pinned to its centre (new place). */
+  interactive?: boolean;
   /** Distance from the bottom of the map to its controls. */
   controlsBottom?: number;
 };

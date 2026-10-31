@@ -39,19 +39,10 @@ export const colors = {
   whiteGlass: 'rgba(255,255,255,.16)',
   blackGlass: 'rgba(0,0,0,.4)',
 
-  // Drawn maps.
-  mapGround: '#ECEDE8',
-  mapGroundHome: '#EEEFEA',
-  mapStreet: '#FFFFFF',
-  mapStreetEdge: '#E3E4DF',
-  mapPark: '#DDE9D6',
-  mapParkDot: '#CFE0C6',
-  mapWater: '#D3E2EE',
-  mapVeil: 'rgba(252,252,250,.35)',
-  route: '#1E6BFF',
-  routeHalo: 'rgba(59,111,216,.22)',
-  accuracy: 'rgba(31,111,229,.12)',
-  accuracyEdge: 'rgba(31,111,229,.35)',
+  // Map screens (the base map itself is styled in src/ui/map/map-style.ts).
+  mapGround: '#F4F1EA',
+  accuracy: 'rgba(30,107,255,.12)',
+  accuracyEdge: 'rgba(30,107,255,.35)',
   holdTrack: '#D5D6D0',
   car: '#5E6670',
   walkRail: '#A8A8A1',

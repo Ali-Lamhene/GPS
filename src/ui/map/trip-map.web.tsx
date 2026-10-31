@@ -166,10 +166,11 @@ export function TripMap({
   traveller,
   destination,
   backdrop = false,
+  interactive = true,
   controlsBottom = 16,
 }: TripMapProps) {
   const container = useRef<HTMLDivElement | null>(null);
-  const initial = useRef({ camera, backdrop });
+  const initial = useRef({ camera, still: backdrop || !interactive });
   const [map, setMap] = useState<MapLibreMap | null>(null);
   const [following, setFollowing] = useState(true);
   const [lastMove, setLastMove] = useState(0);
@@ -190,7 +191,7 @@ export function TripMap({
         bearing: heading,
         pitch,
         maxZoom: 19,
-        interactive: !initial.current.backdrop,
+        interactive: !initial.current.still,
         // Only a two-finger pinch moves the map: a stray tap, double tap or drag never
         // loses the traveller's position.
         dragPan: false,
