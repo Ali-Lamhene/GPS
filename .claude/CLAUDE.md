@@ -23,7 +23,7 @@ The user works alone, directly on `main`. One feature = one commit.
 
 **Spec first, always.** Before building any new feature, screen or user-facing behaviour change, run the `feature` skill: interview the user with questions until no gap remains, write the spec in `docs/specs/`, get it validated, then implement. Never fill a missing requirement with a silent guess; ask, or write it down as an explicit assumption. If a new unknown appears mid-implementation, stop and ask. Exempt: bug fixes restoring specified behaviour, refactors with no visible change, tooling, docs.
 
-Before committing UI work, check it on screen with the `verify-on-device` skill and have the `ux-sans-texte-reviewer` agent review traveller-facing changes.
+Before committing UI work, check it on screen with the `verify-on-device` skill and have the `ux-sans-texte-reviewer` agent review traveller-facing changes. Before committing anything that touches `package.json`, `app.json`, `src/services/`, share link decoding, routes, permissions, storage or network calls, have the `security-reviewer` agent review it.
 
 Specs and product docs are written in French; code, comments and commit messages in English.
 
@@ -31,8 +31,11 @@ Specs and product docs are written in French; code, comments and commit messages
 
 Expo rules, commands and routing conventions live in `AGENTS.md` (imported by the root `CLAUDE.md`). Package manager is **npm**. For Expo work, use the `expo:*` skills, starting with `expo:expo-overview`.
 
+- **Read `docs/engineering/code.md` and `docs/engineering/securite.md` before writing code.** They set the folder layout (`src/app`, `src/features`, `src/domain`, `src/services`, `src/ui`), component, TypeScript, error and test rules, and the security rules derived from D1.
 - Traveller UI lives in `src/features/traveller/`, social worker UI in `src/features/social-worker/`. Route files in `src/app/` stay thin and render those.
+- UI comes from the Claude Design system « GPS sans texte »: tokens and shared components in `src/ui/`, following the `expo:expo-design-system` skill. Use `expo:expo-native-ui`, `expo:expo-ui` and `expo:expo-animation` for native controls, motion and haptics.
 - ESLint rule `gps/no-text-in-traveller-ui` (local plugin in `eslint/`) forbids displayed text in `src/features/traveller/`. Do not disable it; if a case seems to need text, ask the user.
+- ESLint also forbids in `src/`: `console.*`, `any`, non-null `!`, `eval`, and imports of tracking SDKs listed in `eslint/forbidden-packages.js` (a Jest test checks `package.json` against the same list). Do not disable these rules.
 - A `PostToolUse` hook runs Prettier on every file Claude edits in the project.
 
 ## Quality gates

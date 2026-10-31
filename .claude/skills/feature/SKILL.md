@@ -11,7 +11,7 @@ Skip this skill only for: bug fixes that restore already-specified behaviour, re
 
 ## 1. Load context (silently)
 
-Read `.claude/CLAUDE.md` (personas, design principles), `docs/product/` if present, the existing specs in `docs/specs/` and the decisions in `docs/decisions/`. Answers already written there are not asked again. Facts you can find in the code are not asked either.
+Read `.claude/CLAUDE.md` (personas, design principles), `docs/product/` if present, `docs/engineering/` (code and security rules), the existing specs in `docs/specs/` and the decisions in `docs/decisions/`. Answers already written there are not asked again. Facts you can find in the code are not asked either.
 
 ## 2. Restate
 
@@ -33,7 +33,7 @@ Walk through this checklist and ask only the items that are still open and would
 4. **Signals**: which channels carry each piece of information (picture, colour, shape, sound, vibration, voice)? At least two per instruction for the traveller.
 5. **Failure and edge cases**: no GPS fix, poor accuracy, no network, low battery, wrong direction, missed turn, arrived, appointment time passed, phone locked, app killed, permission refused.
 6. **Help**: how does the traveller get help from here?
-7. **Data and privacy**: what is stored, where, for how long, who can see it? Anything leaving the device?
+7. **Data and privacy**: what is stored, where, for how long, who can see it? Anything leaving the device, to which service, with which data (IP included)? New dependencies or permissions? Check against `docs/engineering/securite.md`.
 8. **Offline and cost**: what must work without data? Any paid API?
 9. **Accessibility and culture**: colour blindness, sunlight, noise, one hand, low-end phone, culturally neutral symbols.
 10. **Out of scope**: what this feature deliberately does not do.
@@ -49,9 +49,11 @@ Create `docs/specs/NNN-slug.md` (next free number, kebab-case slug) from `templa
 
 Only once the spec is `validé`:
 
-- Tests first for the logic (pure functions: bearings, distances, thresholds, state transitions).
+- Follow `docs/engineering/code.md` and `docs/engineering/securite.md`.
+- Tests first for the logic in `src/domain/` (pure functions: bearings, distances, thresholds, state transitions, link decoding).
 - Build the UI, then check it on screen (web through the browser, Android through `adb` screenshots) against the acceptance criteria.
 - `npm run check` must pass.
+- Reviews before commit: `ux-sans-texte-reviewer` for traveller-facing changes, `security-reviewer` for anything touching dependencies, native config, services, links, routes, permissions or storage. Fix the blocking findings.
 - If a new unknown appears during implementation, **stop and ask**, then update the spec. Do not guess.
 
 ## 6. Commit

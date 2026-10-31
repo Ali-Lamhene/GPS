@@ -27,7 +27,7 @@ Quel problème, pour qui, dans quelle situation.
 
 ## Données et confidentialité
 
-Ce qui est stocké, où, combien de temps, ce qui quitte le téléphone.
+Ce qui est stocké, où, combien de temps, ce qui quitte le téléphone (service, données envoyées, adresse IP). Nouvelles dépendances et permissions, justifiées. Voir `docs/engineering/securite.md`.
 
 ## Hors périmètre
 

@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-10-29
+**Dernière mise à jour** : 2026-10-31
 
 ## Où on en est
 
@@ -23,7 +23,11 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 
 - Première maquette Claude Design (V1) jugée « jouet » par l'utilisateur. Nouvelle direction « signalétique » sobre et adulte, portée par un design system Claude Design « GPS sans texte » (https://claude.ai/artifact/T8sKnYwYLZy4rM5vR8ZdXF) : tokens, règles, vraies photos Wikimedia Commons, pictogrammes ARASAAC noir et blanc, composants CarteLieu, BarreTrajet, Confirmation, BoutonAide, EcranAccueil. `brief.md` réécrit écran par écran (mesures, états, wireframes) ; `guide-claude-design.md` explique l'outil.
 
+- Règles d'ingénierie écrites (2026-10-31) : `docs/engineering/code.md` (dossiers `src/app|features|domain|services|ui`, composants, TypeScript, erreurs, tests, glossaire) et `docs/engineering/securite.md` (menaces, réseau, lien de partage, stockage, logs, permissions, dépendances). ESLint interdit `console.*`, `any`, `!`, `eval` et les SDK de suivi (`eslint/forbidden-packages.js`, aussi vérifié sur `package.json` par un test). Agent `security-reviewer`. `android.allowBackup` à `false`.
+
 ## Prochaine étape
+
+L'utilisateur envoie le lien des maquettes Claude Design et une ligne directrice ; Claude code alors le thème et les composants (`src/ui/`) puis les écrans, spec par spec.
 
 L'utilisateur fait les maquettes avec Claude Design, page par page, à partir de `docs/design/brief.md` (mode d'emploi : `docs/design/guide-claude-design.md`). Ensuite : revue de chaque maquette (agent `ux-sans-texte-reviewer` + liste noire), puis specs 002 et 003 nourries par les maquettes, puis code de la spec 001.
 
@@ -41,6 +45,7 @@ L'utilisateur fait les maquettes avec Claude Design, page par page, à partir de
 8. Distribution : Play Store et App Store, ou aussi APK installé par les associations ?
 9. Tests : travailleurs sociaux / voyageurs prêts à tester des maquettes tôt ?
 10. Création d'un lieu par le voyageur lui-même (« je suis ici » + photo) : spec ultérieure.
+11. Sécurité (détail dans `docs/engineering/securite.md`) : chiffrer lieux et trajets au repos ? moyen rapide d'effacer ou cacher les lieux si le téléphone est fouillé ? bloquer les captures d'écran de la partie préparation ?
 
 ## En attente côté humain
 
