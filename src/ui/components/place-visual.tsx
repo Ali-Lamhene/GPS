@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 
 import type { Place } from '@/domain/place';
 import { Icon } from '@/ui/icon/icon';
-import { PHOTOS } from '@/ui/photos';
 import { colors } from '@/ui/theme';
 
 type PlaceVisualProps = {
@@ -32,7 +31,7 @@ export function PlaceVisual({
 
   return (
     <>
-      <Image source={PHOTOS[place.photo]} contentFit="cover" style={StyleSheet.absoluteFill} />
+      <Image source={{ uri: place.photo }} contentFit="cover" style={StyleSheet.absoluteFill} />
       <View
         style={[
           styles.badge,

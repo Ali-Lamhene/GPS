@@ -1,4 +1,3 @@
-import type { PhotoId } from '@/domain/photo';
 import type { Place, PlaceIcon } from '@/domain/place';
 import type { TravelMode } from '@/domain/trip';
 
@@ -31,7 +30,7 @@ export type TripPlanAction =
   | { type: 'startPlace'; for: TripEnd; source: PlaceDraft['source'] }
   | { type: 'setDraftIcon'; icon: PlaceIcon }
   | { type: 'setDraftName'; helpName: string }
-  | { type: 'finishPlace'; photo?: PhotoId }
+  | { type: 'finishPlace'; photo?: string }
   | { type: 'cancelPlace' }
   | { type: 'reset' };
 
@@ -74,7 +73,7 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
   }
 }
 
-function finishPlace(state: TripPlanState, photo?: PhotoId): TripPlanState {
+function finishPlace(state: TripPlanState, photo?: string): TripPlanState {
   const { draft } = state;
   if (!draft) return state;
 

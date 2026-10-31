@@ -33,7 +33,6 @@ export const DEMO_BUS_LEG: TransitLeg = {
   from: 'Place de la Corderie',
   to: 'Vieux Port Ballard',
   direction: 'Vieux Port Ballard',
-  photo: 'busStop',
   path: BUS_41,
 };
 
@@ -44,7 +43,6 @@ export const DEMO_METRO_LEG: TransitLeg = {
   from: 'Vieux-Port',
   to: 'Saint-Charles',
   direction: 'La Rose',
-  photo: 'metroPlatform',
   path: METRO_M1,
 };
 

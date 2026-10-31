@@ -8,7 +8,6 @@ import type { HelpRequest } from '@/domain/help-message';
 import { speak } from '@/services/speech';
 import { IconButton } from '@/ui/components/icon-button';
 import { Icon } from '@/ui/icon/icon';
-import { PHOTOS } from '@/ui/photos';
 import { colors, radii, shadows } from '@/ui/theme';
 
 import { LineBadge } from '../components/line-badge';
@@ -47,7 +46,7 @@ export function HelpScreen() {
         {card.line && <LineBadge line={card.line} size="lg" />}
       </View>
       {card.photo && !large && (
-        <Image source={PHOTOS[card.photo]} contentFit="cover" style={styles.photo} />
+        <Image source={{ uri: card.photo }} contentFit="cover" style={styles.photo} />
       )}
       <HelpMessage message={card.message} large={large} />
       <View style={styles.spacer} />

@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -6,14 +5,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
 import { Icon } from '@/ui/icon/icon';
-import { PHOTOS } from '@/ui/photos';
 import { colors } from '@/ui/theme';
 
 import { usePlaceDraft } from './use-place-draft';
 
-// In this static version (D11) the viewfinder shows a sample photo and "taking" it saves
-// that photo. The real camera and gallery come with spec 001.
-const SAMPLE = 'tramStop';
+// In this static version (D11) the viewfinder stays dark and "taking" a photo saves the
+// place without one. The real camera and gallery come with spec 001.
 
 /** E29: optional photo of the new place, to recognise it later. */
 export function PhotoScreen() {
@@ -22,7 +19,6 @@ export function PhotoScreen() {
 
   return (
     <View style={styles.screen}>
-      <Image source={PHOTOS[SAMPLE]} contentFit="cover" style={StyleSheet.absoluteFill} />
       <View style={styles.frame} pointerEvents="none" />
       <View style={[styles.header, { top: insets.top + 20 }]}>
         <IconButton icon="arrow_back" label="Retour" onPress={() => router.back()} tone="glass" />
@@ -42,7 +38,7 @@ export function PhotoScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Prendre la photo"
-          onPress={() => finish(SAMPLE)}
+          onPress={() => finish()}
           style={styles.shutter}
         >
           <View style={styles.shutterDisc} />
@@ -50,7 +46,7 @@ export function PhotoScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Choisir une photo"
-          onPress={() => finish(SAMPLE)}
+          onPress={() => finish()}
           style={styles.side}
         >
           <Icon name="photo_library" size={30} color={colors.white} variant="outlined" />
@@ -63,7 +59,7 @@ export function PhotoScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#1B1C1A',
   },
   frame: {
     position: 'absolute',

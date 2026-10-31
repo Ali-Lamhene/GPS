@@ -1,11 +1,9 @@
-import { Image } from 'expo-image';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { TransitLeg } from '@/domain/trip';
 import { HelpButton } from '@/ui/components/help-button';
 import { Icon } from '@/ui/icon/icon';
-import { PHOTOS } from '@/ui/photos';
 import { colors, radii } from '@/ui/theme';
 
 import { LineBadge, MetroSign } from '../components/line-badge';
@@ -41,12 +39,6 @@ export function OfflineMetroView({ leg, onGotOff, onHelp }: OfflineMetroViewProp
         <StationName name={leg.to} variant="large" color={colors.night.ink} style={styles.name} />
         <ListenButton name={leg.to} tone="nightAccent" shape="square" size={64} iconSize={32} />
       </View>
-      <Image
-        source={PHOTOS.metroPlatform}
-        contentFit="cover"
-        contentPosition={{ left: '50%', top: '55%' }}
-        style={styles.photo}
-      />
       <View style={styles.spacer} />
       <Pressable
         accessibilityRole="button"
@@ -97,12 +89,6 @@ const styles = StyleSheet.create({
   },
   name: {
     flex: 1,
-  },
-  photo: {
-    width: '100%',
-    height: 180,
-    borderRadius: radii.xl,
-    opacity: 0.8,
   },
   spacer: {
     flex: 1,

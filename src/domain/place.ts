@@ -1,5 +1,3 @@
-import type { PhotoId } from './photo';
-
 /** Pictograms a place can wear (Material Symbols names). */
 export type PlaceIcon =
   | 'my_location'
@@ -24,7 +22,8 @@ export type PlaceIcon =
 export type Place = {
   id: string;
   icon: PlaceIcon;
-  photo?: PhotoId;
+  /** The traveller's own photo of the place, stored on the phone (local file URI). */
+  photo?: string;
   /**
    * French name, only read by a passer-by on the help card (D9). Never shown to the
    * traveller as a label.

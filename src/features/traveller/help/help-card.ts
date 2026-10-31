@@ -1,5 +1,4 @@
 import { helpMessage, type HelpRequest } from '@/domain/help-message';
-import type { PhotoId } from '@/domain/photo';
 import type { Place } from '@/domain/place';
 import type { TransitLine } from '@/domain/trip';
 import type { IconName } from '@/ui/icon/icon';
@@ -8,7 +7,8 @@ export type HelpCard = {
   /** Pictograms that tell the passer-by what the traveller is looking for. */
   icons: IconName[];
   line?: TransitLine;
-  photo?: PhotoId;
+  /** The traveller's own photo of the destination, if any. */
+  photo?: string;
   /** French message for the passer-by (D9). */
   message: string;
 };
@@ -17,15 +17,15 @@ export type HelpCard = {
 export function helpCard(request: HelpRequest, destination?: Place): HelpCard {
   switch (request.kind) {
     case 'findStop':
-      return withLeg(['directions_walk', 'directions_bus'], request, 'busStop');
+      return withLeg(['directions_walk', 'directions_bus'], request);
     case 'checkStop':
-      return withLeg(['directions_bus'], request, 'busStop');
+      return withLeg(['directions_bus'], request);
     case 'getOffBus':
-      return withLeg(['directions_bus'], request, 'busInterior');
+      return withLeg(['directions_bus'], request);
     case 'findMetro':
-      return withLeg(['subway'], request, 'metroPlatform');
+      return withLeg(['subway'], request);
     case 'getOffMetro':
-      return withLeg(['subway'], request, 'metroInteriorBlue');
+      return withLeg(['subway'], request);
     case 'findPlace':
       return {
         icons: ['directions_walk', destination?.icon ?? 'flag'],
@@ -39,10 +39,6 @@ export function helpCard(request: HelpRequest, destination?: Place): HelpCard {
   }
 }
 
-function withLeg(
-  icons: IconName[],
-  request: Extract<HelpRequest, { leg: unknown }>,
-  photo: PhotoId,
-): HelpCard {
-  return { icons, line: request.leg.line, photo, message: helpMessage(request) };
+function withLeg(icons: IconName[], request: Extract<HelpRequest, { leg: unknown }>): HelpCard {
+  return { icons, line: request.leg.line, message: helpMessage(request) };
 }

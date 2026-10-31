@@ -17,7 +17,7 @@ describe('<PlaceVisual />', () => {
   test('puts the pictogram in a badge over the photo', async () => {
     const screen = await render(
       <PlaceVisual
-        place={{ id: 'a', icon: 'home', photo: 'tramStop' }}
+        place={{ id: 'a', icon: 'home', photo: 'file:///place.jpg' }}
         iconSize={46}
         badgeSize={42}
         color="#000"
@@ -25,7 +25,7 @@ describe('<PlaceVisual />', () => {
     );
 
     const tree = JSON.stringify(screen.toJSON());
-    expect(tree).toContain('tram-stop.jpg');
+    expect(tree).toContain('file:///place.jpg');
     expect(tree).toContain(String.fromCodePoint(GLYPHS.home));
   });
 });

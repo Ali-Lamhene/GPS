@@ -1,6 +1,5 @@
 import { router } from 'expo-router';
 
-import type { PhotoId } from '@/domain/photo';
 import { playCue } from '@/services/feedback';
 
 import { useTripPlan } from '../trip-plan/trip-plan-context';
@@ -15,7 +14,7 @@ export function usePlaceDraft() {
       router.dismissTo('/');
     },
     /** Saves the place, selects it for its end of the trip and returns to the home trail. */
-    finish: (photo?: PhotoId) => {
+    finish: (photo?: string) => {
       dispatch({ type: 'finishPlace', photo });
       playCue('saved');
       router.dismissTo('/');

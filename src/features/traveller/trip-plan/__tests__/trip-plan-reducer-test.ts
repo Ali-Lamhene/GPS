@@ -32,10 +32,10 @@ describe('tripPlanReducer', () => {
       source: 'position',
     });
     state = tripPlanReducer(state, { type: 'setDraftIcon', icon: 'local_hospital' });
-    state = tripPlanReducer(state, { type: 'finishPlace', photo: 'tramStop' });
+    state = tripPlanReducer(state, { type: 'finishPlace', photo: 'file:///photo.jpg' });
 
     expect(state.customPlaces).toEqual([
-      { id: 'custom-1', icon: 'local_hospital', photo: 'tramStop', helpName: undefined },
+      { id: 'custom-1', icon: 'local_hospital', photo: 'file:///photo.jpg', helpName: undefined },
     ]);
     expect(state.destinationId).toBe('custom-1');
     expect(state.draft).toBeUndefined();

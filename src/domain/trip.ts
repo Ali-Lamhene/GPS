@@ -1,5 +1,4 @@
 import { bearingAlong, pointAlong, type LngLat } from './geo';
-import type { PhotoId } from './photo';
 
 export type TravelMode = 'walk' | 'transit' | 'car';
 
@@ -21,7 +20,6 @@ export type TransitLeg = {
   from: string;
   to: string;
   direction: string;
-  photo?: PhotoId;
   path: readonly LngLat[];
 };
 
