@@ -1,3 +1,3 @@
-import { PendingScreen } from '@/ui/screens/pending-screen';
+import { ModeScreen } from '@/features/traveller/mode/mode-screen';
 
-export default PendingScreen;
+export default ModeScreen;

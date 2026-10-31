@@ -53,6 +53,7 @@ export const colors = {
   accuracyEdge: 'rgba(31,111,229,.35)',
   holdTrack: '#D5D6D0',
   car: '#5E6670',
+  walkRail: '#A8A8A1',
 
   // Calm dark theme of the offline metro screen (E21).
   night: {
