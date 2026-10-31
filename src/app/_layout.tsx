@@ -20,7 +20,10 @@ export default function RootLayout() {
     <TripPlanProvider>
       <Stack
         screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }}
-      />
+      >
+        {/* The help card opens over the current screen, as a full-screen dialog (E24). */}
+        <Stack.Screen name="help" options={{ presentation: 'fullScreenModal' }} />
+      </Stack>
     </TripPlanProvider>
   );
 }

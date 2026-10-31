@@ -1,3 +1,3 @@
-import { PendingScreen } from '@/ui/screens/pending-screen';
+import { HelpScreen } from '@/features/traveller/help/help-screen';
 
-export default PendingScreen;
+export default HelpScreen;
