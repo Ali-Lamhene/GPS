@@ -12,23 +12,23 @@ import { colors, radii, shadows } from '@/ui/theme';
 
 import { LineBadge } from '../components/line-badge';
 import { DEMO_GUIDANCE } from '../demo/guidance';
+import { DEMO_LEGS } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { helpCard } from './help-card';
 import { HelpMessage } from './help-message';
+import { HelpSituationMap } from './help-situation-map';
 
 /**
  * E24: a message in French adapted to the current step, to show a passer-by or have read
- * aloud (D10). It can be enlarged; the photo then makes room for the text.
+ * aloud (D10), above a small map of the situation. Enlarged, the text takes the room.
  */
 export function HelpScreen() {
   const insets = useSafeAreaInsets();
   const { mode, destination, guidanceStep } = useTripPlan();
   const [large, setLarge] = useState(false);
 
-  const request: HelpRequest = (guidanceStep !== undefined &&
-    DEMO_GUIDANCE[mode][guidanceStep]?.help) || {
-    kind: 'findPlace',
-  };
+  const step = guidanceStep === undefined ? undefined : DEMO_GUIDANCE[mode][guidanceStep];
+  const request: HelpRequest = step?.help ?? { kind: 'findPlace' };
   const card = helpCard(request, destination);
 
   return (
@@ -36,7 +36,13 @@ export function HelpScreen() {
       style={[styles.screen, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 28 }]}
     >
       <View style={styles.header}>
-        <IconButton icon="close" label="Fermer" onPress={() => router.back()} iconSize={32} />
+        <IconButton
+          icon="close"
+          label="Fermer"
+          tone="raised"
+          onPress={() => router.back()}
+          iconSize={32}
+        />
         <View style={styles.spacer} />
         {card.icons.map((icon) => (
           <View key={icon} style={styles.context}>
@@ -49,7 +55,11 @@ export function HelpScreen() {
         <Image source={{ uri: card.photo }} contentFit="cover" style={styles.photo} />
       )}
       <HelpMessage message={card.message} large={large} />
-      <View style={styles.spacer} />
+      {large ? (
+        <View style={styles.spacer} />
+      ) : (
+        <HelpSituationMap legs={DEMO_LEGS[mode]} step={step} destination={destination} />
+      )}
       <View style={styles.actions}>
         <Pressable
           accessibilityRole="button"

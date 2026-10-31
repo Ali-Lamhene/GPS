@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     gap: GAP,
   },
   tile: {
-    borderRadius: 18,
-    backgroundColor: colors.surfaceHigh,
+    borderRadius: 16,
+    backgroundColor: colors.surfaceLow,
     alignItems: 'center',
     justifyContent: 'center',
   },
