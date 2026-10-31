@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-10-31
+**Dernière mise à jour** : 2026-10-31 (soir)
 
 ## Où on en est
 
@@ -48,7 +48,14 @@ Implémentation de la maquette v7 (D11) en interface statique fidèle, données 
 
 Les 30 écrans de la maquette v7 sont codés en interface statique (données factices, guidage simulé : toucher la carte de consigne fait avancer). Test fonctionnel complet dans le navigateur réussi (accueil → transport → récapitulatif → 14 étapes de guidage dont E21 → arrivée ; aide contextuelle ; création d'un lieu). Planche de développement : `/dev/screens` (en développement seulement). Lancer : `npx expo start --web` (sans `CI=1`, qui coupe le rechargement).
 
-Prochaine étape : l'utilisateur relit le rendu et tranche les écarts relevés par la revue UX (ci-dessous) ; puis specs 002 (composer un trajet) et 003 (guidage) avant de brancher GPS et itinéraires réels, puis code réel de la spec 001.
+Spec 002 « carte d'abord » (validée) : écrans témoins livrés, à juger par l'utilisateur dans le navigateur (`/` et `/dev/screens` → « Guidage … »). Fait : carte réelle embarquée du centre de Marseille (hors ligne, sans étiquettes, crédit OSM derrière ⓘ), vrai trajet de démo (marche, bus 41, marche, M1, marche) avec virages réels, accueil sur carte atténuée, guidage carte plein écran (tracé fait/à faire, arrêts, flèche au virage, point du voyageur, arrivée), palette plus vive, aide en disque foncé partout, plus aucune illustration IA.
+
+Prochaine étape : l'utilisateur valide les témoins (ou demande des retouches) ; puis généralisation de la carte à E06, E07-E08, E21, E24-E27 et passage à MapLibre natif sur téléphone (revue sécurité dédiée) ; puis specs 003 (composer un trajet) et 004 (guidage, ex-003).
+
+Points laissés ouverts par les relectures de la spec 002 :
+
+- UX : jauge d'approche du virage dans le bandeau (aujourd'hui flèche + carte) ; aide toujours à la même place (en haut à l'accueil, en bas au guidage) ; cône relié à la boussole et état « mauvais sens » (spec 004) ; icône « ma position » (viseur) peu parlante ; crédit ⓘ à refermer seul ; pour les tests avec des voyageurs, un autre déclencheur que le bandeau pour faire avancer la démo.
+- Sécurité : la version web restera-t-elle un outil de développement (sinon l'hôte verrait qui charge la carte) ? Modèle de carte hors de la zone embarquée (archive par ville, téléchargement par zone ou tuiles à la demande : chaque tuile demandée révèle la zone du voyageur) ; `postinstall` (copie du worker MapLibre) empêche `ignore-scripts=true` dans `.npmrc`.
 
 Écarts relevés par `ux-sans-texte-reviewer`, non appliqués car la maquette v7 prévaut (D11), à trancher :
 
