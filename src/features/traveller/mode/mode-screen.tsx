@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import { totalMinutes } from '@/domain/trip';
+import { totalMinutes, type TravelMode } from '@/domain/trip';
+import { playCue } from '@/services/feedback';
 import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
 import { MainActionButton } from '@/ui/components/main-action-button';
@@ -19,6 +20,11 @@ import { ModeSelector } from './mode-selector';
 export function ModeScreen() {
   const { origin, destination, mode, dispatch } = useTripPlan();
   const legs = DEMO_LEGS[mode];
+
+  const choose = (next: TravelMode) => {
+    dispatch({ type: 'chooseMode', mode: next });
+    playCue('select');
+  };
 
   return (
     <ScreenFrame
@@ -38,10 +44,7 @@ export function ModeScreen() {
       <View style={styles.total}>
         <TimeDials minutes={totalMinutes(legs)} size={120} crossColor={colors.surfaceContainer} />
       </View>
-      <ModeSelector
-        selected={mode}
-        onSelect={(next) => dispatch({ type: 'chooseMode', mode: next })}
-      />
+      <ModeSelector selected={mode} onSelect={choose} />
       <LegList legs={legs} />
     </ScreenFrame>
   );

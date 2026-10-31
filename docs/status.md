@@ -25,24 +25,24 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 
 - Règles d'ingénierie écrites (2026-10-31) : `docs/engineering/code.md` (dossiers `src/app|features|domain|services|ui`, composants, TypeScript, erreurs, tests, glossaire) et `docs/engineering/securite.md` (menaces, réseau, lien de partage, stockage, logs, permissions, dépendances). ESLint interdit `console.*`, `any`, `!`, `eval` et les SDK de suivi (`eslint/forbidden-packages.js`, aussi vérifié sur `package.json` par un test). Agent `security-reviewer`. `android.allowBackup` à `false`.
 
-- Dépendances ajoutées pour la maquette v7 (relues par `security-reviewer`) : `@expo-google-fonts/roboto` et `@expo-google-fonts/material-symbols-rounded` (polices embarquées, aucun appel réseau) ; `react-native-svg` (code natif, aucune permission, réseau seulement via `SvgUri` et composants proches, interdits par ESLint).
+- Dépendances ajoutées pour la maquette v7 (relues par `security-reviewer`) : `@expo-google-fonts/roboto` et `@expo-google-fonts/material-symbols-rounded` (polices embarquées, aucun appel réseau) ; `react-native-svg` (code natif, aucune permission, réseau seulement via `SvgUri` et composants proches, interdits par ESLint) ; `expo-audio` (sons embarqués seulement, micro et lecture en arrière-plan désactivés, `RECORD_AUDIO` et stockage externe bloqués ; import réservé à `src/services/feedback.ts`) ; `expo-speech` (texte envoyé au moteur de synthèse du système, voix locale seulement ; import réservé à `src/services/speech.ts`).
 
 ## Prochaine étape
 
 Implémentation de la maquette v7 (D11) en interface statique fidèle, données factices, sans GPS (option A). Un commit par sous-tâche, sur `main`, chacun avec ses tests :
 
 1. [x] Décisions D9 (exceptions de texte), D10 (pas de bouton d'appel), D11 (maquette v7 de référence), plan.
-2. [ ] Thème (tokens v7), polices Roboto Flex et Material Symbols Rounded, composant `Icon`.
-3. [ ] Domaine : lieux, trajets, étapes, cadrans de durée, progression, message d'aide ; données factices.
-4. [ ] Composants partagés : boutons, cadrans, badge de ligne, anneau pulsé, tuile de lieu, poignée.
-5. [ ] État du trajet en préparation + accueil E01-E05 (chemin, feuille des lieux, appui long accompagnant).
-6. [ ] E06 choix du transport.
-7. [ ] E07-E08 récapitulatif et détail des étapes (photos des arrêts).
-8. [ ] E09-E20, E22, E23, E17 guidage (consigne, carte ou photo, progression).
-9. [ ] E21 métro hors connexion, E25 problème de connexion, E26 arrivée.
-10. [ ] E24 carte d'aide contextuelle.
-11. [ ] E27-E29 nouveau lieu (voyageur) et E30 adresse (accompagnant).
-12. [ ] Sons, vibrations, lecture des noms (`expo-audio`, `expo-speech`).
+2. [x] Thème (tokens v7), polices Roboto (Roboto Flex n'existe qu'en un seul poids dans `@expo-google-fonts`) et Material Symbols Rounded, composant `Icon`.
+3. [x] Domaine : lieux, trajets, étapes, cadrans de durée, progression, message d'aide ; données factices.
+4. [x] Composants partagés : boutons, cadrans, badge de ligne, anneau pulsé, tuile de lieu, poignée.
+5. [x] État du trajet en préparation + accueil E01-E05 (chemin, feuille des lieux, appui long accompagnant).
+6. [x] E06 choix du transport.
+7. [x] Sons, vibrations, lecture des noms (`expo-audio`, `expo-speech`), avancé pour que les écrans les branchent directement.
+8. [x] E07-E08 récapitulatif et détail des étapes (photos des arrêts).
+9. [ ] E09-E23 et E17 guidage (consigne, carte ou photo, progression), E21 métro hors connexion compris.
+10. [ ] E25 problème de connexion, E26 arrivée.
+11. [ ] E24 carte d'aide contextuelle.
+12. [ ] E27-E29 nouveau lieu (voyageur) et E30 adresse (accompagnant).
 13. [ ] Planche de développement des écrans, test fonctionnel dans le navigateur.
 
 Ensuite : specs 002 et 003 avant de brancher GPS et itinéraires réels, puis code de la spec 001.
@@ -61,6 +61,12 @@ Ensuite : specs 002 et 003 avant de brancher GPS et itinéraires réels, puis co
 10. Sécurité (détail dans `docs/engineering/securite.md`) : chiffrer lieux et trajets au repos ? moyen rapide d'effacer ou cacher les lieux si le téléphone est fouillé ? bloquer les captures d'écran de la partie préparation ?
 11. Tuile « Accompagnant · appui 3 s » de la feuille des lieux (E02, E04) : texte visible par le voyageur, hors exceptions D9. Codée comme composant de la partie accompagnant (`src/features/social-worker/`), fidèle à la maquette ; à confirmer.
 12. Photos de démonstration générées par ChatGPT : elles portent sans doute un filigrane invisible OpenAI, qui résiste au réencodage. À remplacer par des photos libres ou faites par l'équipe avant toute diffusion publique ?
+13. Lecture à voix haute (relue par `security-reviewer`) : aujourd'hui, l'app ne lit qu'avec une voix française installée sur le téléphone (Android : voix Google « -local » seulement), sinon elle se tait. Reste à trancher :
+    - durcir en natif (moteur de synthèse imposé, contrôle `isNetworkConnectionRequired`), supprimer la lecture des noms, ou passer à des audios préenregistrés (question 4) ;
+    - le message d'aide lu à voix haute doit-il contenir le nom de la destination ? Les gens autour l'entendent ;
+    - les sons de guidage doivent-ils respecter le mode silencieux, pour un voyageur discret ?
+    - sans voix locale, quel signal sans texte montre que « écouter » ne marche pas ? La partie préparation doit-elle vérifier la voix et aider à l'installer ?
+14. Avant le premier build natif : bloquer `SYSTEM_ALERT_WINDOW` en version publiée, vérifier `NSAllowsArbitraryLoads` (HTTPS seulement) sur iOS après prebuild, contrôler l'APK avec `aapt dump permissions`.
 
 ## En attente côté humain
 
