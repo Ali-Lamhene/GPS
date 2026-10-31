@@ -1,3 +1,3 @@
-import { PendingScreen } from '@/ui/screens/pending-screen';
+import { PhotoScreen } from '@/features/traveller/add-place/photo-screen';
 
-export default PendingScreen;
+export default PhotoScreen;

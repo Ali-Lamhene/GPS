@@ -1,3 +1,3 @@
-import { PendingScreen } from '@/ui/screens/pending-screen';
+import { AddressScreen } from '@/features/social-worker/address-screen';
 
-export default PendingScreen;
+export default AddressScreen;
