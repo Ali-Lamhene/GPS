@@ -1,5 +1,6 @@
-import { fireEvent, screen } from '@testing-library/react-native';
+import { act, fireEvent, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
+import { BackHandler } from 'react-native';
 
 import { layout, renderWithProviders } from '@/testing/render-with-providers';
 
@@ -70,5 +71,22 @@ describe('<HomeScreen />', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Aide' }));
 
     expect(router.push).toHaveBeenCalledWith('/help');
+  });
+});
+
+describe('place sheet and Android back', () => {
+  test('the back button closes the sheet', async () => {
+    const listeners: (() => boolean)[] = [];
+    jest.spyOn(BackHandler, 'addEventListener').mockImplementation((_, listener) => {
+      listeners.push(listener as () => boolean);
+      return { remove: jest.fn() };
+    });
+    await renderWithProviders(<HomeScreen />);
+    await fireEvent(screen.getByTestId('home-screen'), 'layout', layout(360, 800));
+    await fireEvent.press(screen.getByRole('button', { name: 'Départ' }));
+
+    await act(() => listeners.at(-1)?.());
+
+    expect(screen.queryByTestId('place-grid')).toBeNull();
   });
 });

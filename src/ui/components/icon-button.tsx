@@ -39,10 +39,13 @@ export function IconButton({
   iconVariant = 'outlined',
 }: IconButtonProps) {
   const { background, ink, shadow } = TONES[tone];
+  // Keeps the mockup's drawn size but gives a stressed thumb at least 64 dp to hit.
+  const reach = Math.max(0, (sizes.minTarget - size) / 2);
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
+      hitSlop={reach}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,

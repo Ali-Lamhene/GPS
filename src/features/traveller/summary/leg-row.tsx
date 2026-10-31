@@ -25,6 +25,8 @@ export function LegRow({ leg, open, first, onPress }: LegRowProps) {
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
         onPress={onPress}
+        // The row padding stays touchable: the whole line is at least 64 dp high.
+        hitSlop={{ top: 12, bottom: 12 }}
         style={styles.header}
       >
         <View

@@ -34,7 +34,10 @@ export function LineBadge({ line, size }: LineBadgeProps) {
         },
       ]}
     >
-      <Text style={[styles.text, { fontSize }]}>{line.id}</Text>
+      {/* Fixed like a network sign: the system font size must not crop the id. */}
+      <Text maxFontSizeMultiplier={1} style={[styles.text, { fontSize }]}>
+        {line.id}
+      </Text>
     </View>
   );
 }
@@ -54,7 +57,9 @@ export function MetroSign({ color, size }: MetroSignProps) {
         { width: size, height: size, borderRadius: size / 2, backgroundColor: color },
       ]}
     >
-      <Text style={[styles.text, { fontSize: Math.round(size * 0.6) }]}>M</Text>
+      <Text maxFontSizeMultiplier={1} style={[styles.text, { fontSize: Math.round(size * 0.6) }]}>
+        M
+      </Text>
     </View>
   );
 }

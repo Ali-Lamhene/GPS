@@ -35,3 +35,11 @@ describe('buttons', () => {
     expect(screen.getByRole('button', { name: 'Continuer' })).toBeDisabled();
   });
 });
+
+describe('touch targets', () => {
+  test('a 56 dp button reaches 64 dp through its hit slop', async () => {
+    const screen = await render(<IconButton icon="home" label="Accueil" onPress={jest.fn()} />);
+
+    expect(screen.getByRole('button', { name: 'Accueil' })).toHaveProp('hitSlop', 4);
+  });
+});
