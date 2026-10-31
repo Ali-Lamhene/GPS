@@ -16,10 +16,14 @@ export type MapStop = {
 };
 
 export type TripMapProps = {
-  /** Where the map looks; it follows these values unless the traveller moves the map. */
+  /**
+   * Where the map looks; it follows these values unless the traveller moves the map.
+   * With `bounds`, the map frames that box (north up, flat) instead of the centre.
+   */
   camera: {
     center: LngLat;
     zoom: number;
+    bounds?: [LngLat, LngLat];
     heading?: number;
     pitch?: number;
     /** Room taken by content floating over the map, so the centre stays visible. */

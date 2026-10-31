@@ -263,8 +263,20 @@ export function TripMap({
   const { zoom, heading: bearing = 0, pitch = 0 } = camera;
   const paddingTop = camera.padding?.top ?? 0;
   const paddingBottom = camera.padding?.bottom ?? 0;
+  const boundsKey = JSON.stringify(camera.bounds ?? null);
   useEffect(() => {
     if (!map || !following) return;
+    const bounds = JSON.parse(boundsKey) as TripMapProps['camera']['bounds'] | null;
+    if (bounds) {
+      map.fitBounds([bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]], {
+        padding: { top: paddingTop + 24, bottom: paddingBottom + 24, left: 32, right: 32 },
+        bearing: 0,
+        pitch: 0,
+        maxZoom: 17,
+        duration: 900,
+      });
+      return;
+    }
     map.easeTo({
       center: [centerLon, centerLat],
       zoom,
@@ -273,7 +285,18 @@ export function TripMap({
       padding: { top: paddingTop, bottom: paddingBottom, left: 0, right: 0 },
       duration: 900,
     });
-  }, [map, following, centerLon, centerLat, zoom, bearing, pitch, paddingTop, paddingBottom]);
+  }, [
+    map,
+    following,
+    boundsKey,
+    centerLon,
+    centerLat,
+    zoom,
+    bearing,
+    pitch,
+    paddingTop,
+    paddingBottom,
+  ]);
 
   return (
     <View style={StyleSheet.absoluteFill}>

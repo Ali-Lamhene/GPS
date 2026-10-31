@@ -1,4 +1,12 @@
-import { bearing, bearingAlong, distanceMeters, pathLength, pointAlong, type LngLat } from '../geo';
+import {
+  bearing,
+  bearingAlong,
+  distanceMeters,
+  pathLength,
+  pathsBounds,
+  pointAlong,
+  type LngLat,
+} from '../geo';
 
 // Two points 0.01° of latitude apart in Marseille: about 1.11 km.
 const south: LngLat = [5.37, 43.29];
@@ -33,5 +41,16 @@ describe('geo', () => {
     expect(pointAlong([south], 0.5)).toEqual(south);
     expect(bearingAlong([south], 0.5)).toBe(0);
     expect(pathLength([])).toBe(0);
+  });
+});
+
+describe('pathsBounds', () => {
+  test('frames every point of every path', () => {
+    expect(pathsBounds([[south, north], [northEast]])).toEqual([
+      [5.37, 43.29],
+      [5.38, 43.3],
+    ]);
+    expect(pathsBounds([])).toBeUndefined();
+    expect(pathsBounds([[]])).toBeUndefined();
   });
 });

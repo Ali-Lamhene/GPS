@@ -137,3 +137,22 @@ export function splitPath(
     [point, ...path.slice(i)],
   ];
 }
+
+/** South-west and north-east corners of the box around all the given paths. */
+export function pathsBounds(paths: readonly (readonly LngLat[])[]): [LngLat, LngLat] | undefined {
+  const points = paths.flat();
+  const first = points[0];
+  if (!first) return undefined;
+  let [west, south] = first;
+  let [east, north] = first;
+  for (const [lon, lat] of points) {
+    west = Math.min(west, lon);
+    east = Math.max(east, lon);
+    south = Math.min(south, lat);
+    north = Math.max(north, lat);
+  }
+  return [
+    [west, south],
+    [east, north],
+  ];
+}

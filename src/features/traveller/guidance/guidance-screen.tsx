@@ -3,15 +3,14 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { bearingAlong, findTurns, splitPath } from '@/domain/geo';
+import { bearingAlong, findTurns } from '@/domain/geo';
 import { spokenName, type GuidanceStep } from '@/domain/guidance';
 import { remainingMinutes, tripPosition, tripProgress, type Leg } from '@/domain/trip';
 import { playCue } from '@/services/feedback';
 import { TripMap } from '@/ui/map/trip-map';
-import type { MapLine, MapStop } from '@/ui/map/trip-map-types';
 import { colors } from '@/ui/theme';
 
-import { legColor } from '../components/leg-style';
+import { tripLines, tripStops } from '../components/trip-map-layers';
 import { DEMO_GUIDANCE } from '../demo/guidance';
 import { DEMO_LEGS } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
@@ -19,35 +18,6 @@ import { InstructionCard } from './instruction-card';
 import { stepCue } from './instruction-look';
 import { OfflineMetroView } from './offline-metro-view';
 import { ProgressPanel } from './progress-panel';
-
-/**
- * The route ahead in colour (walking dotted blue, vehicles in their line colour) and the
- * part already done in grey, cut where the traveller is.
- */
-function mapLines(legs: readonly Leg[], step: GuidanceStep): MapLine[] {
-  return legs.flatMap((leg, i): MapLine[] => {
-    const ahead: MapLine['style'] = leg.kind === 'walk' ? 'walk' : 'vehicle';
-    const color = leg.kind === 'walk' ? colors.primary : legColor(leg);
-    if (i < step.legIndex) return [{ path: leg.path, color, style: 'done' }];
-    if (i > step.legIndex) return [{ path: leg.path, color, style: ahead }];
-    const [done, rest] = splitPath(leg.path, step.legFraction);
-    return [
-      { path: done, color, style: 'done' },
-      { path: rest, color, style: ahead },
-    ];
-  });
-}
-
-/** Where to get on and off each vehicle. */
-function mapStops(legs: readonly Leg[]): MapStop[] {
-  return legs.flatMap((leg): MapStop[] => {
-    if (leg.kind !== 'bus' && leg.kind !== 'metro') return [];
-    const symbol = leg.kind === 'metro' ? 'metro' : 'directions_bus';
-    return [leg.path[0], leg.path.at(-1)]
-      .filter((point) => point !== undefined)
-      .map((point) => ({ point, color: leg.line.color, symbol }));
-  });
-}
 
 /** For a turn, the corner ahead on the current leg and the direction of the street to take. */
 function nextManeuver(legs: readonly Leg[], step: GuidanceStep) {
@@ -113,8 +83,8 @@ export function GuidanceScreen() {
             // Extra room on top puts the traveller low on the screen, to show the way ahead.
             padding: { top: bannerHeight + 140, bottom: panelHeight },
           }}
-          lines={mapLines(legs, step)}
-          stops={mapStops(legs)}
+          lines={tripLines(legs, step)}
+          stops={tripStops(legs)}
           maneuver={nextManeuver(legs, step)}
           traveller={{ point: position.point, heading: position.heading }}
           destination={end && { point: end, icon: destinationIcon }}
