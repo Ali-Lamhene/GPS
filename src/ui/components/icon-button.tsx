@@ -3,12 +3,14 @@ import { Pressable, StyleSheet } from 'react-native';
 import { Icon, type IconName } from '@/ui/icon/icon';
 import { colors, radii, sizes } from '@/ui/theme';
 
-type Tone = 'plain' | 'tonal' | 'raised' | 'glass' | 'night' | 'nightAccent' | 'primary';
+type Tone = 'plain' | 'tonal' | 'raised' | 'help' | 'glass' | 'night' | 'nightAccent' | 'primary';
 
 const TONES: Record<Tone, { background: string; ink: string; shadow?: string }> = {
   plain: { background: 'transparent', ink: colors.ink },
   tonal: { background: colors.tonal, ink: colors.ink },
-  raised: { background: colors.white, ink: colors.ink, shadow: '0 1px 4px rgba(0,0,0,.15)' },
+  raised: { background: colors.white, ink: colors.ink, shadow: '0 2px 8px rgba(0,0,0,.16)' },
+  /** Help looks the same everywhere: dark disc, white question mark. */
+  help: { background: colors.ink, ink: colors.white, shadow: '0 2px 8px rgba(0,0,0,.25)' },
   glass: { background: colors.blackGlass, ink: colors.white },
   night: { background: colors.night.button, ink: colors.night.buttonInk },
   nightAccent: { background: colors.night.button, ink: colors.night.listen },

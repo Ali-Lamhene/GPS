@@ -15,6 +15,9 @@ import {
 // in central Marseille, from near Place de la Corderie to near the Saint-Charles station.
 // Line colours are the RTM colours recorded in OpenStreetMap. Durations are estimates.
 
+/** Where the traveller stands before leaving: the start of the demo trip. */
+export const DEMO_CURRENT_POSITION = TO_BUS_STOP[0] ?? ([5.3685, 43.2879] as const);
+
 const BUS_41_LINE: TransitLine = {
   id: '41',
   color: '#76C9B6',

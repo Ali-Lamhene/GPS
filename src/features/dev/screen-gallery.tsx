@@ -2,6 +2,7 @@ import { router, type Href } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import type { GuidanceStep, Instruction } from '@/domain/guidance';
 import { DEMO_GUIDANCE } from '@/features/traveller/demo/guidance';
 import { useTripPlan } from '@/features/traveller/trip-plan/trip-plan-context';
 import type { TripPlanAction } from '@/features/traveller/trip-plan/trip-plan-reducer';
@@ -18,23 +19,26 @@ const READY: TripPlanAction[] = [
   { type: 'chooseDestination', placeId: 'beach' },
 ];
 
-const STEP_LABELS = [
-  '09 Navigation à pied',
-  '10 Tourner à gauche',
-  '11 Tourner à droite',
-  "12 Arrivée à l'arrêt",
-  '13 Attente du bus',
-  '14 À bord du bus',
-  '15 Approche de la descente',
-  '16 Descente du véhicule',
-  '18 Arrivée au métro',
-  '19 Attente du métro',
-  '20 À bord du métro',
-  '21 Métro hors connexion',
-  '22 Approche de la descente (métro)',
-  '23 Arrivée à la station',
-  '17 Marche finale',
-];
+const INSTRUCTION_LABELS: Record<Instruction['kind'], string> = {
+  walk: 'Navigation à pied',
+  walkToDestination: 'Marche finale',
+  reachStop: "Arrivée à l'arrêt",
+  waitVehicle: 'Attente du véhicule',
+  ride: 'À bord',
+  getOffSoon: 'Approche de la descente',
+  gotOff: 'Descente du véhicule',
+  leaveStation: 'Sortie de la station',
+};
+
+function stepLabel({ instruction, offline }: GuidanceStep, index: number): string {
+  const name =
+    instruction.kind === 'walk' && instruction.turn !== 'straight'
+      ? `Tourner à ${instruction.turn === 'left' ? 'gauche' : 'droite'}`
+      : offline
+        ? 'Métro hors connexion'
+        : INSTRUCTION_LABELS[instruction.kind];
+  return `Guidage ${index + 1} · ${name}`;
+}
 
 const ENTRIES: Entry[] = [
   { label: '01 Accueil', href: '/', actions: [{ type: 'reset' }] },
@@ -46,8 +50,8 @@ const ENTRIES: Entry[] = [
   { label: '05 Arrivée sélectionnée', href: '/', actions: READY },
   { label: '06 Choix du transport', href: '/mode', actions: READY },
   { label: '07 Récapitulatif', href: '/summary', actions: READY },
-  ...DEMO_GUIDANCE.transit.map((_, index) => ({
-    label: STEP_LABELS[index] ?? `Étape ${index}`,
+  ...DEMO_GUIDANCE.transit.map((step, index) => ({
+    label: stepLabel(step, index),
     href: '/guidance' as const,
     actions: [...READY, { type: 'goToStep', index } as const],
   })),

@@ -59,11 +59,12 @@ Exception acceptée : le compte Apple développeur (99 $ par an), nécessaire po
 
 ## D9. Texte dans l'interface du voyageur : trois exceptions (2026-10-31)
 
-L'interface du voyageur reste sans texte ni chiffre (`principes.md`), sauf trois exceptions, les seules autorisées :
+L'interface du voyageur reste sans texte ni chiffre (`principes.md`), sauf ces exceptions, les seules autorisées :
 
 1. **Identifiants officiels des lignes** (`C3`, `T2`, `M`, `M1`) : le voyageur les compare à la signalétique du réseau.
 2. **Noms réels des stations et arrêts** : même raison, avec un bouton pour écouter le nom.
 3. **Carte d'aide contextuelle** : un court message en français, destiné au passant à qui le voyageur montre son téléphone, pas au voyageur.
+4. **Crédit OpenStreetMap de la carte** (ajouté le 2026-10-31, spec 002) : replié derrière un petit bouton ⓘ, le texte « © OpenStreetMap, Protomaps » ne s'affiche qu'au toucher. La licence ODbL l'impose.
 
 Ces exceptions sont codées dans des composants dédiés, listés nommément dans `eslint.config.js`. La règle `gps/no-text-in-traveller-ui` s'applique partout ailleurs.
 
@@ -76,3 +77,7 @@ Pas de bouton pour appeler un proche ou l'accompagnateur. L'aide, toujours à un
 La maquette Claude Design « Navigation sans lecture v7 » (https://claude.ai/design/p/f7239f2c-c8b8-40e7-9b22-92f09ecce9e6, fichier `Navigation sans lecture v7.dc.html`, 30 écrans) et `docs/screens.md` sont la référence visuelle et fonctionnelle. En cas de conflit avec le design system « GPS sans texte » ou avec `docs/design/brief.md` et `ecrans.md`, **la maquette v7 prévaut** : fond crème, noir, bleu d'action, icônes Material Symbols Rounded, police Roboto Flex, cadrans de durée.
 
 Première implémentation : interface statique fidèle, données factices, sans GPS ni calcul d'itinéraire réel. Les specs 002 (composer un trajet) et 003 (guidage) viendront avant de brancher la logique réelle.
+
+## D12. Carte d'abord (2026-10-31, spec 002)
+
+Une vraie carte, sans aucune étiquette, sert de fond aux écrans du trajet ; l'interface flotte dessus. Les tuiles d'une zone sont embarquées dans l'app (PMTiles, données OpenStreetMap) : rien n'est téléchargé à l'usage. Plus aucune illustration générée par IA. Palette plus vive que la maquette v7 (bleu plus lumineux, vert émeraude, orange plus franc, surfaces blanches) : elle prévaut sur les couleurs de la maquette v7 une fois validée sur les écrans témoins.

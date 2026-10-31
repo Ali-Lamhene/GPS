@@ -1,4 +1,5 @@
-// Colour tokens taken from the Claude Design mockup v7 (decision D11).
+// Colour tokens: mockup v7 (D11), made more vivid by spec 002 (white surfaces, brighter
+// blue, emerald guidance, stronger orange).
 
 export const colors = {
   // Surfaces, from lightest to darkest.
@@ -19,18 +20,18 @@ export const colors = {
   scrim: 'rgba(0,0,0,.32)',
 
   // Blue: the action colour (buttons, selection, chosen path).
-  primary: '#1F6FE5',
+  primary: '#1E6BFF',
   onPrimary: '#FFFFFF',
-  primaryTint: '#EAF1FD',
-  primaryHalo: 'rgba(31,111,229,.14)',
-  secondaryContainer: '#D9E6FC',
+  primaryTint: '#EAF1FF',
+  primaryHalo: 'rgba(30,107,255,.16)',
+  secondaryContainer: '#DCE8FF',
   onSecondaryContainer: '#0B2A5C',
   tertiaryContainer: '#DCE7F7',
   onTertiaryContainer: '#2B5FC9',
 
   // Guidance instruction card: green when all is well, orange to get off.
-  guidance: '#0E6B4E',
-  alert: '#E8710A',
+  guidance: '#078A57',
+  alert: '#E8590C',
   success: '#2E7D4F',
   error: '#BA1A1A',
   errorContainer: '#FFDAD6',
@@ -47,7 +48,7 @@ export const colors = {
   mapParkDot: '#CFE0C6',
   mapWater: '#D3E2EE',
   mapVeil: 'rgba(252,252,250,.35)',
-  route: '#3B6FD8',
+  route: '#1E6BFF',
   routeHalo: 'rgba(59,111,216,.22)',
   accuracy: 'rgba(31,111,229,.12)',
   accuracyEdge: 'rgba(31,111,229,.35)',

@@ -1,5 +1,4 @@
 import type { HelpRequest } from './help-message';
-import type { PhotoId } from './photo';
 import type { TransitLeg } from './trip';
 
 export type Turn = 'straight' | 'left' | 'right';
@@ -15,24 +14,8 @@ export type Instruction =
   | { kind: 'gotOff' }
   | { kind: 'leaveStation' };
 
-/** What fills the middle of the guidance screen: the map on foot, a photo elsewhere. */
-export type GuidanceVisual =
-  | {
-      kind: 'map';
-      route: 'straight' | 'left' | 'right' | 'arrive';
-      /** Pin drawn at the end of the route: the next stop or the destination. */
-      marker?: 'stop' | 'destination';
-    }
-  | {
-      kind: 'photo';
-      photo: PhotoId;
-      /** Which part of the photo stays visible when cropped, in percent (CSS object-position). */
-      focus: { x: number; y: number };
-    };
-
 export type GuidanceStep = {
   instruction: Instruction;
-  visual: GuidanceVisual;
   /** Position along the trip: leg index and fraction of that leg. */
   legIndex: number;
   legFraction: number;

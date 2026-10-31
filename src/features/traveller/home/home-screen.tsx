@@ -5,12 +5,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Place } from '@/domain/place';
 import { HelpButton } from '@/ui/components/help-button';
+import { TripMap } from '@/ui/map/trip-map';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { colors } from '@/ui/theme';
 
+import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
-import { HomeMapBackdrop } from './home-map-backdrop';
 import { PlaceSheet } from './place-sheet';
 import { TRAIL_END, TRAIL_START, TripTrail } from './trip-trail';
 import { TripEndpoint } from './trip-endpoint';
@@ -19,8 +20,9 @@ const START_SIZE = 112;
 const END_BOX = 128;
 
 /**
- * Home (E01-E05): a vertical trail from the start to the arrival. The traveller touches
- * the pulsing tile, picks a place in the sheet, then the blue disc to go on.
+ * Home (E01-E05): over the real map around the traveller, a vertical trail from the start
+ * to the arrival (spec 002). The traveller touches the pulsing tile, picks a place in the
+ * sheet, then the blue disc to go on.
  */
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -51,7 +53,7 @@ export function HomeScreen() {
       style={styles.screen}
       onLayout={(event) => setSize(event.nativeEvent.layout)}
     >
-      <HomeMapBackdrop />
+      <TripMap camera={{ center: DEMO_CURRENT_POSITION, zoom: 15.6 }} backdrop />
       {size.width > 0 && (
         <>
           <TripTrail width={size.width} height={size.height} stage={stage} />
@@ -126,7 +128,7 @@ export function HomeScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.mapGroundHome,
+    backgroundColor: colors.mapGround,
     overflow: 'hidden',
   },
   anchor: {

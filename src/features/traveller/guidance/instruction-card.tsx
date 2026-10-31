@@ -4,13 +4,13 @@ import type { Place } from '@/domain/place';
 import { isAlert, type Instruction } from '@/domain/guidance';
 import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon } from '@/ui/icon/icon';
-import { colors, shadows } from '@/ui/theme';
+import { colors } from '@/ui/theme';
 
 import { LineBadge, MetroSign } from '../components/line-badge';
 import { StationName } from '../components/station-name';
 import { mainSymbol, nextSymbol } from './instruction-look';
 
-const TILE_RADIUS = 24;
+const TILE_RADIUS = 20;
 
 type InstructionCardProps = {
   instruction: Instruction;
@@ -19,7 +19,7 @@ type InstructionCardProps = {
   onPress: () => void;
 };
 
-/** The one thing to do now: green while all is well, orange to get off. */
+/** Banner floating over the map: the one thing to do now, green, orange to get off. */
 export function InstructionCard({ instruction, destination, onPress }: InstructionCardProps) {
   const alert = isAlert(instruction);
   const symbol = mainSymbol(instruction);
@@ -43,17 +43,17 @@ export function InstructionCard({ instruction, destination, onPress }: Instructi
       >
         {alert && <PulseRing borderRadius={TILE_RADIUS} color={colors.white} />}
         {symbol === 'metro' && leg ? (
-          <MetroSign color={leg.line.color} size={100} />
+          <MetroSign color={leg.line.color} size={68} />
         ) : symbol !== 'metro' ? (
-          <Icon name={symbol} size={104} color={alert ? colors.alert : colors.white} />
+          <Icon name={symbol} size={60} color={alert ? colors.alert : colors.white} />
         ) : null}
       </View>
       <View style={styles.details}>
         {instruction.kind === 'waitVehicle' && (
           <>
-            <LineBadge line={instruction.leg.line} size="xl" />
+            <LineBadge line={instruction.leg.line} size="lg" />
             <View style={styles.direction}>
-              <Icon name="arrow_forward" size={24} color={colors.white} />
+              <Icon name="arrow_forward" size={22} color={colors.white} />
               <StationName
                 name={instruction.leg.direction}
                 variant="direction"
@@ -70,7 +70,7 @@ export function InstructionCard({ instruction, destination, onPress }: Instructi
         )}
         {next && (
           <View style={styles.next}>
-            <Icon name={next} size={44} color={colors.white} />
+            <Icon name={next} size={36} color={colors.white} />
           </View>
         )}
       </View>
@@ -80,17 +80,17 @@ export function InstructionCard({ instruction, destination, onPress }: Instructi
 
 const styles = StyleSheet.create({
   card: {
-    height: 148,
-    borderRadius: 28,
-    padding: 16,
+    minHeight: 104,
+    borderRadius: 24,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
-    boxShadow: shadows.card,
+    gap: 14,
+    boxShadow: '0 6px 20px rgba(0,0,0,.22)',
   },
   tile: {
-    width: 110,
-    height: 110,
+    width: 76,
+    height: 76,
     borderRadius: TILE_RADIUS,
     alignItems: 'center',
     justifyContent: 'center',
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     minWidth: 0,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    gap: 10,
+    gap: 8,
   },
   direction: {
     flexDirection: 'row',
@@ -111,9 +111,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   next: {
-    width: 72,
-    height: 72,
-    borderRadius: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 16,
     backgroundColor: colors.whiteGlass,
     alignItems: 'center',
     justifyContent: 'center',

@@ -66,3 +66,74 @@ export function bearingAlong(path: readonly LngLat[], fraction: number): number 
   const found = locate(path, fraction);
   return found ? bearing(found.a, found.b) : 0;
 }
+
+/** Signed change of direction from one bearing to the next, between -180 and 180 (positive = right). */
+export function turnAngle(fromBearing: number, toBearing: number): number {
+  return ((toBearing - fromBearing + 540) % 360) - 180;
+}
+
+export type PathTurn = {
+  /** Where the turn is, as a fraction of the path's length. */
+  fraction: number;
+  point: LngLat;
+  direction: 'left' | 'right';
+};
+
+/**
+ * Corners of a path where the direction changes by more than `minAngle` degrees: where a
+ * walker must change street. Directions are taken `reach` metres before and after each
+ * point, so small zigzags of the drawn path do not count, and close corners merge.
+ */
+export function findTurns(path: readonly LngLat[], minAngle = 50, reach = 15): PathTurn[] {
+  const total = pathLength(path);
+  if (total < 2 * reach) return [];
+  const at = (metres: number) => pointAlong(path, metres / total);
+  const turns: PathTurn[] = [];
+  let walked = 0;
+  for (let i = 1; i < path.length - 1; i++) {
+    const previous = path[i - 1];
+    const corner = path[i];
+    if (!previous || !corner) continue;
+    walked += distanceMeters(previous, corner);
+    const before = at(walked - reach);
+    const after = at(walked + reach);
+    if (!before || !after || walked < reach || walked > total - reach) continue;
+    const angle = turnAngle(bearing(before, corner), bearing(corner, after));
+    if (Math.abs(angle) < minAngle) continue;
+    const last = turns.at(-1);
+    if (last && walked - last.fraction * total < 2 * reach) continue;
+    turns.push({
+      fraction: walked / total,
+      point: corner,
+      direction: angle > 0 ? 'right' : 'left',
+    });
+  }
+  return turns;
+}
+
+/** The path split at `fraction`: the part already walked and the part still ahead. */
+export function splitPath(
+  path: readonly LngLat[],
+  fraction: number,
+): [done: LngLat[], ahead: LngLat[]] {
+  const point = pointAlong(path, fraction);
+  if (!point) return [[], [...path]];
+  const target = Math.min(1, Math.max(0, fraction)) * pathLength(path);
+  const done: LngLat[] = [];
+  let walked = 0;
+  let i = 0;
+  for (; i < path.length; i++) {
+    const current = path[i];
+    if (!current) break;
+    if (i > 0) {
+      const previous = path[i - 1];
+      if (previous) walked += distanceMeters(previous, current);
+    }
+    if (walked > target) break;
+    done.push(current);
+  }
+  return [
+    [...done, point],
+    [point, ...path.slice(i)],
+  ];
+}

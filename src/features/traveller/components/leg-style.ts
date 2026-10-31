@@ -16,5 +16,5 @@ export function legIcon(leg: Leg): IconName {
 /** Colour of a leg on rails and progress strips: the line colour, grey on foot. */
 export function legColor(leg: Leg): string {
   if (leg.kind === 'bus' || leg.kind === 'metro') return leg.line.color;
-  return leg.kind === 'car' ? colors.car : colors.outlineVariant;
+  return leg.kind === 'car' ? colors.car : colors.walkRail;
 }
