@@ -19,12 +19,15 @@ export type TripPlanState = {
   mode: TravelMode;
   customPlaces: Place[];
   draft?: PlaceDraft;
+  /** Index of the guidance step the traveller is on, once the trip has started. */
+  guidanceStep?: number;
 };
 
 export type TripPlanAction =
   | { type: 'chooseOrigin'; placeId: string }
   | { type: 'chooseDestination'; placeId: string }
   | { type: 'chooseMode'; mode: TravelMode }
+  | { type: 'goToStep'; index: number }
   | { type: 'startPlace'; for: TripEnd; source: PlaceDraft['source'] }
   | { type: 'setDraftIcon'; icon: PlaceIcon }
   | { type: 'setDraftName'; helpName: string }
@@ -48,6 +51,8 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
       return { ...state, destinationId: action.placeId };
     case 'chooseMode':
       return { ...state, mode: action.mode };
+    case 'goToStep':
+      return { ...state, guidanceStep: action.index };
     case 'startPlace':
       return { ...state, draft: { for: action.for, source: action.source } };
     case 'setDraftIcon':

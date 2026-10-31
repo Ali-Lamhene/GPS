@@ -62,12 +62,17 @@ describe('tripPlanReducer', () => {
     expect(tripPlanReducer(withOrigin, { type: 'finishPlace' })).toBe(withOrigin);
   });
 
+  test('the guidance step is remembered, so help knows where the traveller is', () => {
+    expect(tripPlanReducer(withOrigin, { type: 'goToStep', index: 3 }).guidanceStep).toBe(3);
+  });
+
   test('reset starts a new trip but keeps the created places', () => {
     const state: TripPlanState = {
       originId: 'home',
       destinationId: 'beach',
       mode: 'walk',
       customPlaces: [{ id: 'custom-1', icon: 'home' }],
+      guidanceStep: 4,
     };
 
     expect(tripPlanReducer(state, { type: 'reset' })).toEqual({

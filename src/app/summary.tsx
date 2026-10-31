@@ -1,3 +1,3 @@
-import { PendingScreen } from '@/ui/screens/pending-screen';
+import { SummaryScreen } from '@/features/traveller/summary/summary-screen';
 
-export default PendingScreen;
+export default SummaryScreen;

@@ -3,7 +3,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { Icon, type IconName } from '@/ui/icon/icon';
 import { colors, radii, sizes } from '@/ui/theme';
 
-type Tone = 'plain' | 'tonal' | 'raised' | 'glass' | 'night';
+type Tone = 'plain' | 'tonal' | 'raised' | 'glass' | 'night' | 'primary';
 
 const TONES: Record<Tone, { background: string; ink: string; shadow?: string }> = {
   plain: { background: 'transparent', ink: colors.ink },
@@ -11,6 +11,7 @@ const TONES: Record<Tone, { background: string; ink: string; shadow?: string }> 
   raised: { background: colors.white, ink: colors.ink, shadow: '0 1px 4px rgba(0,0,0,.15)' },
   glass: { background: colors.blackGlass, ink: colors.white },
   night: { background: colors.night.button, ink: colors.night.buttonInk },
+  primary: { background: colors.primary, ink: colors.onPrimary },
 };
 
 type IconButtonProps = {
