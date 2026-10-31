@@ -26,8 +26,8 @@ export type GuidanceVisual =
   | {
       kind: 'photo';
       photo: PhotoId;
-      /** Which part of the photo stays visible when cropped, as "x% y%". */
-      focus: string;
+      /** Which part of the photo stays visible when cropped, in percent (CSS object-position). */
+      focus: { x: number; y: number };
     };
 
 export type GuidanceStep = {

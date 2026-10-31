@@ -82,7 +82,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     ),
     {
       instruction: { kind: 'reachStop', leg: bus },
-      visual: { kind: 'photo', photo: 'busStop', focus: '20% 40%' },
+      visual: { kind: 'photo', photo: 'busStop', focus: { x: 20, y: 40 } },
       legIndex: 0,
       legFraction: 1,
       remainingMinutes: 29,
@@ -90,7 +90,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'waitVehicle', leg: bus },
-      visual: { kind: 'photo', photo: 'busStop', focus: '75% 50%' },
+      visual: { kind: 'photo', photo: 'busStop', focus: { x: 75, y: 50 } },
       legIndex: 1,
       legFraction: 0,
       remainingMinutes: 28,
@@ -98,7 +98,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'ride', leg: bus },
-      visual: { kind: 'photo', photo: 'busInterior', focus: '45% 40%' },
+      visual: { kind: 'photo', photo: 'busInterior', focus: { x: 45, y: 40 } },
       legIndex: 1,
       legFraction: 0.4,
       remainingMinutes: 22,
@@ -106,7 +106,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'getOffSoon', leg: bus },
-      visual: { kind: 'photo', photo: 'busInterior', focus: '45% 40%' },
+      visual: { kind: 'photo', photo: 'busInterior', focus: { x: 45, y: 40 } },
       legIndex: 1,
       legFraction: 0.85,
       remainingMinutes: 18,
@@ -114,7 +114,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'gotOff' },
-      visual: { kind: 'photo', photo: 'busExit', focus: '45% 45%' },
+      visual: { kind: 'photo', photo: 'busExit', focus: { x: 45, y: 45 } },
       legIndex: 1,
       legFraction: 1,
       remainingMinutes: 17,
@@ -122,7 +122,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'reachStop', leg: metro },
-      visual: { kind: 'photo', photo: 'metroEntrance', focus: '45% 40%' },
+      visual: { kind: 'photo', photo: 'metroEntrance', focus: { x: 45, y: 40 } },
       legIndex: 2,
       legFraction: 0.9,
       remainingMinutes: 13,
@@ -130,7 +130,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'waitVehicle', leg: metro },
-      visual: { kind: 'photo', photo: 'metroPlatform', focus: '35% 45%' },
+      visual: { kind: 'photo', photo: 'metroPlatform', focus: { x: 35, y: 45 } },
       legIndex: 3,
       legFraction: 0,
       remainingMinutes: 12,
@@ -138,7 +138,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'ride', leg: metro },
-      visual: { kind: 'photo', photo: 'metroInteriorBlue', focus: '40% 45%' },
+      visual: { kind: 'photo', photo: 'metroInteriorBlue', focus: { x: 40, y: 45 } },
       legIndex: 3,
       legFraction: 0.4,
       remainingMinutes: 9,
@@ -146,7 +146,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'ride', leg: metro },
-      visual: { kind: 'photo', photo: 'metroPlatform', focus: '50% 55%' },
+      visual: { kind: 'photo', photo: 'metroPlatform', focus: { x: 50, y: 55 } },
       legIndex: 3,
       legFraction: 0.6,
       remainingMinutes: 7,
@@ -155,7 +155,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'getOffSoon', leg: metro },
-      visual: { kind: 'photo', photo: 'metroInteriorYellow', focus: '35% 45%' },
+      visual: { kind: 'photo', photo: 'metroInteriorYellow', focus: { x: 35, y: 45 } },
       legIndex: 3,
       legFraction: 0.85,
       remainingMinutes: 5,
@@ -163,7 +163,7 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
     },
     {
       instruction: { kind: 'leaveStation' },
-      visual: { kind: 'photo', photo: 'metroEntrance', focus: '45% 50%' },
+      visual: { kind: 'photo', photo: 'metroEntrance', focus: { x: 45, y: 50 } },
       legIndex: 3,
       legFraction: 1,
       remainingMinutes: 4,
