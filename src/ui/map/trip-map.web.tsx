@@ -269,7 +269,8 @@ export function TripMap({
     const bounds = JSON.parse(boundsKey) as TripMapProps['camera']['bounds'] | null;
     if (bounds) {
       map.fitBounds([bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]], {
-        padding: { top: paddingTop + 24, bottom: paddingBottom + 24, left: 32, right: 32 },
+        // Room for the pins, which stand above their point.
+        padding: { top: paddingTop + 64, bottom: paddingBottom + 24, left: 32, right: 32 },
         bearing: 0,
         pitch: 0,
         maxZoom: 17,

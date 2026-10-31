@@ -22,10 +22,10 @@ export function LegList({ legs }: { legs: readonly Leg[] }) {
           <View style={styles.railBox}>
             <Rail leg={leg} />
           </View>
-          <Icon name={legIcon(leg)} size={26} style={styles.icon} />
+          <Icon name={legIcon(leg)} size={24} style={styles.icon} />
           {isTransitLeg(leg) && <LineBadge line={leg.line} size="sm" />}
           <View style={styles.spacer} />
-          <TimeDials minutes={leg.minutes} size={32} crossColor={colors.surfaceLow} gap={6} />
+          <TimeDials minutes={leg.minutes} size={28} crossColor={colors.surfaceLow} gap={6} />
         </View>
       ))}
     </View>
@@ -35,7 +35,7 @@ export function LegList({ legs }: { legs: readonly Leg[] }) {
 const styles = StyleSheet.create({
   list: {
     backgroundColor: colors.surfaceLow,
-    borderRadius: 20,
+    borderRadius: 16,
     paddingVertical: 6,
     paddingHorizontal: 14,
   },
@@ -43,11 +43,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    height: 44,
+    height: 36,
   },
   railBox: {
     width: 16,
-    height: 44,
+    height: 36,
   },
   walkRail: {
     position: 'absolute',

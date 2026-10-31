@@ -19,7 +19,7 @@ type ModeSelectorProps = {
 export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
   return (
     <View style={styles.bar} accessibilityRole="radiogroup">
-      {MODES.map(({ mode, icon, label }, i) => {
+      {MODES.map(({ mode, icon, label }) => {
         const on = mode === selected;
         return (
           <Pressable
@@ -28,10 +28,10 @@ export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
             accessibilityLabel={label}
             accessibilityState={{ checked: on }}
             onPress={() => onSelect(mode)}
-            style={[styles.segment, i > 0 && styles.divider, on && styles.on]}
+            style={[styles.segment, on && styles.on]}
           >
-            {on && <Icon name="check" size={24} variant="outlined" />}
-            <Icon name={icon} size={40} />
+            {on && <Icon name="check" size={22} color={colors.white} variant="outlined" />}
+            <Icon name={icon} size={34} color={on ? colors.white : colors.ink} />
           </Pressable>
         );
       })}
@@ -42,11 +42,11 @@ export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
-    height: 80,
-    borderWidth: 1,
-    borderColor: colors.outline,
-    borderRadius: 40,
-    overflow: 'hidden',
+    height: 64,
+    padding: 4,
+    gap: 4,
+    borderRadius: 32,
+    backgroundColor: colors.surfaceHigh,
   },
   segment: {
     flex: 1,
@@ -54,12 +54,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
-  },
-  divider: {
-    borderLeftWidth: 1,
-    borderLeftColor: colors.outline,
+    borderRadius: 28,
   },
   on: {
-    backgroundColor: colors.secondaryContainer,
+    backgroundColor: colors.primary,
+    boxShadow: '0 2px 6px rgba(30,107,255,.35)',
   },
 });

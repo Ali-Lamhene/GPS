@@ -8,6 +8,8 @@ type MainActionButtonProps = {
   label: string;
   onPress: () => void;
   disabled?: boolean;
+  /** Disc floating over a page (mockup v7), or full-width bar inside a sheet (spec 002). */
+  shape?: 'disc' | 'bar';
 };
 
 /** The blue disc that moves the traveller forward: continue, confirm, start. */
@@ -16,6 +18,7 @@ export function MainActionButton({
   label,
   onPress,
   disabled = false,
+  shape = 'disc',
 }: MainActionButtonProps) {
   return (
     <Pressable
@@ -24,9 +27,13 @@ export function MainActionButton({
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [styles.disc, disabled && styles.disabled, pressed && styles.pressed]}
+      style={({ pressed }) => [
+        shape === 'disc' ? styles.disc : styles.bar,
+        disabled && styles.disabled,
+        pressed && styles.pressed,
+      ]}
     >
-      <Icon name={icon} size={48} color={colors.onPrimary} />
+      <Icon name={icon} size={shape === 'disc' ? 48 : 36} color={colors.onPrimary} />
     </Pressable>
   );
 }
@@ -40,6 +47,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: `0 0 0 8px ${colors.primaryHalo}, 0 2px 8px rgba(0,0,0,.18)`,
+  },
+  bar: {
+    height: sizes.minTarget,
+    borderRadius: sizes.minTarget / 2,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 2px 8px rgba(30,107,255,.35)',
   },
   disabled: {
     opacity: 0.35,
