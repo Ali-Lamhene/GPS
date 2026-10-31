@@ -6,6 +6,58 @@ const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommen
 const { FORBIDDEN_PACKAGES } = require('./eslint/forbidden-packages');
 const gpsPlugin = require('./eslint/plugin');
 
+// Packages that can reach the network or the speech engine, each wrapped by one module.
+const WRAPPED_PACKAGES = [
+  {
+    name: 'expo-audio',
+    message:
+      'Play sounds through src/services/feedback.ts: it only plays bundled files (securite.md).',
+  },
+  {
+    name: 'expo-speech',
+    message: 'Speak through src/services/speech.ts: it refuses network voices (securite.md, D1).',
+  },
+  {
+    name: 'maplibre-gl',
+    message: 'Use the TripMap component (src/ui/map): it only shows the bundled tiles (spec 002).',
+  },
+  {
+    name: 'pmtiles',
+    message: 'Load tiles through src/services/offline-map.ts (bundled archive only).',
+  },
+];
+
+/** The no-restricted-imports rule, minus the wrapped packages a module is allowed to use. */
+function restrictedImports(allow = []) {
+  const wrapped = WRAPPED_PACKAGES.filter(({ name }) => !allow.includes(name));
+  return [
+    'error',
+    {
+      paths: [
+        ...wrapped,
+        {
+          name: 'react-native-svg',
+          importNames: ['SvgUri', 'SvgCssUri', 'SvgFromUri', 'UriProps'],
+          message:
+            'These download a remote URL outside src/services/ (docs/engineering/securite.md).',
+        },
+      ],
+      patterns: [
+        {
+          group: FORBIDDEN_PACKAGES,
+          message:
+            'This SDK sends device or usage data to a third party, forbidden by D1 (docs/product/decisions.md).',
+        },
+        ...wrapped.map(({ name, message }) => ({ group: [`${name}/*`], message })),
+        {
+          group: ['@maplibre/*'],
+          message: 'Native maps need their own security review first (spec 002).',
+        },
+      ],
+    },
+  ];
+}
+
 module.exports = defineConfig([
   expoConfig,
   eslintPluginPrettierRecommended,
@@ -18,42 +70,38 @@ module.exports = defineConfig([
       'no-eval': 'error',
       'no-implied-eval': 'error',
       'no-new-func': 'error',
-      'no-restricted-imports': [
-        'error',
-        {
-          paths: [
-            {
-              name: 'expo-audio',
-              message:
-                'Play sounds through src/services/feedback.ts: it only plays bundled files (securite.md).',
-            },
-            {
-              name: 'expo-speech',
-              message:
-                'Speak through src/services/speech.ts: it refuses network voices (securite.md, D1).',
-            },
-            {
-              name: 'react-native-svg',
-              importNames: ['SvgUri', 'SvgCssUri', 'SvgFromUri', 'UriProps'],
-              message:
-                'These download a remote URL outside src/services/ (docs/engineering/securite.md).',
-            },
-          ],
-          patterns: [
-            {
-              group: FORBIDDEN_PACKAGES,
-              message:
-                'This SDK sends device or usage data to a third party, forbidden by D1 (docs/product/decisions.md).',
-            },
-          ],
-        },
-      ],
+      'no-restricted-imports': restrictedImports(),
     },
   },
+  // Each module that wraps a restricted package may import that package only; every other
+  // restriction, tracking SDKs included, still applies to it.
   {
-    // The only modules allowed to use the audio and speech packages.
-    files: ['src/services/feedback.ts', 'src/services/speech.ts', 'src/**/__tests__/**'],
-    rules: { 'no-restricted-imports': 'off' },
+    files: ['src/services/feedback.ts'],
+    rules: { 'no-restricted-imports': restrictedImports(['expo-audio']) },
+  },
+  {
+    files: ['src/services/speech.ts'],
+    rules: { 'no-restricted-imports': restrictedImports(['expo-speech']) },
+  },
+  {
+    files: ['src/services/offline-map.ts'],
+    rules: { 'no-restricted-imports': restrictedImports(['pmtiles']) },
+  },
+  {
+    files: ['src/ui/map/**'],
+    rules: { 'no-restricted-imports': restrictedImports(['maplibre-gl']) },
+  },
+  {
+    // Tests mock the wrapped packages.
+    files: ['src/**/__tests__/**'],
+    rules: {
+      'no-restricted-imports': restrictedImports([
+        'expo-audio',
+        'expo-speech',
+        'maplibre-gl',
+        'pmtiles',
+      ]),
+    },
   },
   {
     files: ['src/**/*.{ts,tsx}'],
@@ -79,7 +127,7 @@ module.exports = defineConfig([
   },
   {
     // Development scripts run in Node.
-    files: ['scripts/**/*.js'],
+    files: ['scripts/**/*.js', 'metro.config.js'],
     languageOptions: { globals: { Buffer: 'readonly', __dirname: 'readonly' } },
   },
   {

@@ -3,6 +3,7 @@
 export const GLYPHS = {
   add_location_alt: 0xef3a,
   arrow_back: 0xe5c4,
+  arrow_upward: 0xe5d8,
   arrow_forward: 0xe5c8,
   beach_access: 0xeb3e,
   check: 0xe5ca,
