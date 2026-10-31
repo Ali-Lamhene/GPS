@@ -36,7 +36,6 @@ export type GuidanceStep = {
   /** Position along the trip: leg index and fraction of that leg. */
   legIndex: number;
   legFraction: number;
-  remainingMinutes: number;
   help: HelpRequest;
   /** No network in the metro: the app falls back to the saved trip (E21). */
   offline?: boolean;

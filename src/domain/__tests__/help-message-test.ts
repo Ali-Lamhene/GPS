@@ -8,6 +8,7 @@ const bus: TransitLeg = {
   from: 'Jardin des Plantes',
   to: 'Saint-Charles',
   direction: 'Place du Marché',
+  path: [],
 };
 const metro: TransitLeg = { ...bus, kind: 'metro', line: { ...bus.line, id: 'M1' } };
 

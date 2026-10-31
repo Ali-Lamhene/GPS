@@ -23,28 +23,28 @@ describe('<SummaryScreen />', () => {
         { identifier: 'fr-local', name: 'fr', language: 'fr-FR', quality: 'Default' },
       ] as Speech.Voice[]);
     await renderWithProviders(<SummaryScreen />, [...ready]);
-    expect(screen.queryByText('Jardin des Plantes')).toBeNull();
+    expect(screen.queryByText('Place de la Corderie')).toBeNull();
 
-    await fireEvent.press(screen.getByText('C3'));
+    await fireEvent.press(screen.getByText('41'));
 
-    expect(screen.getByText('Jardin des Plantes')).toBeOnTheScreen();
-    expect(screen.getByText('Saint-Charles')).toBeOnTheScreen();
+    expect(screen.getByText('Place de la Corderie')).toBeOnTheScreen();
+    expect(screen.getByText('Vieux Port Ballard')).toBeOnTheScreen();
 
     const [listenFrom] = screen.getAllByRole('button', { name: 'Écouter le nom' });
     expect(listenFrom).toBeDefined();
     if (listenFrom) await fireEvent.press(listenFrom);
     await new Promise(process.nextTick);
     await new Promise(process.nextTick);
-    expect(Speech.speak).toHaveBeenCalledWith('Jardin des Plantes', expect.anything());
+    expect(Speech.speak).toHaveBeenCalledWith('Place de la Corderie', expect.anything());
   });
 
   test('touching an open leg closes it', async () => {
     await renderWithProviders(<SummaryScreen />, [...ready]);
 
-    await fireEvent.press(screen.getByText('C3'));
-    await fireEvent.press(screen.getByText('C3'));
+    await fireEvent.press(screen.getByText('41'));
+    await fireEvent.press(screen.getByText('41'));
 
-    expect(screen.queryByText('Jardin des Plantes')).toBeNull();
+    expect(screen.queryByText('Place de la Corderie')).toBeNull();
   });
 
   test('the disc starts the guidance, home ends the trip', async () => {

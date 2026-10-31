@@ -10,14 +10,14 @@ describe('helpCard', () => {
       line: DEMO_BUS_LEG.line,
       photo: 'busStop',
     });
-    expect(card.message).toContain('le bus C3 en direction de Place du Marché');
+    expect(card.message).toContain('le bus 41 en direction de Vieux Port Ballard');
   });
 
   test('in the metro, shows the metro line and asks when to get off', () => {
     const card = helpCard({ kind: 'getOffMetro', leg: DEMO_METRO_LEG });
 
     expect(card).toMatchObject({ icons: ['subway'], line: DEMO_METRO_LEG.line });
-    expect(card.message).toContain('la station Gare Centrale');
+    expect(card.message).toContain('la station Saint-Charles');
   });
 
   test('on foot, asks for the destination with its pictogram and photo', () => {

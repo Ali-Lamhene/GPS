@@ -17,7 +17,7 @@ describe('<ModeScreen />', () => {
     await renderWithProviders(<ModeScreen />, [...ready]);
 
     expect(screen.getByRole('radio', { name: 'Transports en commun' })).toBeChecked();
-    expect(screen.getByText('C3')).toBeOnTheScreen();
+    expect(screen.getByText('41')).toBeOnTheScreen();
     expect(screen.getByText('M1')).toBeOnTheScreen();
   });
 
@@ -27,7 +27,7 @@ describe('<ModeScreen />', () => {
     await fireEvent.press(screen.getByRole('radio', { name: 'À pied' }));
 
     expect(screen.getByRole('radio', { name: 'À pied' })).toBeChecked();
-    expect(screen.queryByText('C3')).toBeNull();
+    expect(screen.queryByText('41')).toBeNull();
   });
 
   test('continues to the summary', async () => {

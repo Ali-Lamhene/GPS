@@ -20,8 +20,8 @@ describe('<HelpScreen />', () => {
   test('during the guidance, adapts the message to the step', async () => {
     await renderWithProviders(<HelpScreen />, [{ type: 'goToStep', index: 4 }]);
 
-    expect(screen.getByText(/le bus C3 en direction de Place du Marché/)).toBeOnTheScreen();
-    expect(screen.getByText('C3')).toBeOnTheScreen();
+    expect(screen.getByText(/le bus 41 en direction de Vieux Port Ballard/)).toBeOnTheScreen();
+    expect(screen.getByText('41')).toBeOnTheScreen();
   });
 
   test('the message can be enlarged, and the card closed', async () => {

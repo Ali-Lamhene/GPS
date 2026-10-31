@@ -36,8 +36,8 @@ describe('<GuidanceScreen />', () => {
   test('waiting for the bus shows the line and its direction, which can be heard', async () => {
     await renderWithProviders(<GuidanceScreen />, startedAt(4));
 
-    expect(screen.getByText('C3')).toBeOnTheScreen();
-    expect(screen.getByText('Place du Marché')).toBeOnTheScreen();
+    expect(screen.getByText('41')).toBeOnTheScreen();
+    expect(screen.getByText('Vieux Port Ballard')).toBeOnTheScreen();
     expect(screen.getByRole('button', { name: 'Écouter le nom' })).toBeOnTheScreen();
   });
 
@@ -45,7 +45,7 @@ describe('<GuidanceScreen />', () => {
     const offline = DEMO_GUIDANCE.transit.findIndex((step) => step.offline);
     await renderWithProviders(<GuidanceScreen />, startedAt(offline));
 
-    expect(screen.getByText('Gare Centrale')).toBeOnTheScreen();
+    expect(screen.getByText('Saint-Charles')).toBeOnTheScreen();
     await fireEvent.press(screen.getByRole('button', { name: 'Je suis descendu' }));
 
     expect(screen.queryByRole('button', { name: 'Je suis descendu' })).toBeNull();

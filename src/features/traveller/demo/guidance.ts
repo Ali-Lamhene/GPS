@@ -10,7 +10,6 @@ const findPlace = { kind: 'findPlace' } as const;
 
 function walkSteps(
   positions: readonly [number, number][],
-  remaining: readonly number[],
   help: GuidanceStep['help'],
   stopMarker: boolean,
 ): GuidanceStep[] {
@@ -24,18 +23,16 @@ function walkSteps(
     },
     legIndex: positions[i]?.[0] ?? 0,
     legFraction: positions[i]?.[1] ?? 0,
-    remainingMinutes: remaining[i] ?? 0,
     help,
   }));
 }
 
-function finalWalk(legIndex: number, legFraction: number, remainingMinutes: number): GuidanceStep {
+function finalWalk(legIndex: number, legFraction: number): GuidanceStep {
   return {
     instruction: { kind: 'walkToDestination' },
     visual: { kind: 'map', route: 'arrive', marker: 'destination' },
     legIndex,
     legFraction,
-    remainingMinutes,
     help: findPlace,
   };
 }
@@ -50,11 +47,10 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
         [0, 0.3],
         [0, 0.6],
       ],
-      [52, 44, 30],
       findPlace,
       false,
     ),
-    finalWalk(0, 0.9, 6),
+    finalWalk(0, 0.9),
   ],
   car: [
     ...walkSteps(
@@ -63,11 +59,10 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
         [0, 0.5],
         [0, 0.8],
       ],
-      [18, 14, 9],
       findPlace,
       false,
     ),
-    finalWalk(1, 0.5, 2),
+    finalWalk(1, 0.5),
   ],
   transit: [
     ...walkSteps(
@@ -76,7 +71,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
         [0, 0.5],
         [0, 0.8],
       ],
-      [35, 33, 31],
       findStop,
       true,
     ),
@@ -85,7 +79,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'busStop', focus: { x: 20, y: 40 } },
       legIndex: 0,
       legFraction: 1,
-      remainingMinutes: 29,
       help: findStop,
     },
     {
@@ -93,7 +86,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'busStop', focus: { x: 75, y: 50 } },
       legIndex: 1,
       legFraction: 0,
-      remainingMinutes: 28,
       help: { kind: 'checkStop', leg: bus },
     },
     {
@@ -101,7 +93,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'busInterior', focus: { x: 45, y: 40 } },
       legIndex: 1,
       legFraction: 0.4,
-      remainingMinutes: 22,
       help: { kind: 'getOffBus', leg: bus },
     },
     {
@@ -109,7 +100,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'busInterior', focus: { x: 45, y: 40 } },
       legIndex: 1,
       legFraction: 0.85,
-      remainingMinutes: 18,
       help: { kind: 'getOffBus', leg: bus },
     },
     {
@@ -117,7 +107,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'busExit', focus: { x: 45, y: 45 } },
       legIndex: 1,
       legFraction: 1,
-      remainingMinutes: 17,
       help: { kind: 'getOffBus', leg: bus },
     },
     {
@@ -125,7 +114,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'metroEntrance', focus: { x: 45, y: 40 } },
       legIndex: 2,
       legFraction: 0.9,
-      remainingMinutes: 13,
       help: { kind: 'findMetro', leg: metro },
     },
     {
@@ -133,7 +121,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'metroPlatform', focus: { x: 35, y: 45 } },
       legIndex: 3,
       legFraction: 0,
-      remainingMinutes: 12,
       help: { kind: 'findMetro', leg: metro },
     },
     {
@@ -141,7 +128,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'metroInteriorBlue', focus: { x: 40, y: 45 } },
       legIndex: 3,
       legFraction: 0.4,
-      remainingMinutes: 9,
       help: { kind: 'getOffMetro', leg: metro },
     },
     {
@@ -149,7 +135,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'metroPlatform', focus: { x: 50, y: 55 } },
       legIndex: 3,
       legFraction: 0.6,
-      remainingMinutes: 7,
       help: { kind: 'getOffMetro', leg: metro },
       offline: true,
     },
@@ -158,7 +143,6 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'metroInteriorYellow', focus: { x: 35, y: 45 } },
       legIndex: 3,
       legFraction: 0.85,
-      remainingMinutes: 5,
       help: { kind: 'getOffMetro', leg: metro },
     },
     {
@@ -166,9 +150,8 @@ export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
       visual: { kind: 'photo', photo: 'metroEntrance', focus: { x: 45, y: 50 } },
       legIndex: 3,
       legFraction: 1,
-      remainingMinutes: 4,
       help: findPlace,
     },
-    finalWalk(4, 0.5, 3),
+    finalWalk(4, 0.5),
   ],
 };

@@ -10,10 +10,10 @@ describe('guidance', () => {
   });
 
   test('offers the name to listen to: stop, direction, then destination stop', () => {
-    expect(spokenName({ kind: 'reachStop', leg: DEMO_BUS_LEG })).toBe('Jardin des Plantes');
-    expect(spokenName({ kind: 'waitVehicle', leg: DEMO_BUS_LEG })).toBe('Place du Marché');
-    expect(spokenName({ kind: 'ride', leg: DEMO_BUS_LEG })).toBe('Saint-Charles');
-    expect(spokenName({ kind: 'getOffSoon', leg: DEMO_BUS_LEG })).toBe('Saint-Charles');
+    expect(spokenName({ kind: 'reachStop', leg: DEMO_BUS_LEG })).toBe('Place de la Corderie');
+    expect(spokenName({ kind: 'waitVehicle', leg: DEMO_BUS_LEG })).toBe('Vieux Port Ballard');
+    expect(spokenName({ kind: 'ride', leg: DEMO_BUS_LEG })).toBe('Vieux Port Ballard');
+    expect(spokenName({ kind: 'getOffSoon', leg: DEMO_BUS_LEG })).toBe('Vieux Port Ballard');
     expect(spokenName({ kind: 'walk', turn: 'straight' })).toBeUndefined();
   });
 });

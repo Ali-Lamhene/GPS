@@ -1,3 +1,4 @@
+import { bearingAlong, pointAlong, type LngLat } from './geo';
 import type { PhotoId } from './photo';
 
 export type TravelMode = 'walk' | 'transit' | 'car';
@@ -6,6 +7,8 @@ export type TransitLine = {
   /** Official line id shown on the network signs (D9), e.g. "C3", "M1". */
   id: string;
   color: string;
+  /** Text colour on the line colour, as on the network's signs (white by default). */
+  textColor?: string;
   /** Bus lines are drawn as rounded squares, metro lines as pills. */
   shape: 'square' | 'pill';
 };
@@ -19,9 +22,13 @@ export type TransitLeg = {
   to: string;
   direction: string;
   photo?: PhotoId;
+  path: readonly LngLat[];
 };
 
-export type Leg = { kind: 'walk'; minutes: number } | { kind: 'car'; minutes: number } | TransitLeg;
+export type Leg =
+  | { kind: 'walk'; minutes: number; path: readonly LngLat[] }
+  | { kind: 'car'; minutes: number; path: readonly LngLat[] }
+  | TransitLeg;
 
 export function isTransitLeg(leg: Leg): leg is TransitLeg {
   return leg.kind === 'bus' || leg.kind === 'metro';
@@ -43,4 +50,25 @@ export function tripProgress(legs: readonly Leg[], legIndex: number, legFraction
   const current = legs[legIndex]?.minutes ?? 0;
   const fraction = Math.min(1, Math.max(0, legFraction));
   return Math.min(1, (done + fraction * current) / total);
+}
+
+/** Minutes left once the traveller is at this point of the trip. */
+export function remainingMinutes(
+  legs: readonly Leg[],
+  legIndex: number,
+  legFraction: number,
+): number {
+  return totalMinutes(legs) * (1 - tripProgress(legs, legIndex, legFraction));
+}
+
+/** Where the traveller is on the map and which way they face, at this point of the trip. */
+export function tripPosition(
+  legs: readonly Leg[],
+  legIndex: number,
+  legFraction: number,
+): { point: LngLat; heading: number } | undefined {
+  const path = legs[legIndex]?.path;
+  if (!path) return undefined;
+  const point = pointAlong(path, legFraction);
+  return point && { point, heading: bearingAlong(path, legFraction) };
 }

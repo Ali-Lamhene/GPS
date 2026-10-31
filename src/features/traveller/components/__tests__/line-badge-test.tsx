@@ -35,3 +35,12 @@ describe('D9 text components', () => {
     expect(screen.getByText('Gare Centrale')).toHaveStyle({ fontSize: 29 });
   });
 });
+
+describe('line text colour', () => {
+  test('follows the network sign, white by default', async () => {
+    const light = { id: '41', color: '#76C9B6', textColor: '#1B1C1A', shape: 'square' } as const;
+    const screen = await render(<LineBadge line={light} size="md" />);
+
+    expect(screen.getByText('41')).toHaveStyle({ color: '#1B1C1A' });
+  });
+});

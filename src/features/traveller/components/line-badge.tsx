@@ -35,7 +35,10 @@ export function LineBadge({ line, size }: LineBadgeProps) {
       ]}
     >
       {/* Fixed like a network sign: the system font size must not crop the id. */}
-      <Text maxFontSizeMultiplier={1} style={[styles.text, { fontSize }]}>
+      <Text
+        maxFontSizeMultiplier={1}
+        style={[styles.text, { fontSize, color: line.textColor ?? colors.white }]}
+      >
         {line.id}
       </Text>
     </View>

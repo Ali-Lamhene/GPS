@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { spokenName } from '@/domain/guidance';
-import { tripProgress } from '@/domain/trip';
+import { remainingMinutes, tripProgress } from '@/domain/trip';
 import { playCue } from '@/services/feedback';
 import { colors } from '@/ui/theme';
 
@@ -66,7 +66,7 @@ export function GuidanceScreen() {
       <ProgressPanel
         legs={legs}
         progress={tripProgress(legs, step.legIndex, step.legFraction)}
-        remainingMinutes={step.remainingMinutes}
+        remainingMinutes={remainingMinutes(legs, step.legIndex, step.legFraction)}
         spokenName={spokenName(step.instruction)}
         onHelp={openHelp}
       />
