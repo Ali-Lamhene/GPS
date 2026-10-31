@@ -1,51 +1,58 @@
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
 
+import { FloatingSheet } from '@/ui/components/floating-sheet';
 import { HelpButton } from '@/ui/components/help-button';
+import { MainActionButton } from '@/ui/components/main-action-button';
+import { MapHeader } from '@/ui/components/map-header';
 import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon } from '@/ui/icon/icon';
+import { TripMap } from '@/ui/map/trip-map';
 import { colors } from '@/ui/theme';
 
+import { DEMO_LEGS } from '../demo/trips';
 import { useCueOnEnter } from '../hooks/use-cue-on-enter';
 import { useGoHome } from '../hooks/use-go-home';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 
-const SEAL = 92;
+const SEAL = 72;
 
-/** E26: arrived. The destination pictogram with a green seal, its own sound and vibration. */
+/**
+ * E26: arrived. The map shows the traveller at the destination pin; the sheet shows the
+ * destination pictogram with a green seal, with its own sound and vibration.
+ */
 export function ArrivedScreen() {
-  const insets = useSafeAreaInsets();
-  const { destination } = useTripPlan();
+  const { destination, mode } = useTripPlan();
   const goHome = useGoHome();
   useCueOnEnter('arrival');
+  const end = DEMO_LEGS[mode].at(-1)?.path.at(-1);
+  const icon = destination?.icon ?? 'flag';
 
   return (
-    <View
-      style={[styles.screen, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 28 }]}
-    >
-      <View style={styles.header}>
-        <HelpButton onPress={() => router.push('/help')} />
-      </View>
-      <View style={styles.center}>
-        <View style={styles.place}>
-          <Icon name={destination?.icon ?? 'flag'} size={132} color={colors.white} />
-          <View style={styles.sealBox}>
-            <PulseRing borderRadius={SEAL / 2} />
-            <View style={styles.seal}>
-              <Icon name="check" size={56} color={colors.white} variant="outlined" />
+    <View style={styles.screen}>
+      {end && (
+        <TripMap
+          camera={{ center: end, zoom: 17.2, padding: { top: 0, bottom: 260 } }}
+          traveller={{ point: end }}
+          destination={{ point: end, icon }}
+          controlsBottom={268}
+        />
+      )}
+      <MapHeader right={<HelpButton onPress={() => router.push('/help')} />} />
+      <FloatingSheet gap={32}>
+        <View style={styles.center}>
+          <View style={styles.place}>
+            <Icon name={icon} size={88} color={colors.white} />
+            <View style={styles.sealBox}>
+              <PulseRing borderRadius={SEAL / 2} color={colors.success} />
+              <View style={styles.seal}>
+                <Icon name="check" size={44} color={colors.white} variant="outlined" />
+              </View>
             </View>
           </View>
         </View>
-      </View>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="Accueil"
-        onPress={goHome}
-        style={styles.home}
-      >
-        <Icon name="home" size={36} variant="outlined" />
-      </Pressable>
+        <MainActionButton icon="home" label="Accueil" shape="bar" onPress={goHome} />
+      </FloatingSheet>
     </View>
   );
 }
@@ -53,30 +60,25 @@ export function ArrivedScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    paddingHorizontal: 16,
-    backgroundColor: colors.surface,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    backgroundColor: colors.mapGround,
   },
   center: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: 8,
   },
   place: {
-    width: 232,
-    height: 232,
-    borderRadius: 48,
+    width: 148,
+    height: 148,
+    borderRadius: 36,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+    boxShadow: '0 6px 18px rgba(30,107,255,.35)',
   },
   sealBox: {
     position: 'absolute',
-    right: -20,
-    bottom: -20,
+    right: -16,
+    bottom: -16,
     width: SEAL,
     height: SEAL,
   },
@@ -87,14 +89,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.success,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: `0 0 0 6px ${colors.surface}`,
-  },
-  home: {
-    height: 72,
-    borderRadius: 36,
-    borderWidth: 1,
-    borderColor: colors.outline,
-    alignItems: 'center',
-    justifyContent: 'center',
+    boxShadow: `0 0 0 5px ${colors.white}`,
   },
 });
