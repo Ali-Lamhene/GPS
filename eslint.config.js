@@ -21,6 +21,14 @@ module.exports = defineConfig([
       'no-restricted-imports': [
         'error',
         {
+          paths: [
+            {
+              name: 'react-native-svg',
+              importNames: ['SvgUri', 'SvgCssUri', 'SvgFromUri', 'UriProps'],
+              message:
+                'These download a remote URL outside src/services/ (docs/engineering/securite.md).',
+            },
+          ],
           patterns: [
             {
               group: FORBIDDEN_PACKAGES,

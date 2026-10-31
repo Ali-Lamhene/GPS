@@ -25,6 +25,8 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 
 - Règles d'ingénierie écrites (2026-10-31) : `docs/engineering/code.md` (dossiers `src/app|features|domain|services|ui`, composants, TypeScript, erreurs, tests, glossaire) et `docs/engineering/securite.md` (menaces, réseau, lien de partage, stockage, logs, permissions, dépendances). ESLint interdit `console.*`, `any`, `!`, `eval` et les SDK de suivi (`eslint/forbidden-packages.js`, aussi vérifié sur `package.json` par un test). Agent `security-reviewer`. `android.allowBackup` à `false`.
 
+- Dépendances ajoutées pour la maquette v7 (relues par `security-reviewer`) : `@expo-google-fonts/roboto` et `@expo-google-fonts/material-symbols-rounded` (polices embarquées, aucun appel réseau) ; `react-native-svg` (code natif, aucune permission, réseau seulement via `SvgUri` et composants proches, interdits par ESLint).
+
 ## Prochaine étape
 
 Implémentation de la maquette v7 (D11) en interface statique fidèle, données factices, sans GPS (option A). Un commit par sous-tâche, sur `main`, chacun avec ses tests :
@@ -58,8 +60,11 @@ Ensuite : specs 002 et 003 avant de brancher GPS et itinéraires réels, puis co
 9. Création d'un lieu par le voyageur lui-même (« je suis ici » + photo) : spec ultérieure.
 10. Sécurité (détail dans `docs/engineering/securite.md`) : chiffrer lieux et trajets au repos ? moyen rapide d'effacer ou cacher les lieux si le téléphone est fouillé ? bloquer les captures d'écran de la partie préparation ?
 11. Tuile « Accompagnant · appui 3 s » de la feuille des lieux (E02, E04) : texte visible par le voyageur, hors exceptions D9. Codée comme composant de la partie accompagnant (`src/features/social-worker/`), fidèle à la maquette ; à confirmer.
+12. Photos de démonstration générées par ChatGPT : elles portent sans doute un filigrane invisible OpenAI, qui résiste au réencodage. À remplacer par des photos libres ou faites par l'équipe avant toute diffusion publique ?
 
 ## En attente côté humain
+
+- Les 11 PNG d'origine de `assets/images/` (non suivis) contiennent un manifeste C2PA signé OpenAI avec des identifiants uniques de génération. Ne pas les commiter : les déplacer hors du dépôt ou les supprimer. Les versions utilisées par l'app sont les JPEG sans métadonnées de `assets/photos/`.
 
 - Pousser les commits : le shell de Claude n'a pas d'identifiants GitHub. Installer `gh` puis `gh auth login`, ou ajouter la clé SSH à GitHub.
 - Brancher un téléphone Android (débogage USB) pour les vérifications sur appareil. Pas d'émulateur ni de SDK Android installé sur la machine.
