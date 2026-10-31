@@ -26,23 +26,20 @@ export function LegRow({ leg, open, first, onPress }: LegRowProps) {
         accessibilityState={{ expanded: open }}
         onPress={onPress}
         // The row padding stays touchable: the whole line is at least 64 dp high.
-        hitSlop={{ top: 12, bottom: 12 }}
+        hitSlop={{ top: 10, bottom: 10 }}
         style={styles.header}
       >
         <View
           style={[
             styles.badge,
-            {
-              backgroundColor:
-                leg.kind === 'walk' ? colors.surfaceHighest : colors.secondaryContainer,
-            },
+            { backgroundColor: leg.kind === 'walk' ? colors.white : colors.secondaryContainer },
           ]}
         >
-          <Icon name={legIcon(leg)} size={28} />
+          <Icon name={legIcon(leg)} size={24} />
         </View>
         {isTransitLeg(leg) && <LineBadge line={leg.line} size="md" />}
         <View style={styles.spacer} />
-        <TimeDials minutes={leg.minutes} size={40} crossColor={background} gap={6} />
+        <TimeDials minutes={leg.minutes} size={34} crossColor={background} gap={6} />
         <Icon
           name={open ? 'expand_less' : 'chevron_right'}
           size={26}
@@ -57,13 +54,13 @@ export function LegRow({ leg, open, first, onPress }: LegRowProps) {
 
 const styles = StyleSheet.create({
   row: {
-    gap: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    gap: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
   },
   divider: {
     borderTopWidth: 1,
-    borderTopColor: colors.outlineVariant,
+    borderTopColor: colors.surfaceHighest,
   },
   header: {
     flexDirection: 'row',
@@ -71,9 +68,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   badge: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
   },
