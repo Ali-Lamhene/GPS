@@ -8,19 +8,22 @@ import { colors, radii } from '@/ui/theme';
 
 import { LineBadge, MetroSign } from '../components/line-badge';
 import { ListenButton } from '../components/listen-button';
-import { StationName } from '../components/station-name';
+import { LineProgress } from './line-progress';
 
 type OfflineMetroViewProps = {
   leg: TransitLeg;
+  /** How far along the leg, from the saved trip. */
+  fraction: number;
   onGotOff: () => void;
   onHelp: () => void;
 };
 
 /**
- * E21: no network underground. Calm dark screen with the station to get off at, from the
- * saved trip; the traveller confirms getting off themselves (docs/screens.md, 4.7).
+ * E21: no network underground. Calm dark screen with the line drawn as its stations, from
+ * the saved trip, and the station to get off at; the traveller confirms getting off
+ * themselves (docs/screens.md, 4.7).
  */
-export function OfflineMetroView({ leg, onGotOff, onHelp }: OfflineMetroViewProps) {
+export function OfflineMetroView({ leg, fraction, onGotOff, onHelp }: OfflineMetroViewProps) {
   const insets = useSafeAreaInsets();
   return (
     <View
@@ -33,13 +36,12 @@ export function OfflineMetroView({ leg, onGotOff, onHelp }: OfflineMetroViewProp
       <View style={styles.line}>
         <MetroSign color={leg.line.color} size={72} />
         <LineBadge line={{ ...leg.line, shape: 'pill' }} size="banner" />
-      </View>
-      <View style={styles.station}>
-        <Icon name="logout" size={30} color={colors.night.inkMuted} variant="outlined" />
-        <StationName name={leg.to} variant="large" color={colors.night.ink} style={styles.name} />
+        <View style={styles.spacer} />
         <ListenButton name={leg.to} tone="nightAccent" shape="square" size={64} iconSize={32} />
       </View>
-      <View style={styles.spacer} />
+      <View style={styles.stations}>
+        <LineProgress leg={leg} fraction={fraction} />
+      </View>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Je suis descendu"
@@ -77,18 +79,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 4,
   },
-  station: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+  stations: {
+    flex: 1,
+    justifyContent: 'center',
     backgroundColor: colors.night.card,
     borderRadius: radii.xl,
-    paddingVertical: 20,
-    paddingRight: 16,
-    paddingLeft: 20,
-  },
-  name: {
-    flex: 1,
+    paddingVertical: 12,
   },
   spacer: {
     flex: 1,

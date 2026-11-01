@@ -17,7 +17,7 @@ const legs: Leg[] = [
       [5.37, 43.3],
     ],
   },
-  { kind: 'bus', minutes: 20, line, from: 'A', to: 'B', direction: 'C', path: [] },
+  { kind: 'bus', minutes: 20, line, from: 'A', to: 'B', via: [], direction: 'C', path: [] },
   { kind: 'walk', minutes: 10, path: [] },
 ];
 

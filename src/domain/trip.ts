@@ -19,6 +19,8 @@ export type TransitLeg = {
   /** Real stop or station names (D9). */
   from: string;
   to: string;
+  /** Real names of the stops passed between `from` and `to`, in order (D9). */
+  via: readonly string[];
   direction: string;
   path: readonly LngLat[];
 };

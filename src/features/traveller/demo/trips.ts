@@ -32,6 +32,7 @@ export const DEMO_BUS_LEG: TransitLeg = {
   line: BUS_41_LINE,
   from: 'Place de la Corderie',
   to: 'Vieux Port Ballard',
+  via: ['Fort Notre-Dame', 'Place aux Huiles'],
   direction: 'Vieux Port Ballard',
   path: BUS_41,
 };
@@ -42,6 +43,7 @@ export const DEMO_METRO_LEG: TransitLeg = {
   line: M1,
   from: 'Vieux-Port',
   to: 'Saint-Charles',
+  via: ['Colbert'],
   direction: 'La Rose',
   path: METRO_M1,
 };

@@ -61,6 +61,7 @@ export function GuidanceScreen() {
     return (
       <OfflineMetroView
         leg={step.instruction.leg}
+        fraction={step.legFraction}
         onGotOff={() => goTo(exitIndex >= 0 ? exitIndex : guidanceStep + 1)}
         onHelp={openHelp}
       />
