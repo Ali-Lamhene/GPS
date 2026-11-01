@@ -12,14 +12,16 @@ Le **chemin** départ → arrivée (règle 3 de `docs/screens.md`) est gardé, c
 
 Partout dans l'app, l'interface fait encore « jouet » : arrondis très marqués, gros disque bleu à halo, icônes très grandes, tuiles de couleur. Elle doit devenir plus sobre, comme une app de navigation grand public.
 
+Révision du 2026-11-01 (photos) : l'effet « jouet » vient aussi des seuls pictogrammes. Un labo dans le navigateur a comparé icônes pleines, icônes au trait et vraies photos de lieux ; l'utilisateur a retenu **les photos, avec le pictogramme du lieu en petit** : la photo dit « ce lieu-là », le pictogramme précise « c'est un lieu de santé, de sport… ».
+
 ## Parcours
 
 ### Accueil
 
 1. Le voyageur ouvre l'app. La carte remplit l'écran, **sans voile**, centrée sur sa position (point bleu). Elle est cadrée pour montrer aussi ses lieux proches.
-2. Ses lieux sont dessinés sur la carte en **épingles** : un disque blanc avec le pictogramme du lieu (ou sa photo), et une pointe vers le point exact. Un lieu marqué « ne pas montrer sur la carte » n'est pas dessiné.
-3. Un **panneau blanc** reste visible en bas de l'écran (coins du haut arrondis). Sur sa première rangée, le **chemin** : la pastille de départ (le point bleu « ici » par défaut), des pointillés avec un petit marcheur adulte au milieu, la pastille d'arrivée, qui pulse tant qu'elle est vide. Les pastilles sont des disques bleu pâle avec le pictogramme du lieu.
-4. Sous le chemin, une rangée de **raccourcis** : les 4 premiers lieux en pastilles, puis une 5e pastille « … » qui ouvre la feuille avec tous les lieux. Toucher un raccourci choisit ce lieu comme arrivée.
+2. Ses lieux sont dessinés sur la carte en **épingles** : un disque blanc avec le pictogramme du lieu, ou sa photo avec le pictogramme en petit dans le coin bas, et une pointe vers le point exact. Un lieu marqué « ne pas montrer sur la carte » n'est pas dessiné.
+3. Un **panneau blanc** reste visible en bas de l'écran (coins du haut arrondis). Sur sa première rangée, le **chemin** : la pastille de départ (le point bleu « ici » par défaut), des pointillés avec un petit marcheur adulte au milieu, la pastille d'arrivée, qui pulse tant qu'elle est vide. Les pastilles sont des disques bleu pâle avec le pictogramme du lieu ; un lieu qui a une photo la montre, avec son pictogramme en petit dans le coin bas. Sur les pastilles de départ et d'arrivée, le symbole du bout (point, drapeau) reste dans le coin haut : les deux badges ne se gênent pas.
+4. Sous le chemin, une rangée de **raccourcis** : les 4 premiers lieux en pastilles (photo et petit pictogramme, ou pictogramme seul), puis une 5e pastille « … » qui ouvre la feuille avec tous les lieux. Toucher un raccourci choisit ce lieu comme arrivée.
 5. Le voyageur **touche une épingle** ou un raccourci : le lieu remplit la pastille d'arrivée, son épingle grossit, un pointillé droit relie le point bleu au lieu. Les raccourcis laissent la place à deux boutons : un **carré blanc ✕** qui annule (l'arrivée redevient vide, les raccourcis reviennent) et une **barre bleue ✓** pleine largeur qui continue.
 6. Toucher une autre épingle change l'arrivée. Toucher la pastille de départ ou d'arrivée ouvre la **feuille des lieux** (tous les lieux, y compris ceux hors de l'écran ou non montrés sur la carte).
 7. « Continuer » mène au choix du transport (E06), qui affiche le vrai trajet.
@@ -40,7 +42,7 @@ Partout dans l'app, l'interface fait encore « jouet » : arrondis très marqué
 | Information              | Canaux                                                                 |
 | ------------------------ | ---------------------------------------------------------------------- |
 | Où je suis               | point bleu sur la carte + pastille de départ « ici » dans le panneau   |
-| Où sont mes lieux        | épingles avec pictogramme ou photo sur la carte                        |
+| Où sont mes lieux        | épingles avec photo et petit pictogramme, ou pictogramme seul          |
 | Ce qu'il reste à choisir | pastille d'arrivée vide qui pulse                                      |
 | Lieu choisi              | épingle agrandie + pictogramme dans la pastille d'arrivée + pointillé  |
 | Je peux continuer        | barre bleue ✓ et bouton ✕ qui remplacent les raccourcis + son `select` |
@@ -63,6 +65,8 @@ Partout dans l'app, l'interface fait encore « jouet » : arrondis très marqué
 
 - **Position des lieux** : chaque lieu reçoit un point (longitude, latitude), gardé sur le téléphone avec le lieu (spec 001). Rien ne quitte le téléphone.
 - **« Ne pas montrer sur la carte »** : nouvel attribut du lieu, choisi par la personne qui le crée dans la partie préparation (spec 001, à ajouter à son parcours B). La carte d'accueil s'ouvre au lancement de l'app : quiconque voit ou fouille le téléphone voit les épingles. Ce réglage protège un lieu sensible (maison, famille).
+- **Photo d'un lieu caché de la carte** (maison, famille) : les raccourcis, visibles dès l'ouverture de l'app, ne montrent que son pictogramme, jamais sa photo. Une façade révèle l'adresse aussi bien qu'une épingle. La photo n'apparaît qu'une fois le lieu choisi comme départ ou arrivée, et dans la feuille des lieux.
+- **Photos de démonstration** : 3 photos libres de Wikimedia Commons (mairie, lycée Thiers, haltères), téléchargées une fois pendant le développement avec l'accord de l'utilisateur, recadrées en carré de 256 px, métadonnées retirées, embarquées dans l'app. Aucun appel réseau à l'exécution. Auteurs et licences dans `docs/credits-photos.md`.
 - **Pointillé droit** : calculé sur le téléphone, sans service de calcul d'itinéraire.
 - Aucune nouvelle dépendance ni permission. La position réelle arrive avec la spec 004 ; ici, la position de démonstration.
 
@@ -78,6 +82,8 @@ Partout dans l'app, l'interface fait encore « jouet » : arrondis très marqué
 
 - [ ] L'accueil affiche une carte vive, sans voile, avec le point bleu et les épingles des lieux de démonstration, sans aucun texte ni chiffre.
 - [ ] Un lieu marqué « ne pas montrer sur la carte » n'a pas d'épingle mais reste dans la feuille des lieux.
+- [ ] Un lieu avec photo montre sa photo et son petit pictogramme sur son épingle, son raccourci et la pastille d'arrivée (drapeau en haut, pictogramme en bas).
+- [ ] Un lieu caché de la carte avec photo ne montre que son pictogramme dans les raccourcis.
 - [ ] Le panneau du bas montre le chemin (départ, marcheur, arrivée qui pulse) et 4 raccourcis plus « … ».
 - [ ] Toucher une épingle ou un raccourci remplit l'arrivée, agrandit l'épingle, trace le pointillé et remplace les raccourcis par ✕ et ✓ ; ✓ mène à E06 ; ✕ vide l'arrivée.
 - [ ] Toucher une pastille du chemin ou « … » ouvre la feuille des lieux.
@@ -98,6 +104,9 @@ Partout dans l'app, l'interface fait encore « jouet » : arrondis très marqué
 
 - Départ ou arrivée marqué « ne pas montrer sur la carte » : ni pointillé ni repère pour ce lieu ; seul le panneau montre le choix.
 - La barre « continuer » porte une coche, pas une flèche vers la droite (sens de lecture).
+- Photos de démo : seulement des lieux publics ; « travail », « plage » et « marché » gardent leur pictogramme (pas de photo libre convenable : le cadrage de la tour CMA CGM montrait surtout une cathédrale, symbole religieux ; la plage était un coucher de soleil, illisible en petit et qui évoque « le soir » ; aucune photo libre de Noailles). Le lieu de démo « centre-ville » devient « la mairie », comme sa photo.
+- Licences : les photos CC BY et CC BY-SA (lycée, haltères) demandent de citer leur auteur dans toute version distribuée ; à régler avant la première (crédits côté accompagnant ou photos CC0). Elles sont embarquées sous forme d'images codées dans le code (`data:image/jpeg`), seul format local que `isLocalPicture` accepte aussi dans le navigateur.
+- Le petit pictogramme sur une photo : disque blanc de 28 dp (26 px sur les épingles), liseré sombre et ombre, pictogramme foncé de 18 dp, coin bas gauche ; le symbole du bout du trajet garde son disque foncé, coin haut droit, en diagonale.
 - En démo, la position est toujours connue : la case de départ qui pulse (position inconnue) arrive avec la spec 004.
 
 ## Questions / réponses
@@ -116,3 +125,8 @@ Partout dans l'app, l'interface fait encore « jouet » : arrondis très marqué
 - Annuler l'arrivée ? → Carré ✕ à côté de la barre ✓.
 - Quels raccourcis ? → Les 4 premiers lieux, plus « … » vers la feuille complète.
 - E06 : icônes trop grosses, coche inutile → retirée, pictogrammes réduits.
+- Effet « jouet » et photos (révision) : labo icônes pleines / au trait / photos → photos, avec le pictogramme du lieu en petit (« une précision en plus »). Icônes pleines gardées.
+- Pictogramme et drapeau sur la même pastille ? → Coins opposés : drapeau en haut, pictogramme en bas.
+- Photo de la maison dans les raccourcis ? → Non, pictogramme seul pour un lieu caché de la carte.
+- Ajouter un hôpital à la démo ? → Non.
+- Relectures : licences CC BY / BY-SA ? → Plus tard, avant toute version distribuée. Plage en coucher de soleil ? → Pictogramme seul. Mairie avec drapeaux, nommée « centre-ville » ? → Renommée « la mairie », photo gardée.

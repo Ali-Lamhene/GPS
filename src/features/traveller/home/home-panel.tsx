@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { Place } from '@/domain/place';
+import { isHiddenOnMap, type Place } from '@/domain/place';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii, sizes, spacing } from '@/ui/theme';
@@ -151,7 +151,8 @@ export function HomePanel({
               onPress={() => onChoose(place)}
               disabled={noStart}
             >
-              <PlaceAvatar place={place} size={AVATAR} />
+              {/* Seen as soon as the app opens: a hidden place shows no facade (spec 005). */}
+              <PlaceAvatar place={place} size={AVATAR} showPhoto={!isHiddenOnMap(place)} />
             </Target>
           ))}
           <Target label="Tous les lieux" onPress={onAllPlaces}>

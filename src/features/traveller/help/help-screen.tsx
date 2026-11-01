@@ -5,7 +5,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { HelpRequest } from '@/domain/help-message';
-import { CURRENT_POSITION } from '@/domain/place';
+import { CURRENT_POSITION, isLocalPicture } from '@/domain/place';
 import { speak } from '@/services/speech';
 import { IconButton } from '@/ui/components/icon-button';
 import { Icon } from '@/ui/icon/icon';
@@ -36,7 +36,7 @@ export function HelpScreen() {
   const card = helpCard(request, destination);
   // Before leaving, the passer-by sees neither the photo of the arrival nor a start that
   // is not where the traveller stands (D13).
-  const photo = step ? card.photo : undefined;
+  const photo = step && card.photo && isLocalPicture(card.photo) ? card.photo : undefined;
   const showMap = MAP_RENDERS && (step !== undefined || origin?.id === CURRENT_POSITION.id);
 
   return (

@@ -101,8 +101,9 @@ export function createDestinationPin(icon: IconName): HTMLElement {
 }
 
 /**
- * A saved place the traveller can touch (spec 005): white disc with its pictogram or photo,
- * and a pointer to the exact spot. The chosen arrival is larger and edged in blue.
+ * A saved place the traveller can touch (spec 005): white disc with its pictogram, or its
+ * photo with the pictogram in the bottom-left corner, and a pointer to the exact spot. The
+ * chosen arrival is larger and edged in blue.
  */
 export function createPlacePin(
   icon: IconName,
@@ -125,6 +126,7 @@ export function createPlacePin(
   });
   root.setAttribute('role', 'button');
   root.setAttribute('aria-label', label);
+  const face = box({ position: 'relative' });
   const head = box({
     width: `${size}px`,
     height: `${size}px`,
@@ -145,6 +147,22 @@ export function createPlacePin(
     image.alt = '';
     Object.assign(image.style, { width: '100%', height: '100%', objectFit: 'cover' });
     head.append(image);
+    // Outside the clipped disc, so the badge may overlap its edge.
+    const badge = box({
+      position: 'absolute',
+      left: '-4px',
+      bottom: '-4px',
+      width: '26px',
+      height: '26px',
+      borderRadius: '50%',
+      background: '#FFFFFF',
+      boxShadow: '0 0 0 1px rgba(0,0,0,.28), 0 2px 6px rgba(0,0,0,.3)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    });
+    badge.append(glyph(icon, 17, colors.ink));
+    face.append(badge);
   } else {
     head.append(glyph(icon, selected ? 32 : 26, colors.ink));
   }
@@ -157,7 +175,8 @@ export function createPlacePin(
     marginTop: '-1px',
     filter: 'drop-shadow(0 2px 1px rgba(0,0,0,.25))',
   });
-  root.append(head, pointer);
+  face.prepend(head);
+  root.append(face, pointer);
   return root;
 }
 

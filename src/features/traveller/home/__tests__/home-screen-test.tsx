@@ -6,7 +6,9 @@ import { layout, renderWithProviders } from '@/testing/render-with-providers';
 
 import { playCue } from '@/services/feedback';
 
-import { shortcutCount } from '../home-panel';
+import { CURRENT_POSITION } from '@/domain/place';
+
+import { HomePanel, shortcutCount } from '../home-panel';
 import { HomeScreen } from '../home-screen';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
@@ -50,6 +52,30 @@ describe('<HomeScreen />', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Annuler' }));
     expect(screen.queryByRole('button', { name: 'Continuer' })).toBeNull();
     expect(screen.getByRole('button', { name: 'mon domicile' })).toBeOnTheScreen();
+  });
+
+  test('a shortcut never shows the photo of a place hidden from the map', async () => {
+    await renderWithProviders(
+      <HomePanel
+        origin={CURRENT_POSITION}
+        places={[
+          { id: 'home', icon: 'home', photo: 'file:///home.jpg' },
+          { id: 'aunt', icon: 'family_restroom', photo: 'file:///aunt.jpg', hiddenOnMap: true },
+          { id: 'gym', icon: 'fitness_center', photo: 'file:///gym.jpg' },
+        ]}
+        onOrigin={jest.fn()}
+        onAllPlaces={jest.fn()}
+        onChoose={jest.fn()}
+        onCancel={jest.fn()}
+        onContinue={jest.fn()}
+      />,
+    );
+
+    const tree = JSON.stringify(screen.toJSON());
+    // Home is hidden by default, the other by choice; a place on the map keeps its photo.
+    expect(tree).not.toContain('file:///home.jpg');
+    expect(tree).not.toContain('file:///aunt.jpg');
+    expect(tree).toContain('file:///gym.jpg');
   });
 
   test('« all places » opens the sheet of arrivals', async () => {

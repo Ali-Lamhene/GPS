@@ -1,0 +1,11 @@
+# Crédits des photos de démonstration
+
+Les lieux de démonstration (`src/features/traveller/demo/photos.ts`) utilisent des photos libres de Wikimedia Commons. Chaque photo a été recadrée en carré, réduite à 256 × 256 px et débarrassée de ses métadonnées. Les photos sous licence CC BY-SA restent sous la même licence après ces modifications.
+
+| Lieu de démo   | Fichier Commons                                                                                                                                                                                                                                                                                            | Auteur      | Licence      |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------ |
+| mairie         | [Marseille city hall and Rue de la Mairie from Quai du Port, 2015.jpg](https://commons.wikimedia.org/wiki/File:Marseille_city_hall_and_Rue_de_la_Mairie_from_Quai_du_Port,_2015.jpg)                                                                                                                       | DimiTalen   | CC0          |
+| école          | [Bâtiment Sénac, Collège lycée général et technologique, classes préparatoires aux grandes écoles Thiers.jpg](https://commons.wikimedia.org/wiki/File:B%C3%A2timent_S%C3%A9nac,_Coll%C3%A8ge_lyc%C3%A9e_g%C3%A9n%C3%A9ral_et_technologique,_classes_pr%C3%A9paratoires_aux_grandes_%C3%A9coles_Thiers.jpg) | Carl Ha     | CC BY-SA 4.0 |
+| salle de sport | [A close-up view of a set of heavy dumbbells.jpg](https://commons.wikimedia.org/wiki/File:A_close-up_view_of_a_set_of_heavy_dumbbells.jpg)                                                                                                                                                                 | Shixart1985 | CC BY 2.0    |
+
+Licences : [CC0](https://creativecommons.org/publicdomain/zero/1.0/), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).

@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { isLocalPicture } from '@/domain/place';
 import { FloatingSheet } from '@/ui/components/floating-sheet';
 import { HelpButton } from '@/ui/components/help-button';
 import { MainActionButton } from '@/ui/components/main-action-button';
@@ -29,6 +30,8 @@ export function ArrivedScreen() {
   useCueOnEnter('arrival');
   const end = DEMO_LEGS[mode].at(-1)?.path.at(-1);
   const icon = destination?.icon ?? 'flag';
+  const photo =
+    destination?.photo && isLocalPicture(destination.photo) ? destination.photo : undefined;
   const [sheetHeight, setSheetHeight] = useState(280);
 
   return (
@@ -46,9 +49,9 @@ export function ArrivedScreen() {
         <View style={styles.center}>
           <View style={styles.place}>
             {/* The traveller's own photo of the door is the best "this is it" (screens.md). */}
-            {destination?.photo ? (
+            {photo ? (
               <Image
-                source={{ uri: destination.photo }}
+                source={{ uri: photo }}
                 contentFit="cover"
                 style={[StyleSheet.absoluteFill, styles.photo]}
               />
