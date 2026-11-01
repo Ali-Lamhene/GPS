@@ -63,9 +63,8 @@ Points laissés ouverts par les relectures de la spec 002 :
 - Signaux : « tout droit », « arrivé à l'arrêt », « à bord » et « marche finale » n'ont ni son ni vibration ; l'attente du véhicule et le hors connexion n'ont pas de vibration ; gauche et droite ont le même son et la même vibration.
 - Monter / descendre dessinés avec `login` / `logout` (métaphore informatique) ; « aller à l'arrêt », « attendre » et « à bord » partagent le même grand pictogramme.
 - Orange de l'alerte (#E8710A) : contraste d'environ 3,1:1 avec le texte blanc, faible en plein soleil.
-- E21 montre toujours la même photo de quai, quelle que soit la station.
 - Mise en page de droite à gauche (téléphones en arabe, persan, pachto) : flèches non inversées ; décider de forcer la gauche-à-droite ou d'inverser les glyphes.
-- Pas de retour ni d'accueil sur l'écran de guidage ; la feuille des lieux masque l'aide ; segments à pied peu visibles dans la frise de progression.
+- Pas de retour ni d'accueil sur l'écran de guidage ; la feuille des lieux masque l'aide.
 - Déjà corrigé sans changer le rendu : zones tactiles à 64 dp, retour Android qui ferme la feuille, badges de ligne insensibles à la taille de police système.
 
 ## Questions produit ouvertes
