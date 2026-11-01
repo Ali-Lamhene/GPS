@@ -68,6 +68,15 @@ describe('tripPlanReducer', () => {
     expect(tripPlanReducer(withOrigin, { type: 'finishPlace' })).toBe(withOrigin);
   });
 
+  test('the arrival can be cleared, the start stays', () => {
+    const state = { ...withOrigin, destinationId: 'beach' };
+
+    expect(tripPlanReducer(state, { type: 'clearDestination' })).toMatchObject({
+      originId: 'home',
+      destinationId: undefined,
+    });
+  });
+
   test('a new trip starts where the traveller stands', () => {
     expect(initialTripPlan.originId).toBe('here');
   });

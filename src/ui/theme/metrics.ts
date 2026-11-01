@@ -19,6 +19,8 @@ export const radii = {
   control: 8,
   /** Top corners of the panels at the bottom of the screen. */
   sheet: 16,
+  /** Top corners of the home panel, a touch warmer (spec 005, revised). */
+  homePanel: 24,
 } as const;
 
 export const sizes = {

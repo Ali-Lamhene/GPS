@@ -14,7 +14,7 @@ Deux **écrans témoins** d'abord, dans le navigateur, validés par l'utilisateu
 
 1. **Accueil (E01-E05)** : une vraie carte du quartier autour de la position du voyageur remplit l'écran, légèrement atténuée. Le chemin vertical départ → arrivée (règle 3 de `docs/screens.md`) flotte au-dessus, avec les mêmes tuiles et le même comportement qu'aujourd'hui. Le bouton d'aide est un bouton rond blanc avec ombre. La feuille des lieux monte par-dessus la carte.
 2. **Guidage (E09-E23, E17)** : la carte occupe tout l'écran et suit le voyageur. Le tracé du trajet est épais, bordé de foncé, coloré selon le mode (marche, couleur de la ligne de bus ou de métro). Le voyageur est un point pulsé avec un cône de direction. La consigne flotte en haut dans un bandeau (vert, orange pour descendre), le bouton d'aide à sa droite (D13). Un panneau compact flotte en bas : temps restant (cadrans en anneau), progression, écouter.
-3. Sur la carte, le voyageur peut zoomer ou déplacer avec deux doigts ; un gros bouton rond « ma position » apparaît alors et recentre la carte.
+3. Sur la carte, le voyageur peut déplacer avec un doigt et zoomer avec deux (révisé par la spec 005 ; d'abord deux doigts pour déplacer) ; un gros bouton rond « ma position » apparaît alors et recentre la carte.
 
 ## Signaux
 
@@ -55,7 +55,7 @@ Inchangés par rapport à la maquette v7 (sons et vibrations de `src/services/fe
 - [ ] L'accueil et le guidage affichent une vraie carte de Marseille sans aucun texte ni chiffre (hors exceptions D9 et crédit ⓘ), avec le réseau coupé.
 - [ ] Le trajet de démo suit de vraies rues et de vraies lignes, dans de vraies couleurs de lignes RTM.
 - [ ] Au guidage, la carte se centre sur le voyageur à chaque étape ; le tracé, le point pulsé et le cône sont visibles.
-- [ ] Après un déplacement à deux doigts, le bouton « ma position » apparaît et recentre la carte.
+- [ ] Après un déplacement de la carte, le bouton « ma position » apparaît et recentre la carte.
 - [ ] Plus aucune illustration générée par IA dans l'app.
 - [ ] Aucune requête réseau dans l'onglet réseau du navigateur au chargement des deux écrans, hors serveur de développement.
 - [ ] L'utilisateur juge l'ensemble « fini, friendly, pas jouet » sur les deux écrans témoins.

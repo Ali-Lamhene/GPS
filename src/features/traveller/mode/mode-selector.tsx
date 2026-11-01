@@ -30,8 +30,8 @@ export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
             onPress={() => onSelect(mode)}
             style={[styles.segment, on && styles.on]}
           >
-            {on && <Icon name="check" size={22} color={colors.white} variant="outlined" />}
-            <Icon name={icon} size={34} color={on ? colors.white : colors.ink} />
+            {/* The blue background alone shows the chosen mode. */}
+            <Icon name={icon} size={28} color={on ? colors.white : colors.ink} />
           </Pressable>
         );
       })}

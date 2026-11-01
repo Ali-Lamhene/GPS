@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from '@testing-library/react-native';
+import { act, fireEvent, screen, within } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { BackHandler } from 'react-native';
 
@@ -6,6 +6,7 @@ import { layout, renderWithProviders } from '@/testing/render-with-providers';
 
 import { playCue } from '@/services/feedback';
 
+import { shortcutCount } from '../home-panel';
 import { HomeScreen } from '../home-screen';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
@@ -22,7 +23,9 @@ async function openSheet(end: 'Départ' | 'Arrivée') {
 
 async function choose(end: 'Départ' | 'Arrivée', place: string) {
   await openSheet(end);
-  await fireEvent.press(screen.getByRole('button', { name: place }));
+  await fireEvent.press(
+    within(screen.getByTestId('place-grid')).getByRole('button', { name: place }),
+  );
 }
 
 describe('<HomeScreen />', () => {
@@ -33,7 +36,28 @@ describe('<HomeScreen />', () => {
 
     expect(screen.getByRole('button', { name: 'Départ' })).toBeEnabled();
     expect(screen.getByRole('button', { name: 'Arrivée' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Tous les lieux' })).toBeOnTheScreen();
     expect(screen.queryByRole('button', { name: 'Continuer' })).toBeNull();
+  });
+
+  test('a shortcut chooses the arrival; cancel brings the shortcuts back', async () => {
+    await renderHome();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'mon domicile' }));
+    expect(playCue).toHaveBeenCalledWith('select');
+    expect(screen.queryByRole('button', { name: 'mon domicile' })).toBeNull();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Annuler' }));
+    expect(screen.queryByRole('button', { name: 'Continuer' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'mon domicile' })).toBeOnTheScreen();
+  });
+
+  test('« all places » opens the sheet of arrivals', async () => {
+    await renderHome();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Tous les lieux' }));
+
+    expect(screen.getByTestId('place-grid')).toBeOnTheScreen();
   });
 
   test('choosing the arrival plays the select sound and offers to continue', async () => {
@@ -47,7 +71,7 @@ describe('<HomeScreen />', () => {
     expect(router.push).toHaveBeenCalledWith('/mode');
   });
 
-  test('another start can be chosen from the column', async () => {
+  test('another start can be chosen from the panel', async () => {
     await renderHome();
 
     await choose('Départ', 'mon domicile');
@@ -62,7 +86,9 @@ describe('<HomeScreen />', () => {
 
     await openSheet('Arrivée');
 
-    expect(screen.getByRole('button', { name: 'mon domicile' })).toBeDisabled();
+    expect(
+      within(screen.getByTestId('place-grid')).getByRole('button', { name: 'mon domicile' }),
+    ).toBeDisabled();
   });
 
   test('saving the position opens the new place flow', async () => {
@@ -97,5 +123,13 @@ describe('place sheet and Android back', () => {
     await act(() => listeners.at(-1)?.());
 
     expect(screen.queryByTestId('place-grid')).toBeNull();
+  });
+});
+
+describe('shortcutCount', () => {
+  test('keeps « all places » on screen and room between targets', () => {
+    expect(shortcutCount(360)).toBe(4);
+    expect(shortcutCount(412)).toBe(4);
+    expect(shortcutCount(320)).toBe(3);
   });
 });

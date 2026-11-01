@@ -13,7 +13,6 @@ import {
 } from '@/domain/place';
 import { playCue } from '@/services/feedback';
 import { HelpButton } from '@/ui/components/help-button';
-import { MainActionButton } from '@/ui/components/main-action-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { TripMap } from '@/ui/map/trip-map';
 import type { MapPin } from '@/ui/map/trip-map-types';
@@ -23,7 +22,7 @@ import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { PlaceSheet } from './place-sheet';
-import { TRIP_COLUMN_WIDTH, TripColumn } from './trip-column';
+import { HomePanel } from './home-panel';
 
 /** Where a place shows on the map, unless it is kept off it (spec 005). */
 function visiblePoint(place: Place | undefined): LngLat | undefined {
@@ -32,20 +31,20 @@ function visiblePoint(place: Place | undefined): LngLat | undefined {
 
 /**
  * Home (E01-E05, spec 005): the live map around the traveller with their places as pins,
- * and the vertical trip in a column. Touching a pin chooses the arrival; the column boxes
- * open the place sheet; the blue bar goes on to the choice of transport.
+ * and a bottom panel with the way from the start to the arrival and shortcuts to the
+ * places. Touching a pin or a shortcut chooses the arrival; then cancel or go on.
  */
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
   const plan = useTripPlan();
   const { origin, destination, dispatch } = plan;
   const [sheet, setSheet] = useState<TripEnd | null>(null);
+  const [panelHeight, setPanelHeight] = useState(0);
 
   // The demo position stands in for GPS until spec 004.
   const position = DEMO_CURRENT_POSITION;
   const start = origin?.id === CURRENT_POSITION.id ? position : visiblePoint(origin);
   const end = visiblePoint(destination);
-  const ready = origin !== undefined && destination !== undefined;
 
   const pins = placesOnMap(plan.destinationChoices, origin?.id).flatMap((place): MapPin[] =>
     place.point
@@ -81,8 +80,7 @@ export function HomeScreen() {
   };
 
   const headerBottom = insets.top + spacing.md + sizes.headerButton;
-  const barBottom = insets.bottom + spacing.lg;
-  const mapBottom = ready ? barBottom + sizes.minTarget + spacing.lg : barBottom;
+  const arrivals = plan.destinationChoices.filter((place) => place.id !== origin?.id);
 
   return (
     <View testID="home-screen" style={styles.screen}>
@@ -97,13 +95,8 @@ export function HomeScreen() {
                   position,
                   pins.map((pin) => pin.point),
                 ),
-          // Right: room for half of the chosen pin, which stands over its spot.
-          padding: {
-            top: headerBottom,
-            bottom: mapBottom,
-            left: TRIP_COLUMN_WIDTH + spacing.lg,
-            right: spacing.lg,
-          },
+          // Sides: room for half of the chosen pin, which stands over its spot.
+          padding: { top: headerBottom, bottom: panelHeight, left: spacing.lg, right: spacing.lg },
         }}
         lines={start && end ? [{ path: [start, end], color: colors.primary, style: 'walk' }] : []}
         traveller={{ point: position }}
@@ -114,23 +107,20 @@ export function HomeScreen() {
         }
         pins={pins}
         onPinPress={chooseDestination}
-        controlsBottom={mapBottom}
+        controlsBottom={panelHeight + spacing.sm}
       />
 
-      <View style={[styles.column, { top: insets.top + spacing.md }]}>
-        <TripColumn
-          origin={origin}
-          destination={destination}
-          onOrigin={() => setSheet('origin')}
-          onDestination={() => setSheet('destination')}
-        />
-      </View>
-
-      {ready && (
-        <View style={[styles.action, { bottom: barBottom }]} pointerEvents="box-none">
-          <MainActionButton icon="check" label="Continuer" onPress={() => router.push('/mode')} />
-        </View>
-      )}
+      <HomePanel
+        origin={origin}
+        destination={destination}
+        places={arrivals}
+        onOrigin={() => setSheet('origin')}
+        onAllPlaces={() => setSheet('destination')}
+        onChoose={(place) => chooseDestination(place.id)}
+        onCancel={() => dispatch({ type: 'clearDestination' })}
+        onContinue={() => router.push('/mode')}
+        onHeight={setPanelHeight}
+      />
 
       {sheet && (
         <PlaceSheet
@@ -155,14 +145,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.mapGround,
     overflow: 'hidden',
-  },
-  column: {
-    position: 'absolute',
-    left: spacing.lg,
-  },
-  action: {
-    position: 'absolute',
-    left: spacing.lg,
-    right: spacing.lg,
   },
 });

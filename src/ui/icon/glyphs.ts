@@ -9,6 +9,7 @@ export const GLYPHS = {
   check: 0xe5ca,
   chevron_right: 0xe5cc,
   close: 0xe5cd,
+  more_horiz: 0xe5d3,
   close_fullscreen: 0xf1cf,
   cloud_off: 0xe2c1,
   directions_bus: 0xe530,

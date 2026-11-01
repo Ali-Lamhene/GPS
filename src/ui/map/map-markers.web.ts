@@ -8,7 +8,6 @@ import { colors, fontFamilies } from '@/ui/theme';
 const CSS = `
 .trip-map .maplibregl-ctrl-bottom-left,
 .trip-map .maplibregl-ctrl-bottom-right { bottom: var(--controls-bottom, 0px); }
-.trip-map .maplibregl-cooperative-gesture-screen { display: none !important; }
 @keyframes trip-map-pulse { 0% { transform: scale(1); opacity: .45 } 100% { transform: scale(2.4); opacity: 0 } }
 `;
 

@@ -212,9 +212,8 @@ export function TripMap({
         pitch,
         maxZoom: 19,
         interactive: !initial.current.still,
-        // Only two fingers move or zoom the map: a stray tap, double tap or one-finger drag
-        // never loses the traveller's position. MapLibre's text hint is hidden (zero text).
-        cooperativeGestures: true,
+        // One finger moves the map, two zoom (spec 005); a double tap never zooms by mistake.
+        // The map comes back to the traveller on its own after a while.
         dragRotate: false,
         doubleClickZoom: false,
         touchPitch: false,
@@ -291,8 +290,14 @@ export function TripMap({
     if (!map) return;
     const markers = (JSON.parse(pinsKey) as typeof pins).map((pin) => {
       const element = createPlacePin(pin.icon, pin.photo, pin.selected ?? false, pin.label);
+      // A drag of the map that starts and ends on a pin is not a touch on it.
+      let down = { x: 0, y: 0 };
+      element.addEventListener('pointerdown', (event) => {
+        down = { x: event.clientX, y: event.clientY };
+      });
       element.addEventListener('click', (event) => {
         event.stopPropagation();
+        if (Math.hypot(event.clientX - down.x, event.clientY - down.y) > 8) return;
         pinPress.current?.(pin.id);
       });
       return new Marker({ element, anchor: 'bottom' })

@@ -28,6 +28,7 @@ export type TripPlanState = {
 export type TripPlanAction =
   | { type: 'chooseOrigin'; placeId: string }
   | { type: 'chooseDestination'; placeId: string }
+  | { type: 'clearDestination' }
   | { type: 'chooseMode'; mode: TravelMode }
   | { type: 'goToStep'; index: number }
   | { type: 'startPlace'; for: TripEnd; source: PlaceDraft['source']; point?: LngLat }
@@ -56,6 +57,8 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
     case 'chooseDestination':
       if (action.placeId === state.originId) return state;
       return { ...state, destinationId: action.placeId };
+    case 'clearDestination':
+      return { ...state, destinationId: undefined };
     case 'chooseMode':
       return { ...state, mode: action.mode };
     case 'goToStep':
