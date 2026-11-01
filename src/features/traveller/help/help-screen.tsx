@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { HelpRequest } from '@/domain/help-message';
+import { CURRENT_POSITION } from '@/domain/place';
 import { speak } from '@/services/speech';
 import { IconButton } from '@/ui/components/icon-button';
 import { Icon } from '@/ui/icon/icon';
@@ -31,6 +32,10 @@ export function HelpScreen() {
   const step = guidanceStep === undefined ? undefined : DEMO_GUIDANCE[mode][guidanceStep];
   const request: HelpRequest = step?.help ?? { kind: 'findPlace' };
   const card = helpCard(request, destination);
+  // Before leaving, the passer-by sees neither the photo of the arrival nor a start that
+  // is not where the traveller stands (D13).
+  const photo = step ? card.photo : undefined;
+  const showMap = MAP_RENDERS && (step !== undefined || origin?.id === CURRENT_POSITION.id);
 
   return (
     <View
@@ -54,17 +59,12 @@ export function HelpScreen() {
       </View>
       {/* Scrolls on small screens, so the listen button always stays in view. */}
       <ScrollView style={styles.spacer} contentContainerStyle={styles.content}>
-        {card.photo && !large && (
-          <Image source={{ uri: card.photo }} contentFit="cover" style={styles.photo} />
+        {photo && !large && (
+          <Image source={{ uri: photo }} contentFit="cover" style={styles.photo} />
         )}
         <HelpMessage message={card.message} large={large} />
-        {!large && !card.photo && MAP_RENDERS && (
-          <HelpSituationMap
-            legs={DEMO_LEGS[mode]}
-            step={step}
-            origin={origin}
-            destination={destination}
-          />
+        {!large && !photo && showMap && (
+          <HelpSituationMap legs={DEMO_LEGS[mode]} step={step} destination={destination} />
         )}
       </ScrollView>
       <View style={styles.actions}>
