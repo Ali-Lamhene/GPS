@@ -13,7 +13,7 @@ La première implémentation de la maquette v7 (D11) donne une impression de pro
 Deux **écrans témoins** d'abord, dans le navigateur, validés par l'utilisateur avant de généraliser aux autres écrans du trajet (E06, E07-E08, E21, E24-E27).
 
 1. **Accueil (E01-E05)** : une vraie carte du quartier autour de la position du voyageur remplit l'écran, légèrement atténuée. Le chemin vertical départ → arrivée (règle 3 de `docs/screens.md`) flotte au-dessus, avec les mêmes tuiles et le même comportement qu'aujourd'hui. Le bouton d'aide est un bouton rond blanc avec ombre. La feuille des lieux monte par-dessus la carte.
-2. **Guidage (E09-E23, E17)** : la carte occupe tout l'écran et suit le voyageur. Le tracé du trajet est épais, bordé de foncé, coloré selon le mode (marche, couleur de la ligne de bus ou de métro). Le voyageur est un point pulsé avec un cône de direction. La consigne flotte en haut dans un bandeau (vert, orange pour descendre). Un panneau compact flotte en bas : temps restant (cadrans en anneau), progression, écouter, aide.
+2. **Guidage (E09-E23, E17)** : la carte occupe tout l'écran et suit le voyageur. Le tracé du trajet est épais, bordé de foncé, coloré selon le mode (marche, couleur de la ligne de bus ou de métro). Le voyageur est un point pulsé avec un cône de direction. La consigne flotte en haut dans un bandeau (vert, orange pour descendre), le bouton d'aide à sa droite (D13). Un panneau compact flotte en bas : temps restant (cadrans en anneau), progression, écouter.
 3. Sur la carte, le voyageur peut zoomer ou déplacer avec deux doigts ; un gros bouton rond « ma position » apparaît alors et recentre la carte.
 
 ## Signaux

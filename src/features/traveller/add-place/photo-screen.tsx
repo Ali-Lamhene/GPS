@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
+import { MapHeader } from '@/ui/components/map-header';
 import { Icon } from '@/ui/icon/icon';
 import { colors } from '@/ui/theme';
 
@@ -20,10 +21,12 @@ export function PhotoScreen() {
   return (
     <View style={styles.screen}>
       <View style={styles.frame} pointerEvents="none" />
-      <View style={[styles.header, { top: insets.top + 20 }]}>
-        <IconButton icon="arrow_back" label="Retour" onPress={() => router.back()} tone="glass" />
-        <HelpButton onPress={() => router.push('/help')} tone="glass" />
-      </View>
+      <MapHeader
+        left={
+          <IconButton icon="arrow_back" label="Retour" onPress={() => router.back()} tone="glass" />
+        }
+        right={<HelpButton onPress={() => router.push('/help')} tone="glass" />}
+      />
       <View
         style={[styles.controls, { height: 190 + insets.bottom, paddingBottom: insets.bottom }]}
       >
@@ -70,13 +73,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,.75)',
     borderRadius: 28,
-  },
-  header: {
-    position: 'absolute',
-    left: 16,
-    right: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   controls: {
     position: 'absolute',

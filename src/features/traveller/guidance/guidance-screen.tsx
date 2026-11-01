@@ -8,7 +8,8 @@ import { spokenName, type GuidanceStep } from '@/domain/guidance';
 import { remainingMinutes, tripPosition, tripProgress, type Leg } from '@/domain/trip';
 import { playCue } from '@/services/feedback';
 import { TripMap } from '@/ui/map/trip-map';
-import { colors } from '@/ui/theme';
+import { HelpButton } from '@/ui/components/help-button';
+import { colors, spacing } from '@/ui/theme';
 
 import { tripLines, tripStops } from '../components/trip-map-layers';
 import { DEMO_GUIDANCE } from '../demo/guidance';
@@ -30,7 +31,7 @@ function nextManeuver(legs: readonly Leg[], step: GuidanceStep) {
 
 /**
  * E09-E23 (spec 002): the map fills the screen and follows the traveller; the instruction
- * floats on top, time and help at the bottom. In this static version (D11), touching the
+ * floats on top beside help, time left at the bottom. In this static version (D11), touching the
  * instruction stands for reaching the next step.
  */
 export function GuidanceScreen() {
@@ -93,14 +94,20 @@ export function GuidanceScreen() {
         />
       )}
       <View
-        style={[styles.banner, { top: insets.top + 12 }]}
-        onLayout={(event) => setBannerHeight(event.nativeEvent.layout.height + insets.top + 12)}
+        style={[styles.banner, { top: insets.top + spacing.md }]}
+        onLayout={(event) =>
+          setBannerHeight(event.nativeEvent.layout.height + insets.top + spacing.md)
+        }
       >
-        <InstructionCard
-          instruction={step.instruction}
-          destination={destination}
-          onPress={advance}
-        />
+        <View style={styles.card}>
+          <InstructionCard
+            instruction={step.instruction}
+            destination={destination}
+            onPress={advance}
+          />
+        </View>
+        {/* Same place as on every other screen: top right. */}
+        <HelpButton onPress={openHelp} />
       </View>
       <ProgressPanel
         legs={legs}
@@ -108,7 +115,6 @@ export function GuidanceScreen() {
         remainingMinutes={remainingMinutes(legs, step.legIndex, step.legFraction)}
         spokenName={spokenName(step.instruction)}
         destinationIcon={destinationIcon}
-        onHelp={openHelp}
         onLayout={(event) => setPanelHeight(event.nativeEvent.layout.height)}
       />
     </View>
@@ -122,7 +128,14 @@ const styles = StyleSheet.create({
   },
   banner: {
     position: 'absolute',
-    left: 12,
-    right: 12,
+    left: spacing.lg,
+    right: spacing.lg,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    // Keeps a stray thumb aiming at help off the banner, which is touchable.
+    gap: spacing.lg,
+  },
+  card: {
+    flex: 1,
   },
 });

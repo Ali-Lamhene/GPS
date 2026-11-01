@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-10-31 (soir)
+**Dernière mise à jour** : 2026-11-01
 
 ## Où on en est
 
@@ -52,10 +52,13 @@ Spec 002 « carte d'abord » : témoins validés par l'utilisateur (2026-10-31),
 
 Prochaine étape : carte sur téléphone (MapLibre natif, `@maplibre/maplibre-react-native`) dès qu'un téléphone Android est branché : build de développement, revue sécurité dédiée, puis spec 002 au statut `livré`. Ensuite specs 003 (composer un trajet) et 004 (guidage).
 
+Aide (D13, 2026-11-01) : bouton d'aide en haut à droite sur tous les écrans, guidage, métro hors connexion et feuille des lieux compris. La petite carte de l'aide ne montre au passant que le reste du tronçon en cours et l'arrêt ou le lieu à trouver ; avant le départ, ni photo du lieu d'arrivée, ni carte si le départ n'est pas la position actuelle. Au guidage, les noms de station passent sous le pictogramme, sur toute la largeur du bandeau ; le bouton écouter rejoint la rangée des cadrans, le panneau garde une hauteur fixe.
+
 Points laissés ouverts par les relectures de la spec 002 :
 
-- UX : jauge d'approche du virage dans le bandeau (aujourd'hui flèche sur la carte) ; aide pas toujours à la même place (en haut ou en bas selon l'écran) ; cône relié à la boussole et état « mauvais sens » (spec 004) ; position du voyageur dans le métro sans GPS : d'où vient-elle (estimation au temps ?) avant de la dessiner précisément (spec 004) ; barre d'action désactivée qui ne dit pas pourquoi (E28) ; pour les tests avec des voyageurs, un autre déclencheur que le bandeau pour faire avancer la démo.
-- Confidentialité (décision produit) : la petite carte de l'aide montre l'épingle exacte de la destination au passant ; pour un lieu privé (maison, famille), faut-il cadrer seulement la prochaine étape ou une zone ?
+- Aide, à trancher : avant le départ en transport, le message dit « je cherche {lieu d'arrivée} » ; faut-il plutôt demander le premier arrêt ? Sur les écrans sombres (E21, E29), le disque d'aide est gris ou translucide, pas noir : même place et même forme, contraste adapté au fond.
+- Métro sans GPS (spec 004) : l'utilisateur veut savoir comment font les GPS courants avant de trancher. Recherche faite : `docs/recherche/metro-sans-gps.md` (temps seul, arrêts comptés à l'accéléromètre, ou hybride comme Transit). À trancher.
+- UX : jauge d'approche du virage dans le bandeau (aujourd'hui flèche sur la carte) ; cône relié à la boussole et état « mauvais sens » (spec 004) ; barre d'action désactivée qui ne dit pas pourquoi (E28) ; pour les tests avec des voyageurs, un autre déclencheur que le bandeau pour faire avancer la démo.
 - Sécurité : la version web restera-t-elle un outil de développement (sinon l'hôte verrait qui charge la carte) ? Modèle de carte hors de la zone embarquée (archive par ville, téléchargement par zone ou tuiles à la demande : chaque tuile demandée révèle la zone du voyageur) ; `postinstall` (copie du worker MapLibre) empêche `ignore-scripts=true` dans `.npmrc` ; MapLibre natif à relire avant installation.
 
 Écarts relevés par `ux-sans-texte-reviewer`, non appliqués car la maquette v7 prévaut (D11), à trancher :

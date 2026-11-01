@@ -3,7 +3,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Leg } from '@/domain/trip';
 import { speak } from '@/services/speech';
-import { HelpButton } from '@/ui/components/help-button';
 import { TimeDials } from '@/ui/components/time-dials';
 import { Icon, type IconName } from '@/ui/icon/icon';
 import { colors, sizes } from '@/ui/theme';
@@ -17,18 +16,16 @@ type ProgressPanelProps = {
   /** Stop or station name the traveller can listen to at this step (D9). */
   spokenName?: string;
   destinationIcon: IconName;
-  onHelp: () => void;
   onLayout?: (event: LayoutChangeEvent) => void;
 };
 
-/** White panel floating at the bottom of the map: time left, progress, listen and help. */
+/** White panel floating at the bottom of the map: time left, progress, listen. */
 export function ProgressPanel({
   legs,
   progress,
   remainingMinutes,
   spokenName,
   destinationIcon,
-  onHelp,
   onLayout,
 }: ProgressPanelProps) {
   const insets = useSafeAreaInsets();
@@ -36,9 +33,10 @@ export function ProgressPanel({
     <View style={[styles.panel, { paddingBottom: 16 + insets.bottom }]} onLayout={onLayout}>
       <View style={styles.progress}>
         <TimeDials minutes={remainingMinutes} size={52} crossColor={colors.white} gap={8} />
-        <ProgressStrip legs={legs} progress={progress} destinationIcon={destinationIcon} />
-      </View>
-      <View style={styles.actions}>
+        <View style={styles.strip}>
+          <ProgressStrip legs={legs} progress={progress} destinationIcon={destinationIcon} />
+        </View>
+        {/* Empty slot without a name: the dials and the strip never move. */}
         {spokenName ? (
           <Pressable
             accessibilityRole="button"
@@ -49,9 +47,8 @@ export function ProgressPanel({
             <Icon name="volume_up" size={32} color={colors.primary} />
           </Pressable>
         ) : (
-          <View style={styles.spacer} />
+          <View style={styles.listenSlot} />
         )}
-        <HelpButton onPress={onHelp} size={sizes.minTarget} iconSize={32} />
       </View>
     </View>
   );
@@ -76,20 +73,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 14,
   },
-  actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+  strip: {
+    flex: 1,
+  },
+  listenSlot: {
+    width: sizes.minTarget,
   },
   listen: {
-    flex: 1,
+    width: sizes.minTarget,
     height: sizes.minTarget,
     borderRadius: sizes.minTarget / 2,
     backgroundColor: colors.secondaryContainer,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  spacer: {
-    flex: 1,
   },
 });

@@ -33,47 +33,43 @@ export function InstructionCard({ instruction, destination, onPress }: Instructi
       onPress={onPress}
       style={[styles.card, { backgroundColor: alert ? colors.alert : colors.guidance }]}
     >
-      <View
-        style={[
-          styles.tile,
-          symbol === 'metro'
-            ? styles.bareTile
-            : { backgroundColor: alert ? colors.white : colors.whiteGlass },
-        ]}
-      >
-        {alert && <PulseRing borderRadius={TILE_RADIUS} color={colors.white} />}
-        {symbol === 'metro' && leg ? (
-          <MetroSign color={leg.line.color} size={68} />
-        ) : symbol !== 'metro' ? (
-          <Icon name={symbol} size={60} color={alert ? colors.alert : colors.white} />
-        ) : null}
-      </View>
-      <View style={styles.details}>
-        {instruction.kind === 'waitVehicle' && (
-          <>
-            <LineBadge line={instruction.leg.line} size="lg" />
-            <View style={styles.direction}>
-              <Icon name="arrow_forward" size={22} color={colors.white} />
-              <StationName
-                name={instruction.leg.direction}
-                variant="direction"
-                color={colors.white}
-              />
-            </View>
-          </>
-        )}
-        {instruction.kind === 'reachStop' && (
-          <StationName name={instruction.leg.from} variant="instruction" color={colors.white} />
-        )}
-        {(instruction.kind === 'ride' || instruction.kind === 'getOffSoon') && (
-          <StationName name={instruction.leg.to} variant="instruction" color={colors.white} />
-        )}
+      <View style={styles.top}>
+        <View
+          style={[
+            styles.tile,
+            symbol === 'metro'
+              ? styles.bareTile
+              : { backgroundColor: alert ? colors.white : colors.whiteGlass },
+          ]}
+        >
+          {alert && <PulseRing borderRadius={TILE_RADIUS} color={colors.white} />}
+          {symbol === 'metro' && leg ? (
+            <MetroSign color={leg.line.color} size={68} />
+          ) : symbol !== 'metro' ? (
+            <Icon name={symbol} size={60} color={alert ? colors.alert : colors.white} />
+          ) : null}
+        </View>
+        {instruction.kind === 'waitVehicle' && <LineBadge line={instruction.leg.line} size="lg" />}
+        <View style={styles.spacer} />
         {next && (
           <View style={styles.next}>
             <Icon name={next} size={36} color={colors.white} />
           </View>
         )}
       </View>
+      {/* Names take the whole width, so they break like the sign they are compared with. */}
+      {instruction.kind === 'waitVehicle' && (
+        <View style={styles.direction}>
+          <Icon name="arrow_forward" size={22} color={colors.white} />
+          <StationName name={instruction.leg.direction} variant="direction" color={colors.white} />
+        </View>
+      )}
+      {instruction.kind === 'reachStop' && (
+        <StationName name={instruction.leg.from} variant="instruction" color={colors.white} />
+      )}
+      {(instruction.kind === 'ride' || instruction.kind === 'getOffSoon') && (
+        <StationName name={instruction.leg.to} variant="instruction" color={colors.white} />
+      )}
     </Pressable>
   );
 }
@@ -83,9 +79,7 @@ const styles = StyleSheet.create({
     minHeight: 104,
     borderRadius: 24,
     padding: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 14,
+    gap: 10,
     boxShadow: '0 6px 20px rgba(0,0,0,.22)',
   },
   tile: {
@@ -98,12 +92,13 @@ const styles = StyleSheet.create({
   bareTile: {
     backgroundColor: 'transparent',
   },
-  details: {
+  top: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+  },
+  spacer: {
     flex: 1,
-    minWidth: 0,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    gap: 8,
   },
   direction: {
     flexDirection: 'row',

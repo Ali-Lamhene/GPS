@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Place } from '@/domain/place';
 import { HelpButton } from '@/ui/components/help-button';
+import { MapHeader } from '@/ui/components/map-header';
 import { TripMap } from '@/ui/map/trip-map';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { colors } from '@/ui/theme';
@@ -96,10 +97,6 @@ export function HomeScreen() {
         </>
       )}
 
-      <View style={[styles.help, { top: insets.top + 20 }]}>
-        <HelpButton onPress={() => router.push('/help')} />
-      </View>
-
       {stage === 'ready' && (
         <View style={[styles.action, { bottom: insets.bottom + 28 }]} pointerEvents="box-none">
           <MainActionButton
@@ -121,6 +118,9 @@ export function HomeScreen() {
           onClose={() => setSheet(null)}
         />
       )}
+
+      {/* Above the place sheet too: help stays top right on every screen (D13). */}
+      <MapHeader right={<HelpButton onPress={() => router.push('/help')} />} />
     </View>
   );
 }
@@ -139,10 +139,6 @@ const styles = StyleSheet.create({
     height: END_BOX,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  help: {
-    position: 'absolute',
-    right: 16,
   },
   action: {
     position: 'absolute',

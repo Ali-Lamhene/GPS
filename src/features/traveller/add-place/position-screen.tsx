@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
+import { MapHeader } from '@/ui/components/map-header';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon } from '@/ui/icon/icon';
@@ -35,10 +36,10 @@ export function PositionScreen() {
           <Icon name="add_location_alt" size={48} color={colors.primary} />
         </View>
       </View>
-      <View style={[styles.header, { top: insets.top + 20 }]}>
-        <IconButton icon="close" label="Annuler" onPress={cancel} tone="raised" />
-        <HelpButton onPress={() => router.push('/help')} />
-      </View>
+      <MapHeader
+        left={<IconButton icon="close" label="Annuler" onPress={cancel} tone="raised" />}
+        right={<HelpButton onPress={() => router.push('/help')} />}
+      />
       <View style={[styles.action, { bottom: insets.bottom + 28 }]}>
         <MainActionButton
           icon="check"
@@ -97,13 +98,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: shadows.floating,
-  },
-  header: {
-    position: 'absolute',
-    left: 16,
-    right: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   action: {
     position: 'absolute',

@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { TransitLeg } from '@/domain/trip';
 import { HelpButton } from '@/ui/components/help-button';
 import { Icon } from '@/ui/icon/icon';
-import { colors, radii } from '@/ui/theme';
+import { colors, radii, sizes, spacing } from '@/ui/theme';
 
 import { LineBadge, MetroSign } from '../components/line-badge';
 import { ListenButton } from '../components/listen-button';
@@ -27,10 +27,16 @@ export function OfflineMetroView({ leg, fraction, onGotOff, onHelp }: OfflineMet
   const insets = useSafeAreaInsets();
   return (
     <View
-      style={[styles.screen, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 28 }]}
+      style={[
+        styles.screen,
+        { paddingTop: insets.top + spacing.md, paddingBottom: insets.bottom + 28 },
+      ]}
     >
-      <View style={styles.bar}>
-        <Icon name="cloud_off" size={28} color={colors.night.inkMuted} variant="outlined" />
+      <View style={styles.top}>
+        <View style={styles.bar}>
+          <Icon name="cloud_off" size={28} color={colors.night.inkMuted} variant="outlined" />
+        </View>
+        {/* Same place as on every other screen: top right. */}
         <HelpButton onPress={onHelp} tone="night" />
       </View>
       <View style={styles.line}>
@@ -62,15 +68,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     gap: 16,
   },
-  bar: {
+  top: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    gap: spacing.sm,
+  },
+  bar: {
+    flex: 1,
+    height: sizes.headerButton,
+    justifyContent: 'center',
     backgroundColor: colors.night.bar,
     borderRadius: radii.md,
-    paddingVertical: 8,
-    paddingRight: 8,
-    paddingLeft: 16,
+    paddingHorizontal: 16,
   },
   line: {
     flexDirection: 'row',

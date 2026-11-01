@@ -81,3 +81,8 @@ Première implémentation : interface statique fidèle, données factices, sans 
 ## D12. Carte d'abord (2026-10-31, spec 002)
 
 Une vraie carte, sans aucune étiquette, sert de fond aux écrans du trajet ; l'interface flotte dessus. Les tuiles d'une zone sont embarquées dans l'app (PMTiles, données OpenStreetMap) : rien n'est téléchargé à l'usage. Plus aucune illustration générée par IA. Palette plus vive que la maquette v7 (bleu plus lumineux, vert émeraude, orange plus franc, surfaces blanches) : elle prévaut sur les couleurs de la maquette v7 une fois validée sur les écrans témoins.
+
+## D13. Aide : une seule place, et une carte limitée à l'étape (2026-11-01)
+
+- Le bouton d'aide est **toujours en haut à droite**, au même endroit et à la même taille sur tous les écrans du voyageur, guidage et métro hors connexion compris : le voyageur le retrouve sans chercher.
+- La petite carte de la carte d'aide (E24) ne montre au passant que **l'étape en cours** : la position du voyageur, le tronçon en cours et l'arrêt ou le lieu à trouver. Jamais le reste du trajet ni le lieu d'arrivée, sauf sur le dernier tronçon. Un inconnu ne voit donc pas où se trouve un lieu privé (maison, famille).
