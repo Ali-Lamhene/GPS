@@ -1,13 +1,14 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { HelpRequest } from '@/domain/help-message';
 import { speak } from '@/services/speech';
 import { IconButton } from '@/ui/components/icon-button';
 import { Icon } from '@/ui/icon/icon';
+import { MAP_RENDERS } from '@/ui/map/trip-map';
 import { colors, radii, shadows } from '@/ui/theme';
 
 import { LineBadge } from '../components/line-badge';
@@ -24,7 +25,7 @@ import { HelpSituationMap } from './help-situation-map';
  */
 export function HelpScreen() {
   const insets = useSafeAreaInsets();
-  const { mode, destination, guidanceStep } = useTripPlan();
+  const { mode, origin, destination, guidanceStep } = useTripPlan();
   const [large, setLarge] = useState(false);
 
   const step = guidanceStep === undefined ? undefined : DEMO_GUIDANCE[mode][guidanceStep];
@@ -51,15 +52,21 @@ export function HelpScreen() {
         ))}
         {card.line && <LineBadge line={card.line} size="lg" />}
       </View>
-      {card.photo && !large && (
-        <Image source={{ uri: card.photo }} contentFit="cover" style={styles.photo} />
-      )}
-      <HelpMessage message={card.message} large={large} />
-      {large ? (
-        <View style={styles.spacer} />
-      ) : (
-        <HelpSituationMap legs={DEMO_LEGS[mode]} step={step} destination={destination} />
-      )}
+      {/* Scrolls on small screens, so the listen button always stays in view. */}
+      <ScrollView style={styles.spacer} contentContainerStyle={styles.content}>
+        {card.photo && !large && (
+          <Image source={{ uri: card.photo }} contentFit="cover" style={styles.photo} />
+        )}
+        <HelpMessage message={card.message} large={large} />
+        {!large && !card.photo && MAP_RENDERS && (
+          <HelpSituationMap
+            legs={DEMO_LEGS[mode]}
+            step={step}
+            origin={origin}
+            destination={destination}
+          />
+        )}
+      </ScrollView>
       <View style={styles.actions}>
         <Pressable
           accessibilityRole="button"
@@ -96,6 +103,9 @@ const styles = StyleSheet.create({
   },
   spacer: {
     flex: 1,
+  },
+  content: {
+    gap: 16,
   },
   context: {
     width: 48,

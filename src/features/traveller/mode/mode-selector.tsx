@@ -42,10 +42,10 @@ export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
-    height: 64,
+    height: 72,
     padding: 4,
     gap: 4,
-    borderRadius: 32,
+    borderRadius: 36,
     backgroundColor: colors.surfaceHigh,
   },
   segment: {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
-    borderRadius: 28,
+    borderRadius: 32,
   },
   on: {
     backgroundColor: colors.primary,

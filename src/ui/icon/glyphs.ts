@@ -17,6 +17,7 @@ export const GLYPHS = {
   edit_location_alt: 0xe1c5,
   expand_less: 0xe5ce,
   family_restroom: 0xf1a2,
+  fit_screen: 0xea10,
   favorite: 0xe87d,
   fitness_center: 0xeb43,
   flag: 0xe153,

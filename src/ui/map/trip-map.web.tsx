@@ -23,6 +23,7 @@ import { colors } from '@/ui/theme';
 import {
   createDestinationPin,
   createManeuverArrow,
+  createOriginPin,
   createStopPin,
   createTravellerCone,
   createTravellerDot,
@@ -33,6 +34,9 @@ import { buildFallbackStyle, buildMapStyle } from './map-style';
 import type { MapLine, TripMapProps } from './trip-map-types';
 
 // Browser map of spec 002: MapLibre over the bundled Marseille tiles, without labels.
+
+/** Whether a real map is drawn on this platform; screens skip optional maps otherwise. */
+export const MAP_RENDERS = true;
 
 /** After the traveller moves the map, it follows them again on its own after this delay. */
 const REFOLLOW_MS = 10_000;
@@ -103,7 +107,8 @@ type MarkerKind =
   | { type: 'dot' }
   | { type: 'cone' }
   | { type: 'maneuver' }
-  | { type: 'destination'; icon: IconName };
+  | { type: 'destination'; icon: IconName }
+  | { type: 'origin'; icon: IconName };
 
 function markerFor(kind: MarkerKind): Marker {
   switch (kind.type) {
@@ -123,6 +128,8 @@ function markerFor(kind: MarkerKind): Marker {
       });
     case 'destination':
       return new Marker({ element: createDestinationPin(kind.icon), anchor: 'bottom' });
+    case 'origin':
+      return new Marker({ element: createOriginPin(kind.icon) });
   }
 }
 
@@ -164,16 +171,26 @@ export function TripMap({
   stops = [],
   maneuver,
   traveller,
+  origin,
   destination,
   backdrop = false,
   interactive = true,
   controlsBottom = 16,
+  recenterIcon = 'my_location',
 }: TripMapProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const initial = useRef({ camera, still: backdrop || !interactive });
   const [map, setMap] = useState<MapLibreMap | null>(null);
-  const [following, setFollowing] = useState(true);
+  // The framing the traveller moved away from by hand, if any: a new framing asked by the
+  // screen (another leg opened) takes over again.
+  const [movedFrom, setMovedFrom] = useState<string | null>(null);
   const [lastMove, setLastMove] = useState(0);
+  const boundsKey = JSON.stringify(camera.bounds ?? null);
+  const framing = useRef(boundsKey);
+  useEffect(() => {
+    framing.current = boundsKey;
+  }, [boundsKey]);
+  const following = movedFrom !== boundsKey;
 
   useEffect(() => {
     injectMapCss();
@@ -206,7 +223,7 @@ export function TripMap({
       instance.touchZoomRotate.disableRotation();
       instance.on('movestart', (event) => {
         if (!event.originalEvent) return;
-        setFollowing(false);
+        setMovedFrom(framing.current);
         setLastMove(Date.now());
       });
       instance.on('load', () => {
@@ -234,7 +251,7 @@ export function TripMap({
 
   useEffect(() => {
     if (following) return;
-    const timer = setTimeout(() => setFollowing(true), REFOLLOW_MS);
+    const timer = setTimeout(() => setMovedFrom(null), REFOLLOW_MS);
     return () => clearTimeout(timer);
   }, [following, lastMove]);
 
@@ -248,12 +265,13 @@ export function TripMap({
   useMarker(map, { type: 'dot' }, traveller?.point);
   useMarker(map, { type: 'maneuver' }, maneuver?.point, maneuver?.heading);
   useMarker(map, { type: 'destination', icon: destination?.icon ?? 'flag' }, destination?.point);
+  useMarker(map, { type: 'origin', icon: origin?.icon ?? 'trip_origin' }, origin?.point);
 
   const stopsKey = JSON.stringify(stops);
   useEffect(() => {
     if (!map) return;
     const markers = (JSON.parse(stopsKey) as typeof stops).map((stop) =>
-      new Marker({ element: createStopPin(stop.symbol, stop.color) })
+      new Marker({ element: createStopPin(stop.symbol, stop.color, stop.alight) })
         .setLngLat([stop.point[0], stop.point[1]])
         .addTo(map),
     );
@@ -264,7 +282,6 @@ export function TripMap({
   const { zoom, heading: bearing = 0, pitch = 0 } = camera;
   const paddingTop = camera.padding?.top ?? 0;
   const paddingBottom = camera.padding?.bottom ?? 0;
-  const boundsKey = JSON.stringify(camera.bounds ?? null);
   useEffect(() => {
     if (!map || !following) return;
     const bounds = JSON.parse(boundsKey) as TripMapProps['camera']['bounds'] | null;
@@ -316,13 +333,13 @@ export function TripMap({
       {!following && (
         <View style={[styles.recenter, { bottom: controlsBottom + 8 }]}>
           <IconButton
-            icon="my_location"
-            label="Ma position"
+            icon={recenterIcon}
+            label="Recentrer"
             tone="raised"
             size={64}
             iconSize={32}
             iconVariant="filled"
-            onPress={() => setFollowing(true)}
+            onPress={() => setMovedFrom(null)}
           />
         </View>
       )}

@@ -99,8 +99,31 @@ export function createDestinationPin(icon: IconName): HTMLElement {
   return root;
 }
 
+/** Start of the trip when it is a saved place: its pictogram on a white pin. */
+export function createOriginPin(icon: IconName): HTMLElement {
+  const root = box({
+    width: '44px',
+    height: '44px',
+    borderRadius: '14px',
+    background: '#FFFFFF',
+    border: `3px solid ${colors.ink}`,
+    boxSizing: 'border-box',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 2px 6px rgba(0,0,0,.3)',
+    pointerEvents: 'none',
+  });
+  root.append(glyph(icon, 26, colors.ink));
+  return root;
+}
+
 /** Stop where to get on or off: the vehicle pictogram, or the metro "M", in the line colour. */
-export function createStopPin(symbol: IconName | 'metro', color: string): HTMLElement {
+export function createStopPin(
+  symbol: IconName | 'metro',
+  color: string,
+  alight = false,
+): HTMLElement {
   const metro = symbol === 'metro';
   const root = box({
     width: '40px',
@@ -125,6 +148,7 @@ export function createStopPin(symbol: IconName | 'metro', color: string): HTMLEl
     root.style.background = '#FFFFFF';
     root.style.border = `4px solid ${color}`;
   }
+  if (alight) root.style.boxShadow = `0 0 0 4px ${colors.alert}, 0 2px 6px rgba(0,0,0,.3)`;
   return root;
 }
 

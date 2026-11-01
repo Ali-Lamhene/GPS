@@ -34,6 +34,7 @@ export function SummaryScreen() {
     <View style={styles.screen}>
       <TripOverviewMap
         legs={legs}
+        origin={origin}
         destination={destination}
         top={headerHeight}
         bottom={sheetHeight}
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mapGround,
   },
   legs: {
-    maxHeight: 240,
+    maxHeight: 290,
     backgroundColor: colors.surfaceLow,
     borderRadius: 16,
   },

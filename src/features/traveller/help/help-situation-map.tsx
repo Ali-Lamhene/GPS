@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
+import { pathsBounds } from '@/domain/geo';
 import type { GuidanceStep } from '@/domain/guidance';
 import type { Place } from '@/domain/place';
 import { tripPosition, type Leg } from '@/domain/trip';
@@ -14,20 +15,24 @@ type HelpSituationMapProps = {
   /** The guidance step the traveller is on, if the trip has started. */
   step?: GuidanceStep;
   destination?: Place;
+  origin?: Place;
 };
 
 /**
- * Small still map on the help card: where the traveller is and where they go, for the
- * passer-by who reads the message (spec 002). Before leaving, the whole trip.
+ * Small still map on the help card, for the passer-by who reads the message (spec 002):
+ * the traveller and the end of their current leg (the stop or place they look for); the
+ * whole trip before leaving.
  */
-export function HelpSituationMap({ legs, step, destination }: HelpSituationMapProps) {
+export function HelpSituationMap({ legs, step, destination, origin }: HelpSituationMapProps) {
   const position = step && tripPosition(legs, step.legIndex, step.legFraction);
+  const target = step && legs[step.legIndex]?.path.at(-1);
   const end = legs.at(-1)?.path.at(-1);
+  const bounds = position && target && pathsBounds([[position.point, target]]);
   return (
     <View style={styles.card}>
-      {position && step ? (
+      {position && step && bounds ? (
         <TripMap
-          camera={{ center: position.point, zoom: 16.5 }}
+          camera={{ center: position.point, zoom: 16.5, bounds }}
           lines={tripLines(legs, step)}
           stops={tripStops(legs)}
           traveller={{ point: position.point }}
@@ -35,7 +40,14 @@ export function HelpSituationMap({ legs, step, destination }: HelpSituationMapPr
           interactive={false}
         />
       ) : (
-        <TripOverviewMap legs={legs} destination={destination} top={0} bottom={0} />
+        <TripOverviewMap
+          legs={legs}
+          origin={origin}
+          destination={destination}
+          top={0}
+          bottom={0}
+          interactive={false}
+        />
       )}
     </View>
   );
@@ -43,8 +55,7 @@ export function HelpSituationMap({ legs, step, destination }: HelpSituationMapPr
 
 const styles = StyleSheet.create({
   card: {
-    flex: 1,
-    minHeight: 160,
+    height: 200,
     borderRadius: 24,
     overflow: 'hidden',
     backgroundColor: colors.mapGround,

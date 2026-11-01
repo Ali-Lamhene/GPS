@@ -23,6 +23,7 @@ const VIBRATIONS: Partial<Record<Cue, number[]>> = {
   turn: [80, 60, 80],
   alert: [200, 100, 200, 100, 200],
   exit: [120],
+  offline: [400, 200, 400],
   arrival: [60, 40, 60, 40, 200],
   saved: [80],
 };

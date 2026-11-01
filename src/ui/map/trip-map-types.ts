@@ -13,6 +13,8 @@ export type MapStop = {
   point: LngLat;
   color: string;
   symbol: IconName | 'metro';
+  /** Where to get off: ringed in the alert orange, like the exit station of E21. */
+  alight?: boolean;
 };
 
 export type TripMapProps = {
@@ -34,6 +36,8 @@ export type TripMapProps = {
   /** Arrow drawn at the next corner, pointing the way to turn. */
   maneuver?: { point: LngLat; heading: number };
   traveller?: { point: LngLat; heading?: number };
+  /** Start of the trip when it is a saved place rather than where the traveller stands. */
+  origin?: { point: LngLat; icon: IconName };
   destination?: { point: LngLat; icon: IconName };
   /** Background only (home): softened and without gestures. */
   backdrop?: boolean;
@@ -41,4 +45,6 @@ export type TripMapProps = {
   interactive?: boolean;
   /** Distance from the bottom of the map to its controls. */
   controlsBottom?: number;
+  /** Pictogram of the button that brings the map back: the traveller, or the whole trip. */
+  recenterIcon?: IconName;
 };

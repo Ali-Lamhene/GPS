@@ -20,16 +20,28 @@ export function LineProgress({ leg, fraction }: LineProgressProps) {
   const stations = [leg.from, ...leg.via, leg.to];
   const gaps = stations.length - 1;
   const position = Math.min(gaps, Math.max(0, fraction * gaps));
+  // Many stops: the ones in between become nameless dots, so the exit stays on screen and
+  // the stops can still be counted.
+  const named = (i: number) => i === 0 || i === gaps || leg.via.length <= 3;
 
   return (
     <View style={styles.list}>
       {stations.map((name, i) => {
         const last = i === stations.length - 1;
         const passed = i <= Math.floor(position) && !last;
+        const here = Math.floor(position) === i && (!last || position === gaps);
         return (
-          <View key={name} style={styles.station}>
+          <View key={name} style={[styles.station, !named(i) && styles.compact]}>
             <View style={styles.rail}>
-              {i > 0 && <View style={[styles.segment, { backgroundColor: leg.line.color }]} />}
+              {i > 0 && (
+                <View
+                  style={[
+                    styles.segment,
+                    { backgroundColor: leg.line.color },
+                    i <= position && styles.passed,
+                  ]}
+                />
+              )}
               <View
                 style={[
                   styles.dot,
@@ -40,16 +52,26 @@ export function LineProgress({ leg, fraction }: LineProgressProps) {
               >
                 {last && <Icon name="logout" size={20} color={colors.white} variant="outlined" />}
               </View>
-              {!last && <View style={[styles.segment, { backgroundColor: leg.line.color }]} />}
-              {i === Math.floor(position) && !last && (
+              {!last && (
+                <View
+                  style={[
+                    styles.segment,
+                    { backgroundColor: leg.line.color },
+                    i < Math.floor(position) && styles.passed,
+                  ]}
+                />
+              )}
+              {here && (
                 <View style={[styles.traveller, { top: `${50 + (position - i) * 100}%` }]} />
               )}
             </View>
-            <StationName
-              name={name}
-              variant={last ? 'large' : 'row'}
-              color={last ? colors.night.ink : colors.night.inkMuted}
-            />
+            {named(i) && (
+              <StationName
+                name={name}
+                variant={last ? 'large' : 'row'}
+                color={last ? colors.night.ink : colors.night.inkMuted}
+              />
+            )}
           </View>
         );
       })}
@@ -69,9 +91,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
   },
+  compact: {
+    height: ROW / 2,
+  },
   rail: {
     width: 44,
-    height: ROW,
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },

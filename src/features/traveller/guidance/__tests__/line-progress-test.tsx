@@ -23,4 +23,13 @@ describe('<LineProgress />', () => {
     expect(screen.getByText('Saint-Charles')).toHaveStyle({ fontSize: 29 });
     expect(screen.getByText('Colbert')).toHaveStyle({ fontSize: 17 });
   });
+
+  test('on a long line, stops in between lose their names but still count', async () => {
+    const long = { ...DEMO_METRO_LEG, via: ['A', 'B', 'C', 'D', 'E'] };
+    await render(<LineProgress leg={long} fraction={0.3} />);
+
+    expect(screen.queryByText('C')).toBeNull();
+    expect(screen.getByText('Vieux-Port')).toBeOnTheScreen();
+    expect(screen.getByText('Saint-Charles')).toBeOnTheScreen();
+  });
 });

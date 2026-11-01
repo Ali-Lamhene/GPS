@@ -1,4 +1,5 @@
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { FloatingSheet } from '@/ui/components/floating-sheet';
@@ -21,12 +22,18 @@ import { PictogramGrid } from './pictogram-grid';
 export function PictogramScreen() {
   const { draft, dispatch } = useTripPlan();
   const icon = draft?.icon;
+  const [sheetHeight, setSheetHeight] = useState(360);
 
   return (
     <View style={styles.screen}>
       <TripMap
-        camera={{ center: DEMO_CURRENT_POSITION, zoom: 16.5, padding: { top: 0, bottom: 360 } }}
+        camera={{
+          center: DEMO_CURRENT_POSITION,
+          zoom: 16.5,
+          padding: { top: 0, bottom: sheetHeight },
+        }}
         traveller={{ point: DEMO_CURRENT_POSITION }}
+        controlsBottom={sheetHeight + 8}
         backdrop
       />
       <MapHeader
@@ -40,7 +47,7 @@ export function PictogramScreen() {
         }
         right={<HelpButton onPress={() => router.push('/help')} />}
       />
-      <FloatingSheet gap={16}>
+      <FloatingSheet gap={16} onHeight={setSheetHeight}>
         <View style={[styles.preview, icon && styles.previewChosen]}>
           <Icon
             name={icon ?? 'add_location_alt'}

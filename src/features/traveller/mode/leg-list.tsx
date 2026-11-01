@@ -25,7 +25,7 @@ export function LegList({ legs }: { legs: readonly Leg[] }) {
           <Icon name={legIcon(leg)} size={24} style={styles.icon} />
           {isTransitLeg(leg) && <LineBadge line={leg.line} size="sm" />}
           <View style={styles.spacer} />
-          <TimeDials minutes={leg.minutes} size={28} crossColor={colors.surfaceLow} gap={6} />
+          <TimeDials minutes={leg.minutes} size={32} crossColor={colors.surfaceLow} gap={6} />
         </View>
       ))}
     </View>

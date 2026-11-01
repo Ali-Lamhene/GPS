@@ -1,4 +1,6 @@
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { FloatingSheet } from '@/ui/components/floating-sheet';
@@ -19,7 +21,7 @@ const SEAL = 72;
 
 /**
  * E26: arrived. The map shows the traveller at the destination pin; the sheet shows the
- * destination pictogram with a green seal, with its own sound and vibration.
+ * destination photo or pictogram with a green seal, with its own sound and vibration.
  */
 export function ArrivedScreen() {
   const { destination, mode } = useTripPlan();
@@ -27,22 +29,32 @@ export function ArrivedScreen() {
   useCueOnEnter('arrival');
   const end = DEMO_LEGS[mode].at(-1)?.path.at(-1);
   const icon = destination?.icon ?? 'flag';
+  const [sheetHeight, setSheetHeight] = useState(280);
 
   return (
     <View style={styles.screen}>
       {end && (
         <TripMap
-          camera={{ center: end, zoom: 17.2, padding: { top: 0, bottom: 260 } }}
+          camera={{ center: end, zoom: 17.2, padding: { top: 0, bottom: sheetHeight } }}
           traveller={{ point: end }}
           destination={{ point: end, icon }}
-          controlsBottom={268}
+          controlsBottom={sheetHeight + 8}
         />
       )}
       <MapHeader right={<HelpButton onPress={() => router.push('/help')} />} />
-      <FloatingSheet gap={32}>
+      <FloatingSheet gap={32} onHeight={setSheetHeight}>
         <View style={styles.center}>
           <View style={styles.place}>
-            <Icon name={icon} size={88} color={colors.white} />
+            {/* The traveller's own photo of the door is the best "this is it" (screens.md). */}
+            {destination?.photo ? (
+              <Image
+                source={{ uri: destination.photo }}
+                contentFit="cover"
+                style={[StyleSheet.absoluteFill, styles.photo]}
+              />
+            ) : (
+              <Icon name={icon} size={88} color={colors.white} />
+            )}
             <View style={styles.sealBox}>
               <PulseRing borderRadius={SEAL / 2} color={colors.success} />
               <View style={styles.seal}>
@@ -74,6 +86,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: '0 6px 18px rgba(30,107,255,.35)',
+  },
+  photo: {
+    borderRadius: 36,
   },
   sealBox: {
     position: 'absolute',

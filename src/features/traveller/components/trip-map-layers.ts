@@ -30,9 +30,12 @@ export function tripLines(
 export function tripStops(legs: readonly Leg[]): MapStop[] {
   return legs.flatMap((leg): MapStop[] => {
     if (leg.kind !== 'bus' && leg.kind !== 'metro') return [];
-    const symbol = leg.kind === 'metro' ? 'metro' : 'directions_bus';
-    return [leg.path[0], leg.path.at(-1)]
-      .filter((point) => point !== undefined)
-      .map((point) => ({ point, color: leg.line.color, symbol }));
+    const symbol: MapStop['symbol'] = leg.kind === 'metro' ? 'metro' : 'directions_bus';
+    const board = leg.path[0];
+    const alight = leg.path.at(-1);
+    return [
+      ...(board ? [{ point: board, color: leg.line.color, symbol }] : []),
+      ...(alight ? [{ point: alight, color: leg.line.color, symbol, alight: true }] : []),
+    ];
   });
 }

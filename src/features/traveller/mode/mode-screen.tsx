@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { totalMinutes, type TravelMode } from '@/domain/trip';
 import { playCue } from '@/services/feedback';
@@ -24,7 +24,9 @@ export function ModeScreen() {
   const { origin, destination, mode, dispatch } = useTripPlan();
   const [headerHeight, setHeaderHeight] = useState(0);
   const [sheetHeight, setSheetHeight] = useState(0);
+  const { height } = useWindowDimensions();
   const legs = DEMO_LEGS[mode];
+  const total = totalMinutes(legs);
 
   const choose = (next: TravelMode) => {
     dispatch({ type: 'chooseMode', mode: next });
@@ -35,6 +37,7 @@ export function ModeScreen() {
     <View style={styles.screen}>
       <TripOverviewMap
         legs={legs}
+        origin={origin}
         destination={destination}
         top={headerHeight}
         bottom={sheetHeight}
@@ -53,13 +56,17 @@ export function ModeScreen() {
         right={<HelpButton onPress={() => router.push('/help')} />}
       />
       <FloatingSheet onHeight={setSheetHeight}>
-        <View style={styles.choice}>
-          <TimeDials minutes={totalMinutes(legs)} size={56} crossColor={colors.white} gap={6} />
-          <View style={styles.selector}>
+        {/* Over an hour, several dials would squeeze the selector: they get their own row. */}
+        <View style={[styles.choice, total > 60 && styles.stacked]}>
+          <View style={styles.dials}>
+            <TimeDials minutes={total} size={56} crossColor={colors.white} gap={6} />
+          </View>
+          <View style={total > 60 ? undefined : styles.selector}>
             <ModeSelector selected={mode} onSelect={choose} />
           </View>
         </View>
-        <LegList legs={legs} />
+        {/* On short screens the map shows the legs; the list would leave it no room. */}
+        {height >= 700 && <LegList legs={legs} />}
         <MainActionButton
           icon="arrow_forward"
           label="Continuer"
@@ -83,5 +90,12 @@ const styles = StyleSheet.create({
   },
   selector: {
     flex: 1,
+  },
+  dials: {
+    alignItems: 'center',
+  },
+  stacked: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
   },
 });

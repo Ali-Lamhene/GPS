@@ -39,7 +39,7 @@ export function LegRow({ leg, open, first, onPress }: LegRowProps) {
         </View>
         {isTransitLeg(leg) && <LineBadge line={leg.line} size="md" />}
         <View style={styles.spacer} />
-        <TimeDials minutes={leg.minutes} size={34} crossColor={background} gap={6} />
+        <TimeDials minutes={leg.minutes} size={36} crossColor={background} gap={6} />
         <Icon
           name={open ? 'expand_less' : 'chevron_right'}
           size={26}
