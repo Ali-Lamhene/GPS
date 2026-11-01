@@ -1,4 +1,5 @@
-import type { Place, PlaceIcon } from '@/domain/place';
+import type { LngLat } from '@/domain/geo';
+import { CURRENT_POSITION, hiddenOnMapByDefault, type Place, type PlaceIcon } from '@/domain/place';
 import type { TravelMode } from '@/domain/trip';
 
 /** Which end of the trip a place is being chosen or created for. */
@@ -8,6 +9,8 @@ export type TripEnd = 'origin' | 'destination';
 export type PlaceDraft = {
   for: TripEnd;
   source: 'position' | 'address';
+  /** Where the place is, when known: the traveller's position for E27. */
+  point?: LngLat;
   icon?: PlaceIcon;
   helpName?: string;
 };
@@ -27,14 +30,19 @@ export type TripPlanAction =
   | { type: 'chooseDestination'; placeId: string }
   | { type: 'chooseMode'; mode: TravelMode }
   | { type: 'goToStep'; index: number }
-  | { type: 'startPlace'; for: TripEnd; source: PlaceDraft['source'] }
+  | { type: 'startPlace'; for: TripEnd; source: PlaceDraft['source']; point?: LngLat }
   | { type: 'setDraftIcon'; icon: PlaceIcon }
   | { type: 'setDraftName'; helpName: string }
   | { type: 'finishPlace'; photo?: string }
   | { type: 'cancelPlace' }
   | { type: 'reset' };
 
-export const initialTripPlan: TripPlanState = { mode: 'transit', customPlaces: [] };
+/** The trip starts where the traveller stands, until they pick another start (spec 005). */
+export const initialTripPlan: TripPlanState = {
+  originId: CURRENT_POSITION.id,
+  mode: 'transit',
+  customPlaces: [],
+};
 
 export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): TripPlanState {
   switch (action.type) {
@@ -53,7 +61,10 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
     case 'goToStep':
       return { ...state, guidanceStep: action.index };
     case 'startPlace':
-      return { ...state, draft: { for: action.for, source: action.source } };
+      return {
+        ...state,
+        draft: { for: action.for, source: action.source, point: action.point },
+      };
     case 'setDraftIcon':
       return state.draft ? { ...state, draft: { ...state.draft, icon: action.icon } } : state;
     case 'setDraftName':
@@ -77,11 +88,14 @@ function finishPlace(state: TripPlanState, photo?: string): TripPlanState {
   const { draft } = state;
   if (!draft) return state;
 
+  const icon = draft.icon ?? 'location_on';
   const place: Place = {
     id: `custom-${state.customPlaces.length + 1}`,
-    icon: draft.icon ?? 'location_on',
+    icon,
     photo,
     helpName: draft.helpName,
+    point: draft.point,
+    hiddenOnMap: hiddenOnMapByDefault(icon),
   };
   const withPlace = { ...state, customPlaces: [...state.customPlaces, place], draft: undefined };
   return tripPlanReducer(withPlace, {

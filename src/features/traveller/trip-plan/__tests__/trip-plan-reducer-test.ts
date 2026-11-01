@@ -35,7 +35,13 @@ describe('tripPlanReducer', () => {
     state = tripPlanReducer(state, { type: 'finishPlace', photo: 'file:///photo.jpg' });
 
     expect(state.customPlaces).toEqual([
-      { id: 'custom-1', icon: 'local_hospital', photo: 'file:///photo.jpg', helpName: undefined },
+      {
+        id: 'custom-1',
+        icon: 'local_hospital',
+        photo: 'file:///photo.jpg',
+        helpName: undefined,
+        hiddenOnMap: false,
+      },
     ]);
     expect(state.destinationId).toBe('custom-1');
     expect(state.draft).toBeUndefined();
@@ -62,6 +68,22 @@ describe('tripPlanReducer', () => {
     expect(tripPlanReducer(withOrigin, { type: 'finishPlace' })).toBe(withOrigin);
   });
 
+  test('a new trip starts where the traveller stands', () => {
+    expect(initialTripPlan.originId).toBe('here');
+  });
+
+  test('a new home or family place stays off the home map', () => {
+    let state = tripPlanReducer(withOrigin, {
+      type: 'startPlace',
+      for: 'destination',
+      source: 'address',
+    });
+    state = tripPlanReducer(state, { type: 'setDraftIcon', icon: 'family_restroom' });
+    state = tripPlanReducer(state, { type: 'finishPlace' });
+
+    expect(state.customPlaces[0]?.hiddenOnMap).toBe(true);
+  });
+
   test('the guidance step is remembered, so help knows where the traveller is', () => {
     expect(tripPlanReducer(withOrigin, { type: 'goToStep', index: 3 }).guidanceStep).toBe(3);
   });
@@ -76,6 +98,7 @@ describe('tripPlanReducer', () => {
     };
 
     expect(tripPlanReducer(state, { type: 'reset' })).toEqual({
+      originId: 'here',
       mode: 'transit',
       customPlaces: [{ id: 'custom-1', icon: 'home' }],
     });

@@ -67,12 +67,7 @@ export function ModeScreen() {
         </View>
         {/* On short screens the map shows the legs; the list would leave it no room. */}
         {height >= 700 && <LegList legs={legs} />}
-        <MainActionButton
-          icon="arrow_forward"
-          label="Continuer"
-          shape="bar"
-          onPress={() => router.push('/summary')}
-        />
+        <MainActionButton icon="check" label="Continuer" onPress={() => router.push('/summary')} />
       </FloatingSheet>
     </View>
   );

@@ -6,7 +6,7 @@ import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { Icon } from '@/ui/icon/icon';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 import { usePlaceDraft } from './use-place-draft';
 
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     bottom: 220,
     borderWidth: 2,
     borderColor: 'rgba(255,255,255,.75)',
-    borderRadius: 28,
+    borderRadius: radii.control,
   },
   controls: {
     position: 'absolute',

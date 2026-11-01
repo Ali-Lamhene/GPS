@@ -4,13 +4,15 @@ import { BackHandler } from 'react-native';
 
 import { layout, renderWithProviders } from '@/testing/render-with-providers';
 
+import { playCue } from '@/services/feedback';
+
 import { HomeScreen } from '../home-screen';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
+jest.mock('@/services/feedback', () => ({ playCue: jest.fn() }));
 
 async function renderHome() {
   await renderWithProviders(<HomeScreen />);
-  await fireEvent(screen.getByTestId('home-screen'), 'layout', layout(360, 800));
 }
 
 async function openSheet(end: 'Départ' | 'Arrivée') {
@@ -26,25 +28,32 @@ async function choose(end: 'Départ' | 'Arrivée', place: string) {
 describe('<HomeScreen />', () => {
   beforeEach(() => jest.mocked(router.push).mockClear());
 
-  test('starts with only the start tile available', async () => {
+  test('starts here, with only the arrival left to choose', async () => {
     await renderHome();
 
     expect(screen.getByRole('button', { name: 'Départ' })).toBeEnabled();
-    expect(screen.getByRole('button', { name: 'Arrivée' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Arrivée' })).toBeEnabled();
     expect(screen.queryByRole('button', { name: 'Continuer' })).toBeNull();
   });
 
-  test('choosing the start, then the arrival, offers to continue', async () => {
+  test('choosing the arrival plays the select sound and offers to continue', async () => {
+    await renderHome();
+
+    await choose('Arrivée', 'la plage du Prado');
+    expect(screen.queryByTestId('place-grid')).toBeNull();
+    expect(playCue).toHaveBeenCalledWith('select');
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Continuer' }));
+    expect(router.push).toHaveBeenCalledWith('/mode');
+  });
+
+  test('another start can be chosen from the column', async () => {
     await renderHome();
 
     await choose('Départ', 'mon domicile');
-    expect(screen.queryByTestId('place-grid')).toBeNull();
-    expect(screen.getByRole('button', { name: 'Arrivée' })).toBeEnabled();
-
     await choose('Arrivée', 'la plage du Prado');
-    await fireEvent.press(screen.getByRole('button', { name: 'Continuer' }));
 
-    expect(router.push).toHaveBeenCalledWith('/mode');
+    expect(screen.getByRole('button', { name: 'Continuer' })).toBeOnTheScreen();
   });
 
   test('the start cannot be picked again as the arrival', async () => {

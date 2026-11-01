@@ -35,7 +35,7 @@ describe('<CompanionEntryTile />', () => {
 
 describe('ringPath', () => {
   test('measures the rounded outline from the top centre', () => {
-    const r = 22 - 1.5;
+    const r = 8 - 1.5;
     const side = 100 - 3 - 2 * r;
 
     expect(ringPath(100).length).toBeCloseTo(4 * side + 2 * Math.PI * r);

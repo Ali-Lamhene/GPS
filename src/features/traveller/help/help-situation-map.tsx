@@ -6,7 +6,7 @@ import type { Place } from '@/domain/place';
 import { tripPosition, type Leg } from '@/domain/trip';
 import type { IconName } from '@/ui/icon/icon';
 import { TripMap } from '@/ui/map/trip-map';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 import { tripLines, tripStops } from '../components/trip-map-layers';
 
@@ -71,7 +71,7 @@ export function HelpSituationMap({ legs, step, destination }: HelpSituationMapPr
 const styles = StyleSheet.create({
   card: {
     height: 200,
-    borderRadius: 24,
+    borderRadius: radii.control,
     overflow: 'hidden',
     backgroundColor: colors.mapGround,
     borderWidth: 1,

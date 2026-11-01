@@ -90,6 +90,10 @@ Partout dans l'app, l'interface fait encore « jouet » : arrondis très marqué
 - La pulsation est gardée seulement sur la case à remplir et sur l'alerte « descends ».
 - Le son de validation est le son `select`, déjà joué au choix du transport (E06), avec sa vibration (`src/services/feedback.ts`). Aujourd'hui, l'accueil n'en joue aucun au choix d'un lieu.
 
+- Départ ou arrivée marqué « ne pas montrer sur la carte » : ni pointillé ni repère pour ce lieu ; seule la colonne montre le choix.
+- La barre « continuer » porte une coche, pas une flèche vers la droite (sens de lecture).
+- En démo, la position est toujours connue : la case de départ qui pulse (position inconnue) arrive avec la spec 004.
+
 ## Questions / réponses
 
 - Accueil : comment choisir où aller ? → Lieux en épingles sur la carte ; toucher une épingle donne le trajet depuis la position. Garder le chemin vertical, pas d'horizontale (sens de lecture).

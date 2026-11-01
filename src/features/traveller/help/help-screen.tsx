@@ -76,7 +76,7 @@ export function HelpScreen() {
           onPress={() => void speak(card.message)}
           style={styles.speak}
         >
-          <Icon name="volume_up" size={40} color={colors.onPrimary} />
+          <Icon name="volume_up" size={32} color={colors.onPrimary} />
         </Pressable>
         <Pressable
           accessibilityRole="button"
@@ -84,7 +84,7 @@ export function HelpScreen() {
           onPress={() => setLarge(!large)}
           style={styles.enlarge}
         >
-          <Icon name={large ? 'close_fullscreen' : 'open_in_full'} size={34} variant="outlined" />
+          <Icon name={large ? 'close_fullscreen' : 'open_in_full'} size={28} variant="outlined" />
         </Pressable>
       </View>
     </View>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   photo: {
     width: '100%',
     height: 160,
-    borderRadius: radii.xl,
+    borderRadius: radii.control,
   },
   actions: {
     flexDirection: 'row',
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   speak: {
     flex: 1,
     height: 80,
-    borderRadius: radii.xl,
+    borderRadius: radii.control,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   enlarge: {
     width: 80,
     height: 80,
-    borderRadius: radii.xl,
+    borderRadius: radii.control,
     borderWidth: 1,
     borderColor: colors.outline,
     alignItems: 'center',

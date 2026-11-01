@@ -6,7 +6,7 @@ import type { Place } from '@/domain/place';
 import { CompanionEntryTile } from '@/features/social-worker/companion-entry-tile';
 import { GrabHandle } from '@/ui/components/grab-handle';
 import { Icon } from '@/ui/icon/icon';
-import { colors, spacing } from '@/ui/theme';
+import { colors, radii, spacing } from '@/ui/theme';
 
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { AddPlaceTile } from './add-place-tile';
@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.white,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: radii.sheet,
+    borderTopRightRadius: radii.sheet,
     paddingTop: spacing.lg,
     paddingHorizontal: spacing.xl,
     gap: spacing.lg,

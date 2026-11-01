@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import type { TravelMode } from '@/domain/trip';
 import { Icon, type IconName } from '@/ui/icon/icon';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 const MODES: { mode: TravelMode; icon: IconName; label: string }[] = [
   { mode: 'walk', icon: 'directions_walk', label: 'À pied' },
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     height: 72,
     padding: 4,
     gap: 4,
-    borderRadius: 36,
+    borderRadius: radii.control,
     backgroundColor: colors.surfaceHigh,
   },
   segment: {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
-    borderRadius: 32,
+    borderRadius: radii.small,
   },
   on: {
     backgroundColor: colors.primary,

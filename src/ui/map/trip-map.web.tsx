@@ -24,6 +24,7 @@ import {
   createDestinationPin,
   createManeuverArrow,
   createOriginPin,
+  createPlacePin,
   createStopPin,
   createTravellerCone,
   createTravellerDot,
@@ -177,6 +178,8 @@ export function TripMap({
   interactive = true,
   controlsBottom = 16,
   recenterIcon = 'my_location',
+  pins = [],
+  onPinPress,
 }: TripMapProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const initial = useRef({ camera, still: backdrop || !interactive });
@@ -209,9 +212,9 @@ export function TripMap({
         pitch,
         maxZoom: 19,
         interactive: !initial.current.still,
-        // Only a two-finger pinch moves the map: a stray tap, double tap or drag never
-        // loses the traveller's position.
-        dragPan: false,
+        // Only two fingers move or zoom the map: a stray tap, double tap or one-finger drag
+        // never loses the traveller's position. MapLibre's text hint is hidden (zero text).
+        cooperativeGestures: true,
         dragRotate: false,
         doubleClickZoom: false,
         touchPitch: false,
@@ -278,17 +281,45 @@ export function TripMap({
     return () => markers.forEach((marker) => marker.remove());
   }, [map, stopsKey]);
 
+  // The latest handler, so pins are not rebuilt each time the screen renders.
+  const pinPress = useRef(onPinPress);
+  useEffect(() => {
+    pinPress.current = onPinPress;
+  }, [onPinPress]);
+  const pinsKey = JSON.stringify(pins);
+  useEffect(() => {
+    if (!map) return;
+    const markers = (JSON.parse(pinsKey) as typeof pins).map((pin) => {
+      const element = createPlacePin(pin.icon, pin.photo, pin.selected ?? false, pin.label);
+      element.addEventListener('click', (event) => {
+        event.stopPropagation();
+        pinPress.current?.(pin.id);
+      });
+      return new Marker({ element, anchor: 'bottom' })
+        .setLngLat([pin.point[0], pin.point[1]])
+        .addTo(map);
+    });
+    return () => markers.forEach((marker) => marker.remove());
+  }, [map, pinsKey]);
+
   const [centerLon, centerLat] = camera.center;
   const { zoom, heading: bearing = 0, pitch = 0 } = camera;
   const paddingTop = camera.padding?.top ?? 0;
   const paddingBottom = camera.padding?.bottom ?? 0;
+  const paddingLeft = camera.padding?.left ?? 0;
+  const paddingRight = camera.padding?.right ?? 0;
   useEffect(() => {
     if (!map || !following) return;
     const bounds = JSON.parse(boundsKey) as TripMapProps['camera']['bounds'] | null;
     if (bounds) {
       map.fitBounds([bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]], {
         // Room for the pins, which stand above their point.
-        padding: { top: paddingTop + 64, bottom: paddingBottom + 24, left: 32, right: 32 },
+        padding: {
+          top: paddingTop + 64,
+          bottom: paddingBottom + 24,
+          left: paddingLeft + 32,
+          right: paddingRight + 32,
+        },
         bearing: 0,
         pitch: 0,
         maxZoom: 17,
@@ -301,7 +332,7 @@ export function TripMap({
       zoom,
       bearing,
       pitch,
-      padding: { top: paddingTop, bottom: paddingBottom, left: 0, right: 0 },
+      padding: { top: paddingTop, bottom: paddingBottom, left: paddingLeft, right: paddingRight },
       duration: 900,
     });
   }, [
@@ -315,6 +346,8 @@ export function TripMap({
     pitch,
     paddingTop,
     paddingBottom,
+    paddingLeft,
+    paddingRight,
   ]);
 
   return (

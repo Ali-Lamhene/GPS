@@ -13,7 +13,7 @@ describe('D9 text components', () => {
     expect(screen.getByText('C3')).toBeOnTheScreen();
     expect(screen.getByLabelText('Ligne C3')).toHaveStyle({
       backgroundColor: '#1F5FBF',
-      borderRadius: 12,
+      borderRadius: 8,
     });
   });
 

@@ -4,13 +4,13 @@ import type { Place } from '@/domain/place';
 import { isAlert, type Instruction } from '@/domain/guidance';
 import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon } from '@/ui/icon/icon';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 import { LineBadge, MetroSign } from '../components/line-badge';
 import { StationName } from '../components/station-name';
 import { mainSymbol, nextSymbol } from './instruction-look';
 
-const TILE_RADIUS = 20;
+const TILE_RADIUS = radii.control;
 
 type InstructionCardProps = {
   instruction: Instruction;
@@ -44,16 +44,16 @@ export function InstructionCard({ instruction, destination, onPress }: Instructi
         >
           {alert && <PulseRing borderRadius={TILE_RADIUS} color={colors.white} />}
           {symbol === 'metro' && leg ? (
-            <MetroSign color={leg.line.color} size={68} />
+            <MetroSign color={leg.line.color} size={60} />
           ) : symbol !== 'metro' ? (
-            <Icon name={symbol} size={60} color={alert ? colors.alert : colors.white} />
+            <Icon name={symbol} size={46} color={alert ? colors.alert : colors.white} />
           ) : null}
         </View>
         {instruction.kind === 'waitVehicle' && <LineBadge line={instruction.leg.line} size="lg" />}
         <View style={styles.spacer} />
         {next && (
           <View style={styles.next}>
-            <Icon name={next} size={36} color={colors.white} />
+            <Icon name={next} size={30} color={colors.white} />
           </View>
         )}
       </View>
@@ -76,15 +76,15 @@ export function InstructionCard({ instruction, destination, onPress }: Instructi
 
 const styles = StyleSheet.create({
   card: {
-    minHeight: 104,
-    borderRadius: 24,
+    minHeight: 96,
+    borderRadius: radii.control,
     padding: 14,
     gap: 10,
     boxShadow: '0 6px 20px rgba(0,0,0,.22)',
   },
   tile: {
-    width: 76,
-    height: 76,
+    width: 68,
+    height: 68,
     borderRadius: TILE_RADIUS,
     alignItems: 'center',
     justifyContent: 'center',
@@ -106,9 +106,9 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   next: {
-    width: 56,
-    height: 56,
-    borderRadius: 16,
+    width: 52,
+    height: 52,
+    borderRadius: radii.control,
     backgroundColor: colors.whiteGlass,
     alignItems: 'center',
     justifyContent: 'center',

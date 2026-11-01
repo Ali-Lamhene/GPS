@@ -17,6 +17,19 @@ export type MapStop = {
   alight?: boolean;
 };
 
+/** A saved place the traveller can touch on the map to go there (spec 005). */
+export type MapPin = {
+  id: string;
+  point: LngLat;
+  icon: IconName;
+  /** Read by screen readers only (the place's French help name). */
+  label: string;
+  /** The traveller's own photo of the place: a local file, never a web address. */
+  photo?: string;
+  /** The place chosen as arrival: larger, edged in blue, drawn above the others. */
+  selected?: boolean;
+};
+
 export type TripMapProps = {
   /**
    * Where the map looks; it follows these values unless the traveller moves the map.
@@ -29,7 +42,7 @@ export type TripMapProps = {
     heading?: number;
     pitch?: number;
     /** Room taken by content floating over the map, so the centre stays visible. */
-    padding?: { top: number; bottom: number };
+    padding?: { top: number; bottom: number; left?: number; right?: number };
   };
   lines?: readonly MapLine[];
   stops?: readonly MapStop[];
@@ -39,6 +52,9 @@ export type TripMapProps = {
   /** Start of the trip when it is a saved place rather than where the traveller stands. */
   origin?: { point: LngLat; icon: IconName };
   destination?: { point: LngLat; icon: IconName };
+  /** Saved places, drawn as pins the traveller can touch. */
+  pins?: readonly MapPin[];
+  onPinPress?: (id: string) => void;
   /** Background only (home): softened and without gestures. */
   backdrop?: boolean;
   /** False keeps the map still, under content pinned to its centre (new place). */

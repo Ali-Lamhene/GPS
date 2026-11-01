@@ -5,7 +5,7 @@ import type { Leg } from '@/domain/trip';
 import { speak } from '@/services/speech';
 import { TimeDials } from '@/ui/components/time-dials';
 import { Icon, type IconName } from '@/ui/icon/icon';
-import { colors, sizes } from '@/ui/theme';
+import { colors, radii, sizes } from '@/ui/theme';
 
 import { ProgressStrip } from './progress-strip';
 
@@ -61,8 +61,8 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.white,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: radii.sheet,
+    borderTopRightRadius: radii.sheet,
     paddingTop: 16,
     paddingHorizontal: 16,
     gap: 14,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   listen: {
     width: sizes.minTarget,
     height: sizes.minTarget,
-    borderRadius: sizes.minTarget / 2,
+    borderRadius: radii.control,
     backgroundColor: colors.secondaryContainer,
     alignItems: 'center',
     justifyContent: 'center',

@@ -9,7 +9,7 @@ import { MainActionButton } from '@/ui/components/main-action-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { Icon } from '@/ui/icon/icon';
 import { TripMap } from '@/ui/map/trip-map';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
@@ -51,7 +51,7 @@ export function PictogramScreen() {
         <View style={[styles.preview, icon && styles.previewChosen]}>
           <Icon
             name={icon ?? 'add_location_alt'}
-            size={52}
+            size={40}
             color={icon ? colors.white : colors.inkDisabled}
           />
         </View>
@@ -60,9 +60,8 @@ export function PictogramScreen() {
           onSelect={(next) => dispatch({ type: 'setDraftIcon', icon: next })}
         />
         <MainActionButton
-          icon="arrow_forward"
+          icon="check"
           label="Continuer"
-          shape="bar"
           disabled={!icon}
           onPress={() => router.push('/add-place/photo')}
         />
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
     marginTop: -64,
     width: 96,
     height: 96,
-    borderRadius: 28,
+    borderRadius: radii.control,
     backgroundColor: colors.surfaceHigh,
     borderWidth: 4,
     borderColor: colors.white,

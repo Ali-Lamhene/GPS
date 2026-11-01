@@ -2,7 +2,7 @@ import { Pressable, StyleSheet } from 'react-native';
 
 import { CURRENT_POSITION, type Place } from '@/domain/place';
 import { PlaceVisual } from '@/ui/components/place-visual';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 type SheetPlaceTileProps = {
   place: Place;
@@ -11,7 +11,7 @@ type SheetPlaceTileProps = {
   disabled?: boolean;
 };
 
-/** A saved place in the place sheet. The current position stands out in light blue. */
+/** A saved place in the place sheet: white tile, the current position edged in light blue. */
 export function SheetPlaceTile({ place, size, onPress, disabled = false }: SheetPlaceTileProps) {
   const isHere = place.id === CURRENT_POSITION.id;
   return (
@@ -26,14 +26,14 @@ export function SheetPlaceTile({ place, size, onPress, disabled = false }: Sheet
         {
           width: size,
           height: size,
-          backgroundColor: isHere ? colors.tertiaryContainer : colors.surfaceHigh,
+          borderColor: isHere ? colors.primary : colors.outlineVariant,
         },
         disabled && styles.disabled,
       ]}
     >
       <PlaceVisual
         place={place}
-        iconSize={46}
+        iconSize={36}
         badgeSize={42}
         color={isHere ? colors.onTertiaryContainer : colors.ink}
       />
@@ -43,7 +43,9 @@ export function SheetPlaceTile({ place, size, onPress, disabled = false }: Sheet
 
 const styles = StyleSheet.create({
   tile: {
-    borderRadius: 20,
+    borderRadius: radii.control,
+    borderWidth: 2,
+    backgroundColor: colors.white,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',

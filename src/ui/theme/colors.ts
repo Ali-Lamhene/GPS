@@ -23,7 +23,6 @@ export const colors = {
   primary: '#1E6BFF',
   onPrimary: '#FFFFFF',
   primaryTint: '#EAF1FF',
-  primaryHalo: 'rgba(30,107,255,.16)',
   secondaryContainer: '#DCE8FF',
   onSecondaryContainer: '#0B2A5C',
   tertiaryContainer: '#DCE7F7',

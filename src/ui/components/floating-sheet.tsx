@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, spacing } from '@/ui/theme';
+import { colors, radii, spacing } from '@/ui/theme';
 
 type FloatingSheetProps = {
   children: ReactNode;
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.white,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: radii.sheet,
+    borderTopRightRadius: radii.sheet,
     paddingTop: spacing.lg,
     paddingHorizontal: spacing.lg,
     boxShadow: '0 -4px 16px rgba(0,0,0,.12)',

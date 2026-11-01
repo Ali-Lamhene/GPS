@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet } from 'react-native';
 
 import { Icon } from '@/ui/icon/icon';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 type AddPlaceTileProps = {
   size: number;
@@ -17,14 +17,14 @@ export function AddPlaceTile({ size, onPress }: AddPlaceTileProps) {
       onPress={onPress}
       style={[styles.tile, { width: size, height: size }]}
     >
-      <Icon name="add_location_alt" size={46} color={colors.primary} />
+      <Icon name="add_location_alt" size={36} color={colors.primary} />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   tile: {
-    borderRadius: 20,
+    borderRadius: radii.control,
     borderWidth: 2,
     borderStyle: 'dashed',
     borderColor: colors.primary,

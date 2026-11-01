@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import type { TransitLine } from '@/domain/trip';
-import { colors, fontFamilies } from '@/ui/theme';
+import { colors, fontFamilies, radii } from '@/ui/theme';
 
 // Decision D9: official line ids are one of the three texts the traveller sees, so they
 // can match the screen with the signs of the network.
@@ -30,7 +30,7 @@ export function LineBadge({ line, size }: LineBadgeProps) {
         box,
         {
           backgroundColor: line.color,
-          borderRadius: line.shape === 'pill' ? box.height / 2 : 12,
+          borderRadius: line.shape === 'pill' ? box.height / 2 : radii.control,
         },
       ]}
     >

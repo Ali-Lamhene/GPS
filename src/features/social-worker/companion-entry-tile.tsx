@@ -3,12 +3,12 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import { Icon } from '@/ui/icon/icon';
-import { colors, fontFamilies } from '@/ui/theme';
+import { colors, fontFamilies, radii } from '@/ui/theme';
 
 import { useHoldProgress } from './use-hold-progress';
 
 const HOLD_MS = 3000;
-const RADIUS = 22;
+const RADIUS = radii.control;
 const RING = 3;
 
 /** Rounded square outline starting at top centre, clockwise, and its length. */

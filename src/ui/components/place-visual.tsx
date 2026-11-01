@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { StyleSheet, View } from 'react-native';
 
-import type { Place } from '@/domain/place';
+import { isLocalPicture, type Place } from '@/domain/place';
 import { Icon } from '@/ui/icon/icon';
 import { colors } from '@/ui/theme';
 
@@ -27,7 +27,9 @@ export function PlaceVisual({
   color,
   badge = 'center',
 }: PlaceVisualProps) {
-  if (!place.photo) return <Icon name={place.icon} size={iconSize} color={color} />;
+  if (!place.photo || !isLocalPicture(place.photo)) {
+    return <Icon name={place.icon} size={iconSize} color={color} />;
+  }
 
   return (
     <>

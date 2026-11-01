@@ -38,15 +38,10 @@ export function ConnectionErrorScreen() {
         <View style={styles.center}>
           <View style={styles.symbol}>
             {/* Same no-network sign as underground (E21): not every traveller has Wi-Fi. */}
-            <Icon name="cloud_off" size={64} color={colors.error} variant="outlined" />
+            <Icon name="cloud_off" size={48} color={colors.error} variant="outlined" />
           </View>
         </View>
-        <MainActionButton
-          icon="refresh"
-          label="Réessayer"
-          shape="bar"
-          onPress={() => router.back()}
-        />
+        <MainActionButton icon="refresh" label="Réessayer" onPress={() => router.back()} />
       </FloatingSheet>
     </View>
   );

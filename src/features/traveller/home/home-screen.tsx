@@ -3,107 +3,132 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { Place } from '@/domain/place';
+import { pathsBounds, type LngLat } from '@/domain/geo';
+import {
+  CURRENT_POSITION,
+  homeFraming,
+  isHiddenOnMap,
+  placesOnMap,
+  type Place,
+} from '@/domain/place';
+import { playCue } from '@/services/feedback';
 import { HelpButton } from '@/ui/components/help-button';
+import { MainActionButton } from '@/ui/components/main-action-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { TripMap } from '@/ui/map/trip-map';
-import { MainActionButton } from '@/ui/components/main-action-button';
-import { colors } from '@/ui/theme';
+import type { MapPin } from '@/ui/map/trip-map-types';
+import { colors, sizes, spacing } from '@/ui/theme';
 
 import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { PlaceSheet } from './place-sheet';
-import { TRAIL_END, TRAIL_START, TripTrail } from './trip-trail';
-import { TripEndpoint } from './trip-endpoint';
+import { TRIP_COLUMN_WIDTH, TripColumn } from './trip-column';
 
-const START_SIZE = 112;
-const END_BOX = 128;
+/** Where a place shows on the map, unless it is kept off it (spec 005). */
+function visiblePoint(place: Place | undefined): LngLat | undefined {
+  return place && !isHiddenOnMap(place) ? place.point : undefined;
+}
 
 /**
- * Home (E01-E05): over the real map around the traveller, a vertical trail from the start
- * to the arrival (spec 002). The traveller touches the pulsing tile, picks a place in the
- * sheet, then the blue disc to go on.
+ * Home (E01-E05, spec 005): the live map around the traveller with their places as pins,
+ * and the vertical trip in a column. Touching a pin chooses the arrival; the column boxes
+ * open the place sheet; the blue bar goes on to the choice of transport.
  */
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
   const plan = useTripPlan();
   const { origin, destination, dispatch } = plan;
-  const [size, setSize] = useState({ width: 0, height: 0 });
   const [sheet, setSheet] = useState<TripEnd | null>(null);
 
-  const stage = destination ? 'ready' : origin ? 'started' : 'empty';
+  // The demo position stands in for GPS until spec 004.
+  const position = DEMO_CURRENT_POSITION;
+  const start = origin?.id === CURRENT_POSITION.id ? position : visiblePoint(origin);
+  const end = visiblePoint(destination);
+  const ready = origin !== undefined && destination !== undefined;
+
+  const pins = placesOnMap(plan.destinationChoices, origin?.id).flatMap((place): MapPin[] =>
+    place.point
+      ? [
+          {
+            id: place.id,
+            point: place.point,
+            icon: place.icon,
+            label: place.helpName ?? 'Lieu',
+            photo: place.photo,
+            selected: place.id === destination?.id,
+          },
+        ]
+      : [],
+  );
+
+  const chooseDestination = (placeId: string) => {
+    dispatch({ type: 'chooseDestination', placeId });
+    playCue('select');
+  };
 
   const pick = (end: TripEnd, place: Place) => {
-    dispatch({
-      type: end === 'origin' ? 'chooseOrigin' : 'chooseDestination',
-      placeId: place.id,
-    });
+    if (end === 'destination') chooseDestination(place.id);
+    else dispatch({ type: 'chooseOrigin', placeId: place.id });
     setSheet(null);
   };
 
   const createPlace = (end: TripEnd, source: 'position' | 'address') => {
-    dispatch({ type: 'startPlace', for: end, source });
+    const point = source === 'position' ? position : undefined;
+    dispatch({ type: 'startPlace', for: end, source, point });
     setSheet(null);
     router.push(source === 'position' ? '/add-place/position' : '/add-place/address');
   };
 
-  return (
-    <View
-      testID="home-screen"
-      style={styles.screen}
-      onLayout={(event) => setSize(event.nativeEvent.layout)}
-    >
-      <TripMap camera={{ center: DEMO_CURRENT_POSITION, zoom: 15.6 }} backdrop />
-      {size.width > 0 && (
-        <>
-          <TripTrail width={size.width} height={size.height} stage={stage} />
-          <View
-            style={[
-              styles.anchor,
-              {
-                left: TRAIL_START.x * size.width - START_SIZE / 2,
-                top: TRAIL_START.y * size.height - START_SIZE / 2,
-              },
-            ]}
-          >
-            <TripEndpoint
-              end="origin"
-              place={origin}
-              pulsing={stage === 'empty'}
-              size={START_SIZE}
-              onPress={() => setSheet('origin')}
-            />
-          </View>
-          <View
-            style={[
-              styles.anchor,
-              styles.endBox,
-              {
-                left: TRAIL_END.x * size.width - END_BOX / 2,
-                top: TRAIL_END.y * size.height - END_BOX / 2,
-              },
-            ]}
-          >
-            <TripEndpoint
-              end="destination"
-              place={destination}
-              pulsing={stage === 'started'}
-              size={destination ? END_BOX : START_SIZE}
-              disabled={!origin}
-              onPress={() => setSheet('destination')}
-            />
-          </View>
-        </>
-      )}
+  const headerBottom = insets.top + spacing.md + sizes.headerButton;
+  const barBottom = insets.bottom + spacing.lg;
+  const mapBottom = ready ? barBottom + sizes.minTarget + spacing.lg : barBottom;
 
-      {stage === 'ready' && (
-        <View style={[styles.action, { bottom: insets.bottom + 28 }]} pointerEvents="box-none">
-          <MainActionButton
-            icon="arrow_forward"
-            label="Continuer"
-            onPress={() => router.push('/mode')}
-          />
+  return (
+    <View testID="home-screen" style={styles.screen}>
+      <TripMap
+        camera={{
+          center: start ?? position,
+          zoom: 16,
+          bounds:
+            start && end
+              ? pathsBounds([[start, end]])
+              : homeFraming(
+                  position,
+                  pins.map((pin) => pin.point),
+                ),
+          // Right: room for half of the chosen pin, which stands over its spot.
+          padding: {
+            top: headerBottom,
+            bottom: mapBottom,
+            left: TRIP_COLUMN_WIDTH + spacing.lg,
+            right: spacing.lg,
+          },
+        }}
+        lines={start && end ? [{ path: [start, end], color: colors.primary, style: 'walk' }] : []}
+        traveller={{ point: position }}
+        origin={
+          origin && origin.id !== CURRENT_POSITION.id && start
+            ? { point: start, icon: origin.icon }
+            : undefined
+        }
+        pins={pins}
+        onPinPress={chooseDestination}
+        controlsBottom={mapBottom}
+      />
+
+      <View style={[styles.column, { top: insets.top + spacing.md }]}>
+        <TripColumn
+          origin={origin}
+          destination={destination}
+          onOrigin={() => setSheet('origin')}
+          onDestination={() => setSheet('destination')}
+        />
+      </View>
+
+      {ready && (
+        <View style={[styles.action, { bottom: barBottom }]} pointerEvents="box-none">
+          <MainActionButton icon="check" label="Continuer" onPress={() => router.push('/mode')} />
         </View>
       )}
 
@@ -131,19 +156,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mapGround,
     overflow: 'hidden',
   },
-  anchor: {
+  column: {
     position: 'absolute',
-  },
-  endBox: {
-    width: END_BOX,
-    height: END_BOX,
-    alignItems: 'center',
-    justifyContent: 'center',
+    left: spacing.lg,
   },
   action: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    alignItems: 'center',
+    left: spacing.lg,
+    right: spacing.lg,
   },
 });

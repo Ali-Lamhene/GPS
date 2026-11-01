@@ -34,6 +34,7 @@ Cette spec couvre les lieux et l'accueil du voyageur. La composition d'un trajet
    - puis elle ajuste le point en touchant ou en déplaçant le repère sur la carte, par exemple sur l'entrée exacte du bâtiment ;
    - ou directement en touchant la carte, sans recherche.
 4. Elle choisit un pictogramme dans une liste fixe et une couleur dans une palette fixe.
+   Elle indique si le lieu peut apparaître sur la carte d'accueil (case « ne pas montrer sur la carte », cochée d'office pour « maison » et « famille », spec 005).
 5. Elle ajoute une photo (facultatif) : appareil photo ou galerie. Elle peut la recadrer au format de la carte.
 6. Elle enregistre. Le lieu apparaît dans la liste et sur l'accueil du voyageur.
 7. Depuis la liste, elle peut **modifier** un lieu (position, pictogramme, couleur, photo) ou le **supprimer** (avec confirmation).

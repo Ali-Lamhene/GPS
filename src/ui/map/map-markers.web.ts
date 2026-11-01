@@ -1,3 +1,4 @@
+import { isLocalPicture } from '@/domain/place';
 import { GLYPHS, type IconName } from '@/ui/icon/glyphs';
 import { colors, fontFamilies } from '@/ui/theme';
 
@@ -7,6 +8,7 @@ import { colors, fontFamilies } from '@/ui/theme';
 const CSS = `
 .trip-map .maplibregl-ctrl-bottom-left,
 .trip-map .maplibregl-ctrl-bottom-right { bottom: var(--controls-bottom, 0px); }
+.trip-map .maplibregl-cooperative-gesture-screen { display: none !important; }
 @keyframes trip-map-pulse { 0% { transform: scale(1); opacity: .45 } 100% { transform: scale(2.4); opacity: 0 } }
 `;
 
@@ -76,7 +78,7 @@ export function createDestinationPin(icon: IconName): HTMLElement {
   const head = box({
     width: '48px',
     height: '48px',
-    borderRadius: '16px',
+    borderRadius: '8px',
     background: colors.ink,
     border: '3px solid #FFFFFF',
     boxSizing: 'border-box',
@@ -99,12 +101,73 @@ export function createDestinationPin(icon: IconName): HTMLElement {
   return root;
 }
 
+/**
+ * A saved place the traveller can touch (spec 005): white disc with its pictogram or photo,
+ * and a pointer to the exact spot. The chosen arrival is larger and edged in blue.
+ */
+export function createPlacePin(
+  icon: IconName,
+  photo: string | undefined,
+  selected: boolean,
+  label: string,
+): HTMLElement {
+  const size = selected ? 60 : 48;
+  const edge = selected ? colors.primary : '#FFFFFF';
+  // A 64 px touch area around the drawn pin, for a stressed thumb (principes.md).
+  const root = box({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    minWidth: '64px',
+    minHeight: '64px',
+    cursor: 'pointer',
+    zIndex: selected ? '2' : '1',
+  });
+  root.setAttribute('role', 'button');
+  root.setAttribute('aria-label', label);
+  const head = box({
+    width: `${size}px`,
+    height: `${size}px`,
+    borderRadius: '50%',
+    background: '#FFFFFF',
+    border: `${selected ? 4 : 3}px solid ${edge}`,
+    boxSizing: 'border-box',
+    overflow: 'hidden',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    // Thin dark ring: a white pin stays visible on the cream ground.
+    boxShadow: '0 0 0 1px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.3)',
+  });
+  if (photo && isLocalPicture(photo)) {
+    const image = document.createElement('img');
+    image.src = photo;
+    image.alt = '';
+    Object.assign(image.style, { width: '100%', height: '100%', objectFit: 'cover' });
+    head.append(image);
+  } else {
+    head.append(glyph(icon, selected ? 32 : 26, colors.ink));
+  }
+  const pointer = box({
+    width: '0',
+    height: '0',
+    borderLeft: '7px solid transparent',
+    borderRight: '7px solid transparent',
+    borderTop: `9px solid ${edge}`,
+    marginTop: '-1px',
+    filter: 'drop-shadow(0 2px 1px rgba(0,0,0,.25))',
+  });
+  root.append(head, pointer);
+  return root;
+}
+
 /** Start of the trip when it is a saved place: its pictogram on a white pin. */
 export function createOriginPin(icon: IconName): HTMLElement {
   const root = box({
     width: '44px',
     height: '44px',
-    borderRadius: '14px',
+    borderRadius: '8px',
     background: '#FFFFFF',
     border: `3px solid ${colors.ink}`,
     boxSizing: 'border-box',
@@ -128,7 +191,7 @@ export function createStopPin(
   const root = box({
     width: '40px',
     height: '40px',
-    borderRadius: metro ? '50%' : '12px',
+    borderRadius: metro ? '50%' : '8px',
     background: color,
     border: '3px solid #FFFFFF',
     boxSizing: 'border-box',

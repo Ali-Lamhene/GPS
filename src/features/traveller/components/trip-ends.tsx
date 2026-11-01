@@ -2,11 +2,11 @@ import { StyleSheet, View } from 'react-native';
 
 import type { Place } from '@/domain/place';
 import { Icon } from '@/ui/icon/icon';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 const SIZES = {
-  sm: { box: 40, icon: 24, radius: 8 },
-  md: { box: 44, icon: 26, radius: 14 },
+  sm: { box: 40, icon: 24, radius: 4 },
+  md: { box: 44, icon: 26, radius: 8 },
 } as const;
 
 type TripEndsProps = {
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     padding: 6,
-    borderRadius: 16,
+    borderRadius: radii.control,
     backgroundColor: colors.white,
     boxShadow: '0 2px 8px rgba(0,0,0,.16)',
   },

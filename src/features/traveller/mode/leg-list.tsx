@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { isTransitLeg, type Leg } from '@/domain/trip';
 import { TimeDials } from '@/ui/components/time-dials';
 import { Icon } from '@/ui/icon/icon';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 import { legColor, legIcon } from '../components/leg-style';
 import { LineBadge } from '../components/line-badge';
@@ -35,7 +35,7 @@ export function LegList({ legs }: { legs: readonly Leg[] }) {
 const styles = StyleSheet.create({
   list: {
     backgroundColor: colors.surfaceLow,
-    borderRadius: 16,
+    borderRadius: radii.control,
     paddingVertical: 6,
     paddingHorizontal: 14,
   },

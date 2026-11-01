@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     height: sizes.headerButton,
     justifyContent: 'center',
     backgroundColor: colors.night.bar,
-    borderRadius: radii.md,
+    borderRadius: radii.control,
     paddingHorizontal: 16,
   },
   line: {
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: colors.night.card,
-    borderRadius: radii.xl,
+    borderRadius: radii.control,
     paddingVertical: 12,
   },
   spacer: {
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   gotOff: {
     height: 80,
-    borderRadius: radii.xl,
+    borderRadius: radii.control,
     backgroundColor: colors.primary,
     flexDirection: 'row',
     alignItems: 'center',

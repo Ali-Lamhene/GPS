@@ -54,7 +54,7 @@ export function IconButton({
         {
           width: size,
           height: size,
-          borderRadius: shape === 'circle' ? size / 2 : radii.lg,
+          borderRadius: shape === 'circle' ? size / 2 : radii.control,
           backgroundColor: background,
           boxShadow: shadow,
         },

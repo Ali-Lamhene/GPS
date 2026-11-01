@@ -10,14 +10,15 @@ export const spacing = {
   xxl: 28,
 } as const;
 
+// Sober corners (spec 005): circles only for buttons floating over the map, pins and the
+// position dot.
 export const radii = {
-  xs: 8,
-  sm: 12,
-  md: 20,
-  lg: 24,
-  xl: 28,
-  xxl: 32,
-  full: 999,
+  /** Small marks: badges, chips. */
+  small: 4,
+  /** Buttons, tiles, banners, cards. */
+  control: 8,
+  /** Top corners of the panels at the bottom of the screen. */
+  sheet: 16,
 } as const;
 
 export const sizes = {
@@ -25,8 +26,6 @@ export const sizes = {
   headerButton: 56,
   /** Square action buttons of the guidance panel. */
   actionButton: 72,
-  /** Main action disc. */
-  mainAction: 96,
   /** Smallest target for the traveller (docs/product/principes.md). */
   minTarget: 64,
 } as const;

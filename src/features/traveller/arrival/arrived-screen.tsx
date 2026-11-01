@@ -10,7 +10,7 @@ import { MapHeader } from '@/ui/components/map-header';
 import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon } from '@/ui/icon/icon';
 import { TripMap } from '@/ui/map/trip-map';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 import { DEMO_LEGS } from '../demo/trips';
 import { useCueOnEnter } from '../hooks/use-cue-on-enter';
@@ -53,7 +53,7 @@ export function ArrivedScreen() {
                 style={[StyleSheet.absoluteFill, styles.photo]}
               />
             ) : (
-              <Icon name={icon} size={88} color={colors.white} />
+              <Icon name={icon} size={66} color={colors.white} />
             )}
             <View style={styles.sealBox}>
               <PulseRing borderRadius={SEAL / 2} color={colors.success} />
@@ -63,7 +63,7 @@ export function ArrivedScreen() {
             </View>
           </View>
         </View>
-        <MainActionButton icon="home" label="Accueil" shape="bar" onPress={goHome} />
+        <MainActionButton icon="home" label="Accueil" onPress={goHome} />
       </FloatingSheet>
     </View>
   );
@@ -81,14 +81,14 @@ const styles = StyleSheet.create({
   place: {
     width: 148,
     height: 148,
-    borderRadius: 36,
+    borderRadius: radii.control,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: '0 6px 18px rgba(30,107,255,.35)',
   },
   photo: {
-    borderRadius: 36,
+    borderRadius: radii.control,
   },
   sealBox: {
     position: 'absolute',

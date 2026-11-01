@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTripPlan } from '@/features/traveller/trip-plan/trip-plan-context';
 import { IconButton } from '@/ui/components/icon-button';
 import { Icon } from '@/ui/icon/icon';
-import { colors, fontFamilies } from '@/ui/theme';
+import { colors, fontFamilies, radii } from '@/ui/theme';
 
 import { matchAddresses } from './demo/addresses';
 
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     gap: 6,
     height: 32,
     paddingHorizontal: 12,
-    borderRadius: 8,
+    borderRadius: radii.control,
     backgroundColor: colors.secondaryContainer,
   },
   chipText: {
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 56,
-    borderRadius: 12,
+    borderRadius: radii.control,
     borderWidth: 2,
     borderColor: colors.primary,
     paddingHorizontal: 16,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   list: {
     backgroundColor: colors.surfaceLow,
-    borderRadius: 16,
+    borderRadius: radii.control,
     overflow: 'hidden',
   },
   suggestion: {

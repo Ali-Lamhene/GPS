@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { PICTOGRAM_CHOICES, type PlaceIcon } from '@/domain/place';
 import { Icon } from '@/ui/icon/icon';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 const COLUMNS = 4;
 const GAP = 10;
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     gap: GAP,
   },
   tile: {
-    borderRadius: 16,
+    borderRadius: radii.control,
     backgroundColor: colors.surfaceLow,
     alignItems: 'center',
     justifyContent: 'center',

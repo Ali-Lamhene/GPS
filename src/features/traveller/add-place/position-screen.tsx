@@ -8,7 +8,7 @@ import { MapHeader } from '@/ui/components/map-header';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon } from '@/ui/icon/icon';
-import { colors, shadows } from '@/ui/theme';
+import { colors, radii, shadows } from '@/ui/theme';
 
 import { TripMap } from '@/ui/map/trip-map';
 
@@ -33,14 +33,14 @@ export function PositionScreen() {
           <View style={styles.dot} />
         </View>
         <View style={styles.pin}>
-          <Icon name="add_location_alt" size={48} color={colors.primary} />
+          <Icon name="add_location_alt" size={36} color={colors.primary} />
         </View>
       </View>
       <MapHeader
         left={<IconButton icon="close" label="Annuler" onPress={cancel} tone="raised" />}
         right={<HelpButton onPress={() => router.push('/help')} />}
       />
-      <View style={[styles.action, { bottom: insets.bottom + 28 }]}>
+      <View style={[styles.action, { bottom: insets.bottom + 16 }]}>
         <MainActionButton
           icon="check"
           label="Enregistrer cette position"
@@ -91,9 +91,9 @@ const styles = StyleSheet.create({
   pin: {
     position: 'absolute',
     top: -124,
-    width: 88,
-    height: 88,
-    borderRadius: 26,
+    width: 72,
+    height: 72,
+    borderRadius: radii.control,
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
@@ -101,8 +101,7 @@ const styles = StyleSheet.create({
   },
   action: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    alignItems: 'center',
+    left: 16,
+    right: 16,
   },
 });

@@ -9,7 +9,7 @@ import { IconButton } from '@/ui/components/icon-button';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { TimeDials } from '@/ui/components/time-dials';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 import { TripEnds } from '../components/trip-ends';
 import { TripOverviewMap } from '../components/trip-overview-map';
@@ -64,7 +64,6 @@ export function SummaryScreen() {
             <MainActionButton
               icon="navigation"
               label="Démarrer le trajet"
-              shape="bar"
               onPress={() => {
                 dispatch({ type: 'goToStep', index: 0 });
                 router.push('/guidance');
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
   legs: {
     maxHeight: 290,
     backgroundColor: colors.surfaceLow,
-    borderRadius: 16,
+    borderRadius: radii.control,
   },
   legsContent: {
     paddingVertical: 4,
