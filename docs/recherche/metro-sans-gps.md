@@ -36,6 +36,10 @@ Quelle que soit la piste, l'erreur la plus grave est de rater la station de desc
 - ne jamais affirmer une position précise entre deux stations : montrer la prochaine station, pas un point qui glisse ;
 - garder le bouton « je suis descendu », que le voyageur confirme lui-même (E21).
 
+## Décision (2026-11-01)
+
+L'utilisateur choisit la piste 3, **hybride** : arrêts comptés à l'accéléromètre, contrôlés par le temps prévu, recalés au GPS dès qu'il revient. Les garde-fous ci-dessus s'appliquent. Détails (seuils, capteur, permission iPhone, relecture sécurité) dans la spec 004.
+
 ## Sources
 
 - [Transit : localiser les rames souterraines sans GPS (résumé Gigazine, 2024)](https://gigazine.net/gsc_news/en/20241115-no-gps-location/)

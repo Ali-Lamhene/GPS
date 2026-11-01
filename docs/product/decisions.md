@@ -85,4 +85,5 @@ Une vraie carte, sans aucune étiquette, sert de fond aux écrans du trajet ; l'
 ## D13. Aide : une seule place, et une carte limitée à l'étape (2026-11-01)
 
 - Le bouton d'aide est **toujours en haut à droite**, au même endroit et à la même taille sur tous les écrans du voyageur, guidage et métro hors connexion compris : le voyageur le retrouve sans chercher.
+- Avant le départ, le message d'aide est celui de la première étape : l'arrêt à prendre en transport, le lieu d'arrivée à pied ou en voiture. Une fois parti, il suit l'étape en cours.
 - La petite carte de la carte d'aide (E24) ne montre au passant que **l'étape en cours** : la position du voyageur, le tronçon en cours et l'arrêt ou le lieu à trouver. Jamais le reste du trajet ni le lieu d'arrivée, sauf sur le dernier tronçon. Un inconnu ne voit donc pas où se trouve un lieu privé (maison, famille).

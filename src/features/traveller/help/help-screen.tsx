@@ -30,7 +30,9 @@ export function HelpScreen() {
   const [large, setLarge] = useState(false);
 
   const step = guidanceStep === undefined ? undefined : DEMO_GUIDANCE[mode][guidanceStep];
-  const request: HelpRequest = step?.help ?? { kind: 'findPlace' };
+  // Before leaving, the first thing to find: the stop to take, or the place when walking.
+  const firstHelp = destination ? DEMO_GUIDANCE[mode][0]?.help : undefined;
+  const request: HelpRequest = step?.help ?? firstHelp ?? { kind: 'findPlace' };
   const card = helpCard(request, destination);
   // Before leaving, the passer-by sees neither the photo of the arrival nor a start that
   // is not where the traveller stands (D13).

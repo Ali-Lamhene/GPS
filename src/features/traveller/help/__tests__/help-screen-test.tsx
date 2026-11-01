@@ -8,10 +8,20 @@ import { HelpScreen } from '../help-screen';
 jest.mock('expo-router', () => ({ router: { back: jest.fn() } }));
 
 describe('<HelpScreen />', () => {
-  test('before the trip starts, asks a passer-by for the destination', async () => {
+  test('before the trip starts by transit, asks a passer-by for the first stop', async () => {
     await renderWithProviders(<HelpScreen />, [
       { type: 'chooseOrigin', placeId: 'home' },
       { type: 'chooseDestination', placeId: 'beach' },
+    ]);
+
+    expect(screen.getByText(/je cherche l'arrêt Place de la Corderie/)).toBeOnTheScreen();
+  });
+
+  test('before a trip on foot, asks a passer-by for the destination', async () => {
+    await renderWithProviders(<HelpScreen />, [
+      { type: 'chooseOrigin', placeId: 'home' },
+      { type: 'chooseDestination', placeId: 'beach' },
+      { type: 'chooseMode', mode: 'walk' },
     ]);
 
     expect(screen.getByText(/je cherche la plage du Prado/)).toBeOnTheScreen();

@@ -164,7 +164,7 @@ Un bouton audio près du nom de la station le **prononce dans sa forme locale** 
 
 ### 4.6 Aide contextuelle à montrer à un passant
 
-Le voyageur touche le **bouton aide `?`** présent sur les écrans de navigation, toujours en haut à droite (D13). L'application ouvre E24 avec un message français court et poli, adapté à l'étape. La personne peut **montrer l'écran** ou faire **prononcer le message**.
+Le voyageur touche le **bouton aide `?`** présent sur les écrans de navigation, toujours en haut à droite (D13). L'application ouvre E24 avec un message français court et poli, adapté à l'étape ; avant le départ, celui de la première étape (l'arrêt à prendre en transport, le lieu d'arrivée à pied). La personne peut **montrer l'écran** ou faire **prononcer le message**.
 
 **Exemples de modèles** (les variables viennent du trajet réel) :
 
