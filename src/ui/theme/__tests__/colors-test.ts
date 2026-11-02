@@ -15,6 +15,12 @@ function contrast(a: string, b: string): number {
 }
 
 describe('category colours', () => {
+  test.each(
+    Object.entries(colors.vivid).flatMap(([family, ends]) => ends.map((tint) => [family, tint])),
+  )('%s gradient end %s keeps a white pictogram readable in the sun (3:1)', (_, tint) => {
+    expect(contrast(tint, colors.white)).toBeGreaterThanOrEqual(3);
+  });
+
   test.each(Object.entries(colors.category))(
     '%s keeps a white pictogram readable in the sun (3:1)',
     (_, tint) => {

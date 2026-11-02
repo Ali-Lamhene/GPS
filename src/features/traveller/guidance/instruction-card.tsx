@@ -4,51 +4,67 @@ import type { Place } from '@/domain/place';
 import { isAlert, type Instruction } from '@/domain/guidance';
 import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon } from '@/ui/icon/icon';
-import { colors, radii } from '@/ui/theme';
+import { colors, radii, shadows } from '@/ui/theme';
 
 import { LineBadge, MetroSign } from '../components/line-badge';
 import { StationName } from '../components/station-name';
 import { mainSymbol, nextSymbol } from './instruction-look';
+import { TurnGauge } from './turn-gauge';
 
-const TILE_RADIUS = radii.control;
+const TILE_RADIUS = 24;
 
 type InstructionCardProps = {
   instruction: Instruction;
   destination?: Place;
+  /** For a turn: share of the approach left before the corner, from 1 to 0. */
+  approach?: number;
   /** Static mockup: touching the card simulates reaching the next step (D11). */
   onPress: () => void;
 };
 
-/** Banner floating over the map: the one thing to do now, green, orange to get off. */
-export function InstructionCard({ instruction, destination, onPress }: InstructionCardProps) {
+/**
+ * Dark pill floating over the map (spec 008): the one thing to do now, very large; a turn
+ * sits in a ring that empties as the corner comes closer. Orange to get off.
+ */
+export function InstructionCard({
+  instruction,
+  destination,
+  approach,
+  onPress,
+}: InstructionCardProps) {
   const alert = isAlert(instruction);
   const symbol = mainSymbol(instruction);
   const next = nextSymbol(instruction, destination);
   const leg = 'leg' in instruction ? instruction.leg : undefined;
+  const turn = instruction.kind === 'walk' && instruction.turn !== 'straight';
 
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel="Étape suivante"
       onPress={onPress}
-      style={[styles.card, { backgroundColor: alert ? colors.alert : colors.guidance }]}
+      style={[styles.card, { backgroundColor: alert ? colors.alert : colors.ink }]}
     >
       <View style={styles.top}>
-        <View
-          style={[
-            styles.tile,
-            symbol === 'metro'
-              ? styles.bareTile
-              : { backgroundColor: alert ? colors.white : colors.whiteGlass },
-          ]}
-        >
-          {alert && <PulseRing borderRadius={TILE_RADIUS} color={colors.white} />}
-          {symbol === 'metro' && leg ? (
-            <MetroSign color={leg.line.color} size={60} />
-          ) : symbol !== 'metro' ? (
-            <Icon name={symbol} size={46} color={alert ? colors.alert : colors.white} />
-          ) : null}
-        </View>
+        {turn && symbol !== 'metro' ? (
+          <TurnGauge turn={symbol} left={approach ?? 1} />
+        ) : (
+          <View
+            style={[
+              styles.tile,
+              symbol === 'metro'
+                ? styles.bareTile
+                : { backgroundColor: alert ? colors.white : colors.whiteGlass },
+            ]}
+          >
+            {alert && <PulseRing borderRadius={TILE_RADIUS} color={colors.white} />}
+            {symbol === 'metro' && leg ? (
+              <MetroSign color={leg.line.color} size={60} />
+            ) : symbol !== 'metro' ? (
+              <Icon name={symbol} size={50} color={alert ? colors.alert : colors.white} />
+            ) : null}
+          </View>
+        )}
         {instruction.kind === 'waitVehicle' && <LineBadge line={instruction.leg.line} size="lg" />}
         <View style={styles.spacer} />
         {next && (
@@ -76,15 +92,15 @@ export function InstructionCard({ instruction, destination, onPress }: Instructi
 
 const styles = StyleSheet.create({
   card: {
-    minHeight: 96,
-    borderRadius: radii.control,
+    minHeight: 104,
+    borderRadius: radii.sheet,
     padding: 14,
     gap: 10,
-    boxShadow: '0 6px 20px rgba(0,0,0,.22)',
+    boxShadow: shadows.float,
   },
   tile: {
-    width: 68,
-    height: 68,
+    width: 80,
+    height: 80,
     borderRadius: TILE_RADIUS,
     alignItems: 'center',
     justifyContent: 'center',
@@ -105,10 +121,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
+  // « Then »: smaller and paler, no arrow (spec 006, reading direction).
   next: {
-    width: 52,
-    height: 52,
+    width: 56,
+    height: 56,
     borderRadius: radii.control,
+    opacity: 0.8,
     backgroundColor: colors.whiteGlass,
     alignItems: 'center',
     justifyContent: 'center',

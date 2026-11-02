@@ -1,24 +1,24 @@
 import { Pressable, StyleSheet } from 'react-native';
 
 import { Icon, type IconName } from '@/ui/icon/icon';
-import { colors, radii, sizes } from '@/ui/theme';
+import { colors, shadows, sizes } from '@/ui/theme';
 
 type MainActionButtonProps = {
   icon: IconName;
   label: string;
   onPress: () => void;
   disabled?: boolean;
-  /** Rounded ends: the floating home card (spec 007). */
-  shape?: 'bar' | 'pill';
 };
 
-/** The full-width blue bar that moves the traveller forward: continue, confirm, start. */
+/**
+ * The blue pill that moves the traveller forward: continue, confirm, start (spec 008).
+ * Full width of its parent, 64 dp high, rounded ends and a blue glow.
+ */
 export function MainActionButton({
   icon,
   label,
   onPress,
   disabled = false,
-  shape = 'bar',
 }: MainActionButtonProps) {
   return (
     <Pressable
@@ -27,34 +27,27 @@ export function MainActionButton({
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [
-        styles.bar,
-        shape === 'pill' && styles.pill,
-        disabled && styles.disabled,
-        pressed && styles.pressed,
-      ]}
+      style={({ pressed }) => [styles.pill, disabled && styles.disabled, pressed && styles.pressed]}
     >
-      <Icon name={icon} size={32} color={colors.onPrimary} />
+      <Icon name={icon} size={34} color={colors.onPrimary} />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  bar: {
+  pill: {
     height: sizes.minTarget,
-    borderRadius: radii.control,
+    borderRadius: sizes.minTarget / 2,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 2px 8px rgba(47,107,255,.35)',
-  },
-  pill: {
-    borderRadius: sizes.minTarget / 2,
+    boxShadow: shadows.accent,
   },
   disabled: {
     opacity: 0.35,
+    boxShadow: 'none',
   },
   pressed: {
-    opacity: 0.85,
+    transform: [{ scale: 0.98 }],
   },
 });

@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Place } from '@/domain/place';
 import { GrabHandle } from '@/ui/components/grab-handle';
 import { Icon } from '@/ui/icon/icon';
-import { colors, radii, spacing } from '@/ui/theme';
+import { colors, radii, shadows, spacing } from '@/ui/theme';
 
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { SheetPlaceTile } from './sheet-place-tile';
@@ -48,7 +48,7 @@ export function PlaceSheet({ end, places, excludedId, onPick, onClose }: PlaceSh
         onPress={onClose}
         style={[StyleSheet.absoluteFill, styles.scrim]}
       />
-      <View style={[styles.sheet, { paddingBottom: spacing.xxl + insets.bottom }]}>
+      <View style={[styles.sheet, { bottom: spacing.gutter + insets.bottom }]}>
         <GrabHandle />
         <Icon name={end === 'origin' ? 'location_on' : 'flag'} size={30} color={colors.inkMuted} />
         <View
@@ -81,15 +81,15 @@ const styles = StyleSheet.create({
   },
   sheet: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
+    left: spacing.gutter,
+    right: spacing.gutter,
     backgroundColor: colors.white,
-    borderTopLeftRadius: radii.sheet,
-    borderTopRightRadius: radii.sheet,
-    paddingTop: spacing.lg,
-    paddingHorizontal: spacing.xl,
-    gap: spacing.lg,
+    borderRadius: radii.sheet,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.xl,
+    paddingHorizontal: spacing.lg,
+    gap: spacing.md,
+    boxShadow: shadows.sheet,
   },
   grid: {
     flexDirection: 'row',

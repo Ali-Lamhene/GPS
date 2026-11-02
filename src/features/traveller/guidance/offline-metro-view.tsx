@@ -4,7 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { TransitLeg } from '@/domain/trip';
 import { HelpButton } from '@/ui/components/help-button';
 import { Icon } from '@/ui/icon/icon';
-import { colors, radii, sizes, spacing } from '@/ui/theme';
+import { colors, radii, shadows, sizes, spacing } from '@/ui/theme';
 
 import { LineBadge, MetroSign } from '../components/line-badge';
 import { ListenButton } from '../components/listen-button';
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     height: sizes.headerButton,
     justifyContent: 'center',
     backgroundColor: colors.night.bar,
-    borderRadius: radii.control,
+    borderRadius: sizes.headerButton / 2,
     paddingHorizontal: 16,
   },
   line: {
@@ -92,16 +92,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: colors.night.card,
-    borderRadius: radii.control,
-    paddingVertical: 12,
+    borderRadius: radii.sheet,
+    paddingVertical: 16,
   },
   spacer: {
     flex: 1,
   },
   gotOff: {
     height: 80,
-    borderRadius: radii.control,
+    borderRadius: 40,
     backgroundColor: colors.primary,
+    boxShadow: shadows.accent,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

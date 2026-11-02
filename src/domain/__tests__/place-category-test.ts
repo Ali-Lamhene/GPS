@@ -1,5 +1,5 @@
 import { PICTOGRAM_CHOICES } from '../place';
-import { placeCategory } from '../place-category';
+import { categoryOfIcon, placeCategory } from '../place-category';
 
 describe('placeCategory', () => {
   test('groups pictograms into families', () => {
@@ -16,5 +16,11 @@ describe('placeCategory', () => {
 
   test('every pictogram offered at creation has a family', () => {
     for (const icon of PICTOGRAM_CHOICES) expect(placeCategory(icon)).toEqual(expect.any(String));
+  });
+
+  test('any other pictogram, or an inherited key, falls in « other »', () => {
+    expect(categoryOfIcon('flag')).toBe('other');
+    expect(categoryOfIcon('toString')).toBe('other');
+    expect(categoryOfIcon('school')).toBe('studies');
   });
 });

@@ -71,7 +71,7 @@ export function HelpSituationMap({ legs, step, destination }: HelpSituationMapPr
 const styles = StyleSheet.create({
   card: {
     height: 200,
-    borderRadius: radii.control,
+    borderRadius: radii.placeCard,
     overflow: 'hidden',
     backgroundColor: colors.mapGround,
     borderWidth: 1,

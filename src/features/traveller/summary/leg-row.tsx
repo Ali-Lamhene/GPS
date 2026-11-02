@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { isTransitLeg, type Leg } from '@/domain/trip';
 import { TimeDials } from '@/ui/components/time-dials';
 import { Icon } from '@/ui/icon/icon';
-import { colors } from '@/ui/theme';
+import { colors, radii } from '@/ui/theme';
 
 import { legIcon } from '../components/leg-style';
 import { LineBadge } from '../components/line-badge';
@@ -12,15 +12,14 @@ import { LegDetails } from './leg-details';
 type LegRowProps = {
   leg: Leg;
   open: boolean;
-  first: boolean;
   onPress: () => void;
 };
 
 /** One leg of the summary; touching its header opens its details (E08). */
-export function LegRow({ leg, open, first, onPress }: LegRowProps) {
-  const background = open ? colors.secondaryContainer : colors.surfaceLow;
+export function LegRow({ leg, open, onPress }: LegRowProps) {
+  const background = open ? colors.accentSoft : colors.surfaceLow;
   return (
-    <View style={[styles.row, !first && styles.divider, open && { backgroundColor: background }]}>
+    <View style={[styles.row, { backgroundColor: background }]}>
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
@@ -29,13 +28,12 @@ export function LegRow({ leg, open, first, onPress }: LegRowProps) {
         hitSlop={{ top: 10, bottom: 10 }}
         style={styles.header}
       >
-        <View
-          style={[
-            styles.badge,
-            { backgroundColor: leg.kind === 'walk' ? colors.white : colors.secondaryContainer },
-          ]}
-        >
-          <Icon name={legIcon(leg)} size={24} />
+        <View style={[styles.badge, leg.kind !== 'walk' && styles.vehicle]}>
+          <Icon
+            name={legIcon(leg)}
+            size={26}
+            color={leg.kind === 'walk' ? colors.ink : colors.onPrimary}
+          />
         </View>
         {isTransitLeg(leg) && <LineBadge line={leg.line} size="md" />}
         <View style={styles.spacer} />
@@ -56,11 +54,8 @@ const styles = StyleSheet.create({
   row: {
     gap: 10,
     paddingVertical: 8,
-    paddingHorizontal: 12,
-  },
-  divider: {
-    borderTopWidth: 1,
-    borderTopColor: colors.surfaceHighest,
+    paddingHorizontal: 10,
+    borderRadius: radii.control,
   },
   header: {
     flexDirection: 'row',
@@ -68,11 +63,15 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   badge: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 46,
+    height: 46,
+    borderRadius: 14,
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  vehicle: {
+    backgroundColor: colors.primary,
   },
   spacer: {
     flex: 1,

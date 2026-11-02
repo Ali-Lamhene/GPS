@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet } from 'react-native';
 
-import { CURRENT_POSITION, type Place } from '@/domain/place';
-import { PlaceVisual } from '@/ui/components/place-visual';
-import { colors, radii } from '@/ui/theme';
+import type { Place } from '@/domain/place';
+import { PlaceArt } from '@/ui/components/place-art';
+import { radii } from '@/ui/theme';
 
 type SheetPlaceTileProps = {
   place: Place;
@@ -11,9 +11,8 @@ type SheetPlaceTileProps = {
   disabled?: boolean;
 };
 
-/** A saved place in the place sheet: white tile, the current position edged in light blue. */
+/** A saved place in the place sheet: its family colour and pictogram, or its photo (spec 008). */
 export function SheetPlaceTile({ place, size, onPress, disabled = false }: SheetPlaceTileProps) {
-  const isHere = place.id === CURRENT_POSITION.id;
   return (
     <Pressable
       accessibilityRole="button"
@@ -21,22 +20,15 @@ export function SheetPlaceTile({ place, size, onPress, disabled = false }: Sheet
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
-      style={[
+      style={({ pressed }) => [
         styles.tile,
-        {
-          width: size,
-          height: size,
-          borderColor: isHere ? colors.primary : colors.outlineVariant,
-        },
+        { width: size, height: size },
         disabled && styles.disabled,
+        pressed && styles.pressed,
       ]}
     >
-      <PlaceVisual
-        place={place}
-        iconSize={36}
-        badgeSize={42}
-        color={isHere ? colors.onTertiaryContainer : colors.ink}
-      />
+      {/* The sheet may show it: the place is being chosen (spec 005). */}
+      <PlaceArt place={place} iconSize={Math.round(size * 0.42)} badgeSize={30} showPhoto />
     </Pressable>
   );
 }
@@ -44,13 +36,12 @@ export function SheetPlaceTile({ place, size, onPress, disabled = false }: Sheet
 const styles = StyleSheet.create({
   tile: {
     borderRadius: radii.control,
-    borderWidth: 2,
-    backgroundColor: colors.white,
     overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   disabled: {
-    opacity: 0.38,
+    opacity: 0.3,
+  },
+  pressed: {
+    transform: [{ scale: 0.96 }],
   },
 });

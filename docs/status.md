@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-11-02
+**Dernière mise à jour** : 2026-11-02 (soir)
 
 ## Où on en est
 
@@ -63,19 +63,29 @@ Spec 007 « accueil carte flottante et bouton + » (2026-11-02), **livrée** dan
 - Labo `/dev/home-lab` retiré du dépôt (copie de secours hors dépôt, dans le dossier temporaire de la session).
 - Inclut le travail du 2026-11-01 au soir : épingle `location_on` au départ.
 
-**Prochaine étape** : point UI avec l'utilisateur sur l'accueil et le reste de l'app (formes : arrondis et barre en pilule restent propres à l'accueil pour l'instant ; tuiles de la feuille des lieux et épingles encore dans l'ancien style).
+Spec 008 « refonte visuelle clair premium » (2026-11-02), **livrée** dans le navigateur, après un labo (`/dev/ui-lab`, retiré) et l'analyse de 9 kits Envato :
 
-À trancher au point UI (relectures de la spec 007) :
+- Système : carte gris perle partout (la carte beige est retirée), cartes blanches flottantes à 28 dp détachées des bords (`FloatingSheet`), pilule bleue de 64 dp (`MainActionButton`), couleurs vives en dégradé par famille de lieux (`colors.vivid`, deux bouts à 3:1 au moins avec le blanc, testé), pictogrammes plats blancs, même rendu de lieu partout (`PlaceArt`, `VividFill`) : épingles, chemin, cartes, feuille, arrivée.
+- Accueil : rien n'est choisi au départ (révise la spec 005) ; la pastille à remplir appelle (pointillés bleus et halo, sans second canal, choix de l'utilisateur), d'abord le départ puis l'arrivée ; grandes cartes de lieux (75 % de la largeur, 200 dp au moins), carte « ici » en premier pour le départ ; « + » flottant bleu en bas à droite ; ✕ et pilule ✓.
+- Guidage : consigne en pilule sombre (orange pour « descends »), flèche de virage dans un anneau vert qui se vide à l'approche (`approachLeft`) ; carte de progression flottante.
+- Autres écrans : choix du transport, récapitulatif, métro (thème sombre gardé), aide (message dans une carte), connexion, arrivée (lieu en vedette, coche en rebond), nouveau lieu.
+- Pictogrammes 3D (Fluent Emoji) essayés puis écartés : plats retenus. Rappel du trajet sans flèche (`TripEnds`, déjà conforme à la spec 006).
+- Jest : délai de test porté à 15 s (`testTimeout`), les tests dépassaient 5 s quand la machine est chargée.
 
-- « + » à la place exacte de l'aide : un voyageur perdu qui cherche l'aide peut le toucher (E27) ou le garder enfoncé par détresse (formulaire en texte) ; « + » peut se lire comme une croix de pharmacie. Piste du relecteur : glyphe `add_location` (épingle avec +). À observer lors des tests avec des voyageurs.
-- Couleur de famille absente de la feuille des lieux (tuiles blanches) et des épingles : le même lieu change d'aspect d'un écran à l'autre. Réutiliser le rendu de `PlaceCard` dans la feuille et teinter la pastille des épingles ?
+**Prochaine étape** : point visuel avec l'utilisateur sur toute l'app refondue, puis coder le reste de la spec 006 « sens de lecture ».
+
+À trancher (relectures des specs 007 et 008) :
+
+- « + » flottant (spec 008) : peut se lire comme une croix de pharmacie ; un voyageur en détresse peut le garder enfoncé 3 s (formulaire en texte). À observer lors des tests avec des voyageurs.
+- Halo de la pastille à remplir sans son ni vibration (choix de l'utilisateur, dérogation à la règle des deux canaux) : à observer en test.
 - Maison orange, proche de l'orange d'alerte « descends » ; pour un daltonien, maison, famille et courses se confondent (le pictogramme porte le sens).
 - Bouton d'attribution « i » de la carte : une lettre qui ouvre du texte (ancien).
-- Sécurité : la couleur de famille révèle la nature d'un lieu caché (maison orange, famille corail) à qui voit l'écran d'accueil, même sans photo. Couleur neutre « autre » pour les lieux cachés ?
 - Sécurité : le schéma `gps://` reste déclaré dans `app.json` ; `securite.md` §3 le réserve au développement. Le retirer des builds publiés ? (Les écrans d'ajout renvoient déjà à l'accueil sans brouillon, `RequireDraft`.)
 - À tester sur le terrain : le voyageur retrouve-t-il son nouveau lieu dans le carrousel ? Le bord coupé donne-t-il l'idée de glisser jusqu'à « … » ?
+- À tester sur le terrain (relecture UX de la spec 008) : l'anneau vert qui se vide est-il lu comme « le virage approche » (et pas « échec ») ? Le halo suffit-il pour qu'on touche d'abord le départ ? La carte « ici » et le « + » bleus se distinguent-ils ? La maison orange visible dès l'ouverture gêne-t-elle devant un tiers ?
+- Vérification visuelle à refaire à 360 × 740 et 320 × 640 pour le choix du transport et le récapitulatif : Chrome a cessé de répondre pendant la session du 2026-11-02.
 
-Ensuite : coder la spec 006 « sens de lecture » (validée le 2026-11-01). Puis carte sur téléphone (MapLibre natif, `@maplibre/maplibre-react-native`) dès qu'un téléphone Android est branché : build de développement, revue sécurité dédiée, puis spec 002 au statut `livré`. Ensuite specs 003 (composer un trajet) et 004 (guidage).
+Ensuite : carte sur téléphone (MapLibre natif, `@maplibre/maplibre-react-native`) dès qu'un téléphone Android est branché : build de développement, revue sécurité dédiée, puis spec 002 au statut `livré`. Ensuite specs 003 (composer un trajet) et 004 (guidage).
 
 Aide (D13, 2026-11-01, révisée le 2026-11-02 : sauf l'accueil et sa feuille des lieux) : bouton d'aide en haut à droite sur tous les autres écrans, guidage et métro hors connexion compris. La petite carte de l'aide ne montre au passant que le reste du tronçon en cours et l'arrêt ou le lieu à trouver ; avant le départ, ni photo du lieu d'arrivée, ni carte si le départ n'est pas la position actuelle ; le message demande l'arrêt à prendre (en transport), puis suit l'étape. Sur les écrans sombres (E21, E29), le disque d'aide garde un contraste adapté au fond (validé). Au guidage, les noms de station passent sous le pictogramme, sur toute la largeur du bandeau ; le bouton écouter rejoint la rangée des cadrans, le panneau garde une hauteur fixe.
 

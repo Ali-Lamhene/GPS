@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { pathsBounds, type LngLat } from '@/domain/geo';
@@ -12,7 +13,6 @@ import {
   type Place,
 } from '@/domain/place';
 import { playCue } from '@/services/feedback';
-import { MapHeader } from '@/ui/components/map-header';
 import { TripMap } from '@/ui/map/trip-map';
 import type { MapPin } from '@/ui/map/trip-map-types';
 import { colors, sizes, spacing } from '@/ui/theme';
@@ -23,31 +23,44 @@ import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { AddPlaceButton } from './add-place-button';
 import { HomePanel } from './home-panel';
 import { PlaceSheet } from './place-sheet';
+import { WayCard } from './way-card';
 
 /** Where a place shows on the map, unless it is kept off it (spec 005). */
-function visiblePoint(place: Place | undefined): LngLat | undefined {
+function visiblePoint(place: Place | undefined, position: LngLat): LngLat | undefined {
+  if (place?.id === CURRENT_POSITION.id) return position;
   return place && !isHiddenOnMap(place) ? place.point : undefined;
 }
 
 /**
- * Home (E01-E05, specs 005 and 007): the live map around the traveller with their places
- * as pins, and a floating card with the way from the start to the arrival and a carousel
- * of the places. Touching a pin or a card chooses the arrival; then cancel or go on. The
- * « + » at the top right adds a place; no help here, there is no trip yet (D13 revised).
+ * Home (E01-E05, spec 008): the pearl map around the traveller with their places as pins,
+ * the way at the top and big place cards at the bottom. Nothing is chosen at first: the
+ * start calls, then the arrival; the cards fill the end that calls. Once both are chosen,
+ * cancel or go on. The floating « + » adds a place; no help here, there is no trip yet
+ * (D13 revised).
  */
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
   const plan = useTripPlan();
   const { origin, destination, dispatch } = plan;
   const [sheet, setSheet] = useState<TripEnd | null>(null);
+  // An end the traveller touched to change it; otherwise the first one still empty calls.
+  const [reopened, setReopened] = useState<TripEnd | undefined>();
+  const [wayHeight, setWayHeight] = useState(0);
   const [panelHeight, setPanelHeight] = useState(0);
+
+  const calling: TripEnd | undefined =
+    reopened ?? (!origin ? 'origin' : !destination ? 'destination' : undefined);
 
   // The demo position stands in for GPS until spec 004.
   const position = DEMO_CURRENT_POSITION;
-  const start = origin?.id === CURRENT_POSITION.id ? position : visiblePoint(origin);
-  const end = visiblePoint(destination);
+  const start = visiblePoint(origin, position);
+  const end = visiblePoint(destination, position);
 
-  const pins = placesOnMap(plan.destinationChoices, origin?.id).flatMap((place): MapPin[] =>
+  const known = [
+    ...plan.originChoices,
+    ...plan.destinationChoices.filter((place) => !plan.originChoices.includes(place)),
+  ];
+  const pins = placesOnMap(known).flatMap((place): MapPin[] =>
     place.point
       ? [
           {
@@ -56,20 +69,17 @@ export function HomeScreen() {
             icon: place.icon,
             label: place.helpName ?? 'Lieu',
             photo: place.photo,
-            selected: place.id === destination?.id,
+            selected: place.id === destination?.id || place.id === origin?.id,
           },
         ]
       : [],
   );
 
-  const chooseDestination = (placeId: string) => {
-    dispatch({ type: 'chooseDestination', placeId });
+  const choose = (endToFill: TripEnd, placeId: string) => {
+    if (endToFill === 'origin') dispatch({ type: 'chooseOrigin', placeId });
+    else dispatch({ type: 'chooseDestination', placeId });
     playCue('select');
-  };
-
-  const pick = (end: TripEnd, place: Place) => {
-    if (end === 'destination') chooseDestination(place.id);
-    else dispatch({ type: 'chooseOrigin', placeId: place.id });
+    setReopened(undefined);
     setSheet(null);
   };
 
@@ -81,8 +91,11 @@ export function HomeScreen() {
     router.push(source === 'position' ? '/add-place/position' : '/add-place/address');
   };
 
-  const headerBottom = insets.top + spacing.md + sizes.headerButton;
-  const arrivals = plan.destinationChoices.filter((place) => place.id !== origin?.id);
+  const choices =
+    calling === 'origin'
+      ? plan.originChoices
+      : plan.destinationChoices.filter((place) => place.id !== origin?.id);
+  const top = insets.top + spacing.md;
 
   return (
     <View testID="home-screen" style={styles.screen}>
@@ -98,50 +111,58 @@ export function HomeScreen() {
                   pins.map((pin) => pin.point),
                 ),
           // Sides: room for half of the chosen pin, which stands over its spot.
-          padding: { top: headerBottom, bottom: panelHeight, left: spacing.lg, right: spacing.lg },
+          padding: {
+            top: top + wayHeight + spacing.lg,
+            bottom: panelHeight + spacing.lg,
+            left: spacing.xxl,
+            right: spacing.xxl,
+          },
         }}
         lines={start && end ? [{ path: [start, end], color: colors.primary, style: 'walk' }] : []}
         traveller={{ point: position }}
-        origin={
-          origin && origin.id !== CURRENT_POSITION.id && start
-            ? { point: start, icon: origin.icon }
-            : undefined
-        }
         pins={pins}
-        onPinPress={chooseDestination}
-        controlsBottom={panelHeight + spacing.sm}
+        onPinPress={(placeId) => choose(calling ?? 'destination', placeId)}
+        // Above the floating « + », never under it.
+        controlsBottom={panelHeight + spacing.lg + sizes.minTarget + spacing.md}
       />
 
+      <Animated.View entering={FadeInUp.springify().damping(18)} style={[styles.way, { top }]}>
+        <WayCard
+          origin={origin}
+          destination={destination}
+          calling={calling}
+          // Touching the end that is open again closes it: a stray touch is undone.
+          onEnd={(touched) => setReopened(reopened === touched ? undefined : touched)}
+          onLayout={(event) => setWayHeight(event.nativeEvent.layout.height)}
+        />
+      </Animated.View>
+
       <HomePanel
-        origin={origin}
-        destination={destination}
-        places={arrivals}
-        onOrigin={() => setSheet('origin')}
-        onAllPlaces={() => setSheet('destination')}
-        onChoose={(place) => chooseDestination(place.id)}
+        choosing={calling !== undefined}
+        places={choices}
+        onChoose={(place) => choose(calling ?? 'destination', place.id)}
+        onAllPlaces={() => setSheet(calling ?? 'destination')}
         onCancel={() => dispatch({ type: 'clearDestination' })}
         onContinue={() => router.push('/mode')}
         onHeight={setPanelHeight}
       />
+
+      <View style={[styles.add, { bottom: panelHeight + spacing.lg }]}>
+        <AddPlaceButton
+          onAddHere={() => createPlace('position')}
+          onAddAddress={() => createPlace('address')}
+        />
+      </View>
 
       {sheet && (
         <PlaceSheet
           end={sheet}
           places={sheet === 'origin' ? plan.originChoices : plan.destinationChoices}
           excludedId={sheet === 'destination' ? origin?.id : undefined}
-          onPick={(place) => pick(sheet, place)}
+          onPick={(place) => choose(sheet, place.id)}
           onClose={() => setSheet(null)}
         />
       )}
-
-      <MapHeader
-        right={
-          <AddPlaceButton
-            onAddHere={() => createPlace('position')}
-            onAddAddress={() => createPlace('address')}
-          />
-        }
-      />
     </View>
   );
 }
@@ -151,5 +172,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.mapGround,
     overflow: 'hidden',
+  },
+  way: {
+    position: 'absolute',
+    left: spacing.gutter,
+    right: spacing.gutter,
+  },
+  add: {
+    position: 'absolute',
+    right: spacing.gutter,
   },
 });

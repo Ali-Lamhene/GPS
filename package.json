@@ -78,6 +78,7 @@
       "!**/*.d.ts"
     ],
     "resolver": "<rootDir>/jest.resolver.js",
+    "testTimeout": 15000,
     "setupFiles": [
       "<rootDir>/jest.setup.ts"
     ],

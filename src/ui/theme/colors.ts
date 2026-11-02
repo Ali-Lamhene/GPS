@@ -33,6 +33,8 @@ export const colors = {
 
   // Guidance instruction card: green when all is well, orange to get off.
   guidance: '#078A57',
+  /** Bright green of the approach ring, on the dark instruction pill (spec 008). */
+  go: '#22C55E',
   alert: '#E8590C',
   success: '#2E7D4F',
   error: '#BA1A1A',
@@ -44,7 +46,7 @@ export const colors = {
   blackGlass: 'rgba(0,0,0,.4)',
 
   // Map screens (the base map itself is styled in src/ui/map/map-style.ts).
-  mapGround: '#F4F1EA',
+  mapGround: '#EEF0F3',
   accuracy: 'rgba(47,107,255,.12)',
   accuracyEdge: 'rgba(47,107,255,.35)',
   holdTrack: '#E5E7EB',
@@ -52,20 +54,37 @@ export const colors = {
   walkRail: '#A8A8A1',
 
   /**
-   * One colour per family of places (spec 007), dark enough for a white pictogram to keep
-   * a contrast of at least 3:1 in the sun (checked by a test).
+   * Vivid colour of each family of places (spec 008): a diagonal gradient from a bright
+   * hue to a deep one. Both ends keep a white pictogram readable in the sun, at least 3:1
+   * (checked by a test).
    */
+  vivid: {
+    home: ['#F2601F', '#C93A08'],
+    family: ['#F23E70', '#BE1655'],
+    health: ['#0FA396', '#077169'],
+    admin: ['#7262FF', '#4232D2'],
+    studies: ['#18A85C', '#0C7A40'],
+    work: ['#9A5CFF', '#6528D0'],
+    shopping: ['#E07A00', '#B04A00'],
+    leisure: ['#1294E0', '#0864B8'],
+    other: ['#3D7BFF', '#1F4FD8'],
+  } satisfies Record<PlaceCategory, readonly [string, string]>,
+  /** The deep end of each family colour, for a single colour (chips, pin edges, shadows). */
   category: {
-    home: '#D9541A',
-    family: '#D6456A',
-    health: '#0E8A86',
-    admin: '#5B50E0',
-    studies: '#1F8A4D',
-    work: '#7C4DDB',
-    shopping: '#B86A00',
-    leisure: '#0B7FA8',
-    other: '#2F6BFF',
+    home: '#C93A08',
+    family: '#BE1655',
+    health: '#077169',
+    admin: '#4232D2',
+    studies: '#0C7A40',
+    work: '#6528D0',
+    shopping: '#B04A00',
+    leisure: '#0864B8',
+    other: '#1F4FD8',
   } satisfies Record<PlaceCategory, string>,
+  /** Light blue behind what waits to be chosen (spec 008). */
+  accentSoft: '#E8EEFF',
+  /** Empty, not yet calling: dashed grey ring. */
+  emptyRing: '#C7CBD1',
 
   // Calm dark theme of the offline metro screen (E21).
   night: {

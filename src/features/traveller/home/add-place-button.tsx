@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 import { Icon } from '@/ui/icon/icon';
-import { colors, sizes } from '@/ui/theme';
+import { colors, shadows, sizes } from '@/ui/theme';
 
 import { useHoldProgress } from '../hooks/use-hold-progress';
 
@@ -14,7 +14,7 @@ const HIDDEN_SHARE = 1 / 3;
  * E27 instead of nothing.
  */
 const TAP_MAX_MS = 1000;
-const SIZE = sizes.headerButton;
+const SIZE = sizes.minTarget;
 const RING = 4;
 const OUTER = SIZE + 4 * RING;
 const RADIUS = (OUTER - RING) / 2;
@@ -28,7 +28,8 @@ type AddPlaceButtonProps = {
 };
 
 /**
- * Round « + » at the top right of the home (spec 007). A tap starts the traveller's new
+ * Round blue « + » floating at the bottom right of the home, above the cards (specs 007,
+ * 008). A tap starts the traveller's new
  * place; a 3 second hold opens the companion's address form, with a ring that only shows
  * after the first second. Nothing on screen tells about the hold: no text for the
  * traveller to stumble on.
@@ -67,7 +68,7 @@ export function AddPlaceButton({ onAddHere, onAddAddress }: AddPlaceButtonProps)
         onPressOut={cancel}
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
       >
-        <Icon name="add" size={32} color={colors.ink} />
+        <Icon name="add" size={36} color={colors.onPrimary} />
       </Pressable>
     </View>
   );
@@ -89,10 +90,10 @@ const styles = StyleSheet.create({
     width: SIZE,
     height: SIZE,
     borderRadius: SIZE / 2,
-    backgroundColor: colors.white,
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 2px 8px rgba(0,0,0,.16)',
+    boxShadow: shadows.accent,
   },
   pressed: {
     opacity: 0.8,

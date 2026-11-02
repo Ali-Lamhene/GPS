@@ -9,7 +9,7 @@ import { IconButton } from '@/ui/components/icon-button';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { TimeDials } from '@/ui/components/time-dials';
-import { colors, radii } from '@/ui/theme';
+import { colors } from '@/ui/theme';
 
 import { TripEnds } from '../components/trip-ends';
 import { TripOverviewMap } from '../components/trip-overview-map';
@@ -52,7 +52,6 @@ export function SummaryScreen() {
             <LegRow
               key={i}
               leg={leg}
-              first={i === 0}
               open={openLeg === i}
               onPress={() => setOpenLeg(openLeg === i ? null : i)}
             />
@@ -82,12 +81,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mapGround,
   },
   legs: {
-    maxHeight: 290,
-    backgroundColor: colors.surfaceLow,
-    borderRadius: radii.control,
+    maxHeight: 300,
   },
   legsContent: {
-    paddingVertical: 4,
+    gap: 8,
   },
   footer: {
     flexDirection: 'row',

@@ -1,6 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 
 import type { Leg } from '@/domain/trip';
+import { VividFill } from '@/ui/components/vivid-fill';
 import { Icon, type IconName } from '@/ui/icon/icon';
 import { colors } from '@/ui/theme';
 
@@ -38,6 +39,7 @@ export function ProgressStrip({ legs, progress, destinationIcon }: ProgressStrip
         <View style={[styles.traveller, { left: `${progress * 100}%` }]} />
       </View>
       <View style={styles.destination}>
+        <VividFill icon={destinationIcon} />
         <Icon name={destinationIcon} size={20} color={colors.white} />
       </View>
     </View>
@@ -87,10 +89,10 @@ const styles = StyleSheet.create({
     boxShadow: `0 0 0 2px ${colors.onSecondaryContainer}`,
   },
   destination: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: colors.ink,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },

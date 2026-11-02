@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import type { TravelMode } from '@/domain/trip';
 import { Icon, type IconName } from '@/ui/icon/icon';
-import { colors, radii } from '@/ui/theme';
+import { colors, radii, shadows } from '@/ui/theme';
 
 const MODES: { mode: TravelMode; icon: IconName; label: string }[] = [
   { mode: 'walk', icon: 'directions_walk', label: 'À pied' },
@@ -31,7 +31,7 @@ export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
             style={[styles.segment, on && styles.on]}
           >
             {/* The blue background alone shows the chosen mode. */}
-            <Icon name={icon} size={28} color={on ? colors.white : colors.ink} />
+            <Icon name={icon} size={32} color={on ? colors.white : colors.ink} />
           </Pressable>
         );
       })}
@@ -42,11 +42,11 @@ export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
-    height: 72,
-    padding: 4,
-    gap: 4,
-    borderRadius: radii.control,
-    backgroundColor: colors.surfaceHigh,
+    height: 76,
+    padding: 6,
+    gap: 6,
+    borderRadius: radii.control + 4,
+    backgroundColor: colors.surfaceLow,
   },
   segment: {
     flex: 1,
@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
-    borderRadius: radii.small,
+    borderRadius: radii.control,
   },
   on: {
     backgroundColor: colors.primary,
-    boxShadow: '0 2px 6px rgba(47,107,255,.35)',
+    boxShadow: shadows.accent,
   },
 });

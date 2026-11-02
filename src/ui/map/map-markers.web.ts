@@ -1,4 +1,5 @@
 import { isLocalPicture } from '@/domain/place';
+import { categoryOfIcon } from '@/domain/place-category';
 import { GLYPHS, type IconName } from '@/ui/icon/glyphs';
 import { colors, fontFamilies } from '@/ui/theme';
 
@@ -26,6 +27,16 @@ function box(css: Partial<CSSStyleDeclaration>): HTMLDivElement {
   const element = document.createElement('div');
   Object.assign(element.style, css);
   return element;
+}
+
+/** The vivid gradient of a place's family (spec 008), as a CSS background. */
+function vividBackground(icon: IconName): string {
+  const [from, to] = colors.vivid[categoryOfIcon(icon)];
+  return `linear-gradient(135deg, ${from}, ${to})`;
+}
+
+function deepColor(icon: IconName): string {
+  return colors.category[categoryOfIcon(icon)];
 }
 
 function glyph(icon: IconName, size: number, color: string): HTMLDivElement {
@@ -71,14 +82,14 @@ export function createTravellerCone(): HTMLElement {
   return root;
 }
 
-/** Destination pin: the place pictogram in a dark rounded square with a pointer. */
+/** Destination pin: the place pictogram on its family colour, with a pointer (spec 008). */
 export function createDestinationPin(icon: IconName): HTMLElement {
   const root = box({ display: 'flex', flexDirection: 'column', alignItems: 'center' });
   const head = box({
-    width: '48px',
-    height: '48px',
-    borderRadius: '8px',
-    background: colors.ink,
+    width: '52px',
+    height: '52px',
+    borderRadius: '16px',
+    background: vividBackground(icon),
     border: '3px solid #FFFFFF',
     boxSizing: 'border-box',
     display: 'flex',
@@ -92,7 +103,7 @@ export function createDestinationPin(icon: IconName): HTMLElement {
     height: '0',
     borderLeft: '8px solid transparent',
     borderRight: '8px solid transparent',
-    borderTop: `10px solid ${colors.ink}`,
+    borderTop: `10px solid ${deepColor(icon)}`,
     marginTop: '-2px',
   });
   root.append(head, pointer);
@@ -101,9 +112,10 @@ export function createDestinationPin(icon: IconName): HTMLElement {
 }
 
 /**
- * A saved place the traveller can touch (spec 005): white disc with its pictogram, or its
- * photo with the pictogram in the bottom-left corner, and a pointer to the exact spot. The
- * chosen arrival is larger and edged in blue.
+ * A saved place the traveller can touch (specs 005, 008): a disc of its family colour with
+ * its white pictogram, or its photo edged in that colour with the pictogram in the
+ * bottom-left corner, and a pointer to the exact spot. The chosen one is larger, ringed in
+ * blue.
  */
 export function createPlacePin(
   icon: IconName,
@@ -111,8 +123,10 @@ export function createPlacePin(
   selected: boolean,
   label: string,
 ): HTMLElement {
-  const size = selected ? 60 : 48;
-  const edge = selected ? colors.primary : '#FFFFFF';
+  const size = selected ? 62 : 50;
+  const deep = deepColor(icon);
+  const hasPhoto = photo !== undefined && isLocalPicture(photo);
+  const edge = hasPhoto ? deep : '#FFFFFF';
   // A 64 px touch area around the drawn pin, for a stressed thumb (principes.md).
   const root = box({
     display: 'flex',
@@ -131,17 +145,18 @@ export function createPlacePin(
     width: `${size}px`,
     height: `${size}px`,
     borderRadius: '50%',
-    background: '#FFFFFF',
-    border: `${selected ? 4 : 3}px solid ${edge}`,
+    background: vividBackground(icon),
+    border: `3px solid ${edge}`,
     boxSizing: 'border-box',
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    // Thin dark ring: a white pin stays visible on the cream ground.
-    boxShadow: '0 0 0 1px rgba(0,0,0,.28), 0 2px 8px rgba(0,0,0,.3)',
+    boxShadow: selected
+      ? `0 0 0 4px ${colors.primary}, 0 4px 12px rgba(17,24,39,.35)`
+      : '0 3px 10px rgba(17,24,39,.3)',
   });
-  if (photo && isLocalPicture(photo)) {
+  if (photo && hasPhoto) {
     const image = document.createElement('img');
     image.src = photo;
     image.alt = '';
@@ -156,22 +171,22 @@ export function createPlacePin(
       height: '26px',
       borderRadius: '50%',
       background: '#FFFFFF',
-      boxShadow: '0 0 0 1px rgba(0,0,0,.28), 0 2px 6px rgba(0,0,0,.3)',
+      boxShadow: '0 2px 6px rgba(0,0,0,.3)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
     });
-    badge.append(glyph(icon, 17, colors.ink));
+    badge.append(glyph(icon, 17, deep));
     face.append(badge);
   } else {
-    head.append(glyph(icon, selected ? 32 : 26, colors.ink));
+    head.append(glyph(icon, selected ? 32 : 26, '#FFFFFF'));
   }
   const pointer = box({
     width: '0',
     height: '0',
     borderLeft: '7px solid transparent',
     borderRight: '7px solid transparent',
-    borderTop: `9px solid ${edge}`,
+    borderTop: `9px solid ${selected ? colors.primary : deep}`,
     marginTop: '-1px',
     filter: 'drop-shadow(0 2px 1px rgba(0,0,0,.25))',
   });
@@ -180,14 +195,14 @@ export function createPlacePin(
   return root;
 }
 
-/** Start of the trip when it is a saved place: its pictogram on a white pin. */
+/** Start of the trip when it is a saved place: its pictogram on its family colour. */
 export function createOriginPin(icon: IconName): HTMLElement {
   const root = box({
-    width: '44px',
-    height: '44px',
-    borderRadius: '8px',
-    background: '#FFFFFF',
-    border: `3px solid ${colors.ink}`,
+    width: '46px',
+    height: '46px',
+    borderRadius: '50%',
+    background: vividBackground(icon),
+    border: '3px solid #FFFFFF',
     boxSizing: 'border-box',
     display: 'flex',
     alignItems: 'center',
@@ -195,7 +210,7 @@ export function createOriginPin(icon: IconName): HTMLElement {
     boxShadow: '0 2px 6px rgba(0,0,0,.3)',
     pointerEvents: 'none',
   });
-  root.append(glyph(icon, 26, colors.ink));
+  root.append(glyph(icon, 26, '#FFFFFF'));
   return root;
 }
 
@@ -239,7 +254,7 @@ export function createManeuverArrow(): HTMLElement {
     width: '52px',
     height: '52px',
     borderRadius: '50%',
-    background: colors.onSecondaryContainer,
+    background: colors.ink,
     border: '4px solid #FFFFFF',
     boxSizing: 'border-box',
     display: 'flex',

@@ -182,7 +182,10 @@ export function TripMap({
   onPinPress,
 }: TripMapProps) {
   const container = useRef<HTMLDivElement | null>(null);
-  const initial = useRef({ camera, still: backdrop || !interactive });
+  const initial = useRef({
+    camera,
+    still: backdrop || !interactive,
+  });
   const [map, setMap] = useState<MapLibreMap | null>(null);
   // The framing the traveller moved away from by hand, if any: a new framing asked by the
   // screen (another leg opened) takes over again.

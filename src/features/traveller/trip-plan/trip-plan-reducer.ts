@@ -1,5 +1,5 @@
 import type { LngLat } from '@/domain/geo';
-import { CURRENT_POSITION, hiddenOnMapByDefault, type Place, type PlaceIcon } from '@/domain/place';
+import { hiddenOnMapByDefault, type Place, type PlaceIcon } from '@/domain/place';
 import type { TravelMode } from '@/domain/trip';
 
 /** Which end of the trip a place is being chosen or created for. */
@@ -40,9 +40,11 @@ export type TripPlanAction =
   | { type: 'cancelPlace' }
   | { type: 'reset' };
 
-/** The trip starts where the traveller stands, until they pick another start (spec 005). */
+/**
+ * Nothing chosen: the home invites the traveller to choose the start, then the arrival
+ * (spec 008, revises spec 005 where the trip started where they stand).
+ */
 export const initialTripPlan: TripPlanState = {
-  originId: CURRENT_POSITION.id,
   mode: 'transit',
   customPlaces: [],
 };

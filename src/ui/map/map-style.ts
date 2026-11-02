@@ -1,23 +1,43 @@
 import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
 
-// "Light and warm" base map without any label (spec 002): no symbol layer, no glyphs,
-// no sprite, so nothing to read and nothing to download. Layers follow the Protomaps
-// basemap schema of the bundled archive.
+// Base map without any label (spec 002), in the pearl colours of spec 008: no symbol
+// layer, no glyphs, no sprite, so nothing to read and nothing to download. Layers follow
+// the Protomaps basemap schema of the bundled archive.
 
-export const MAP_COLORS = {
-  ground: '#F4F1EA',
-  park: '#CDEABD',
-  civic: '#EFE8DA',
-  water: '#9FD3F4',
-  building: '#E7E1D5',
-  buildingEdge: '#D9D0C1',
-  roadCasing: '#DCD4C6',
+export type MapPalette = Record<
+  | 'ground'
+  | 'park'
+  | 'civic'
+  | 'water'
+  | 'building'
+  | 'buildingEdge'
+  | 'roadCasing'
+  | 'road'
+  | 'majorRoad'
+  | 'majorRoadCasing'
+  | 'path'
+  | 'rail',
+  string
+>;
+
+/**
+ * "Pearl" base map (spec 008): cool, desaturated greys, so that only the route
+ * and the markers carry colour (like the map apps the user picked as references).
+ */
+export const MAP_COLORS: MapPalette = {
+  ground: '#EEF0F3',
+  park: '#DDEEDB',
+  civic: '#E8EBEF',
+  water: '#C7DCF0',
+  building: '#E2E5EA',
+  buildingEdge: '#D5D9DF',
+  roadCasing: '#DCE0E5',
   road: '#FFFFFF',
-  majorRoad: '#FFF3D6',
-  majorRoadCasing: '#E8CF9E',
-  path: '#E4DCCD',
-  rail: '#C4BCAE',
-} as const;
+  majorRoad: '#FFFFFF',
+  majorRoadCasing: '#CDD2D9',
+  path: '#E0E3E8',
+  rail: '#C9CED5',
+};
 
 const PARKS = [
   'park',
@@ -37,17 +57,20 @@ function width(at12: number, at18: number): ExpressionSpecification {
 }
 
 /** Plain ground, when the bundled tiles cannot be read: routes and markers still show. */
-export function buildFallbackStyle(): StyleSpecification {
+export function buildFallbackStyle(palette: MapPalette = MAP_COLORS): StyleSpecification {
   return {
     version: 8,
     sources: {},
     layers: [
-      { id: 'background', type: 'background', paint: { 'background-color': MAP_COLORS.ground } },
+      { id: 'background', type: 'background', paint: { 'background-color': palette.ground } },
     ],
   };
 }
 
-export function buildMapStyle(tilesUrl: string): StyleSpecification {
+export function buildMapStyle(
+  tilesUrl: string,
+  palette: MapPalette = MAP_COLORS,
+): StyleSpecification {
   const source = 'base';
   return {
     version: 8,
@@ -59,14 +82,14 @@ export function buildMapStyle(tilesUrl: string): StyleSpecification {
       },
     },
     layers: [
-      { id: 'background', type: 'background', paint: { 'background-color': MAP_COLORS.ground } },
+      { id: 'background', type: 'background', paint: { 'background-color': palette.ground } },
       {
         id: 'parks',
         type: 'fill',
         source,
         'source-layer': 'landuse',
         filter: ['in', ['get', 'kind'], ['literal', PARKS]],
-        paint: { 'fill-color': MAP_COLORS.park },
+        paint: { 'fill-color': palette.park },
       },
       {
         id: 'civic',
@@ -74,14 +97,14 @@ export function buildMapStyle(tilesUrl: string): StyleSpecification {
         source,
         'source-layer': 'landuse',
         filter: ['in', ['get', 'kind'], ['literal', CIVIC]],
-        paint: { 'fill-color': MAP_COLORS.civic },
+        paint: { 'fill-color': palette.civic },
       },
       {
         id: 'water',
         type: 'fill',
         source,
         'source-layer': 'water',
-        paint: { 'fill-color': MAP_COLORS.water },
+        paint: { 'fill-color': palette.water },
       },
       {
         id: 'buildings',
@@ -89,7 +112,7 @@ export function buildMapStyle(tilesUrl: string): StyleSpecification {
         source,
         'source-layer': 'buildings',
         minzoom: 14,
-        paint: { 'fill-color': MAP_COLORS.building, 'fill-outline-color': MAP_COLORS.buildingEdge },
+        paint: { 'fill-color': palette.building, 'fill-outline-color': palette.buildingEdge },
       },
       {
         id: 'paths',
@@ -98,7 +121,7 @@ export function buildMapStyle(tilesUrl: string): StyleSpecification {
         'source-layer': 'roads',
         minzoom: 15,
         filter: ['==', ['get', 'kind'], 'path'],
-        paint: { 'line-color': MAP_COLORS.path, 'line-width': width(0.5, 3) },
+        paint: { 'line-color': palette.path, 'line-width': width(0.5, 3) },
       },
       {
         id: 'rail',
@@ -107,7 +130,7 @@ export function buildMapStyle(tilesUrl: string): StyleSpecification {
         'source-layer': 'roads',
         filter: ['==', ['get', 'kind'], 'rail'],
         paint: {
-          'line-color': MAP_COLORS.rail,
+          'line-color': palette.rail,
           'line-width': width(0.5, 2),
           'line-dasharray': [3, 2],
         },
@@ -119,7 +142,7 @@ export function buildMapStyle(tilesUrl: string): StyleSpecification {
         'source-layer': 'roads',
         filter: ['in', ['get', 'kind'], ['literal', ['minor_road', 'medium_road']]],
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': MAP_COLORS.roadCasing, 'line-width': width(1.5, 18) },
+        paint: { 'line-color': palette.roadCasing, 'line-width': width(1.5, 18) },
       },
       {
         id: 'major-roads-casing',
@@ -128,7 +151,7 @@ export function buildMapStyle(tilesUrl: string): StyleSpecification {
         'source-layer': 'roads',
         filter: ['in', ['get', 'kind'], ['literal', ['major_road', 'highway']]],
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': MAP_COLORS.majorRoadCasing, 'line-width': width(2.5, 26) },
+        paint: { 'line-color': palette.majorRoadCasing, 'line-width': width(2.5, 26) },
       },
       {
         id: 'roads',
@@ -137,7 +160,7 @@ export function buildMapStyle(tilesUrl: string): StyleSpecification {
         'source-layer': 'roads',
         filter: ['in', ['get', 'kind'], ['literal', ['minor_road', 'medium_road']]],
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': MAP_COLORS.road, 'line-width': width(1, 15) },
+        paint: { 'line-color': palette.road, 'line-width': width(1, 15) },
       },
       {
         id: 'major-roads',
@@ -146,7 +169,7 @@ export function buildMapStyle(tilesUrl: string): StyleSpecification {
         'source-layer': 'roads',
         filter: ['in', ['get', 'kind'], ['literal', ['major_road', 'highway']]],
         layout: { 'line-cap': 'round', 'line-join': 'round' },
-        paint: { 'line-color': MAP_COLORS.majorRoad, 'line-width': width(2, 22) },
+        paint: { 'line-color': palette.majorRoad, 'line-width': width(2, 22) },
       },
     ],
   };

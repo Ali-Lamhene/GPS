@@ -31,3 +31,12 @@ const CATEGORIES: Record<PlaceIcon, PlaceCategory> = {
 export function placeCategory(icon: PlaceIcon): PlaceCategory {
   return CATEGORIES[icon];
 }
+
+function isPlaceIcon(icon: string): icon is PlaceIcon {
+  return Object.prototype.hasOwnProperty.call(CATEGORIES, icon);
+}
+
+/** Family of any pictogram: one that is not a place's (a flag, a vehicle) is « other ». */
+export function categoryOfIcon(icon: string): PlaceCategory {
+  return isPlaceIcon(icon) ? CATEGORIES[icon] : 'other';
+}

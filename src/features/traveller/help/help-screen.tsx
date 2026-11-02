@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
   },
   photo: {
     width: '100%',
-    height: 160,
-    borderRadius: radii.control,
+    height: 180,
+    borderRadius: radii.placeCard,
   },
   actions: {
     flexDirection: 'row',
@@ -129,19 +129,19 @@ const styles = StyleSheet.create({
   speak: {
     flex: 1,
     height: 80,
-    borderRadius: radii.control,
+    borderRadius: 40,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: shadows.medium,
+    boxShadow: shadows.accent,
   },
   enlarge: {
     width: 80,
     height: 80,
-    borderRadius: radii.control,
-    borderWidth: 1,
-    borderColor: colors.outline,
+    borderRadius: 40,
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    boxShadow: shadows.floating,
   },
 });

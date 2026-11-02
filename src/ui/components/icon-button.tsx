@@ -1,20 +1,20 @@
 import { Pressable, StyleSheet } from 'react-native';
 
 import { Icon, type IconName } from '@/ui/icon/icon';
-import { colors, radii, sizes } from '@/ui/theme';
+import { colors, radii, shadows, sizes } from '@/ui/theme';
 
 type Tone = 'plain' | 'tonal' | 'raised' | 'help' | 'glass' | 'night' | 'nightAccent' | 'primary';
 
 const TONES: Record<Tone, { background: string; ink: string; shadow?: string }> = {
   plain: { background: 'transparent', ink: colors.ink },
   tonal: { background: colors.tonal, ink: colors.ink },
-  raised: { background: colors.white, ink: colors.ink, shadow: '0 2px 8px rgba(0,0,0,.16)' },
+  raised: { background: colors.white, ink: colors.ink, shadow: shadows.floating },
   /** Help looks the same everywhere: dark disc, white question mark. */
-  help: { background: colors.ink, ink: colors.white, shadow: '0 2px 8px rgba(0,0,0,.25)' },
+  help: { background: colors.ink, ink: colors.white, shadow: shadows.floating },
   glass: { background: colors.blackGlass, ink: colors.white },
   night: { background: colors.night.button, ink: colors.night.buttonInk },
   nightAccent: { background: colors.night.button, ink: colors.night.listen },
-  primary: { background: colors.primary, ink: colors.onPrimary },
+  primary: { background: colors.primary, ink: colors.onPrimary, shadow: shadows.accent },
 };
 
 type IconButtonProps = {

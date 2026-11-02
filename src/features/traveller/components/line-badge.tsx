@@ -30,7 +30,7 @@ export function LineBadge({ line, size }: LineBadgeProps) {
         box,
         {
           backgroundColor: line.color,
-          borderRadius: line.shape === 'pill' ? box.height / 2 : radii.control,
+          borderRadius: line.shape === 'pill' ? box.height / 2 : radii.sign,
         },
       ]}
     >

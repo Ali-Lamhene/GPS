@@ -43,3 +43,21 @@ export function spokenName(instruction: Instruction): string | undefined {
       return undefined;
   }
 }
+
+/** Distance over which the approach ring of a turn empties (spec 008): the same on every leg. */
+export const APPROACH_METERS = 80;
+
+/**
+ * How much of the approach to a corner is left, from 1 (far, or no corner ahead) to 0
+ * (at the corner), given where the traveller and the corner are along a leg of the given
+ * length. Measured in metres, so « almost empty » always means the same few steps.
+ */
+export function approachLeft(
+  travellerFraction: number,
+  cornerFraction: number | undefined,
+  legMeters: number,
+): number {
+  if (cornerFraction === undefined || legMeters <= 0) return 1;
+  const metresLeft = (cornerFraction - travellerFraction) * legMeters;
+  return Math.min(1, Math.max(0, metresLeft / APPROACH_METERS));
+}

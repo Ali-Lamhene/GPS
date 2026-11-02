@@ -9,3 +9,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 005 | [Accueil sur la carte, formes plus sobres](005-accueil-carte-et-formes-sobres.md)      | validé |
 | 006 | [Sens de lecture : rien qui ne se lise que de gauche à droite](006-sens-de-lecture.md) | validé |
 | 007 | [Accueil « carte flottante » et bouton « + »](007-accueil-carte-flottante.md)          | livré  |
+| 008 | [Refonte visuelle « clair premium »](008-refonte-clair-premium.md)                     | livré  |

@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   list: {
     backgroundColor: colors.surfaceLow,
     borderRadius: radii.control,
-    paddingVertical: 6,
+    paddingVertical: 8,
     paddingHorizontal: 14,
   },
   row: {

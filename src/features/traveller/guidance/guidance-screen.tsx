@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { bearingAlong, findTurns } from '@/domain/geo';
-import { spokenName, type GuidanceStep } from '@/domain/guidance';
+import { bearingAlong, findTurns, pathLength } from '@/domain/geo';
+import { approachLeft, spokenName, type GuidanceStep } from '@/domain/guidance';
 import { remainingMinutes, tripPosition, tripProgress, type Leg } from '@/domain/trip';
 import { playCue } from '@/services/feedback';
 import { TripMap } from '@/ui/map/trip-map';
@@ -20,12 +20,18 @@ import { stepCue } from './instruction-look';
 import { OfflineMetroView } from './offline-metro-view';
 import { ProgressPanel } from './progress-panel';
 
-/** For a turn, the corner ahead on the current leg and the direction of the street to take. */
-function nextManeuver(legs: readonly Leg[], step: GuidanceStep) {
+/** For a turn, the corner ahead on the current leg. */
+function nextCorner(legs: readonly Leg[], step: GuidanceStep) {
   const { instruction } = step;
   if (instruction.kind !== 'walk' || instruction.turn === 'straight') return undefined;
   const path = legs[step.legIndex]?.path ?? [];
-  const turn = findTurns(path).find((corner) => corner.fraction > step.legFraction);
+  return findTurns(path).find((corner) => corner.fraction > step.legFraction);
+}
+
+/** The corner ahead and the direction of the street to take, drawn on the map. */
+function nextManeuver(legs: readonly Leg[], step: GuidanceStep) {
+  const turn = nextCorner(legs, step);
+  const path = legs[step.legIndex]?.path ?? [];
   return turn && { point: turn.point, heading: bearingAlong(path, turn.fraction + 0.01) };
 }
 
@@ -103,6 +109,11 @@ export function GuidanceScreen() {
           <InstructionCard
             instruction={step.instruction}
             destination={destination}
+            approach={approachLeft(
+              step.legFraction,
+              nextCorner(legs, step)?.fraction,
+              pathLength(legs[step.legIndex]?.path ?? []),
+            )}
             onPress={advance}
           />
         </View>
@@ -128,14 +139,15 @@ const styles = StyleSheet.create({
   },
   banner: {
     position: 'absolute',
-    left: spacing.lg,
-    right: spacing.lg,
+    left: spacing.gutter,
+    right: spacing.gutter,
     flexDirection: 'row',
     alignItems: 'flex-start',
+    justifyContent: 'space-between',
     // Keeps a stray thumb aiming at help off the banner, which is touchable.
-    gap: spacing.lg,
+    gap: spacing.md,
   },
   card: {
-    flex: 1,
+    flexShrink: 1,
   },
 });

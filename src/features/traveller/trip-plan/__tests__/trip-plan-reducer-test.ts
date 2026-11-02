@@ -59,7 +59,7 @@ describe('tripPlanReducer', () => {
       icon: 'location_on',
       helpName: 'Pharmacie du Port',
     });
-    expect(state.originId).toBe('here');
+    expect(state.originId).toBeUndefined();
   });
 
   test('draft edits without a draft change nothing', () => {
@@ -76,8 +76,9 @@ describe('tripPlanReducer', () => {
     });
   });
 
-  test('a new trip starts where the traveller stands', () => {
-    expect(initialTripPlan.originId).toBe('here');
+  test('a new trip starts with nothing chosen, not even the start', () => {
+    expect(initialTripPlan.originId).toBeUndefined();
+    expect(initialTripPlan.destinationId).toBeUndefined();
   });
 
   test('a new home or family place stays off the home map', () => {
@@ -105,7 +106,6 @@ describe('tripPlanReducer', () => {
     };
 
     expect(tripPlanReducer(state, { type: 'reset' })).toEqual({
-      originId: 'here',
       mode: 'transit',
       customPlaces: [{ id: 'custom-1', icon: 'home' }],
     });

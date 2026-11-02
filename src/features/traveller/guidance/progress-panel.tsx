@@ -5,7 +5,7 @@ import type { Leg } from '@/domain/trip';
 import { speak } from '@/services/speech';
 import { TimeDials } from '@/ui/components/time-dials';
 import { Icon, type IconName } from '@/ui/icon/icon';
-import { colors, radii, sizes } from '@/ui/theme';
+import { colors, radii, shadows, sizes, spacing } from '@/ui/theme';
 
 import { ProgressStrip } from './progress-strip';
 
@@ -19,7 +19,7 @@ type ProgressPanelProps = {
   onLayout?: (event: LayoutChangeEvent) => void;
 };
 
-/** White panel floating at the bottom of the map: time left, progress, listen. */
+/** White card floating at the bottom of the map (spec 008): time left, progress, listen. */
 export function ProgressPanel({
   legs,
   progress,
@@ -30,7 +30,7 @@ export function ProgressPanel({
 }: ProgressPanelProps) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={[styles.panel, { paddingBottom: 16 + insets.bottom }]} onLayout={onLayout}>
+    <View style={[styles.panel, { bottom: spacing.gutter + insets.bottom }]} onLayout={onLayout}>
       <View style={styles.progress}>
         <TimeDials minutes={remainingMinutes} size={52} crossColor={colors.white} gap={8} />
         <View style={styles.strip}>
@@ -57,16 +57,13 @@ export function ProgressPanel({
 const styles = StyleSheet.create({
   panel: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
+    left: spacing.gutter,
+    right: spacing.gutter,
     backgroundColor: colors.white,
-    borderTopLeftRadius: radii.sheet,
-    borderTopRightRadius: radii.sheet,
-    paddingTop: 16,
-    paddingHorizontal: 16,
+    borderRadius: radii.sheet,
+    padding: spacing.md,
     gap: 14,
-    boxShadow: '0 -4px 16px rgba(0,0,0,.12)',
+    boxShadow: shadows.sheet,
   },
   progress: {
     flexDirection: 'row',
@@ -82,8 +79,8 @@ const styles = StyleSheet.create({
   listen: {
     width: sizes.minTarget,
     height: sizes.minTarget,
-    borderRadius: radii.control,
-    backgroundColor: colors.secondaryContainer,
+    borderRadius: sizes.minTarget / 2,
+    backgroundColor: colors.accentSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
