@@ -2,7 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * Progress of a long press, from 0 to 1 over `durationMs`. Calls `onComplete` once full;
- * releasing early resets it. Hides the companion area from a traveller's casual touch (D8).
+ * releasing early resets it. Keeps the companion's address form away from a traveller's
+ * casual touch (D8, spec 007).
  */
 export function useHoldProgress(durationMs: number, onComplete: () => void) {
   const [progress, setProgress] = useState(0);

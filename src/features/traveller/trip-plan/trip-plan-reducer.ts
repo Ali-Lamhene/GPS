@@ -5,9 +5,11 @@ import type { TravelMode } from '@/domain/trip';
 /** Which end of the trip a place is being chosen or created for. */
 export type TripEnd = 'origin' | 'destination';
 
-/** A place being created (E27-E30): by position (traveller) or address (companion). */
+/**
+ * A place being created from the home « + » (E27-E30, spec 007): by position (traveller)
+ * or address (companion). Once saved it is only kept, never chosen for the trip.
+ */
 export type PlaceDraft = {
-  for: TripEnd;
   source: 'position' | 'address';
   /** Where the place is, when known: the traveller's position for E27. */
   point?: LngLat;
@@ -31,7 +33,7 @@ export type TripPlanAction =
   | { type: 'clearDestination' }
   | { type: 'chooseMode'; mode: TravelMode }
   | { type: 'goToStep'; index: number }
-  | { type: 'startPlace'; for: TripEnd; source: PlaceDraft['source']; point?: LngLat }
+  | { type: 'startPlace'; source: PlaceDraft['source']; point?: LngLat }
   | { type: 'setDraftIcon'; icon: PlaceIcon }
   | { type: 'setDraftName'; helpName: string }
   | { type: 'finishPlace'; photo?: string }
@@ -66,7 +68,7 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
     case 'startPlace':
       return {
         ...state,
-        draft: { for: action.for, source: action.source, point: action.point },
+        draft: { source: action.source, point: action.point },
       };
     case 'setDraftIcon':
       return state.draft ? { ...state, draft: { ...state.draft, icon: action.icon } } : state;
@@ -100,9 +102,5 @@ function finishPlace(state: TripPlanState, photo?: string): TripPlanState {
     point: draft.point,
     hiddenOnMap: hiddenOnMapByDefault(icon),
   };
-  const withPlace = { ...state, customPlaces: [...state.customPlaces, place], draft: undefined };
-  return tripPlanReducer(withPlace, {
-    type: draft.for === 'origin' ? 'chooseOrigin' : 'chooseDestination',
-    placeId: place.id,
-  });
+  return { ...state, customPlaces: [...state.customPlaces, place], draft: undefined };
 }

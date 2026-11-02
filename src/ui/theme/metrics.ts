@@ -19,8 +19,10 @@ export const radii = {
   control: 8,
   /** Top corners of the panels at the bottom of the screen. */
   sheet: 16,
-  /** Top corners of the home panel, a touch warmer (spec 005, revised). */
-  homePanel: 24,
+  /** Place cards of the home carousel (spec 007, home only until the UI review). */
+  placeCard: 18,
+  /** Floating card of the home, over the map (spec 007). */
+  floatingCard: 28,
 } as const;
 
 export const sizes = {
@@ -40,4 +42,6 @@ export const shadows = {
   floating: '0 2px 10px rgba(0,0,0,.16)',
   sheet: '0 -1px 3px rgba(0,0,0,.08)',
   marker: '0 1px 4px rgba(0,0,0,.3)',
+  /** Soft shadow of the floating home card (spec 007). */
+  float: '0 8px 24px rgba(17,24,39,.10)',
 } as const;

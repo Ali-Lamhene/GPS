@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 6px 18px rgba(30,107,255,.35)',
+    boxShadow: '0 6px 18px rgba(47,107,255,.35)',
   },
   photo: {
     borderRadius: radii.control,

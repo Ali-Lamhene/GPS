@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import {
   I18nManager,
   Pressable,
+  ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
@@ -9,25 +10,26 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { isHiddenOnMap, type Place } from '@/domain/place';
+import type { Place } from '@/domain/place';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { Icon } from '@/ui/icon/icon';
-import { colors, radii, sizes, spacing } from '@/ui/theme';
+import { colors, radii, shadows, sizes, spacing } from '@/ui/theme';
 
 import { PlaceAvatar } from './place-avatar';
+import { PlaceCard } from './place-card';
 
-/** At most this many saved places as shortcuts, before the "all places" one. */
-const MAX_SHORTCUTS = 4;
+/** Discs of the way (start, arrival). */
 const AVATAR = 52;
-/** Room between two 64 dp shortcut targets: the 52 dp discs stay 14 dp apart. */
-const SHORTCUT_GAP = 2;
-
-/** How many shortcuts fit beside "all places" on this screen width (320 dp phones too). */
-export function shortcutCount(screenWidth: number): number {
-  const room = screenWidth - 2 * spacing.lg + SHORTCUT_GAP;
-  const fit = Math.floor(room / (sizes.minTarget + SHORTCUT_GAP)) - 1;
-  return Math.max(0, Math.min(MAX_SHORTCUTS, fit));
-}
+/** Gap between the card and the screen edges. */
+const MARGIN = spacing.md;
+/** Inner padding of the card. */
+const INNER = spacing.md;
+/** About three cards show, the last one cut at the edge invites a swipe. */
+const CARDS_SHOWN = 3.1;
+/** On a tablet or a wide browser, cards stop growing. */
+const CARD_MAX = 160;
+/** Cards are a little taller than wide. */
+const CARD_RATIO = 1.15;
 
 type HomePanelProps = {
   origin?: Place;
@@ -40,10 +42,11 @@ type HomePanelProps = {
   onChoose: (place: Place) => void;
   onCancel: () => void;
   onContinue: () => void;
+  /** Room the card takes at the bottom of the screen, so the map frames above it. */
   onHeight?: (height: number) => void;
 };
 
-function Target({
+function End({
   label,
   onPress,
   disabled,
@@ -60,8 +63,10 @@ function Target({
       accessibilityLabel={label}
       accessibilityState={{ disabled }}
       disabled={disabled}
+      // The disc is drawn smaller than a stressed thumb needs: the touch area stays 64 dp.
+      hitSlop={(sizes.minTarget - AVATAR) / 2}
       onPress={onPress}
-      style={[styles.target, disabled && styles.disabled]}
+      style={disabled && styles.disabled}
     >
       {children}
     </Pressable>
@@ -72,7 +77,7 @@ function Target({
 function Dots({ color }: { color: string }) {
   return (
     <View style={styles.dots}>
-      {[0, 1, 2, 3].map((i) => (
+      {[0, 1, 2].map((i) => (
         <View key={i} style={[styles.dot, { backgroundColor: color }]} />
       ))}
     </View>
@@ -80,8 +85,9 @@ function Dots({ color }: { color: string }) {
 }
 
 /**
- * Bottom panel of the home (spec 005): the way from the start to the arrival, then the
- * shortcuts to the places; once the arrival is chosen, cancel and continue instead.
+ * Floating card of the home (spec 007): the way from the start to the arrival in a grey
+ * capsule, then a carousel of place cards; once the arrival is chosen, cancel and continue
+ * instead.
  */
 export function HomePanel({
   origin,
@@ -96,100 +102,120 @@ export function HomePanel({
 }: HomePanelProps) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
+  const cardWidth = Math.min(CARD_MAX, Math.round((width - 2 * MARGIN - INNER) / CARDS_SHOWN));
+  const cardHeight = Math.round(cardWidth * CARD_RATIO);
   const noStart = origin === undefined;
   const ready = origin !== undefined && destination !== undefined;
   const way = ready ? colors.primary : colors.inkDisabled;
-  const report = (event: LayoutChangeEvent) => onHeight?.(event.nativeEvent.layout.height);
-
+  const bottom = insets.bottom + MARGIN;
+  const report = (event: LayoutChangeEvent) =>
+    onHeight?.(event.nativeEvent.layout.height + bottom + MARGIN);
   return (
-    <View style={[styles.panel, { paddingBottom: spacing.lg + insets.bottom }]} onLayout={report}>
-      {/* Never mirrored, like the map: the walker always faces the arrival. */}
-      <View style={[styles.row, I18nManager.isRTL && styles.unmirrored]}>
-        <Target label="Départ" onPress={onOrigin}>
-          <PlaceAvatar
-            place={origin}
-            emptySymbol="trip_origin"
-            badge="trip_origin"
-            size={AVATAR}
-            pulsing={!origin}
-          />
-        </Target>
-        <Dots color={way} />
-        <Icon name="directions_walk" size={26} color={ready ? colors.primary : colors.inkMuted} />
-        <Dots color={way} />
-        <Target label="Arrivée" onPress={onAllPlaces} disabled={noStart}>
-          <PlaceAvatar
-            place={destination}
-            badge="flag"
-            ringed
-            size={AVATAR}
-            pulsing={!noStart && !destination}
-          />
-        </Target>
-      </View>
-
-      {ready ? (
-        <View style={[styles.row, styles.actions]}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Annuler"
-            onPress={onCancel}
-            style={styles.cancel}
-          >
-            <Icon name="close" size={30} color={colors.ink} />
-          </Pressable>
-          <View style={styles.continue}>
-            <MainActionButton icon="check" label="Continuer" onPress={onContinue} />
+    <View style={[styles.float, { bottom }]} onLayout={report}>
+      <View style={styles.card}>
+        {/* Never mirrored, like the map: the walker always faces the arrival. */}
+        <View style={[styles.way, I18nManager.isRTL && styles.unmirrored]}>
+          <End label="Départ" onPress={onOrigin}>
+            <PlaceAvatar
+              place={origin}
+              emptySymbol="location_on"
+              badge="location_on"
+              size={AVATAR}
+              pulsing={!origin}
+            />
+          </End>
+          <Dots color={way} />
+          <View style={[styles.walker, ready && styles.walkerReady]}>
+            <Icon
+              name="directions_walk"
+              size={22}
+              color={ready ? colors.onPrimary : colors.inkMuted}
+            />
           </View>
+          <Dots color={way} />
+          <End label="Arrivée" onPress={onAllPlaces} disabled={noStart}>
+            <PlaceAvatar
+              place={destination}
+              badge="flag"
+              ringed
+              size={AVATAR}
+              pulsing={!noStart && !destination}
+            />
+          </End>
         </View>
-      ) : (
-        <View style={styles.shortcuts}>
-          {places.slice(0, shortcutCount(width)).map((place) => (
-            <Target
-              key={place.id}
-              label={place.helpName ?? 'Lieu'}
-              onPress={() => onChoose(place)}
-              disabled={noStart}
+
+        {ready ? (
+          <View style={[styles.actions, I18nManager.isRTL && styles.unmirrored]}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Annuler"
+              onPress={onCancel}
+              style={({ pressed }) => [styles.cancel, pressed && styles.pressed]}
             >
-              {/* Seen as soon as the app opens: a hidden place shows no facade (spec 005). */}
-              <PlaceAvatar place={place} size={AVATAR} showPhoto={!isHiddenOnMap(place)} />
-            </Target>
-          ))}
-          <Target label="Tous les lieux" onPress={onAllPlaces}>
-            <View style={styles.all}>
-              <Icon name="more_horiz" size={28} color={colors.ink} />
+              <Icon name="close" size={28} color={colors.ink} />
+            </Pressable>
+            <View style={styles.continue}>
+              <MainActionButton icon="check" label="Continuer" onPress={onContinue} shape="pill" />
             </View>
-          </Target>
-        </View>
-      )}
+          </View>
+        ) : (
+          // Never mirrored, like the map and the way: the first place stays on the left.
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.carousel}
+            contentContainerStyle={[styles.rail, I18nManager.isRTL && styles.unmirrored]}
+          >
+            {places.map((place) => (
+              <PlaceCard
+                key={place.id}
+                place={place}
+                width={cardWidth}
+                height={cardHeight}
+                disabled={noStart}
+                onPress={() => onChoose(place)}
+              />
+            ))}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Tous les lieux"
+              onPress={onAllPlaces}
+              style={({ pressed }) => [
+                styles.all,
+                { width: Math.max(sizes.minTarget, cardWidth * 0.6), height: cardHeight },
+                pressed && styles.pressed,
+              ]}
+            >
+              <Icon name="more_horiz" size={32} color={colors.ink} />
+            </Pressable>
+          </ScrollView>
+        )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  panel: {
+  float: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
-    paddingTop: spacing.md,
-    paddingHorizontal: spacing.lg,
-    gap: spacing.sm,
-    backgroundColor: colors.white,
-    borderTopLeftRadius: radii.homePanel,
-    borderTopRightRadius: radii.homePanel,
-    boxShadow: '0 -4px 18px rgba(0,0,0,.12)',
+    left: MARGIN,
+    right: MARGIN,
   },
-  row: {
+  card: {
+    paddingVertical: INNER,
+    gap: INNER,
+    borderRadius: radii.floatingCard,
+    backgroundColor: colors.white,
+    boxShadow: shadows.float,
+  },
+  way: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-  },
-  target: {
-    width: sizes.minTarget,
-    height: sizes.minTarget,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginHorizontal: INNER,
+    padding: spacing.xs,
+    borderRadius: AVATAR,
+    backgroundColor: colors.surfaceLow,
   },
   dots: {
     flex: 1,
@@ -201,40 +227,55 @@ const styles = StyleSheet.create({
     height: 5,
     borderRadius: 2.5,
   },
+  walker: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  walkerReady: {
+    backgroundColor: colors.primary,
+  },
   unmirrored: {
     // In a right-to-left layout, 'row-reverse' lays the row out left to right again.
     flexDirection: 'row-reverse',
   },
   actions: {
-    gap: spacing.lg,
-  },
-  disabled: {
-    opacity: 0.38,
-  },
-  shortcuts: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: SHORTCUT_GAP,
-  },
-  all: {
-    width: AVATAR,
-    height: AVATAR,
-    borderRadius: AVATAR / 2,
-    backgroundColor: colors.surfaceHigh,
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: spacing.md,
+    marginHorizontal: INNER,
   },
   cancel: {
     width: sizes.minTarget,
     height: sizes.minTarget,
-    borderRadius: radii.control,
-    borderWidth: 2,
-    borderColor: colors.outlineVariant,
-    backgroundColor: colors.white,
+    borderRadius: sizes.minTarget / 2,
+    backgroundColor: colors.surfaceHigh,
     alignItems: 'center',
     justifyContent: 'center',
   },
   continue: {
     flex: 1,
+  },
+  carousel: {
+    flexGrow: 0,
+  },
+  rail: {
+    paddingHorizontal: INNER,
+    gap: spacing.sm,
+  },
+  all: {
+    borderRadius: radii.placeCard,
+    backgroundColor: colors.surfaceHigh,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pressed: {
+    opacity: 0.8,
+  },
+  disabled: {
+    opacity: 0.38,
   },
 });

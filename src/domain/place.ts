@@ -107,3 +107,16 @@ export function homeFraming(
     : points;
   return pathsBounds([nearby]);
 }
+
+/**
+ * Order of the place sheet and the home carousel (spec 001): the current position, then
+ * home, then from the most recent place to the oldest. `created` are the places added on
+ * this phone, oldest first; they are newer than every `saved` one.
+ */
+export function placeOrder(saved: readonly Place[], created: readonly Place[]): Place[] {
+  const all = [...[...created].reverse(), ...saved];
+  const rank = (place: Place) =>
+    place.id === CURRENT_POSITION.id ? 0 : place.icon === 'home' ? 1 : 2;
+  // Array.prototype.sort is stable: equal ranks keep their recency order.
+  return all.sort((a, b) => rank(a) - rank(b));
+}

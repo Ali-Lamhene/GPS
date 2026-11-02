@@ -1,6 +1,7 @@
 // Material Symbols codepoints (same in every style of the font), for the icons the
 // app uses. Add an entry when a screen needs a new icon: https://fonts.google.com/icons
 export const GLYPHS = {
+  add: 0xe145,
   add_location_alt: 0xef3a,
   arrow_back: 0xe5c4,
   arrow_upward: 0xe5d8,

@@ -2,6 +2,7 @@ import { Image } from 'expo-image';
 import { StyleSheet, View } from 'react-native';
 
 import { CURRENT_POSITION, isLocalPicture, type Place } from '@/domain/place';
+import { placeCategory } from '@/domain/place-category';
 import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon, type IconName } from '@/ui/icon/icon';
 import { colors } from '@/ui/theme';
@@ -11,7 +12,7 @@ type PlaceAvatarProps = {
   place?: Place;
   emptySymbol?: IconName;
   size: number;
-  /** The next thing to fill: blue and pulsing. */
+  /** The next thing to fill: pulsing. */
   pulsing?: boolean;
   /**
    * Symbol of the end in a corner once filled (start, arrival): the ends keep apart by
@@ -25,9 +26,10 @@ type PlaceAvatarProps = {
 };
 
 /**
- * Round light-blue disc that stands for a place (spec 005): the same blue dot as on the map
- * for "here", otherwise the place's photo with its pictogram in the bottom-left corner, or
- * the pictogram alone. The end symbol, if any, keeps the opposite top-right corner.
+ * Round disc that stands for an end of the way (specs 005, 007): the location pin on pale
+ * blue for "here"; the place's photo with its pictogram in a chip of its family colour; or
+ * the white pictogram on that colour. Empty: a dashed blue ring around the end symbol.
+ * The end symbol, if any, keeps the top-right corner, diagonal from the pictogram chip.
  */
 export function PlaceAvatar({
   place,
@@ -38,42 +40,43 @@ export function PlaceAvatar({
   ringed = false,
   showPhoto = true,
 }: PlaceAvatarProps) {
+  const borderRadius = size / 2;
   const here = place?.id === CURRENT_POSITION.id;
+  const tint = place ? colors.category[placeCategory(place.icon)] : colors.white;
   const photo = showPhoto && place?.photo && isLocalPicture(place.photo) ? place.photo : undefined;
-  const background = place
-    ? here
-      ? colors.primaryTint
-      : colors.secondaryContainer
-    : pulsing
-      ? colors.primary
-      : colors.surfaceHigh;
   return (
     <View
       style={[
         styles.avatar,
-        { width: size, height: size, borderRadius: size / 2, backgroundColor: background },
+        {
+          width: size,
+          height: size,
+          borderRadius,
+          backgroundColor: here ? colors.primaryTint : tint,
+        },
+        !place && styles.empty,
         place && ringed && styles.ring,
       ]}
     >
-      {pulsing && <PulseRing borderRadius={size / 2} />}
+      {pulsing && <PulseRing borderRadius={borderRadius} />}
       {here ? (
-        <View style={styles.dot} />
+        <Icon name="location_on" size={Math.round(size * 0.55)} color={colors.primary} />
       ) : photo ? (
         <Image
           source={{ uri: photo }}
           contentFit="cover"
-          style={[StyleSheet.absoluteFill, { borderRadius: size / 2 }]}
+          style={[StyleSheet.absoluteFill, { borderRadius }]}
         />
       ) : (
         <Icon
           name={place ? place.icon : emptySymbol}
-          size={Math.round(size * 0.48)}
-          color={place ? colors.ink : pulsing ? colors.onPrimary : colors.inkFaint}
+          size={Math.round(size * (place ? 0.5 : 0.45))}
+          color={place ? colors.white : colors.primary}
         />
       )}
       {place && photo && (
-        <View style={styles.placeBadge}>
-          <Icon name={place.icon} size={18} color={colors.ink} />
+        <View style={[styles.placeBadge, { backgroundColor: tint }]}>
+          <Icon name={place.icon} size={16} color={colors.white} />
         </View>
       )}
       {place && !here && badge && (
@@ -86,6 +89,15 @@ export function PlaceAvatar({
 }
 
 const styles = StyleSheet.create({
+  avatar: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  empty: {
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: colors.primary,
+  },
   ring: {
     borderWidth: 3,
     borderColor: colors.primary,
@@ -94,39 +106,25 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -4,
     right: -4,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     borderWidth: 2,
     borderColor: colors.white,
     backgroundColor: colors.ink,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // Diagonal from the end symbol; dark ring and shadow like a pin, seen on a pale photo.
   placeBadge: {
     position: 'absolute',
     bottom: -4,
     left: -4,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 0 0 1px rgba(0,0,0,.28), 0 2px 6px rgba(0,0,0,.3)',
-  },
-  avatar: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dot: {
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: colors.primary,
-    borderWidth: 4,
+    borderWidth: 2,
     borderColor: colors.white,
-    boxShadow: `0 0 0 2px ${colors.onSecondaryContainer}`,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -25,10 +25,9 @@ describe('tripPlanReducer', () => {
     ).toBe('beach');
   });
 
-  test('a new place is drafted, then saved and chosen for its end of the trip', () => {
+  test('a new place is drafted, then only kept: the trip does not change', () => {
     let state = tripPlanReducer(withOrigin, {
       type: 'startPlace',
-      for: 'destination',
       source: 'position',
     });
     state = tripPlanReducer(state, { type: 'setDraftIcon', icon: 'local_hospital' });
@@ -43,14 +42,14 @@ describe('tripPlanReducer', () => {
         hiddenOnMap: false,
       },
     ]);
-    expect(state.destinationId).toBe('custom-1');
+    expect(state.originId).toBe('home');
+    expect(state.destinationId).toBeUndefined();
     expect(state.draft).toBeUndefined();
   });
 
   test('a place drafted from an address keeps its name for the help card', () => {
     let state = tripPlanReducer(initialTripPlan, {
       type: 'startPlace',
-      for: 'origin',
       source: 'address',
     });
     state = tripPlanReducer(state, { type: 'setDraftName', helpName: 'Pharmacie du Port' });
@@ -60,7 +59,7 @@ describe('tripPlanReducer', () => {
       icon: 'location_on',
       helpName: 'Pharmacie du Port',
     });
-    expect(state.originId).toBe('custom-1');
+    expect(state.originId).toBe('here');
   });
 
   test('draft edits without a draft change nothing', () => {
@@ -84,7 +83,6 @@ describe('tripPlanReducer', () => {
   test('a new home or family place stays off the home map', () => {
     let state = tripPlanReducer(withOrigin, {
       type: 'startPlace',
-      for: 'destination',
       source: 'address',
     });
     state = tripPlanReducer(state, { type: 'setDraftIcon', icon: 'family_restroom' });

@@ -22,7 +22,7 @@ export function TripEnds({ origin, destination, size }: TripEndsProps) {
   return (
     <View style={styles.row}>
       <View style={[styles.box, styles.origin, frame]}>
-        <Icon name={origin?.icon ?? 'trip_origin'} size={icon} />
+        <Icon name={origin?.icon ?? 'location_on'} size={icon} />
       </View>
       <Icon name="arrow_forward" size={22} color={colors.outline} variant="outlined" />
       <View style={[styles.box, styles.destination, frame]}>

@@ -267,7 +267,7 @@ export function TripMap({
   useMarker(map, { type: 'dot' }, traveller?.point);
   useMarker(map, { type: 'maneuver' }, maneuver?.point, maneuver?.heading);
   useMarker(map, { type: 'destination', icon: destination?.icon ?? 'flag' }, destination?.point);
-  useMarker(map, { type: 'origin', icon: origin?.icon ?? 'trip_origin' }, origin?.point);
+  useMarker(map, { type: 'origin', icon: origin?.icon ?? 'location_on' }, origin?.point);
 
   const stopsKey = JSON.stringify(stops);
   useEffect(() => {

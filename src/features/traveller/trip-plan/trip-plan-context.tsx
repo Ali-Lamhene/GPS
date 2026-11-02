@@ -1,6 +1,6 @@
 import { createContext, useContext, useReducer, type Dispatch, type ReactNode } from 'react';
 
-import type { Place } from '@/domain/place';
+import { placeOrder, type Place } from '@/domain/place';
 
 import { DEMO_DESTINATION_IDS, DEMO_ORIGIN_IDS, DEMO_PLACES } from '../demo/places';
 import {
@@ -14,7 +14,7 @@ type TripPlan = TripPlanState & {
   dispatch: Dispatch<TripPlanAction>;
   origin?: Place;
   destination?: Place;
-  /** Places offered as a start, then as an arrival: saved ones first, then new ones. */
+  /** Places offered as a start, then as an arrival, in the order of spec 001. */
   originChoices: Place[];
   destinationChoices: Place[];
 };
@@ -35,16 +35,19 @@ export function TripPlanProvider({
   );
 
   const places = [...DEMO_PLACES, ...state.customPlaces];
-  const byIds = (ids: string[]) => places.filter((place) => ids.includes(place.id));
-  const customIds = state.customPlaces.map((place) => place.id);
+  const choices = (ids: string[]) =>
+    placeOrder(
+      DEMO_PLACES.filter((place) => ids.includes(place.id)),
+      state.customPlaces,
+    );
 
   const value: TripPlan = {
     ...state,
     dispatch,
     origin: places.find((place) => place.id === state.originId),
     destination: places.find((place) => place.id === state.destinationId),
-    originChoices: byIds([...DEMO_ORIGIN_IDS, ...customIds]),
-    destinationChoices: byIds([...DEMO_DESTINATION_IDS, ...customIds]),
+    originChoices: choices(DEMO_ORIGIN_IDS),
+    destinationChoices: choices(DEMO_DESTINATION_IDS),
   };
 
   return <TripPlanContext.Provider value={value}>{children}</TripPlanContext.Provider>;

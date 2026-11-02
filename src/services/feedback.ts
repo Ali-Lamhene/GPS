@@ -5,7 +5,16 @@ import { Platform, Vibration } from 'react-native';
 // often vibration (docs/product/principes.md, rule 3). Sounds are bundled, nothing is fetched.
 
 export type Cue =
-  'select' | 'turn' | 'alert' | 'vehicle' | 'exit' | 'offline' | 'arrival' | 'saved';
+  | 'select'
+  | 'turn'
+  | 'alert'
+  | 'vehicle'
+  | 'exit'
+  | 'offline'
+  | 'arrival'
+  | 'saved'
+  /** End of the 3 second hold on the home « + » (spec 007): felt in the hand. */
+  | 'hold';
 
 const SOUNDS: Record<Cue, number> = {
   select: require('../../assets/sounds/select.wav'),
@@ -16,6 +25,7 @@ const SOUNDS: Record<Cue, number> = {
   offline: require('../../assets/sounds/offline.wav'),
   arrival: require('../../assets/sounds/arrival.wav'),
   saved: require('../../assets/sounds/saved.wav'),
+  hold: require('../../assets/sounds/select.wav'),
 };
 
 /** Vibration, then pause, then vibration… in milliseconds. */
@@ -26,6 +36,7 @@ const VIBRATIONS: Partial<Record<Cue, number[]>> = {
   offline: [400, 200, 400],
   arrival: [60, 40, 60, 40, 200],
   saved: [80],
+  hold: [150],
 };
 
 const players = new Map<Cue, AudioPlayer>();

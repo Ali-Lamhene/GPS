@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-11-01
+**Dernière mise à jour** : 2026-11-02
 
 ## Où on en est
 
@@ -54,9 +54,30 @@ Spec 005 « accueil sur la carte, formes plus sobres » (2026-11-01) : l'accueil
 
 Révision photos de la spec 005 (2026-11-01) : après un labo (icônes pleines, au trait, photos), un lieu qui a une photo la montre avec son pictogramme en petit (coin bas gauche, en diagonale du drapeau d'arrivée), sur les raccourcis, les épingles et les pastilles du chemin. Un lieu caché de la carte (maison, famille) ne montre jamais sa photo dans les raccourcis. Démo : 3 photos libres Wikimedia Commons (mairie, lycée, haltères), recadrées, sans métadonnées, embarquées en `data:` dans `src/features/traveller/demo/photos.ts`, crédits dans `docs/credits-photos.md` ; le lieu « centre-ville » devient « la mairie ». Les écrans « arrivé » et « aide » filtrent aussi la photo avec `isLocalPicture`.
 
-Prochaine étape : coder la spec 006 « sens de lecture » (validée le 2026-11-01). Puis carte sur téléphone (MapLibre natif, `@maplibre/maplibre-react-native`) dès qu'un téléphone Android est branché : build de développement, revue sécurité dédiée, puis spec 002 au statut `livré`. Ensuite specs 003 (composer un trajet) et 004 (guidage).
+Spec 007 « accueil carte flottante et bouton + » (2026-11-02), **livrée** dans le navigateur :
 
-Aide (D13, 2026-11-01) : bouton d'aide en haut à droite sur tous les écrans, guidage, métro hors connexion et feuille des lieux compris. La petite carte de l'aide ne montre au passant que le reste du tronçon en cours et l'arrêt ou le lieu à trouver ; avant le départ, ni photo du lieu d'arrivée, ni carte si le départ n'est pas la position actuelle ; le message demande l'arrêt à prendre (en transport), puis suit l'étape. Sur les écrans sombres (E21, E29), le disque d'aide garde un contraste adapté au fond (validé). Au guidage, les noms de station passent sous le pictogramme, sur toute la largeur du bandeau ; le bouton écouter rejoint la rangée des cadrans, le panneau garde une hauteur fixe.
+- L'accueil reprend la variante F du labo : la carte reste entière, une carte blanche flotte en bas avec le chemin (capsule grise) et un carrousel de grandes vignettes (photo avec pastille de catégorie, ou tuile illustrée). Une fois l'arrivée choisie, ✕ et une barre ✓ en pilule.
+- Bouton « + » en haut à droite de l'accueil, à la place de l'aide (D13 révisée : pas d'aide à l'accueil, elle revient dès E06). Toucher : nouveau lieu « ici » (E27-E29). Appui de 3 s : adresse de l'accompagnant (E30), anneau caché la première seconde, aucun texte. Le lieu créé est seulement gardé, l'arrivée ne change pas ; il prend sa place dans l'ordre de la spec 001 (`placeOrder`).
+- Feuille des lieux : seulement pour choisir, plus de tuile d'ajout ni de texte « Accompagnant » (question 11 close).
+- Palette du labo dans tout le thème (bleu `#2F6BFF`, encre `#111827`, gris `#F3F4F6`) et une couleur par famille de lieux (`placeCategory`), contraste d'au moins 3:1 avec le blanc vérifié par un test.
+- Labo `/dev/home-lab` retiré du dépôt (copie de secours hors dépôt, dans le dossier temporaire de la session).
+- Inclut le travail du 2026-11-01 au soir : épingle `location_on` au départ.
+
+**Prochaine étape** : point UI avec l'utilisateur sur l'accueil et le reste de l'app (formes : arrondis et barre en pilule restent propres à l'accueil pour l'instant ; tuiles de la feuille des lieux et épingles encore dans l'ancien style).
+
+À trancher au point UI (relectures de la spec 007) :
+
+- « + » à la place exacte de l'aide : un voyageur perdu qui cherche l'aide peut le toucher (E27) ou le garder enfoncé par détresse (formulaire en texte) ; « + » peut se lire comme une croix de pharmacie. Piste du relecteur : glyphe `add_location` (épingle avec +). À observer lors des tests avec des voyageurs.
+- Couleur de famille absente de la feuille des lieux (tuiles blanches) et des épingles : le même lieu change d'aspect d'un écran à l'autre. Réutiliser le rendu de `PlaceCard` dans la feuille et teinter la pastille des épingles ?
+- Maison orange, proche de l'orange d'alerte « descends » ; pour un daltonien, maison, famille et courses se confondent (le pictogramme porte le sens).
+- Bouton d'attribution « i » de la carte : une lettre qui ouvre du texte (ancien).
+- Sécurité : la couleur de famille révèle la nature d'un lieu caché (maison orange, famille corail) à qui voit l'écran d'accueil, même sans photo. Couleur neutre « autre » pour les lieux cachés ?
+- Sécurité : le schéma `gps://` reste déclaré dans `app.json` ; `securite.md` §3 le réserve au développement. Le retirer des builds publiés ? (Les écrans d'ajout renvoient déjà à l'accueil sans brouillon, `RequireDraft`.)
+- À tester sur le terrain : le voyageur retrouve-t-il son nouveau lieu dans le carrousel ? Le bord coupé donne-t-il l'idée de glisser jusqu'à « … » ?
+
+Ensuite : coder la spec 006 « sens de lecture » (validée le 2026-11-01). Puis carte sur téléphone (MapLibre natif, `@maplibre/maplibre-react-native`) dès qu'un téléphone Android est branché : build de développement, revue sécurité dédiée, puis spec 002 au statut `livré`. Ensuite specs 003 (composer un trajet) et 004 (guidage).
+
+Aide (D13, 2026-11-01, révisée le 2026-11-02 : sauf l'accueil et sa feuille des lieux) : bouton d'aide en haut à droite sur tous les autres écrans, guidage et métro hors connexion compris. La petite carte de l'aide ne montre au passant que le reste du tronçon en cours et l'arrêt ou le lieu à trouver ; avant le départ, ni photo du lieu d'arrivée, ni carte si le départ n'est pas la position actuelle ; le message demande l'arrêt à prendre (en transport), puis suit l'étape. Sur les écrans sombres (E21, E29), le disque d'aide garde un contraste adapté au fond (validé). Au guidage, les noms de station passent sous le pictogramme, sur toute la largeur du bandeau ; le bouton écouter rejoint la rangée des cadrans, le panneau garde une hauteur fixe.
 
 Points laissés ouverts par les relectures de la spec 002 :
 
@@ -89,7 +110,7 @@ Points laissés ouverts par les relectures de la spec 002 :
 8. Tests : travailleurs sociaux / voyageurs prêts à tester des maquettes tôt ?
 9. Création d'un lieu par le voyageur lui-même (« je suis ici » + photo) : spec ultérieure.
 10. Sécurité (détail dans `docs/engineering/securite.md`) : chiffrer lieux et trajets au repos ? moyen rapide d'effacer ou cacher les lieux si le téléphone est fouillé ? bloquer les captures d'écran de la partie préparation ?
-11. Tuile « Accompagnant · appui 3 s » de la feuille des lieux (E02, E04) : texte visible par le voyageur, hors exceptions D9. Codée comme composant de la partie accompagnant (`src/features/social-worker/`), fidèle à la maquette ; à confirmer.
+11. ~~Tuile « Accompagnant · appui 3 s »~~ : close par la spec 007 (appui long sur le « + », sans texte).
 12. Licences des photos de démo : lycée (CC BY-SA 4.0) et haltères (CC BY 2.0) obligent à citer l'auteur dans toute version distribuée (export web, build envoyée). Décidé de régler plus tard : avant la première diffusion, écran de crédits côté accompagnant ou photos CC0 seulement. Ancienne question : photos de démonstration générées par ChatGPT : elles portent sans doute un filigrane invisible OpenAI, qui résiste au réencodage. À remplacer par des photos libres ou faites par l'équipe avant toute diffusion publique ?
 13. Lecture à voix haute (relue par `security-reviewer`) : aujourd'hui, l'app ne lit qu'avec une voix française installée sur le téléphone (Android : voix Google « -local » seulement), sinon elle se tait. Reste à trancher :
     - durcir en natif (moteur de synthèse imposé, contrôle `isNetworkConnectionRequired`), supprimer la lecture des noms, ou passer à des audios préenregistrés (question 4) ;

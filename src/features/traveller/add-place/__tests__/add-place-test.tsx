@@ -11,7 +11,7 @@ jest.mock('expo-router', () => ({
   router: { push: jest.fn(), back: jest.fn(), dismissTo: jest.fn() },
 }));
 
-const drafting = [{ type: 'startPlace', for: 'destination', source: 'position' }] as const;
+const drafting = [{ type: 'startPlace', source: 'position' }] as const;
 
 describe('new place', () => {
   beforeEach(() => jest.clearAllMocks());

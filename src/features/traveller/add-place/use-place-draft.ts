@@ -13,7 +13,7 @@ export function usePlaceDraft() {
       dispatch({ type: 'cancelPlace' });
       router.dismissTo('/');
     },
-    /** Saves the place, selects it for its end of the trip and returns to the home trail. */
+    /** Saves the place and returns home; the trip does not change (spec 007). */
     finish: (photo?: string) => {
       dispatch({ type: 'finishPlace', photo });
       playCue('saved');

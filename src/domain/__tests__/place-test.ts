@@ -4,6 +4,7 @@ import {
   hiddenOnMapByDefault,
   homeFraming,
   isLocalPicture,
+  placeOrder,
   placesOnMap,
   type Place,
 } from '../place';
@@ -75,4 +76,25 @@ describe('isLocalPicture', () => {
     'javascript:alert(1)',
     ' file:///photo.jpg',
   ])('refuses %s', (uri) => expect(isLocalPicture(uri)).toBe(false));
+});
+
+describe('placeOrder', () => {
+  const home: Place = { id: 'home', icon: 'home' };
+  const beach: Place = { id: 'beach', icon: 'beach_access' };
+  const school: Place = { id: 'school', icon: 'school' };
+
+  test('position, then home, then the newest place first', () => {
+    const first: Place = { id: 'custom-1', icon: 'work' };
+    const second: Place = { id: 'custom-2', icon: 'park' };
+
+    expect(
+      placeOrder([CURRENT_POSITION, home, beach, school], [first, second]).map((p) => p.id),
+    ).toEqual(['here', 'home', 'custom-2', 'custom-1', 'beach', 'school']);
+  });
+
+  test('a new home goes first too', () => {
+    const newHome: Place = { id: 'custom-1', icon: 'home' };
+
+    expect(placeOrder([beach], [newHome]).map((p) => p.id)).toEqual(['custom-1', 'beach']);
+  });
 });

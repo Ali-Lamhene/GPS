@@ -8,12 +8,12 @@
 
 Les voyageurs ne lisent pas tous dans le même sens : l'arabe, le persan et le pachto se lisent de droite à gauche. Même sans savoir lire, une personne habituée à ce sens peut comprendre une suite horizontale à l'envers : croire qu'elle arrive alors qu'elle part, ou qu'une flèche vers la droite veut dire « revenir ».
 
-La relecture de la spec 005 a relevé quatre endroits où l'interface compte encore sur un ordre de gauche à droite. La règle retenue pour l'accueil (spec 005) s'applique partout : **les deux bouts d'un trajet se reconnaissent à leur symbole** (point de départ, drapeau d'arrivée), pas à leur place ; **pas de flèche** pour dire « vers » ; une ligne horizontale n'est **jamais inversée**, comme la carte.
+La relecture de la spec 005 a relevé quatre endroits où l'interface compte encore sur un ordre de gauche à droite. La règle retenue pour l'accueil (spec 005) s'applique partout : **les deux bouts d'un trajet se reconnaissent à leur symbole** (épingle de localisation au départ, drapeau à l'arrivée), pas à leur place ; **pas de flèche** pour dire « vers » ; une ligne horizontale n'est **jamais inversée**, comme la carte.
 
 ## Parcours
 
 1. **Rappel du trajet** en haut du choix du transport (E06) et du récapitulatif (E07) : la flèche disparaît. On voit la pastille du départ, des pointillés, puis la pastille de l'arrivée avec un drapeau en coin, comme dans le panneau de l'accueil. Pas de marcheur au milieu : en E06, le mode n'est pas encore choisi.
-2. **Barre de progression du guidage** : elle garde sa forme, jamais inversée. Son bout de départ porte le symbole du départ (point), son bout d'arrivée le pictogramme du lieu avec un drapeau en coin. La partie déjà faite devient grise, la partie restante garde ses couleurs (pointillés bleus à pied, couleur de la ligne en transport).
+2. **Barre de progression du guidage** : elle garde sa forme, jamais inversée. Son bout de départ porte le symbole du départ (épingle de localisation), son bout d'arrivée le pictogramme du lieu avec un drapeau en coin. La partie déjà faite devient grise, la partie restante garde ses couleurs (pointillés bleus à pied, couleur de la ligne en transport).
 3. **Bandeau de consigne** : le pictogramme « ensuite » reste à sa place mais devient plus petit et plus pâle. L'ordre se lit par la taille (grand = maintenant, petit et pâle = après), pas par la position.
 4. **Étapes du récapitulatif (E07)** : la flèche `>` qui ouvre une étape devient une flèche vers le bas (et vers le haut une fois ouverte), comme une liste qui se déplie.
 
@@ -21,7 +21,7 @@ La relecture de la spec 005 a relevé quatre endroits où l'interface compte enc
 
 | Information             | Canaux                                                             |
 | ----------------------- | ------------------------------------------------------------------ |
-| Quel bout est le départ | symbole du départ (point) + place dans le chemin                   |
+| Quel bout est le départ | épingle de localisation + place dans le chemin                     |
 | Quel bout est l'arrivée | drapeau en coin + pictogramme ou photo du lieu + anneau bleu       |
 | Ce qui est déjà fait    | partie grise de la barre + position du point bleu                  |
 | Ce qu'il faut faire     | grand pictogramme vif du bandeau + couleur du bandeau + voix / son |
@@ -59,7 +59,7 @@ Aucun changement : pas de donnée, pas de dépendance, pas de permission.
 ## Hypothèses
 
 - La flèche devant le nom de direction d'une ligne reste : le nom est en écriture latine (D9), lu de gauche à droite comme sur le panneau du quai, et la flèche le désigne.
-- Sur la barre de progression, le symbole de départ est le même point que la pastille « ici » de l'accueil, en petit.
+- Sur la barre de progression, le symbole de départ est la même épingle de localisation que sur la pastille de départ de l'accueil.
 - « Plus pâle » = opacité d'environ 70 % sur le fond du bandeau ; à confirmer au soleil.
 - La flèche vers le bas des étapes n'a pas été demandée explicitement : c'est l'usage courant d'une liste qui se déplie.
 

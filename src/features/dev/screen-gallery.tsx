@@ -65,12 +65,12 @@ const ENTRIES: Entry[] = [
   {
     label: '27 Nouveau lieu · position',
     href: '/add-place/position',
-    actions: [...READY, { type: 'startPlace', for: 'destination', source: 'position' }],
+    actions: [...READY, { type: 'startPlace', source: 'position' }],
   },
   {
     label: '30 Nouveau lieu · adresse',
     href: '/add-place/address',
-    actions: [...READY, { type: 'startPlace', for: 'destination', source: 'address' }],
+    actions: [...READY, { type: 'startPlace', source: 'address' }],
   },
 ];
 

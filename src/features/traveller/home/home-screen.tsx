@@ -12,7 +12,6 @@ import {
   type Place,
 } from '@/domain/place';
 import { playCue } from '@/services/feedback';
-import { HelpButton } from '@/ui/components/help-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { TripMap } from '@/ui/map/trip-map';
 import type { MapPin } from '@/ui/map/trip-map-types';
@@ -21,8 +20,9 @@ import { colors, sizes, spacing } from '@/ui/theme';
 import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
-import { PlaceSheet } from './place-sheet';
+import { AddPlaceButton } from './add-place-button';
 import { HomePanel } from './home-panel';
+import { PlaceSheet } from './place-sheet';
 
 /** Where a place shows on the map, unless it is kept off it (spec 005). */
 function visiblePoint(place: Place | undefined): LngLat | undefined {
@@ -30,9 +30,10 @@ function visiblePoint(place: Place | undefined): LngLat | undefined {
 }
 
 /**
- * Home (E01-E05, spec 005): the live map around the traveller with their places as pins,
- * and a bottom panel with the way from the start to the arrival and shortcuts to the
- * places. Touching a pin or a shortcut chooses the arrival; then cancel or go on.
+ * Home (E01-E05, specs 005 and 007): the live map around the traveller with their places
+ * as pins, and a floating card with the way from the start to the arrival and a carousel
+ * of the places. Touching a pin or a card chooses the arrival; then cancel or go on. The
+ * « + » at the top right adds a place; no help here, there is no trip yet (D13 revised).
  */
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -72,9 +73,10 @@ export function HomeScreen() {
     setSheet(null);
   };
 
-  const createPlace = (end: TripEnd, source: 'position' | 'address') => {
+  const createPlace = (source: 'position' | 'address') => {
     const point = source === 'position' ? position : undefined;
-    dispatch({ type: 'startPlace', for: end, source, point });
+    dispatch({ type: 'startPlace', source, point });
+    playCue(source === 'address' ? 'hold' : 'select');
     setSheet(null);
     router.push(source === 'position' ? '/add-place/position' : '/add-place/address');
   };
@@ -128,14 +130,18 @@ export function HomeScreen() {
           places={sheet === 'origin' ? plan.originChoices : plan.destinationChoices}
           excludedId={sheet === 'destination' ? origin?.id : undefined}
           onPick={(place) => pick(sheet, place)}
-          onAddPosition={() => createPlace(sheet, 'position')}
-          onCompanion={() => createPlace(sheet, 'address')}
           onClose={() => setSheet(null)}
         />
       )}
 
-      {/* Above the place sheet too: help stays top right on every screen (D13). */}
-      <MapHeader right={<HelpButton onPress={() => router.push('/help')} />} />
+      <MapHeader
+        right={
+          <AddPlaceButton
+            onAddHere={() => createPlace('position')}
+            onAddAddress={() => createPlace('address')}
+          />
+        }
+      />
     </View>
   );
 }

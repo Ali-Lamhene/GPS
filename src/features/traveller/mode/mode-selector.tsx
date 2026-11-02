@@ -58,6 +58,6 @@ const styles = StyleSheet.create({
   },
   on: {
     backgroundColor: colors.primary,
-    boxShadow: '0 2px 6px rgba(30,107,255,.35)',
+    boxShadow: '0 2px 6px rgba(47,107,255,.35)',
   },
 });

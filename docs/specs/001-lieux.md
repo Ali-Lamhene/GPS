@@ -23,7 +23,7 @@ Cette spec couvre les lieux et l'accueil du voyageur. La composition d'un trajet
 2. Ordre : les lieux « maison » d'abord, puis du plus récemment ajouté au plus ancien.
 3. Une carte avec photo : la photo remplit la carte, un cadre épais de la couleur du lieu l'entoure, le pictogramme est en pastille dans un coin. Une carte sans photo : grand pictogramme sur fond de la couleur du lieu.
 4. Aucun lieu encore : un visuel d'attente sans texte (pictogramme de maison vide ou équivalent). Dans cette spec, toucher un lieu ne fait rien : la composition du trajet arrive avec la spec 002.
-5. Un petit symbole discret (coin de l'écran) permet d'entrer dans la partie préparation par un **appui long de 3 secondes** (D8). Un appui court ne fait rien.
+5. Un petit symbole discret (coin de l'écran) permet d'entrer dans la partie préparation par un **appui long de 3 secondes** (D8). Un appui court ne fait rien. Révision du 2026-11-02 (spec 007) : ce symbole est le bouton « + » de l'accueil ; un appui court y ouvre l'ajout d'un lieu « ici » par le voyageur, l'appui de 3 secondes ouvre l'adresse (accompagnant), sans aucun texte pour l'annoncer.
 
 ### B. Créer un lieu sur le téléphone du voyageur (partie préparation)
 

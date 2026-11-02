@@ -17,9 +17,7 @@ describe('matchAddresses', () => {
 
 describe('<AddressScreen />', () => {
   test('typing filters the suggestions; picking one goes on to the pictogram', async () => {
-    await renderWithProviders(<AddressScreen />, [
-      { type: 'startPlace', for: 'destination', source: 'address' },
-    ]);
+    await renderWithProviders(<AddressScreen />, [{ type: 'startPlace', source: 'address' }]);
 
     await fireEvent.changeText(screen.getByPlaceholderText('Ex. 14 quai du Port'), 'port');
     expect(screen.queryByText('Chez Leïla')).toBeNull();
