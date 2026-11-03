@@ -33,9 +33,9 @@ Expo rules, commands and routing conventions live in `AGENTS.md` (imported by th
 
 - **Read `docs/engineering/code.md` and `docs/engineering/securite.md` before writing code.** They set the folder layout (`src/app`, `src/features`, `src/domain`, `src/services`, `src/ui`), component, TypeScript, error and test rules, and the security rules derived from D1.
 - Traveller UI lives in `src/features/traveller/`, social worker UI in `src/features/social-worker/`. Route files in `src/app/` stay thin and render those.
-- UI comes from the Claude Design system « GPS sans texte »: tokens and shared components in `src/ui/`, following the `expo:expo-design-system` skill. Use `expo:expo-native-ui`, `expo:expo-ui` and `expo:expo-animation` for native controls, motion and haptics.
+- UI follows the emerald mockup (D15): tokens and shared components in `src/ui/`, following the `expo:expo-design-system` skill. Use `expo:expo-native-ui`, `expo:expo-ui` and `expo:expo-animation` for native controls, motion and haptics.
 - ESLint rule `gps/no-text-in-traveller-ui` (local plugin in `eslint/`) forbids displayed text in `src/features/traveller/` and `src/ui/`. Do not disable it; the D9 exception components are listed by name in `eslint.config.js`. If a new case seems to need text, ask the user.
-- Visual reference: the Claude Design mockup v7 (D11) and `docs/screens.md`. It wins over the older design system and `docs/design/brief.md`.
+- Visual reference: the emerald mockup `docs/design/maquette-emeraude.png` (D15). It wins over every earlier visual rule (mockup v7, specs 002 to 008). `docs/screens.md` stays the reference for screens and behaviour.
 - ESLint also forbids in `src/`: `console.*`, `any`, non-null `!`, `eval`, and imports of tracking SDKs listed in `eslint/forbidden-packages.js` (a Jest test checks `package.json` against the same list). Do not disable these rules.
 - A `PostToolUse` hook runs Prettier on every file Claude edits in the project.
 

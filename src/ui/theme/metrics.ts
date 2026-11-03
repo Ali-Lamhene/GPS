@@ -1,7 +1,6 @@
-// Spacing, radius, size and elevation tokens from the mockup v7 (decision D11).
+// Spacing, radius, size and elevation tokens of the « clair premium » system (spec 008).
 
 export const spacing = {
-  xxs: 4,
   xs: 6,
   sm: 8,
   md: 12,
@@ -15,8 +14,6 @@ export const spacing = {
 // Corners of the « clair premium » system (spec 008): soft rounded controls, large floating
 // cards, pills and discs.
 export const radii = {
-  /** Small marks: badges, chips, line ids. */
-  small: 6,
   /** Square line ids: the shape of the network signs they are compared with (D9). */
   sign: 8,
   /** Buttons, tiles, rows, banners. */
@@ -25,24 +22,18 @@ export const radii = {
   sheet: 28,
   /** Big place cards of the home carousel. */
   placeCard: 26,
-  /** Floating card of the home, over the map. */
-  floatingCard: 28,
 } as const;
 
 export const sizes = {
   /** Round header buttons: back, close, home, help. */
   headerButton: 56,
-  /** Square action buttons of the guidance panel. */
-  actionButton: 72,
   /** Smallest target for the traveller (docs/product/principes.md). */
   minTarget: 64,
 } as const;
 
 export const shadows = {
-  low: '0 1px 2px rgba(17,24,39,.10), 0 2px 6px rgba(17,24,39,.06)',
   medium: '0 2px 4px rgba(17,24,39,.10), 0 4px 12px rgba(17,24,39,.08)',
   card: '0 2px 6px rgba(17,24,39,.06), 0 8px 20px rgba(17,24,39,.08)',
-  raised: '0 4px 14px rgba(17,24,39,.14)',
   floating: '0 4px 14px rgba(17,24,39,.16)',
   sheet: '0 12px 32px rgba(17,24,39,.14), 0 2px 6px rgba(17,24,39,.06)',
   marker: '0 1px 4px rgba(0,0,0,.3)',

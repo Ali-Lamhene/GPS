@@ -16,7 +16,7 @@ You receive some of: a spec path in `docs/specs/`, changed files or a diff comma
 2. **One screen, one decision**: is the next move obvious within a second? Anything competing for attention?
 3. **Redundancy**: every instruction on at least two channels (picture, colour, shape, sound, vibration, voice). Does it still work in bright sun, in a noisy street, with colour blindness, with the phone in a pocket?
 4. **Reassurance and help**: does the traveller always know whether they are on the right way? Is help one gesture away from this screen?
-5. **Touch and contrast**: targets large enough for a stressed thumb (at least 64 dp), strong contrast, nothing tiny.
+5. **Touch and contrast**: targets at the size drawn in the emerald mockup (D15, no enlarged touch area), strong contrast, nothing tiny.
 6. **Culture**: symbols that rely on one culture, gestures or colours with other meanings elsewhere, arrows that assume reading direction.
 7. **Failure states**: no GPS, poor accuracy, no network, low battery, wrong way, arrived, late. Is each one shown, and understandable without reading?
 8. **Privacy**: anything leaving the device or stored longer than needed.

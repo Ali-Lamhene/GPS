@@ -1,6 +1,7 @@
 # 002 — Carte d'abord : refonte visuelle
 
 - **Statut** : validé
+- **Partie visuelle remplacée par** : D15, maquette émeraude (2026-11-03)
 - **Date** : 2026-10-31
 - **Persona** : voyageur
 

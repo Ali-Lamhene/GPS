@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-11-02 (soir)
+**Dernière mise à jour** : 2026-11-03
 
 ## Où on en est
 
@@ -19,11 +19,7 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 - Spec 001 « Lieux : créer, partager, recevoir » **validée** (`docs/specs/001-lieux.md`). Pas encore de code.
 - Découpage prévu : 001 lieux, 002 composer un trajet et le garder hors connexion, 003 guidage pendant la marche.
 
-- Conception des écrans préparée dans `docs/design/` : `ecrans.md` (inventaire V1-V7, P1-P5, W1, S1, états), `references.md` (pictogrammes ARASAAC revus, études sourcées, tableau des choix remis en cause), `brief.md` (direction « signalétique », liste noire anti-rendu générique, prompt par écran).
-
 - Maquette v7 implémentée (2026-10-31), voir « Prochaine étape ».
-- Première maquette Claude Design (V1) jugée « jouet » par l'utilisateur. Nouvelle direction « signalétique » sobre et adulte, portée par un design system Claude Design « GPS sans texte » (https://claude.ai/artifact/T8sKnYwYLZy4rM5vR8ZdXF) : tokens, règles, vraies photos Wikimedia Commons, pictogrammes ARASAAC noir et blanc, composants CarteLieu, BarreTrajet, Confirmation, BoutonAide, EcranAccueil. `brief.md` réécrit écran par écran (mesures, états, wireframes) ; `guide-claude-design.md` explique l'outil.
-
 - Règles d'ingénierie écrites (2026-10-31) : `docs/engineering/code.md` (dossiers `src/app|features|domain|services|ui`, composants, TypeScript, erreurs, tests, glossaire) et `docs/engineering/securite.md` (menaces, réseau, lien de partage, stockage, logs, permissions, dépendances). ESLint interdit `console.*`, `any`, `!`, `eval` et les SDK de suivi (`eslint/forbidden-packages.js`, aussi vérifié sur `package.json` par un test). Agent `security-reviewer`. `android.allowBackup` à `false`.
 
 - Dépendances ajoutées pour la maquette v7 (relues par `security-reviewer`) : `@expo-google-fonts/roboto` et `@expo-google-fonts/material-symbols-rounded` (polices embarquées, aucun appel réseau) ; `react-native-svg` (code natif, aucune permission, réseau seulement via `SvgUri` et composants proches, interdits par ESLint) ; `expo-audio` (sons embarqués seulement, micro et lecture en arrière-plan désactivés, `RECORD_AUDIO` et stockage externe bloqués ; import réservé à `src/services/feedback.ts`) ; `expo-speech` (texte envoyé au moteur de synthèse du système, voix locale seulement ; import réservé à `src/services/speech.ts`).
@@ -46,7 +42,7 @@ Implémentation de la maquette v7 (D11) en interface statique fidèle, données 
 12. [x] E27-E29 nouveau lieu (voyageur) et E30 adresse (accompagnant).
 13. [x] Planche de développement des écrans, test fonctionnel dans le navigateur.
 
-Les 30 écrans de la maquette v7 sont codés en interface statique (données factices, guidage simulé : toucher la carte de consigne fait avancer). Test fonctionnel complet dans le navigateur réussi (accueil → transport → récapitulatif → 14 étapes de guidage dont E21 → arrivée ; aide contextuelle ; création d'un lieu). Planche de développement : `/dev/screens` (en développement seulement). Lancer : `npx expo start --web` (sans `CI=1`, qui coupe le rechargement).
+Les 30 écrans de la maquette v7 sont codés en interface statique (données factices, guidage simulé : toucher la carte de consigne fait avancer). Test fonctionnel complet dans le navigateur réussi (accueil → transport → récapitulatif → 14 étapes de guidage dont E21 → arrivée ; aide contextuelle ; création d'un lieu). Lancer : `npx expo start --web` (sans `CI=1`, qui coupe le rechargement).
 
 Spec 002 « carte d'abord » : témoins validés par l'utilisateur (2026-10-31), puis style généralisé à toute l'app dans le navigateur (2026-11-01). La carte embarquée sert de fond à l'accueil, au choix du transport (E06), au récapitulatif (E07-E08, une étape ouverte cadre la carte dessus), au guidage, à l'arrivée (E26), au problème de connexion (E25), à la position et au pictogramme d'un nouveau lieu (E27-E28) ; la carte d'aide (E24) montre une petite carte de la situation ; le métro hors connexion (E21) dessine la ligne avec ses vraies stations. Interface flottante commune : en-tête (`MapHeader`), panneau blanc (`FloatingSheet`), barre d'action pleine largeur. Test fonctionnel complet dans le navigateur réussi, aucune requête hors de l'app.
 
@@ -72,13 +68,21 @@ Spec 008 « refonte visuelle clair premium » (2026-11-02), **livrée** dans le 
 - Pictogrammes 3D (Fluent Emoji) essayés puis écartés : plats retenus. Rappel du trajet sans flèche (`TripEnds`, déjà conforme à la spec 006).
 - Jest : délai de test porté à 15 s (`testTimeout`), les tests dépassaient 5 s quand la machine est chargée.
 
-**Prochaine étape** : point visuel avec l'utilisateur sur toute l'app refondue, puis coder le reste de la spec 006 « sens de lecture ».
+Nettoyage du 2026-11-03 (D15) : l'utilisateur juge l'interface « clair premium » sans personnalité (« bootstrap ») et fournit une nouvelle maquette, `docs/design/maquette-emeraude.png` (accueil sur une carte crème, accent émeraude unique), qui **fait foi**. Décision D15 écrite ; principe 4 révisé (cibles à la taille de la maquette, plus de minimum de 64 dp) ; D11 et la palette de D12 remplacées ; specs 002, 005, 007, 008 marquées « partie visuelle remplacée » ; `docs/screens.md` (règles 3 et 11, § 8), `code.md`, `.claude/CLAUDE.md` et la grille de `ux-sans-texte-reviewer` mis à jour. Supprimés : anciens docs de conception (`docs/design/brief.md`, `ecrans.md`, `guide-claude-design.md`, `references.md`), planche `/dev/screens`, tokens et export jamais utilisés, les 11 PNG générés d'`assets/images/` (hors git). La maquette a été réenregistrée sans son manifeste C2PA OpenAI avant d'être commitée. Les données de démonstration restent jusqu'à l'étape « fonctionnel ».
+
+**Prochaine étape** (ordre décidé le 2026-11-03) :
+
+1. [x] Nettoyage du dépôt et des règles obsolètes (D15).
+2. [ ] MapLibre natif (`@maplibre/maplibre-react-native`) : carte sur téléphone, build de développement, revue `security-reviewer` avant installation. Demande un téléphone Android branché pour la vérification.
+3. [ ] Refonte visuelle selon la maquette émeraude : spec à écrire avec le skill `feature` (tous les écrans, déduits de l'accueil). Le code garde encore `sizes.minTarget` (64 dp, `IconButton` l'utilise pour élargir la zone tactile) : à retirer dans cette refonte.
+4. [ ] App entièrement fonctionnelle : vraies données à la place de la démo (specs 001, 003, 004), retrait de `src/features/traveller/demo/` et `src/features/social-worker/demo/`.
+
+Reste aussi à coder la spec 006 « sens de lecture » (à replacer dans la refonte ou après).
 
 À trancher (relectures des specs 007 et 008) :
 
 - « + » flottant (spec 008) : peut se lire comme une croix de pharmacie ; un voyageur en détresse peut le garder enfoncé 3 s (formulaire en texte). À observer lors des tests avec des voyageurs.
 - Halo de la pastille à remplir sans son ni vibration (choix de l'utilisateur, dérogation à la règle des deux canaux) : à observer en test.
-- Maison orange, proche de l'orange d'alerte « descends » ; pour un daltonien, maison, famille et courses se confondent (le pictogramme porte le sens).
 - Bouton d'attribution « i » de la carte : une lettre qui ouvre du texte (ancien).
 - Sécurité : le schéma `gps://` reste déclaré dans `app.json` ; `securite.md` §3 le réserve au développement. Le retirer des builds publiés ? (Les écrans d'ajout renvoient déjà à l'accueil sans brouillon, `RequireDraft`.)
 - À tester sur le terrain : le voyageur retrouve-t-il son nouveau lieu dans le carrousel ? Le bord coupé donne-t-il l'idée de glisser jusqu'à « … » ?
@@ -106,10 +110,11 @@ Points laissés ouverts par les relectures de la spec 002 :
 - Orange de l'alerte (#E8710A) : contraste d'environ 3,1:1 avec le texte blanc, faible en plein soleil.
 - Mise en page de droite à gauche (téléphones en arabe, persan, pachto) : flèches non inversées ; décider de forcer la gauche-à-droite ou d'inverser les glyphes.
 - Pas de retour ni d'accueil sur l'écran de guidage ; la feuille des lieux masque l'aide.
-- Déjà corrigé sans changer le rendu : zones tactiles à 64 dp, retour Android qui ferme la feuille, badges de ligne insensibles à la taille de police système.
+- Déjà corrigé sans changer le rendu : retour Android qui ferme la feuille, badges de ligne insensibles à la taille de police système.
 
 ## Questions produit ouvertes
 
+0. Refonte émeraude (D15), à trancher dans sa spec : que montre la pilule du haut de l'accueil (épingle de départ, pointillés, drapeau) quand aucun trajet n'est choisi ? Comment se traduisent les autres écrans (guidage, récapitulatif, métro sombre, aide) qui n'apparaissent pas sur la maquette ?
 1. Zone : France au lancement (D14). Reste à choisir la ou les villes pilotes (conditionne les données de transports en commun et la taille des cartes hors connexion).
 2. Cartes hors connexion : quelle source de tuiles gratuite autorise le téléchargement ? (Les serveurs de tuiles OSM l'interdisent.) Piste : fichiers Protomaps / PMTiles d'une zone, hébergés en statique.
 3. Recalcul quand le voyageur se perd : en ligne via un service public (envoie la position), ou seulement le ramener vers le tracé prévu, sans réseau ?
@@ -130,8 +135,6 @@ Points laissés ouverts par les relectures de la spec 002 :
 14. Avant le premier build natif : bloquer `SYSTEM_ALERT_WINDOW` en version publiée, vérifier `NSAllowsArbitraryLoads` (HTTPS seulement) sur iOS après prebuild, contrôler l'APK avec `aapt dump permissions`.
 
 ## En attente côté humain
-
-- Les 11 PNG d'origine de `assets/images/` (non suivis) contiennent un manifeste C2PA signé OpenAI avec des identifiants uniques de génération. Ne pas les commiter : les déplacer hors du dépôt ou les supprimer. Les versions utilisées par l'app sont les JPEG sans métadonnées de `assets/photos/`.
 
 - Pousser les commits : le shell de Claude n'a pas d'identifiants GitHub. Installer `gh` puis `gh auth login`, ou ajouter la clé SSH à GitHub.
 - Brancher un téléphone Android (débogage USB) pour les vérifications sur appareil. Pas d'émulateur ni de SDK Android installé sur la machine.

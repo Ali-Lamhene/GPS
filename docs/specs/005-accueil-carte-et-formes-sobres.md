@@ -4,6 +4,7 @@
 - **Date** : 2026-11-01
 - **Persona** : voyageur
 - **Révisée par** : spec 007 (carte flottante, bouton « + », palette)
+- **Partie visuelle remplacée par** : D15, maquette émeraude (2026-11-03)
 
 ## Besoin
 

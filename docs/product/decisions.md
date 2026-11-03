@@ -72,7 +72,7 @@ Ces exceptions sont codées dans des composants dédiés, listés nommément dan
 
 Pas de bouton pour appeler un proche ou l'accompagnateur. L'aide, toujours à un geste, est la **carte d'aide contextuelle** (D9) : un message en français adapté à l'étape en cours, à montrer à un passant ou à faire lire à voix haute. Aucun numéro de téléphone n'est enregistré dans l'app.
 
-## D11. Maquette de référence (2026-10-31)
+## D11. Maquette de référence (2026-10-31, remplacée par D15)
 
 La maquette Claude Design « Navigation sans lecture v7 » (https://claude.ai/design/p/f7239f2c-c8b8-40e7-9b22-92f09ecce9e6, fichier `Navigation sans lecture v7.dc.html`, 30 écrans) et `docs/screens.md` sont la référence visuelle et fonctionnelle. En cas de conflit avec le design system « GPS sans texte » ou avec `docs/design/brief.md` et `ecrans.md`, **la maquette v7 prévaut** : fond crème, noir, bleu d'action, icônes Material Symbols Rounded, police Roboto Flex, cadrans de durée.
 
@@ -80,7 +80,7 @@ Première implémentation : interface statique fidèle, données factices, sans 
 
 ## D12. Carte d'abord (2026-10-31, spec 002)
 
-Une vraie carte, sans aucune étiquette, sert de fond aux écrans du trajet ; l'interface flotte dessus. Les tuiles d'une zone sont embarquées dans l'app (PMTiles, données OpenStreetMap) : rien n'est téléchargé à l'usage. Plus aucune illustration générée par IA. Palette plus vive que la maquette v7 (bleu plus lumineux, vert émeraude, orange plus franc, surfaces blanches) : elle prévaut sur les couleurs de la maquette v7 une fois validée sur les écrans témoins.
+Une vraie carte, sans aucune étiquette, sert de fond aux écrans du trajet ; l'interface flotte dessus. Les tuiles d'une zone sont embarquées dans l'app (PMTiles, données OpenStreetMap) : rien n'est téléchargé à l'usage. Plus aucune illustration générée par IA. Palette plus vive que la maquette v7 (bleu plus lumineux, vert émeraude, orange plus franc, surfaces blanches) : elle prévaut sur les couleurs de la maquette v7 une fois validée sur les écrans témoins. La palette est remplacée par D15 ; le reste de D12 reste valable.
 
 ## D13. Aide : une seule place, et une carte limitée à l'étape (2026-11-01)
 
@@ -93,3 +93,19 @@ Une vraie carte, sans aucune étiquette, sert de fond aux écrans du trajet ; l'
 
 - L'app vise la France au lancement. Les données (fond de carte, transports en commun, adresses) peuvent donc venir de sources françaises ouvertes.
 - Si une vue aérienne (« satellite ») est ajoutée, elle viendra de l'IGN (BD ORTHO, Géoplateforme, licence Etalab 2.0), embarquée ou téléchargée par zone, jamais chargée tuile par tuile pendant le trajet (D1). À spécifier avant de la coder.
+
+## D15. Maquette « carte urbaine émeraude » (2026-11-03)
+
+L'interface « clair premium » (spec 008) manque de personnalité : formes et couleurs génériques, comme sorties d'une bibliothèque de composants. La maquette `docs/design/maquette-emeraude.png` (écran d'accueil) **fait foi** pour la direction visuelle. Elle remplace la maquette v7 (D11), la palette de D12 et la partie visuelle des specs 002, 005, 007 et 008. Les règles qui la contredisent sont révisées :
+
+- **Carte** : sol crème chaud, espaces verts en aplat vert tendre (pas d'arbres dessinés), eau bleu vif, voies ferrées hachurées. Toujours sans étiquette ni téléchargement (D12).
+- **Couleur** : un seul accent, émeraude, pour les épingles, les tuiles, la sélection, la position et le bouton « + ». Les couleurs par famille de lieux (spec 008) disparaissent ; le pictogramme ou la photo distingue les lieux.
+- **Guidage** : le vert qui dit « c'est le bon chemin » est gardé, dans une nuance distincte de l'émeraude de l'interface.
+- **Cibles** : boutons et épingles à la taille dessinée dans la maquette, sans zone tactile élargie. Le minimum de 64 dp est abandonné (principe 4 révisé).
+- **Formes** : pilule blanche flottante en haut, épingles en goutte à contour (ou avec la photo du lieu), panneau du bas blanc aux grands arrondis avec des tuiles qui défilent, boutons ronds blancs, « + » plein émeraude, pictogrammes au trait.
+- **Restent valables** : D9 (dont le bouton ⓘ du crédit de la carte), D12 hors palette (carte embarquée, sans étiquette, aucune illustration générée), D13, la règle du sens de lecture (spec 006).
+- Les photos de la maquette sont des exemples ; dans l'app, ce sont les photos prises pour chaque lieu.
+- La maquette ne montre que l'accueil : la spec de refonte en déduit les autres écrans.
+- Les anciens documents de conception (`docs/design/brief.md`, `ecrans.md`, `guide-claude-design.md`, `references.md`) sont supprimés (historique dans git). Le design system Claude Design « GPS sans texte » n'est plus une référence.
+
+Ordre de travail décidé le 2026-11-03 : nettoyage du dépôt, MapLibre natif (carte sur téléphone), refonte visuelle selon cette maquette (spec à écrire), puis app entièrement fonctionnelle (les données de démonstration restent jusque-là).

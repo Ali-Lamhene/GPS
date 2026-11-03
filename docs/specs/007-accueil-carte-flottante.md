@@ -1,6 +1,7 @@
 # 007 — Accueil « carte flottante » et bouton « + »
 
 - **Statut** : livré
+- **Partie visuelle remplacée par** : D15, maquette émeraude (2026-11-03)
 - **Date** : 2026-11-02
 - **Persona** : voyageur (et accompagnant pour l'ajout d'une adresse)
 

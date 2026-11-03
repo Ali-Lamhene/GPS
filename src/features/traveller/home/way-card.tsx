@@ -18,7 +18,7 @@ import { colors, radii, shadows, spacing } from '@/ui/theme';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 
 /** The discs of the way: large, so the next thing to do is plain (spec 008). */
-export const END_SIZE = 76;
+const END_SIZE = 76;
 
 /** The place shown in a disc of the way: « here » wears the target, on the action blue. */
 function endPlace(place: Place): Place {

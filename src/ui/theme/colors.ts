@@ -1,13 +1,12 @@
 import type { PlaceCategory } from '@/domain/place-category';
 
-// Colour tokens: mockup v7 (D11), made more vivid by spec 002, then the cooler palette of
-// the home lab chosen with spec 007 (blue #2F6BFF, ink #111827, grey #F3F4F6).
+// Colour tokens of the « clair premium » system (spec 008). The emerald mockup (D15)
+// replaces them with the visual redesign.
 
 export const colors = {
   // Surfaces, from lightest to darkest.
   surface: '#F9FAFB',
   surfaceLow: '#F3F4F6',
-  surfaceContainer: '#F3F4F6',
   surfaceHigh: '#E5E7EB',
   surfaceHighest: '#D1D5DB',
   tonal: '#E5E7EB',
@@ -15,24 +14,17 @@ export const colors = {
   ink: '#111827',
   inkMuted: '#6B7280',
   inkDisabled: '#9CA3AF',
-  inkFaint: 'rgba(17,24,39,.38)',
   outline: '#6B7280',
-  /** Edges of targets (place tiles, trip ends): kept visible in the sun. */
-  outlineVariant: '#C4C8CF',
   handle: 'rgba(107,114,128,.45)',
   scrim: 'rgba(0,0,0,.32)',
 
   // Blue: the action colour (buttons, selection, chosen path).
   primary: '#2F6BFF',
   onPrimary: '#FFFFFF',
-  primaryTint: '#E8EEFF',
   secondaryContainer: '#DCE6FF',
   onSecondaryContainer: '#0B2A5C',
-  tertiaryContainer: '#DCE6FF',
-  onTertiaryContainer: '#2B5FC9',
 
-  // Guidance instruction card: green when all is well, orange to get off.
-  guidance: '#078A57',
+  // Guidance: green when all is well, orange to get off.
   /** Bright green of the approach ring, on the dark instruction pill (spec 008). */
   go: '#22C55E',
   alert: '#E8590C',
@@ -49,7 +41,6 @@ export const colors = {
   mapGround: '#EEF0F3',
   accuracy: 'rgba(47,107,255,.12)',
   accuracyEdge: 'rgba(47,107,255,.35)',
-  holdTrack: '#E5E7EB',
   car: '#5E6670',
   walkRail: '#A8A8A1',
 

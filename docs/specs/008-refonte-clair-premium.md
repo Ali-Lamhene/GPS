@@ -1,6 +1,7 @@
 # 008 — Refonte visuelle « clair premium »
 
 - **Statut** : livré
+- **Partie visuelle remplacée par** : D15, maquette émeraude (2026-11-03)
 - **Date** : 2026-11-02
 - **Persona** : voyageur (toute l'interface), accompagnant pour ses écrans (E30)
 

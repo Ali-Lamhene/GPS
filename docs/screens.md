@@ -14,7 +14,7 @@ L'application permet à une personne qui ne sait pas lire, ne maîtrise pas la l
 
 1. **Pas de texte ni de chiffres dans l'interface voyageur**, avec des **exceptions limitées** : identifiants officiels des lignes de transport (ex. `C3`, `T2`, `M`) et noms réels des stations/arrêts, utiles pour comparer l'écran à la signalétique. Les **cartes d'aide contextuelle** affichent volontairement un court message en français destiné à un tiers, et non à la lecture du voyageur.
 2. **Aucun guidage vocal verbal** dans le parcours normal : seulement des sons non verbaux et des vibrations. Deux exceptions fonctionnelles volontaires : **écouter le nom d'une station** et **faire lire à voix haute le message d'aide en français**.
-3. L'accueil présente un **chemin vertical** avec un point de départ, un personnage adulte en marche et une arrivée. Il **n'affiche pas d'emblée** la liste des lieux.
+3. L'accueil présente un **chemin** avec un point de départ et une arrivée, reconnus à leur symbole et non à leur position (spec 006). Disposition : spec 005, puis la maquette émeraude (D15).
 4. Les lieux enregistrés sont identifiés par des **icônes**, éventuellement accompagnées d'**images/photos**. Ils sont configurés en amont par un accompagnateur.
 5. Le départ peut être la **position actuelle** ou un **lieu enregistré** ; l'arrivée est choisie parmi les **lieux enregistrés**.
 6. Le sélecteur de locomotion comporte **trois choix non ambigus** : marche, transports en commun, voiture. Le choix actualise **la durée totale** et **les étapes du trajet**. La marche d'accès aux transports figure dans le résumé, **pas comme une seconde option du sélecteur**.
@@ -22,7 +22,7 @@ L'application permet à une personne qui ne sait pas lire, ne maîtrise pas la l
 8. Dans le résumé, un **cadran global** et des **cadrans par étape** emploient le même langage visuel. Pour les itinéraires longs, les étapes restent compactes ; le détail et son cadran s'ouvrent à la demande.
 9. Un bouton **aide contextuelle** permet de montrer à une personne dans la rue un message français adapté à l'étape en cours. **Pas de bouton d'appel à un proche** : cette fonctionnalité a été explicitement retirée.
 10. L'application doit fonctionner lors des **pertes de réseau**, notamment dans le métro, à partir des données du trajet préalablement conservées. Ne pas prétendre suivre précisément le véhicule si la position n'est pas disponible.
-11. Style de référence : **fond crème, noir, jaune**, pictogrammes grands et contrastés, relief discret, personnage adulte simplifié, boutons généreux. La **maquette cumulative** doit montrer les écrans déjà validés lors de toute nouvelle conception.
+11. Style de référence : la maquette émeraude `docs/design/maquette-emeraude.png` (D15). Elle prévaut sur toute autre indication visuelle de ce document (couleurs, tailles, formes).
 
 ### Principes d'accessibilité
 
@@ -228,6 +228,4 @@ Les écrans suivants ont été **identifiés comme nécessaires**, mais **ne fon
 
 ## 8. Référence visuelle
 
-La **dernière planche cumulative à 26 écrans**, incluant la navigation en métro hors connexion et l'aide contextuelle, est la référence visuelle de cette version. **Les titres, numéros et légendes ajoutés autour des téléphones sur cette planche sont des annotations de conception**, pas du contenu de l'interface voyageur.
-
-Lors de toute nouvelle proposition graphique, **réafficher tous les écrans précédemment validés avec le nouvel écran sur une seule image cumulative**, en conservant la direction graphique et les règles ci-dessus.
+La référence visuelle est la maquette émeraude `docs/design/maquette-emeraude.png` (D15, 2026-11-03). Elle ne montre que l'accueil ; la spec de refonte en déduit les autres écrans. Ce document reste la référence pour les écrans, leurs états et leurs comportements.
