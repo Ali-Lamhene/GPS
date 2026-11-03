@@ -23,8 +23,9 @@ type InstructionCardProps = {
 };
 
 /**
- * Dark pill floating over the map (spec 008): the one thing to do now, very large; a turn
- * sits in a ring that empties as the corner comes closer. Orange to get off.
+ * Warm-white card floating over the map (spec 010): the one thing to do now, very large,
+ * edged in the « right way » green; a turn sits in a ring that empties as the corner comes
+ * closer. Peach with an orange bell to get off.
  */
 export function InstructionCard({
   instruction,
@@ -43,7 +44,7 @@ export function InstructionCard({
       accessibilityRole="button"
       accessibilityLabel="Étape suivante"
       onPress={onPress}
-      style={[styles.card, { backgroundColor: alert ? colors.alert : colors.ink }]}
+      style={[styles.card, alert ? styles.alert : styles.onTrack]}
     >
       <View style={styles.top}>
         {turn && symbol !== 'metro' ? (
@@ -52,39 +53,55 @@ export function InstructionCard({
           <View
             style={[
               styles.tile,
-              symbol === 'metro'
-                ? styles.bareTile
-                : { backgroundColor: alert ? colors.white : colors.whiteGlass },
+              symbol === 'metro' ? styles.bareTile : alert ? styles.alertTile : styles.plainTile,
             ]}
           >
-            {alert && <PulseRing borderRadius={TILE_RADIUS} color={colors.white} />}
+            {alert && <PulseRing borderRadius={TILE_RADIUS} color={colors.alert} />}
             {symbol === 'metro' && leg ? (
               <MetroSign color={leg.line.color} size={60} />
             ) : symbol !== 'metro' ? (
-              <Icon name={symbol} size={50} color={alert ? colors.alert : colors.white} />
+              <Icon
+                name={symbol}
+                size={50}
+                color={alert ? colors.alert : colors.emerald}
+                variant="outlined"
+              />
             ) : null}
           </View>
         )}
-        {instruction.kind === 'waitVehicle' && <LineBadge line={instruction.leg.line} size="lg" />}
+        {/* The line id on every step of a ride, not only while waiting (spec 010). */}
+        {leg && <LineBadge line={leg.line} size="lg" />}
         <View style={styles.spacer} />
         {next && (
           <View style={styles.next}>
-            <Icon name={next} size={30} color={colors.white} />
+            <Icon name={next} size={30} color={colors.emerald} variant="outlined" />
           </View>
         )}
       </View>
       {/* Names take the whole width, so they break like the sign they are compared with. */}
       {instruction.kind === 'waitVehicle' && (
         <View style={styles.direction}>
-          <Icon name="arrow_forward" size={22} color={colors.white} />
-          <StationName name={instruction.leg.direction} variant="direction" color={colors.white} />
+          <Icon name="arrow_forward" size={22} color={colors.ink} />
+          <StationName name={instruction.leg.direction} variant="direction" color={colors.ink} />
         </View>
       )}
+      {/* Where to get on, where to get off: the same marks as in the summary (E08). */}
       {instruction.kind === 'reachStop' && (
-        <StationName name={instruction.leg.from} variant="instruction" color={colors.white} />
+        <View style={styles.direction}>
+          <Icon name="login" size={22} color={colors.emerald} variant="outlined" />
+          <StationName name={instruction.leg.from} variant="instruction" color={colors.ink} />
+        </View>
       )}
       {(instruction.kind === 'ride' || instruction.kind === 'getOffSoon') && (
-        <StationName name={instruction.leg.to} variant="instruction" color={colors.white} />
+        <View style={styles.direction}>
+          <Icon
+            name="logout"
+            size={22}
+            color={alert ? colors.alert : colors.emerald}
+            variant="outlined"
+          />
+          <StationName name={instruction.leg.to} variant="instruction" color={colors.ink} />
+        </View>
       )}
     </Pressable>
   );
@@ -94,9 +111,24 @@ const styles = StyleSheet.create({
   card: {
     minHeight: 104,
     borderRadius: radii.sheet,
-    padding: 14,
+    borderWidth: 3,
+    padding: 12,
     gap: 10,
     boxShadow: shadows.float,
+  },
+  onTrack: {
+    backgroundColor: colors.warmWhite,
+    borderColor: colors.onTrack,
+  },
+  alert: {
+    backgroundColor: colors.alertSoft,
+    borderColor: colors.alert,
+  },
+  plainTile: {
+    backgroundColor: colors.surfaceLow,
+  },
+  alertTile: {
+    backgroundColor: colors.white,
   },
   tile: {
     width: 80,
@@ -126,8 +158,8 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: radii.control,
-    opacity: 0.8,
-    backgroundColor: colors.whiteGlass,
+    opacity: 0.7,
+    backgroundColor: colors.surfaceLow,
     alignItems: 'center',
     justifyContent: 'center',
   },

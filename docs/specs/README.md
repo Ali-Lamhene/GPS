@@ -11,4 +11,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 007 | [Accueil « carte flottante » et bouton « + »](007-accueil-carte-flottante.md)          | livré  |
 | 008 | [Refonte visuelle « clair premium »](008-refonte-clair-premium.md)                     | livré  |
 | 009 | [Accueil « carte urbaine émeraude »](009-accueil-emeraude.md)                          | livré  |
-| 010 | [Tous les autres écrans en direction émeraude](010-ecrans-emeraude.md)                 | validé |
+| 010 | [Tous les autres écrans en direction émeraude](010-ecrans-emeraude.md)                 | livré  |

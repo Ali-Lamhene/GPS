@@ -2,23 +2,21 @@ import { render } from '@testing-library/react-native';
 
 import { GLYPHS } from '@/ui/icon/glyphs';
 
-import { PlaceArt } from '../place-art';
+import { PlaceFace } from '../place-face';
 import { PulseRing } from '../pulse-ring';
 
-describe('<PlaceArt />', () => {
-  test('shows the white pictogram on the family colour when the place has no photo', async () => {
+describe('<PlaceFace />', () => {
+  test('shows the emerald pictogram when the place has no photo', async () => {
     const screen = await render(
-      <PlaceArt place={{ id: 'a', icon: 'home' }} iconSize={46} showPhoto />,
+      <PlaceFace place={{ id: 'a', icon: 'home' }} iconSize={46} showPhoto />,
     );
 
-    const tree = JSON.stringify(screen.toJSON());
-    expect(tree).toContain(String.fromCodePoint(GLYPHS.home));
-    expect(tree).toContain('vivid-home');
+    expect(JSON.stringify(screen.toJSON())).toContain(String.fromCodePoint(GLYPHS.home));
   });
 
-  test('puts the pictogram in a white square over the photo', async () => {
+  test('puts the pictogram in a white disc over the photo', async () => {
     const screen = await render(
-      <PlaceArt
+      <PlaceFace
         place={{ id: 'a', icon: 'home', photo: 'file:///place.jpg' }}
         iconSize={46}
         badgeSize={42}
@@ -33,7 +31,7 @@ describe('<PlaceArt />', () => {
 
   test('keeps the photo out of sight when asked', async () => {
     const screen = await render(
-      <PlaceArt
+      <PlaceFace
         place={{ id: 'a', icon: 'home', photo: 'file:///place.jpg' }}
         iconSize={46}
         showPhoto={false}

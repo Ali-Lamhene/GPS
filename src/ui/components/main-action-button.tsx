@@ -8,13 +8,13 @@ type MainActionButtonProps = {
   label: string;
   onPress: () => void;
   disabled?: boolean;
-  /** Blue on the screens not yet redone, emerald on the home (spec 009). */
+  /** Emerald everywhere since spec 010; kept for the home's call sites. */
   tone?: 'primary' | 'emerald';
 };
 
 /**
- * The blue pill that moves the traveller forward: continue, confirm, start (spec 008).
- * Full width of its parent, 64 dp high, rounded ends and a blue glow.
+ * The emerald pill that moves the traveller forward: continue, confirm, start (spec 010).
+ * Full width of its parent, 56 dp high, rounded ends and an emerald glow.
  */
 export function MainActionButton({
   icon,
@@ -37,15 +37,15 @@ export function MainActionButton({
         pressed && styles.pressed,
       ]}
     >
-      <Icon name={icon} size={34} color={colors.onPrimary} />
+      <Icon name={icon} size={30} color={colors.onPrimary} />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   pill: {
-    height: sizes.minTarget,
-    borderRadius: sizes.minTarget / 2,
+    height: sizes.actionPill,
+    borderRadius: sizes.actionPill / 2,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',

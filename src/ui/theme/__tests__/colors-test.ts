@@ -14,22 +14,14 @@ function contrast(a: string, b: string): number {
   return ((light ?? 0) + 0.05) / ((dark ?? 0) + 0.05);
 }
 
-describe('category colours', () => {
-  test.each(
-    Object.entries(colors.vivid).flatMap(([family, ends]) => ends.map((tint) => [family, tint])),
-  )('%s gradient end %s keeps a white pictogram readable in the sun (3:1)', (_, tint) => {
-    expect(contrast(tint, colors.white)).toBeGreaterThanOrEqual(3);
+describe('action colours', () => {
+  // The traveller sees no text: icons are graphics, for which WCAG asks 3:1.
+  test('the emerald carries white icons', () => {
+    expect(contrast(colors.primary, colors.onPrimary)).toBeGreaterThanOrEqual(3);
+    expect(contrast(colors.emerald, colors.white)).toBeGreaterThanOrEqual(3);
   });
 
-  test.each(Object.entries(colors.category))(
-    '%s keeps a white pictogram readable in the sun (3:1)',
-    (_, tint) => {
-      expect(contrast(tint, colors.white)).toBeGreaterThanOrEqual(3);
-    },
-  );
-
-  // The traveller sees no text: icons are graphics, for which WCAG asks 3:1.
-  test('the action blue carries white icons', () => {
-    expect(contrast(colors.primary, colors.onPrimary)).toBeGreaterThanOrEqual(3);
+  test('the emerald pictograms read on warm white', () => {
+    expect(contrast(colors.emerald, colors.warmWhite)).toBeGreaterThanOrEqual(3);
   });
 });

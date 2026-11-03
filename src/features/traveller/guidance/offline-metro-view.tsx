@@ -19,7 +19,7 @@ type OfflineMetroViewProps = {
 };
 
 /**
- * E21: no network underground. Calm dark screen with the line drawn as its stations, from
+ * E21: no network underground. Calm dark screen, emerald accents (spec 010), the line drawn as its stations, from
  * the saved trip, and the station to get off at; the traveller confirms getting off
  * themselves (docs/screens.md, 4.7).
  */
@@ -34,16 +34,18 @@ export function OfflineMetroView({ leg, fraction, onGotOff, onHelp }: OfflineMet
     >
       <View style={styles.top}>
         <View style={styles.bar}>
-          <Icon name="cloud_off" size={28} color={colors.night.inkMuted} variant="outlined" />
+          {/* No network: the alert orange, as on the connection screen (spec 010). */}
+          <Icon name="cloud_off" size={28} color={colors.alert} variant="outlined" />
         </View>
+        <View style={styles.spacer} />
         {/* Same place as on every other screen: top right. */}
-        <HelpButton onPress={onHelp} tone="night" />
+        <HelpButton onPress={onHelp} />
       </View>
       <View style={styles.line}>
         <MetroSign color={leg.line.color} size={72} />
         <LineBadge line={{ ...leg.line, shape: 'pill' }} size="banner" />
         <View style={styles.spacer} />
-        <ListenButton name={leg.to} tone="nightAccent" shape="square" size={64} iconSize={32} />
+        <ListenButton name={leg.to} tone="nightAccent" size={48} iconSize={26} />
       </View>
       <View style={styles.stations}>
         <LineProgress leg={leg} fraction={fraction} />
@@ -54,8 +56,8 @@ export function OfflineMetroView({ leg, fraction, onGotOff, onHelp }: OfflineMet
         onPress={onGotOff}
         style={styles.gotOff}
       >
-        <Icon name="logout" size={38} color={colors.onPrimary} variant="outlined" />
-        <Icon name="check" size={38} color={colors.onPrimary} variant="outlined" />
+        <Icon name="logout" size={30} color={colors.onPrimary} variant="outlined" />
+        <Icon name="check" size={30} color={colors.onPrimary} variant="outlined" />
       </Pressable>
     </View>
   );
@@ -73,13 +75,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
   },
+  // A round sign the size of a button, not a long empty field.
   bar: {
-    flex: 1,
+    width: sizes.headerButton,
     height: sizes.headerButton,
+    borderRadius: sizes.headerButton / 2,
+    alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.night.bar,
-    borderRadius: sizes.headerButton / 2,
-    paddingHorizontal: 16,
   },
   line: {
     flexDirection: 'row',
@@ -99,8 +102,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   gotOff: {
-    height: 80,
-    borderRadius: 40,
+    height: sizes.actionPill,
+    borderRadius: sizes.actionPill / 2,
     backgroundColor: colors.primary,
     boxShadow: shadows.accent,
     flexDirection: 'row',

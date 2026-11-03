@@ -1,15 +1,15 @@
-import type { PlaceCategory } from '@/domain/place-category';
-
-// Colour tokens of the « clair premium » system (spec 008). The emerald mockup (D15)
-// replaces them with the visual redesign.
+// Colour tokens of the emerald direction (D15, specs 009 and 010): one emerald accent,
+// warm whites on a cream map, official line colours untouched.
 
 export const colors = {
   // Surfaces, from lightest to darkest.
-  surface: '#F9FAFB',
-  surfaceLow: '#F3F4F6',
-  surfaceHigh: '#E5E7EB',
-  surfaceHighest: '#D1D5DB',
-  tonal: '#E5E7EB',
+  surface: '#FBF8F6',
+  /** Very pale green of rows, tiles and unselected choices (spec 010). */
+  surfaceLow: '#EAF4F1',
+  surfaceHigh: '#DCEBE6',
+  /** Empty quarters of the duration dials. */
+  surfaceHighest: '#B5CFC7',
+  tonal: '#EAF4F1',
 
   ink: '#111827',
   inkMuted: '#6B7280',
@@ -18,16 +18,21 @@ export const colors = {
   handle: 'rgba(107,114,128,.45)',
   scrim: 'rgba(0,0,0,.32)',
 
-  // Blue: the action colour (buttons, selection, chosen path).
-  primary: '#2F6BFF',
+  // Emerald: the action colour (buttons, selection, chosen path), spec 010.
+  primary: '#037C6D',
   onPrimary: '#FFFFFF',
-  secondaryContainer: '#DCE6FF',
-  onSecondaryContainer: '#0B2A5C',
+  secondaryContainer: '#EAF4F1',
+  /** Dark emerald: casing of vehicle lines, outlines on pale emerald. */
+  onSecondaryContainer: '#024C43',
 
   // Guidance: green when all is well, orange to get off.
-  /** Bright green of the approach ring, on the dark instruction pill (spec 008). */
-  go: '#22C55E',
+  /** « You are on the right way »: lighter than the emerald of actions (spec 010). */
+  onTrack: '#2FBF71',
+  /** Approach ring of a turn. */
+  go: '#037C6D',
   alert: '#E8590C',
+  /** Peach card of an alert: get off soon, no network (spec 010). */
+  alertSoft: '#FDE3D3',
   success: '#2E7D4F',
   error: '#BA1A1A',
   errorContainer: '#FFDAD6',
@@ -55,38 +60,8 @@ export const colors = {
   car: '#5E6670',
   walkRail: '#A8A8A1',
 
-  /**
-   * Vivid colour of each family of places (spec 008): a diagonal gradient from a bright
-   * hue to a deep one. Both ends keep a white pictogram readable in the sun, at least 3:1
-   * (checked by a test).
-   */
-  vivid: {
-    home: ['#F2601F', '#C93A08'],
-    family: ['#F23E70', '#BE1655'],
-    health: ['#0FA396', '#077169'],
-    admin: ['#7262FF', '#4232D2'],
-    studies: ['#18A85C', '#0C7A40'],
-    work: ['#9A5CFF', '#6528D0'],
-    shopping: ['#E07A00', '#B04A00'],
-    leisure: ['#1294E0', '#0864B8'],
-    other: ['#3D7BFF', '#1F4FD8'],
-  } satisfies Record<PlaceCategory, readonly [string, string]>,
-  /** The deep end of each family colour, for a single colour (chips, pin edges, shadows). */
-  category: {
-    home: '#C93A08',
-    family: '#BE1655',
-    health: '#077169',
-    admin: '#4232D2',
-    studies: '#0C7A40',
-    work: '#6528D0',
-    shopping: '#B04A00',
-    leisure: '#0864B8',
-    other: '#1F4FD8',
-  } satisfies Record<PlaceCategory, string>,
-  /** Light blue behind what waits to be chosen (spec 008). */
-  accentSoft: '#E8EEFF',
-  /** Empty, not yet calling: dashed grey ring. */
-  emptyRing: '#C7CBD1',
+  /** Pale emerald behind what is open or waits to be chosen (spec 010). */
+  accentSoft: '#EAF4F1',
 
   // Calm dark theme of the offline metro screen (E21).
   night: {
@@ -97,6 +72,6 @@ export const colors = {
     ink: '#E2E3DE',
     inkMuted: '#C8C8C1',
     buttonInk: '#E6E8E3',
-    listen: '#8AB4F8',
+    listen: '#5FD3B5',
   },
 } as const;

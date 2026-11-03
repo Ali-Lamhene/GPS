@@ -6,7 +6,7 @@ type ListenButtonProps = {
   name: string;
   size?: number;
   iconSize?: number;
-  tone?: 'primary' | 'nightAccent';
+  tone?: 'raised' | 'nightAccent';
   shape?: 'circle' | 'square';
 };
 
@@ -17,8 +17,8 @@ export function ListenButton({ name, size = 48, iconSize = 24, ...rest }: Listen
       icon="volume_up"
       label="Écouter le nom"
       onPress={() => void speak(name)}
-      tone="primary"
-      iconVariant="filled"
+      tone="raised"
+      iconVariant="outlined"
       size={size}
       iconSize={iconSize}
       {...rest}

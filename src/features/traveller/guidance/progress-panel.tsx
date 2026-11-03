@@ -1,54 +1,58 @@
-import { Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { I18nManager, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { Leg } from '@/domain/trip';
 import { speak } from '@/services/speech';
+import { IconButton } from '@/ui/components/icon-button';
 import { TimeDials } from '@/ui/components/time-dials';
-import { Icon, type IconName } from '@/ui/icon/icon';
-import { colors, radii, shadows, sizes, spacing } from '@/ui/theme';
+import { Icon } from '@/ui/icon/icon';
+import { colors, shadows, spacing } from '@/ui/theme';
 
 import { ProgressStrip } from './progress-strip';
 
 type ProgressPanelProps = {
-  legs: readonly Leg[];
   progress: number;
   remainingMinutes: number;
   /** Stop or station name the traveller can listen to at this step (D9). */
   spokenName?: string;
-  destinationIcon: IconName;
   onLayout?: (event: LayoutChangeEvent) => void;
 };
 
-/** White card floating at the bottom of the map (spec 008): time left, progress, listen. */
+/**
+ * Bottom of the guidance (spec 010): a warm-white pill with the start pin and the time
+ * left at one end, the flag at the other, the way done in emerald dots between them; the
+ * round « listen » button stands above it when the step has a station name.
+ */
 export function ProgressPanel({
-  legs,
   progress,
   remainingMinutes,
   spokenName,
-  destinationIcon,
   onLayout,
 }: ProgressPanelProps) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={[styles.panel, { bottom: spacing.gutter + insets.bottom }]} onLayout={onLayout}>
-      <View style={styles.progress}>
-        <TimeDials minutes={remainingMinutes} size={52} crossColor={colors.white} gap={8} />
-        <View style={styles.strip}>
-          <ProgressStrip legs={legs} progress={progress} destinationIcon={destinationIcon} />
-        </View>
-        {/* Empty slot without a name: the dials and the strip never move. */}
-        {spokenName ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Écouter le nom"
+    <View
+      style={[styles.panel, { bottom: spacing.gutter + insets.bottom }]}
+      onLayout={onLayout}
+      pointerEvents="box-none"
+    >
+      {spokenName && (
+        <View style={styles.listen}>
+          <IconButton
+            icon="volume_up"
+            label="Écouter le nom"
+            tone="raised"
             onPress={() => void speak(spokenName)}
-            style={styles.listen}
-          >
-            <Icon name="volume_up" size={32} color={colors.primary} />
-          </Pressable>
-        ) : (
-          <View style={styles.listenSlot} />
-        )}
+          />
+        </View>
+      )}
+      {/* Never mirrored, like the map: the ends are known by their symbol (spec 006). */}
+      <View style={[styles.pill, I18nManager.isRTL && styles.unmirrored]}>
+        <View style={styles.start}>
+          <Icon name="location_on" size={24} color={colors.emerald} variant="outlined" />
+          <TimeDials minutes={remainingMinutes} size={34} crossColor={colors.white} gap={3} />
+        </View>
+        <ProgressStrip progress={progress} />
+        <Icon name="flag" size={24} color={colors.emerald} variant="outlined" />
       </View>
     </View>
   );
@@ -59,29 +63,32 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: spacing.gutter,
     right: spacing.gutter,
-    backgroundColor: colors.white,
-    borderRadius: radii.sheet,
-    padding: spacing.md,
-    gap: 14,
-    boxShadow: shadows.sheet,
+    gap: spacing.md,
   },
-  progress: {
+  // Above the pill, outside the measured panel: the map framing and ⓘ never jump when it
+  // shows or hides from one step to the next.
+  listen: {
+    position: 'absolute',
+    right: 0,
+    bottom: '100%',
+    marginBottom: spacing.md,
+  },
+  pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
+    gap: spacing.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderRadius: 32,
+    backgroundColor: colors.warmWhite,
+    boxShadow: shadows.warm,
   },
-  strip: {
-    flex: 1,
+  unmirrored: {
+    // In a right-to-left layout, 'row-reverse' lays the row out left to right again.
+    flexDirection: 'row-reverse',
   },
-  listenSlot: {
-    width: sizes.minTarget,
-  },
-  listen: {
-    width: sizes.minTarget,
-    height: sizes.minTarget,
-    borderRadius: sizes.minTarget / 2,
-    backgroundColor: colors.accentSoft,
+  start: {
     alignItems: 'center',
-    justifyContent: 'center',
+    gap: 4,
   },
 });

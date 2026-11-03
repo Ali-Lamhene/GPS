@@ -1,99 +1,60 @@
-import { StyleSheet, View } from 'react-native';
+import { I18nManager, StyleSheet, View } from 'react-native';
 
-import type { Leg } from '@/domain/trip';
-import { VividFill } from '@/ui/components/vivid-fill';
-import { Icon, type IconName } from '@/ui/icon/icon';
 import { colors } from '@/ui/theme';
 
-import { legColor } from '../components/leg-style';
+/** Dots of the progress line, as in the emerald mockups (spec 010). */
+export const PROGRESS_DOTS = 12;
+
+/** How many dots stand for the way already done, for a progress from 0 to 1. */
+export function doneDots(progress: number, count = PROGRESS_DOTS): number {
+  return Math.round(Math.min(1, Math.max(0, progress)) * count);
+}
 
 type ProgressStripProps = {
-  legs: readonly Leg[];
   /** From 0 to 1 along the whole trip. */
   progress: number;
-  destinationIcon: IconName;
 };
 
 /**
- * The trip as segments drawn like on the map (blue dots on foot, line colours otherwise),
- * the traveller as on the map, and the destination pictogram at the end.
+ * The way between the start pin and the flag (spec 010): emerald dots for what is done,
+ * pale dots for what is left. Read by colour, not by position, so it holds in both
+ * reading directions (spec 006).
  */
-export function ProgressStrip({ legs, progress, destinationIcon }: ProgressStripProps) {
+export function ProgressStrip({ progress }: ProgressStripProps) {
+  const done = doneDots(progress);
   return (
-    <View style={styles.row}>
-      <View style={styles.strip}>
-        {legs.map((leg, i) =>
-          leg.kind === 'walk' ? (
-            <View key={i} style={[styles.segment, styles.walk, { flexGrow: leg.minutes }]} />
-          ) : (
-            <View
-              key={i}
-              style={[
-                styles.segment,
-                styles.vehicle,
-                { flexGrow: leg.minutes, backgroundColor: legColor(leg) },
-              ]}
-            />
-          ),
-        )}
-        <View style={[styles.traveller, { left: `${progress * 100}%` }]} />
-      </View>
-      <View style={styles.destination}>
-        <VividFill icon={destinationIcon} />
-        <Icon name={destinationIcon} size={20} color={colors.white} />
-      </View>
+    // Never mirrored: done dots always start from the pin (spec 006).
+    <View style={[styles.dots, I18nManager.isRTL && styles.unmirrored]} testID="progress-dots">
+      {Array.from({ length: PROGRESS_DOTS }, (_, i) => (
+        <View
+          key={i}
+          testID={i < done ? 'dot-done' : 'dot-left'}
+          style={[styles.dot, i < done ? styles.done : styles.left]}
+        />
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  row: {
+  dots: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'space-between',
   },
-  strip: {
-    flex: 1,
-    height: 28,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
+  unmirrored: {
+    flexDirection: 'row-reverse',
   },
-  segment: {
-    flexBasis: 0,
-    flexShrink: 1,
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
-  walk: {
-    height: 0,
-    borderTopWidth: 6,
-    borderStyle: 'dotted',
-    borderColor: colors.primary,
+  done: {
+    backgroundColor: colors.emerald,
   },
-  vehicle: {
-    height: 10,
-    borderRadius: 5,
-    borderWidth: 1.5,
-    borderColor: colors.onSecondaryContainer,
-  },
-  traveller: {
-    position: 'absolute',
-    top: 3,
-    width: 22,
-    height: 22,
-    marginLeft: -11,
-    borderRadius: 11,
-    backgroundColor: colors.primary,
-    borderWidth: 4,
-    borderColor: colors.white,
-    boxShadow: `0 0 0 2px ${colors.onSecondaryContainer}`,
-  },
-  destination: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
+  left: {
+    backgroundColor: colors.surfaceHighest,
   },
 });

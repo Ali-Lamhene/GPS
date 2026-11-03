@@ -68,7 +68,7 @@ export function AddressScreen() {
             onPress={() => pick(item.name)}
             style={[styles.suggestion, i > 0 && styles.divider]}
           >
-            <Icon name="location_on" size={24} color={colors.inkMuted} variant="outlined" />
+            <Icon name="location_on" size={24} color={colors.emerald} variant="outlined" />
             <View style={styles.suggestionText}>
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.address}>{item.address}</Text>
@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     gap: 16,
-    backgroundColor: colors.surface,
+    // Pale emerald, like the help screen: a screen apart from the map (spec 010).
+    backgroundColor: colors.surfaceLow,
   },
   header: {
     flexDirection: 'row',
@@ -100,7 +101,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontFamily: fontFamilies.semiBold,
-    color: colors.ink,
+    color: colors.emerald,
   },
   chip: {
     alignSelf: 'flex-start',
@@ -137,7 +138,7 @@ const styles = StyleSheet.create({
     color: colors.ink,
   },
   list: {
-    backgroundColor: colors.surfaceLow,
+    backgroundColor: colors.warmWhite,
     borderRadius: radii.control,
     overflow: 'hidden',
   },
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     borderTopWidth: 1,
-    borderTopColor: colors.surfaceHighest,
+    borderTopColor: colors.surfaceLow,
   },
   suggestionText: {
     flex: 1,

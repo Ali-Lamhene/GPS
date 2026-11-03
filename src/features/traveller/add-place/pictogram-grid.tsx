@@ -37,10 +37,15 @@ export function PictogramGrid({ selected, onSelect }: PictogramGridProps) {
               style={[
                 styles.tile,
                 { width: tile, height: tile },
-                on && { backgroundColor: colors.primary },
+                on && { backgroundColor: colors.emerald },
               ]}
             >
-              <Icon name={icon} size={36} color={on ? colors.white : colors.ink} />
+              <Icon
+                name={icon}
+                size={34}
+                color={on ? colors.white : colors.emerald}
+                variant={on ? 'filled' : 'outlined'}
+              />
             </Pressable>
           );
         })}

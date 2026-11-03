@@ -11,7 +11,7 @@ import { MapHeader } from '@/ui/components/map-header';
 import { TimeDials } from '@/ui/components/time-dials';
 import { colors } from '@/ui/theme';
 
-import { TripEnds } from '../components/trip-ends';
+import { WayCard } from '../components/way-card';
 import { TripOverviewMap } from '../components/trip-overview-map';
 import { DEMO_LEGS } from '../demo/trips';
 import { useGoHome } from '../hooks/use-go-home';
@@ -43,7 +43,7 @@ export function SummaryScreen() {
       <MapHeader
         onHeight={setHeaderHeight}
         left={<IconButton icon="home" label="Accueil" tone="raised" onPress={goHome} />}
-        center={<TripEnds origin={origin} destination={destination} size="sm" />}
+        center={<WayCard origin={origin} destination={destination} />}
         right={<HelpButton onPress={() => router.push('/help')} />}
       />
       <FloatingSheet onHeight={setSheetHeight} gap={12}>

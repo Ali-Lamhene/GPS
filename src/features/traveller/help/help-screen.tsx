@@ -10,7 +10,7 @@ import { speak } from '@/services/speech';
 import { IconButton } from '@/ui/components/icon-button';
 import { Icon } from '@/ui/icon/icon';
 import { MAP_RENDERS } from '@/ui/map/trip-map';
-import { colors, radii, shadows } from '@/ui/theme';
+import { colors, radii, shadows, sizes } from '@/ui/theme';
 
 import { LineBadge } from '../components/line-badge';
 import { DEMO_GUIDANCE } from '../demo/guidance';
@@ -44,17 +44,11 @@ export function HelpScreen() {
       style={[styles.screen, { paddingTop: insets.top + 16, paddingBottom: insets.bottom + 28 }]}
     >
       <View style={styles.header}>
-        <IconButton
-          icon="close"
-          label="Fermer"
-          tone="raised"
-          onPress={() => router.back()}
-          iconSize={32}
-        />
+        <IconButton icon="close" label="Fermer" tone="raised" onPress={() => router.back()} />
         <View style={styles.spacer} />
         {card.icons.map((icon) => (
           <View key={icon} style={styles.context}>
-            <Icon name={icon} size={28} />
+            <Icon name={icon} size={26} color={colors.emerald} variant="outlined" />
           </View>
         ))}
         {card.line && <LineBadge line={card.line} size="lg" />}
@@ -76,7 +70,7 @@ export function HelpScreen() {
           onPress={() => void speak(card.message)}
           style={styles.speak}
         >
-          <Icon name="volume_up" size={32} color={colors.onPrimary} />
+          <Icon name="volume_up" size={30} color={colors.onPrimary} />
         </Pressable>
         <Pressable
           accessibilityRole="button"
@@ -84,7 +78,13 @@ export function HelpScreen() {
           onPress={() => setLarge(!large)}
           style={styles.enlarge}
         >
-          <Icon name={large ? 'close_fullscreen' : 'open_in_full'} size={28} variant="outlined" />
+          {/* Never a « + »: on the home it means « add a place » (spec 010). */}
+          <Icon
+            name={large ? 'close_fullscreen' : 'open_in_full'}
+            size={26}
+            color={colors.emerald}
+            variant="outlined"
+          />
         </Pressable>
       </View>
     </View>
@@ -96,7 +96,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     gap: 16,
-    backgroundColor: colors.surface,
+    // Pale emerald: the help screen is set apart from the map screens (spec 010).
+    backgroundColor: colors.surfaceLow,
   },
   header: {
     flexDirection: 'row',
@@ -109,11 +110,10 @@ const styles = StyleSheet.create({
   content: {
     gap: 16,
   },
+  // Context marks, not buttons: no disc, no shadow.
   context: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.tonal,
+    width: 36,
+    height: 36,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -128,20 +128,20 @@ const styles = StyleSheet.create({
   },
   speak: {
     flex: 1,
-    height: 80,
-    borderRadius: 40,
+    height: sizes.actionPill,
+    borderRadius: sizes.actionPill / 2,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: shadows.accent,
   },
   enlarge: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: colors.white,
+    width: sizes.actionPill,
+    height: sizes.actionPill,
+    borderRadius: sizes.actionPill / 2,
+    backgroundColor: colors.warmWhite,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: shadows.floating,
+    boxShadow: shadows.warm,
   },
 });

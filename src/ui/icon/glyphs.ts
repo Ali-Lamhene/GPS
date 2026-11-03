@@ -18,6 +18,7 @@ export const GLYPHS = {
   directions_walk: 0xe536,
   edit_location_alt: 0xe1c5,
   expand_less: 0xe5ce,
+  expand_more: 0xe5cf,
   family_restroom: 0xf1a2,
   fit_screen: 0xea10,
   favorite: 0xe87d,

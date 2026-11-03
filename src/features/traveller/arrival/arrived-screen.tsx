@@ -3,26 +3,30 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
+import { isHiddenOnMap } from '@/domain/place';
+
 import { FloatingSheet } from '@/ui/components/floating-sheet';
 import { HelpButton } from '@/ui/components/help-button';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { MapHeader } from '@/ui/components/map-header';
-import { PlaceArt } from '@/ui/components/place-art';
+import { PlaceFace } from '@/ui/components/place-face';
 import { Icon } from '@/ui/icon/icon';
 import { TripMap } from '@/ui/map/trip-map';
-import { colors, radii } from '@/ui/theme';
+import { colors } from '@/ui/theme';
 
 import { DEMO_LEGS } from '../demo/trips';
 import { useCueOnEnter } from '../hooks/use-cue-on-enter';
 import { useGoHome } from '../hooks/use-go-home';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 
-const SEAL = 72;
+const SEAL = 58;
+const HALO = 196;
+const DISC = 156;
 
 /**
  * E26: arrived. The map shows the traveller at the destination pin; the card shows the
- * place reached in large (photo, or colour and pictogram) and a green seal that pops in,
- * with its own sound and vibration (spec 008).
+ * place reached in large (photo, or emerald pictogram) and an emerald seal that pops in,
+ * with its own sound and vibration (spec 010).
  */
 export function ArrivedScreen() {
   const { destination, mode } = useTripPlan();
@@ -44,27 +48,26 @@ export function ArrivedScreen() {
       )}
       <MapHeader right={<HelpButton onPress={() => router.push('/help')} />} />
       <FloatingSheet gap={14} onHeight={setSheetHeight}>
-        {/* The place reached is the hero: its photo, or its colour and pictogram (spec 008). */}
-        <View style={styles.place}>
-          <View style={styles.clip}>
-            {destination ? (
-              <PlaceArt
-                place={destination}
-                iconSize={96}
-                faded={260}
-                badgeSize={56}
-                veil
-                showPhoto
-              />
-            ) : (
-              <View style={styles.flag}>
-                <Icon name="flag" size={96} color={colors.white} />
-              </View>
-            )}
+        {/* The place reached is the hero (spec 010): its pictogram, or its photo unless it is
+            private (home, family), in a large emerald-edged disc, then the seal. */}
+        <View style={styles.hero}>
+          <View style={styles.halo}>
+            <View style={styles.disc}>
+              {destination ? (
+                <PlaceFace
+                  place={destination}
+                  iconSize={72}
+                  showPhoto={!isHiddenOnMap(destination)}
+                />
+              ) : (
+                <Icon name="flag" size={72} color={colors.emerald} variant="outlined" />
+              )}
+            </View>
+            {/* A badge on the edge of the place, not a button: no shadow, no pill shape. */}
+            <Animated.View entering={ZoomIn.delay(300).springify().damping(9)} style={styles.seal}>
+              <Icon name="check" size={36} color={colors.white} />
+            </Animated.View>
           </View>
-          <Animated.View entering={ZoomIn.delay(300).springify().damping(9)} style={styles.seal}>
-            <Icon name="check" size={46} color={colors.white} />
-          </Animated.View>
         </View>
         <MainActionButton icon="home" label="Accueil" onPress={goHome} />
       </FloatingSheet>
@@ -77,32 +80,41 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.mapGround,
   },
-  place: {
-    height: 240,
+  hero: {
+    alignItems: 'center',
+    gap: 16,
+    paddingTop: 8,
   },
-  clip: {
-    ...StyleSheet.absoluteFill,
-    borderRadius: radii.placeCard,
-    overflow: 'hidden',
-  },
-  flag: {
-    flex: 1,
+  halo: {
+    width: HALO,
+    height: HALO,
+    borderRadius: HALO / 2,
+    backgroundColor: colors.surfaceLow,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
+  },
+  disc: {
+    width: DISC,
+    height: DISC,
+    borderRadius: DISC / 2,
+    borderWidth: 3,
+    borderColor: colors.emerald,
+    backgroundColor: colors.warmWhite,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   seal: {
     position: 'absolute',
-    right: 14,
-    bottom: 14,
+    right: 10,
+    bottom: 10,
     width: SEAL,
     height: SEAL,
     borderRadius: SEAL / 2,
     borderWidth: 4,
-    borderColor: colors.white,
-    backgroundColor: colors.success,
+    borderColor: colors.warmWhite,
+    backgroundColor: colors.emerald,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 6px 18px rgba(46,125,79,.45)',
   },
 });

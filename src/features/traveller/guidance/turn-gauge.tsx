@@ -16,7 +16,7 @@ type TurnGaugeProps = {
 };
 
 /**
- * The arrow to take in a green ring that empties as the corner comes closer (spec 008):
+ * The bent arrow to take in an emerald ring that empties as the corner comes closer (spec 010):
  * no digits, the distance is seen at a glance.
  */
 export function TurnGauge({ turn, left }: TurnGaugeProps) {
@@ -28,7 +28,7 @@ export function TurnGauge({ turn, left }: TurnGaugeProps) {
           cx={SIZE / 2}
           cy={SIZE / 2}
           r={R}
-          stroke={colors.whiteGlass}
+          stroke={colors.surfaceHighest}
           strokeWidth={STROKE}
           fill="none"
         />
@@ -47,7 +47,7 @@ export function TurnGauge({ turn, left }: TurnGaugeProps) {
           />
         )}
       </Svg>
-      <Icon name={turn} size={52} color={colors.white} />
+      <Icon name={turn} size={52} color={colors.emerald} variant="outlined" />
     </View>
   );
 }

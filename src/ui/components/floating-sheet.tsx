@@ -12,7 +12,7 @@ type FloatingSheetProps = {
 };
 
 /**
- * White card floating at the bottom of a map screen (spec 008): detached from the edges,
+ * Warm-white card floating at the bottom of a map screen (specs 008, 010): detached from the edges,
  * large rounded corners and a soft shadow.
  */
 export function FloatingSheet({ children, onHeight, gap = 14 }: FloatingSheetProps) {
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: spacing.gutter,
     right: spacing.gutter,
-    backgroundColor: colors.white,
+    backgroundColor: colors.warmWhite,
     borderRadius: radii.sheet,
     padding: spacing.lg,
     boxShadow: shadows.sheet,

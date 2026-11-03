@@ -9,11 +9,12 @@ type Tone =
 const TONES: Record<Tone, { background: string; ink: string; shadow?: string }> = {
   plain: { background: 'transparent', ink: colors.ink },
   tonal: { background: colors.tonal, ink: colors.ink },
-  raised: { background: colors.white, ink: colors.ink, shadow: shadows.floating },
+  /** Round warm-white button with an emerald pictogram, over a map (spec 010). */
+  raised: { background: colors.warmWhite, ink: colors.emerald, shadow: shadows.warm },
   /** Round warm-white button with an emerald pictogram, over the cream map (spec 009). */
   warm: { background: colors.warmWhite, ink: colors.emerald, shadow: shadows.warm },
-  /** Help looks the same everywhere: dark disc, white question mark. */
-  help: { background: colors.ink, ink: colors.white, shadow: shadows.floating },
+  /** Help looks the same everywhere: warm-white disc, emerald question mark (spec 010). */
+  help: { background: colors.warmWhite, ink: colors.emerald, shadow: shadows.warm },
   glass: { background: colors.blackGlass, ink: colors.white },
   night: { background: colors.night.button, ink: colors.night.buttonInk },
   nightAccent: { background: colors.night.button, ink: colors.night.listen },
@@ -40,17 +41,14 @@ export function IconButton({
   tone = 'plain',
   shape = 'circle',
   size = sizes.headerButton,
-  iconSize = 30,
+  iconSize = 24,
   iconVariant = 'outlined',
 }: IconButtonProps) {
   const { background, ink, shadow } = TONES[tone];
-  // Keeps the mockup's drawn size but gives a stressed thumb at least 64 dp to hit.
-  const reach = Math.max(0, (sizes.minTarget - size) / 2);
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
-      hitSlop={reach}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,

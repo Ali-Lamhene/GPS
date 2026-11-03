@@ -7,9 +7,9 @@ import { IconButton } from '@/ui/components/icon-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { PulseRing } from '@/ui/components/pulse-ring';
-import { Icon } from '@/ui/icon/icon';
-import { colors, radii, shadows } from '@/ui/theme';
+import { colors, shadows } from '@/ui/theme';
 
+import { PlacePin } from '@/ui/components/place-pin';
 import { TripMap } from '@/ui/map/trip-map';
 
 import { DEMO_CURRENT_POSITION } from '../demo/trips';
@@ -33,7 +33,7 @@ export function PositionScreen() {
           <View style={styles.dot} />
         </View>
         <View style={styles.pin}>
-          <Icon name="add_location_alt" size={36} color={colors.primary} />
+          <PlacePin icon="add_location_alt" photo={undefined} selected={false} />
         </View>
       </View>
       <MapHeader
@@ -83,21 +83,15 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.emerald,
     borderWidth: 5,
     borderColor: colors.white,
     boxShadow: shadows.marker,
   },
+  // The pin's tip on the position dot: the place is saved right here.
   pin: {
     position: 'absolute',
-    top: -124,
-    width: 72,
-    height: 72,
-    borderRadius: radii.control,
-    backgroundColor: colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: shadows.floating,
+    top: -56,
   },
   action: {
     position: 'absolute',

@@ -121,11 +121,9 @@ export function GuidanceScreen() {
         <HelpButton onPress={openHelp} />
       </View>
       <ProgressPanel
-        legs={legs}
         progress={tripProgress(legs, step.legIndex, step.legFraction)}
         remainingMinutes={remainingMinutes(legs, step.legIndex, step.legFraction)}
         spokenName={spokenName(step.instruction)}
-        destinationIcon={destinationIcon}
         onLayout={(event) => setPanelHeight(event.nativeEvent.layout.height)}
       />
     </View>

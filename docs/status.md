@@ -80,11 +80,10 @@ Nettoyage du 2026-11-03 (D15) : l'utilisateur juge l'interface « clair premium 
    - [ ] Vérifier sur le téléphone : tuiles affichées avec le réseau de MapLibre coupé (forme `pmtiles://file:///…` non confirmée par la doc), aucune `MapLibreConfigurationException` dans logcat, épingles touchables, recentrage, crédit ⓘ ; `aapt dump permissions` sur l'APK (rien d'autre que `INTERNET`, plus `SYSTEM_ALERT_WINDOW` en debug). Puis spec 002 au statut `livré`.
 3. [ ] Refonte visuelle selon la maquette émeraude, écran par écran.
    - [x] Accueil : spec 009 livrée dans le navigateur (2026-11-03, relue par `ux-sans-texte-reviewer`). Carte crème et point de position émeraude sur tous les écrans ; pilule épingle ····· drapeau ; épingles en goutte ; panneau de tuiles carrées ; « + » émeraude ; pictogrammes au trait ; composants `PlaceFace`, `PlaceTile`, `pin-shape.ts`, jetons `emerald`, `warmWhite`, `warmEdge`. À revoir sur le téléphone avec la build de dev.
-   - [ ] Maquettes des autres écrans : captures actuelles et consignes dans `docs/design/ecrans-actuels.pdf` (à donner à une IA de maquettes), version texte dans `docs/design/ecrans-a-refaire.md` ; l'utilisateur fournit une maquette par écran, puis une spec chacune.
-   - [ ] Autres écrans (choix du transport, récapitulatif, guidage, métro, aide, arrivée, nouveau lieu, connexion) : une spec chacun ou groupés, à décider. Ils gardent leur interface bleue sur la carte crème en attendant. Le code garde encore `sizes.minTarget` (64 dp, `IconButton` élargit sa zone tactile) : à retirer avec eux. La nuance de vert du guidage (« bon chemin ») est à choisir dans la spec du guidage.
+   - [x] Autres écrans : spec 010 livrée dans le navigateur (2026-11-03, d'après le catalogue de maquettes de l'utilisateur, gardé hors du dépôt pour ses manifestes C2PA ; relue par `ux-sans-texte-reviewer`). Émeraude partout, boutons ronds blanc chaud sans zone tactile élargie (`sizes.minTarget` retiré), aide blanche à 56 dp, guidage en carte blanche à contour vert « bon chemin » (`#2FBF71`), barre de progression en points, E21 sombre aux accents émeraude, arrêts en gouttes. À revoir sur le téléphone.
 4. [ ] App entièrement fonctionnelle : vraies données à la place de la démo (specs 001, 003, 004), retrait de `src/features/traveller/demo/` et `src/features/social-worker/demo/`.
 
-Reste aussi à coder la spec 006 « sens de lecture » (à replacer dans la refonte ou après).
+Reste aussi à coder la spec 006 « sens de lecture » : flèche « → » devant la direction d'un bus ou d'un métro, vérification en RTL forcé sur téléphone.
 
 À trancher (relectures des specs 007 et 008) :
 

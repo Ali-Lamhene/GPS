@@ -1,5 +1,4 @@
 import { isLocalPicture } from '@/domain/place';
-import { categoryOfIcon } from '@/domain/place-category';
 import { GLYPHS, type IconName } from '@/ui/icon/glyphs';
 import { colors, fontFamilies } from '@/ui/theme';
 
@@ -34,15 +33,7 @@ function box(css: Partial<CSSStyleDeclaration>): HTMLDivElement {
   return element;
 }
 
-/** The vivid gradient of a place's family (spec 008), as a CSS background. */
-function vividBackground(icon: IconName): string {
-  const [from, to] = colors.vivid[categoryOfIcon(icon)];
-  return `linear-gradient(135deg, ${from}, ${to})`;
-}
-
-function deepColor(icon: IconName): string {
-  return colors.category[categoryOfIcon(icon)];
-}
+const SVG_NS = 'http://www.w3.org/2000/svg';
 
 function glyph(icon: IconName, size: number, color: string, outlined = false): HTMLDivElement {
   const element = box({
@@ -95,37 +86,6 @@ export function createTravellerCone(): HTMLElement {
   root.style.clipPath = 'circle(50%)';
   return root;
 }
-
-/** Destination pin: the place pictogram on its family colour, with a pointer (spec 008). */
-export function createDestinationPin(icon: IconName): HTMLElement {
-  const root = box({ display: 'flex', flexDirection: 'column', alignItems: 'center' });
-  const head = box({
-    width: '52px',
-    height: '52px',
-    borderRadius: '16px',
-    background: vividBackground(icon),
-    border: '3px solid #FFFFFF',
-    boxSizing: 'border-box',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 2px 8px rgba(0,0,0,.3)',
-  });
-  head.append(glyph(icon, 28, '#FFFFFF'));
-  const pointer = box({
-    width: '0',
-    height: '0',
-    borderLeft: '8px solid transparent',
-    borderRight: '8px solid transparent',
-    borderTop: `10px solid ${deepColor(icon)}`,
-    marginTop: '-2px',
-  });
-  root.append(head, pointer);
-  root.style.pointerEvents = 'none';
-  return root;
-}
-
-const SVG_NS = 'http://www.w3.org/2000/svg';
 
 /**
  * A saved place the traveller can touch (spec 009): a white teardrop edged in emerald with
@@ -214,67 +174,82 @@ export function createPlacePin(
   return root;
 }
 
-/** Start of the trip when it is a saved place: its pictogram on its family colour. */
-export function createOriginPin(icon: IconName): HTMLElement {
-  const root = box({
-    width: '46px',
-    height: '46px',
-    borderRadius: '50%',
-    background: vividBackground(icon),
-    border: '3px solid #FFFFFF',
-    boxSizing: 'border-box',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 2px 6px rgba(0,0,0,.3)',
-    pointerEvents: 'none',
-  });
-  root.append(glyph(icon, 26, '#FFFFFF'));
+/** Destination: the chosen place's solid emerald teardrop (spec 010). */
+export function createDestinationPin(icon: IconName): HTMLElement {
+  const root = createPlacePin(icon, undefined, true, '');
+  root.removeAttribute('role');
+  root.removeAttribute('aria-label');
+  root.style.pointerEvents = 'none';
+  root.style.cursor = '';
   return root;
 }
 
-/** Stop where to get on or off: the vehicle pictogram, or the metro "M", in the line colour. */
+/** Start of the trip when it is a saved place: a white teardrop edged in emerald. */
+export function createOriginPin(icon: IconName): HTMLElement {
+  const root = createPlacePin(icon, undefined, false, '');
+  root.removeAttribute('role');
+  root.removeAttribute('aria-label');
+  root.style.pointerEvents = 'none';
+  root.style.cursor = '';
+  return root;
+}
+
+/**
+ * Stop where to get on or off (spec 010): a teardrop like the place pins, white edged in
+ * the line colour with the vehicle pictogram, or solid in the line colour with the metro
+ * "M". Where to get off, it is edged in the alert orange.
+ */
 export function createStopPin(
   symbol: IconName | 'metro',
   color: string,
   alight = false,
 ): HTMLElement {
+  const width = 36;
+  const face = pinFace(width, false);
   const metro = symbol === 'metro';
-  const root = box({
-    width: '40px',
-    height: '40px',
-    borderRadius: metro ? '50%' : '8px',
-    background: color,
-    border: '3px solid #FFFFFF',
-    boxSizing: 'border-box',
+  // No inline position: MapLibre's marker class keeps the root absolute, on its spot.
+  const root = box({ width: `${width}px`, height: `${face.height}px`, pointerEvents: 'none' });
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('width', String(width));
+  svg.setAttribute('height', String(face.height));
+  svg.setAttribute('viewBox', `0 0 ${PIN_BOX.width} ${PIN_BOX.height}`);
+  Object.assign(svg.style, { position: 'absolute', inset: '0', overflow: 'visible' });
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute('d', PIN_PATH);
+  path.setAttribute('fill', metro ? color : '#FFFFFF');
+  path.setAttribute('stroke', alight ? colors.alert : color);
+  path.setAttribute('stroke-width', alight ? '4' : '2.5');
+  svg.append(path);
+  const head = box({
+    position: 'absolute',
+    left: `${face.left}px`,
+    top: `${face.top}px`,
+    width: `${face.size}px`,
+    height: `${face.size}px`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 2px 6px rgba(0,0,0,.3)',
-    pointerEvents: 'none',
   });
   if (metro) {
-    const letter = box({ color: '#FFFFFF', fontFamily: fontFamilies.bold, fontSize: '22px' });
+    const letter = box({ color: '#FFFFFF', fontFamily: fontFamilies.bold, fontSize: '18px' });
     // The official metro sign, a D9 exception like the line ids.
     letter.textContent = 'M';
-    root.append(letter);
+    head.append(letter);
   } else {
-    root.append(glyph(symbol, 24, colors.ink));
-    root.style.background = '#FFFFFF';
-    root.style.border = `4px solid ${color}`;
+    head.append(glyph(symbol, Math.round(face.size * 0.7), colors.ink, true));
   }
-  if (alight) root.style.boxShadow = `0 0 0 4px ${colors.alert}, 0 2px 6px rgba(0,0,0,.3)`;
+  root.append(svg, head);
   return root;
 }
 
-/** Big white arrow laid on the next corner, pointing the street to take. */
+/** Emerald arrow on a white disc at the next corner, unlike the traveller's dot (spec 010). */
 export function createManeuverArrow(): HTMLElement {
   const root = box({
     width: '52px',
     height: '52px',
     borderRadius: '50%',
-    background: colors.ink,
-    border: '4px solid #FFFFFF',
+    background: '#FFFFFF',
+    border: `4px solid ${colors.emerald}`,
     boxSizing: 'border-box',
     display: 'flex',
     alignItems: 'center',
@@ -282,7 +257,7 @@ export function createManeuverArrow(): HTMLElement {
     boxShadow: '0 2px 8px rgba(0,0,0,.35)',
     pointerEvents: 'none',
   });
-  root.append(glyph('arrow_upward', 32, '#FFFFFF'));
+  root.append(glyph('arrow_upward', 32, colors.emerald));
   return root;
 }
 

@@ -51,20 +51,16 @@ type EndDiscProps = {
   place?: Place;
   /** The end to fill now: an emerald halo grows and fades around it. */
   calling: boolean;
-  onPress: () => void;
+  /** None on the screens after the home: the pill only reminds the trip (spec 010). */
+  onPress?: () => void;
 };
 
 function EndDisc({ end, place, calling, onPress }: EndDiscProps) {
   const haloStyle = useCall(calling);
   const symbol: IconName = end === 'origin' ? 'location_on' : 'flag';
-  return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={end === 'origin' ? 'Départ' : 'Arrivée'}
-      accessibilityState={{ selected: calling }}
-      onPress={onPress}
-      style={styles.slot}
-    >
+  const label = end === 'origin' ? 'Départ' : 'Arrivée';
+  const content = (
+    <>
       <Animated.View pointerEvents="none" style={[styles.halo, haloStyle]} />
       {place ? (
         <View style={styles.disc}>
@@ -88,6 +84,24 @@ function EndDisc({ end, place, calling, onPress }: EndDiscProps) {
           />
         </View>
       )}
+    </>
+  );
+  if (!onPress) {
+    return (
+      <View accessibilityLabel={label} style={styles.slot}>
+        {content}
+      </View>
+    );
+  }
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: calling }}
+      onPress={onPress}
+      style={styles.slot}
+    >
+      {content}
     </Pressable>
   );
 }
@@ -108,7 +122,8 @@ type WayCardProps = {
   destination?: Place;
   /** The end the cards below fill, if any. */
   calling?: TripEnd;
-  onEnd: (end: TripEnd) => void;
+  /** Touching an end on the home; none elsewhere, where the pill is a reminder. */
+  onEnd?: (end: TripEnd) => void;
   onLayout?: (event: LayoutChangeEvent) => void;
 };
 
@@ -124,14 +139,14 @@ export function WayCard({ origin, destination, calling, onEnd, onLayout }: WayCa
         end="origin"
         place={origin}
         calling={calling === 'origin'}
-        onPress={() => onEnd('origin')}
+        onPress={onEnd && (() => onEnd('origin'))}
       />
       <Dots />
       <EndDisc
         end="destination"
         place={destination}
         calling={calling === 'destination'}
-        onPress={() => onEnd('destination')}
+        onPress={onEnd && (() => onEnd('destination'))}
       />
     </View>
   );

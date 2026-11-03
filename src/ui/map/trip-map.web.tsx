@@ -130,7 +130,7 @@ function markerFor(kind: MarkerKind): Marker {
     case 'destination':
       return new Marker({ element: createDestinationPin(kind.icon), anchor: 'bottom' });
     case 'origin':
-      return new Marker({ element: createOriginPin(kind.icon) });
+      return new Marker({ element: createOriginPin(kind.icon), anchor: 'bottom' });
   }
 }
 
@@ -277,7 +277,7 @@ export function TripMap({
   useEffect(() => {
     if (!map) return;
     const markers = (JSON.parse(stopsKey) as typeof stops).map((stop) =>
-      new Marker({ element: createStopPin(stop.symbol, stop.color, stop.alight) })
+      new Marker({ element: createStopPin(stop.symbol, stop.color, stop.alight), anchor: 'bottom' })
         .setLngLat([stop.point[0], stop.point[1]])
         .addTo(map),
     );

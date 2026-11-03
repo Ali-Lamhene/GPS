@@ -37,9 +37,9 @@ describe('buttons', () => {
 });
 
 describe('touch targets', () => {
-  test('a 56 dp button reaches 64 dp through its hit slop', async () => {
+  test('keep the size drawn in the mockups, without an enlarged touch area (D15)', async () => {
     const screen = await render(<IconButton icon="home" label="Accueil" onPress={jest.fn()} />);
 
-    expect(screen.getByRole('button', { name: 'Accueil' })).toHaveProp('hitSlop', 4);
+    expect(screen.getByRole('button', { name: 'Accueil' })).not.toHaveProp('hitSlop');
   });
 });

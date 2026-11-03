@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import type { TravelMode } from '@/domain/trip';
 import { Icon, type IconName } from '@/ui/icon/icon';
-import { colors, radii, shadows } from '@/ui/theme';
+import { colors, shadows } from '@/ui/theme';
 
 const MODES: { mode: TravelMode; icon: IconName; label: string }[] = [
   { mode: 'walk', icon: 'directions_walk', label: 'À pied' },
@@ -10,12 +10,17 @@ const MODES: { mode: TravelMode; icon: IconName; label: string }[] = [
   { mode: 'car', icon: 'directions_car', label: 'Voiture' },
 ];
 
+const SIZE = 64;
+
 type ModeSelectorProps = {
   selected: TravelMode;
   onSelect: (mode: TravelMode) => void;
 };
 
-/** Three unambiguous choices: on foot, public transport, car (docs/screens.md, rule 6). */
+/**
+ * Three unambiguous choices: on foot, public transport, car (docs/screens.md, rule 6), as
+ * round buttons (spec 010): the chosen one solid emerald, the others pale.
+ */
 export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
   return (
     <View style={styles.bar} accessibilityRole="radiogroup">
@@ -28,10 +33,14 @@ export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
             accessibilityLabel={label}
             accessibilityState={{ checked: on }}
             onPress={() => onSelect(mode)}
-            style={[styles.segment, on && styles.on]}
+            style={[styles.choice, on && styles.on]}
           >
-            {/* The blue background alone shows the chosen mode. */}
-            <Icon name={icon} size={32} color={on ? colors.white : colors.ink} />
+            <Icon
+              name={icon}
+              size={32}
+              color={on ? colors.white : colors.emerald}
+              variant={on ? 'filled' : 'outlined'}
+            />
           </Pressable>
         );
       })}
@@ -42,22 +51,18 @@ export function ModeSelector({ selected, onSelect }: ModeSelectorProps) {
 const styles = StyleSheet.create({
   bar: {
     flexDirection: 'row',
-    height: 76,
-    padding: 6,
-    gap: 6,
-    borderRadius: radii.control + 4,
-    backgroundColor: colors.surfaceLow,
+    justifyContent: 'space-evenly',
   },
-  segment: {
-    flex: 1,
-    flexDirection: 'row',
+  choice: {
+    width: SIZE,
+    height: SIZE,
+    borderRadius: SIZE / 2,
+    backgroundColor: colors.surfaceLow,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
-    borderRadius: radii.control,
   },
   on: {
-    backgroundColor: colors.primary,
-    boxShadow: shadows.accent,
+    backgroundColor: colors.emerald,
+    boxShadow: shadows.emerald,
   },
 });

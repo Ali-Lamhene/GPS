@@ -23,7 +23,7 @@ import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { ADD_BUTTON_SIZE, AddPlaceButton } from './add-place-button';
 import { HomePanel } from './home-panel';
 import { PlaceSheet } from './place-sheet';
-import { WayCard } from './way-card';
+import { WayCard } from '../components/way-card';
 
 /** Where a place shows on the map, unless it is kept off it (spec 005). */
 function visiblePoint(place: Place | undefined, position: LngLat): LngLat | undefined {

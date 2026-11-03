@@ -12,7 +12,7 @@ import { MapHeader } from '@/ui/components/map-header';
 import { TimeDials } from '@/ui/components/time-dials';
 import { colors } from '@/ui/theme';
 
-import { TripEnds } from '../components/trip-ends';
+import { WayCard } from '../components/way-card';
 import { TripOverviewMap } from '../components/trip-overview-map';
 import { DEMO_LEGS } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
@@ -52,17 +52,15 @@ export function ModeScreen() {
             onPress={() => router.back()}
           />
         }
-        center={<TripEnds origin={origin} destination={destination} size="sm" />}
+        center={<WayCard origin={origin} destination={destination} />}
         right={<HelpButton onPress={() => router.push('/help')} />}
       />
       <FloatingSheet onHeight={setSheetHeight}>
-        {/* Over an hour, several dials would squeeze the selector: they get their own row. */}
-        <View style={[styles.choice, total > 60 && styles.stacked]}>
+        {/* The three modes, then the total time of the chosen one below (spec 010). */}
+        <View style={styles.choice}>
+          <ModeSelector selected={mode} onSelect={choose} />
           <View style={styles.dials}>
-            <TimeDials minutes={total} size={56} crossColor={colors.white} gap={6} />
-          </View>
-          <View style={total > 60 ? undefined : styles.selector}>
-            <ModeSelector selected={mode} onSelect={choose} />
+            <TimeDials minutes={total} size={36} crossColor={colors.white} gap={6} />
           </View>
         </View>
         {/* On short screens the map shows the legs; the list would leave it no room. */}
@@ -79,18 +77,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mapGround,
   },
   choice: {
-    flexDirection: 'row',
-    alignItems: 'center',
     gap: 12,
-  },
-  selector: {
-    flex: 1,
   },
   dials: {
     alignItems: 'center',
-  },
-  stacked: {
-    flexDirection: 'column',
-    alignItems: 'stretch',
   },
 });

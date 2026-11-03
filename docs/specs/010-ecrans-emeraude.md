@@ -1,6 +1,6 @@
 # 010 — Tous les autres écrans en direction émeraude
 
-- **Statut** : validé
+- **Statut** : livré
 - **Date** : 2026-11-03
 - **Persona** : voyageur (E06 à E29), accompagnant (E30)
 - **Référence visuelle** : maquette de l'accueil `docs/design/maquette-emeraude.png` (D15), catalogue de maquettes de l'utilisateur (`catalogue_gps_sans_texte.pdf`, gardé hors du dépôt car il contient des manifestes C2PA ; on en reprend l'esprit, pas les défauts listés plus bas), accueil livré (spec 009).
@@ -161,3 +161,15 @@ Aucun changement : rien de nouveau stocké, rien ne quitte le téléphone, aucun
 - Progression du guidage : points faits en émeraude, reste pâle.
 - Métro sans réseau : thème sombre gardé.
 - Catalogue de maquettes : jamais commité.
+
+## Ajustements de la relecture `ux-sans-texte-reviewer` (2026-11-03)
+
+- Bouton d'aide gardé à 56 dp (« même taille ») ; les autres ronds de l'en-tête à 44 dp. En E21 aussi, l'aide est blanche.
+- Guidage : l'identifiant de ligne sur toutes les étapes d'un trajet en véhicule, avec `login` devant l'arrêt de montée et `logout` devant l'arrêt de descente ; cadran du temps restant à 34 dp et quarts vides plus soutenus (`#B5CFC7`, aussi pour les points restants) ; bouton écouter posé au-dessus de la pilule sans changer la hauteur mesurée (le cadrage ne saute plus) ; flèche de manœuvre émeraude sur disque blanc, pour ne pas la confondre avec le point du voyageur.
+- Barre de progression et frise des modes jamais inversées en lecture de droite à gauche.
+- E21 : le voyageur est un rond blanc cerclé d'émeraude, distinct de la station de descente émeraude pleine ; « pas de réseau » dans un rond sombre.
+- Arrêts sur la carte : pictogramme en encre (les lignes claires restaient trop pâles).
+- E08 : boutons écouter en ronds blancs ; chevron vers le bas (spec 006). Métro : « M » officiel dans la frise et les lignes d'étape.
+- E24 : pictogrammes de contexte sans disque (ce ne sont pas des boutons). E26 : la coche est un badge sur le bord du rond du lieu, pas un bouton. E27 : la pointe de l'épingle d'aperçu sur le point de position. E29 : ronds blancs.
+- Code mort retiré : `PlaceArt`, `VividFill`, `colors.vivid`, `colors.category` (plus aucun bleu).
+- Restent pour la spec 006 : la flèche « → » devant la direction d'un bus ou d'un métro.

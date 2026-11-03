@@ -7,9 +7,9 @@ import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { MapHeader } from '@/ui/components/map-header';
-import { Icon } from '@/ui/icon/icon';
+import { PlacePin } from '@/ui/components/place-pin';
 import { TripMap } from '@/ui/map/trip-map';
-import { colors, radii } from '@/ui/theme';
+import { colors } from '@/ui/theme';
 
 import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
@@ -48,12 +48,9 @@ export function PictogramScreen() {
         right={<HelpButton onPress={() => router.push('/help')} />}
       />
       <FloatingSheet gap={16} onHeight={setSheetHeight}>
-        <View style={[styles.preview, icon && styles.previewChosen]}>
-          <Icon
-            name={icon ?? 'add_location_alt'}
-            size={40}
-            color={icon ? colors.white : colors.inkDisabled}
-          />
+        {/* The pin the new place will have on the map (spec 010). */}
+        <View style={styles.preview}>
+          <PlacePin icon={icon ?? 'add_location_alt'} photo={undefined} selected={!!icon} />
         </View>
         <PictogramGrid
           selected={icon}
@@ -77,18 +74,6 @@ const styles = StyleSheet.create({
   },
   preview: {
     alignSelf: 'center',
-    marginTop: -64,
-    width: 96,
-    height: 96,
-    borderRadius: radii.control,
-    backgroundColor: colors.surfaceHigh,
-    borderWidth: 4,
-    borderColor: colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: '0 4px 12px rgba(0,0,0,.18)',
-  },
-  previewChosen: {
-    backgroundColor: colors.ink,
+    marginTop: -96,
   },
 });

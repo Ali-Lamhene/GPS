@@ -119,7 +119,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     borderWidth: 0,
-    backgroundColor: colors.alert,
+    // The station to get off at: solid emerald, like every chosen mark (spec 010).
+    backgroundColor: colors.emerald,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -129,8 +130,9 @@ const styles = StyleSheet.create({
     height: 26,
     marginTop: -13,
     borderRadius: 13,
-    backgroundColor: colors.primary,
-    borderWidth: 4,
-    borderColor: colors.white,
+    // « Me »: white ringed in emerald, unlike the solid emerald station to get off at.
+    backgroundColor: colors.white,
+    borderWidth: 5,
+    borderColor: colors.emerald,
   },
 });

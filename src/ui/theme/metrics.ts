@@ -27,10 +27,10 @@ export const radii = {
 } as const;
 
 export const sizes = {
-  /** Round header buttons: back, close, home, help. */
-  headerButton: 56,
-  /** Smallest target for the traveller (docs/product/principes.md). */
-  minTarget: 64,
+  /** Round header buttons: back, close, home, help, at the size of the mockups (spec 010). */
+  headerButton: 44,
+  /** Height of the emerald action pill (spec 010). */
+  actionPill: 56,
 } as const;
 
 export const shadows = {
@@ -45,6 +45,6 @@ export const shadows = {
   warm: '0 2px 8px rgba(60,40,30,.16)',
   /** Glow under the emerald « + » and pill (spec 009). */
   emerald: '0 6px 16px rgba(3,124,109,.35)',
-  /** Coloured glow under the blue pill. */
-  accent: '0 10px 24px rgba(47,107,255,.38)',
+  /** Glow under the emerald pill (spec 010). */
+  accent: '0 6px 16px rgba(3,124,109,.35)',
 } as const;

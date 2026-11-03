@@ -23,9 +23,14 @@ export function PhotoScreen() {
       <View style={styles.frame} pointerEvents="none" />
       <MapHeader
         left={
-          <IconButton icon="arrow_back" label="Retour" onPress={() => router.back()} tone="glass" />
+          <IconButton
+            icon="arrow_back"
+            label="Retour"
+            onPress={() => router.back()}
+            tone="raised"
+          />
         }
-        right={<HelpButton onPress={() => router.push('/help')} tone="glass" />}
+        right={<HelpButton onPress={() => router.push('/help')} />}
       />
       <View
         style={[styles.controls, { height: 190 + insets.bottom, paddingBottom: insets.bottom }]}
@@ -36,7 +41,7 @@ export function PhotoScreen() {
           onPress={() => finish()}
           style={styles.side}
         >
-          <Icon name="no_photography" size={30} color={colors.white} variant="outlined" />
+          <Icon name="no_photography" size={28} color={colors.emerald} variant="outlined" />
         </Pressable>
         <Pressable
           accessibilityRole="button"
@@ -52,7 +57,7 @@ export function PhotoScreen() {
           onPress={() => finish()}
           style={styles.side}
         >
-          <Icon name="photo_library" size={30} color={colors.white} variant="outlined" />
+          <Icon name="photo_library" size={28} color={colors.emerald} variant="outlined" />
         </Pressable>
       </View>
     </View>
@@ -89,7 +94,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: 'rgba(255,255,255,.18)',
+    backgroundColor: colors.warmWhite,
     alignItems: 'center',
     justifyContent: 'center',
   },

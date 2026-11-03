@@ -38,7 +38,7 @@ export function ConnectionErrorScreen() {
         <View style={styles.center}>
           <View style={styles.symbol}>
             {/* Same no-network sign as underground (E21): not every traveller has Wi-Fi. */}
-            <Icon name="cloud_off" size={72} color={colors.error} variant="outlined" />
+            <Icon name="cloud_off" size={64} color={colors.alert} variant="outlined" />
           </View>
         </View>
         <MainActionButton icon="refresh" label="Réessayer" onPress={() => router.back()} />
@@ -56,10 +56,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   symbol: {
-    width: 148,
-    height: 148,
-    borderRadius: 74,
-    backgroundColor: colors.errorContainer,
+    width: 132,
+    height: 132,
+    borderRadius: 66,
+    // White disc, alert-orange sign (spec 010).
+    backgroundColor: colors.white,
+    borderWidth: 3,
+    borderColor: colors.alertSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -9,7 +9,7 @@ import { playCue } from '@/services/feedback';
 import { HomePanel } from '../home-panel';
 import { tileSize } from '../place-tile';
 import { HomeScreen } from '../home-screen';
-import { WayCard } from '../way-card';
+import { WayCard } from '../../components/way-card';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
 jest.mock('@/services/feedback', () => ({ playCue: jest.fn() }));

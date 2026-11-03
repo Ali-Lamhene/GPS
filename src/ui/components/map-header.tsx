@@ -20,7 +20,7 @@ export function MapHeader({ left, center, right, onHeight }: MapHeaderProps) {
   return (
     <View style={[styles.header, { top }]} onLayout={report} pointerEvents="box-none">
       <View style={styles.side}>{left}</View>
-      {center}
+      {center && <View style={styles.center}>{center}</View>}
       <View style={[styles.side, styles.right]}>{right}</View>
     </View>
   );
@@ -36,7 +36,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   side: {
-    minWidth: 56,
+    minWidth: 44,
+  },
+  center: {
+    flex: 1,
+    marginHorizontal: spacing.sm,
   },
   right: {
     alignItems: 'flex-end',

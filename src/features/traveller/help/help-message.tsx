@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   card: {
     padding: 18,
     borderRadius: radii.sheet,
-    backgroundColor: colors.white,
+    backgroundColor: colors.warmWhite,
     boxShadow: shadows.card,
   },
   message: {

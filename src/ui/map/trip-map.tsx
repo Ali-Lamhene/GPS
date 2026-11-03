@@ -257,12 +257,12 @@ export function TripMap({
           />
           <RouteLayers lines={lines} />
           {stops.map((stop, index) => (
-            <Marker key={`stop-${index}`} lngLat={[stop.point[0], stop.point[1]]}>
+            <Marker key={`stop-${index}`} lngLat={[stop.point[0], stop.point[1]]} anchor="bottom">
               <StopPin symbol={stop.symbol} color={stop.color} alight={stop.alight ?? false} />
             </Marker>
           ))}
           {origin && (
-            <Marker lngLat={[origin.point[0], origin.point[1]]}>
+            <Marker lngLat={[origin.point[0], origin.point[1]]} anchor="bottom">
               <OriginPin icon={origin.icon} />
             </Marker>
           )}

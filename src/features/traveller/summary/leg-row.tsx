@@ -6,7 +6,7 @@ import { Icon } from '@/ui/icon/icon';
 import { colors, radii } from '@/ui/theme';
 
 import { legIcon } from '../components/leg-style';
-import { LineBadge } from '../components/line-badge';
+import { LineBadge, MetroSign } from '../components/line-badge';
 import { LegDetails } from './leg-details';
 
 type LegRowProps = {
@@ -17,31 +17,31 @@ type LegRowProps = {
 
 /** One leg of the summary; touching its header opens its details (E08). */
 export function LegRow({ leg, open, onPress }: LegRowProps) {
-  const background = open ? colors.accentSoft : colors.surfaceLow;
+  // Closed rows are warm white; the open one turns pale emerald (spec 010).
+  const background = open ? colors.accentSoft : colors.warmWhite;
   return (
     <View style={[styles.row, { backgroundColor: background }]}>
       <Pressable
         accessibilityRole="button"
         accessibilityState={{ expanded: open }}
         onPress={onPress}
-        // The row padding stays touchable: the whole line is at least 64 dp high.
-        hitSlop={{ top: 10, bottom: 10 }}
         style={styles.header}
       >
-        <View style={[styles.badge, leg.kind !== 'walk' && styles.vehicle]}>
-          <Icon
-            name={legIcon(leg)}
-            size={26}
-            color={leg.kind === 'walk' ? colors.ink : colors.onPrimary}
-          />
+        <View style={styles.badge}>
+          {/* The official « M », as on the map and in the guidance. */}
+          {leg.kind === 'metro' ? (
+            <MetroSign color={leg.line.color} size={28} />
+          ) : (
+            <Icon name={legIcon(leg)} size={26} color={colors.emerald} variant="outlined" />
+          )}
         </View>
         {isTransitLeg(leg) && <LineBadge line={leg.line} size="md" />}
         <View style={styles.spacer} />
         <TimeDials minutes={leg.minutes} size={36} crossColor={background} gap={6} />
         <Icon
-          name={open ? 'expand_less' : 'chevron_right'}
+          name={open ? 'expand_less' : 'expand_more'}
           size={26}
-          color={colors.inkMuted}
+          color={colors.emerald}
           variant="outlined"
         />
       </Pressable>
@@ -56,6 +56,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 10,
     borderRadius: radii.control,
+    borderWidth: 1,
+    borderColor: colors.warmEdge,
   },
   header: {
     flexDirection: 'row',
@@ -63,15 +65,10 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   badge: {
-    width: 46,
-    height: 46,
-    borderRadius: 14,
-    backgroundColor: colors.white,
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  vehicle: {
-    backgroundColor: colors.primary,
   },
   spacer: {
     flex: 1,
