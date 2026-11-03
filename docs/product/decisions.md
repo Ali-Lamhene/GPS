@@ -106,6 +106,6 @@ L'interface « clair premium » (spec 008) manque de personnalité : formes et c
 - **Restent valables** : D9 (dont le bouton ⓘ du crédit de la carte), D12 hors palette (carte embarquée, sans étiquette, aucune illustration générée), D13, la règle du sens de lecture (spec 006).
 - Les photos de la maquette sont des exemples ; dans l'app, ce sont les photos prises pour chaque lieu.
 - La maquette ne montre que l'accueil : la spec de refonte en déduit les autres écrans.
-- Les anciens documents de conception (`docs/design/brief.md`, `ecrans.md`, `guide-claude-design.md`, `references.md`) sont supprimés (historique dans git). Le design system Claude Design « GPS sans texte » n'est plus une référence.
+- Les anciens documents de conception (`docs/design/brief.md`, `ecrans.md`, `guide-claude-design.md`, `references.md`) sont supprimés (historique dans git). Le design system Claude Design « GPS sans texte » est supprimé (2026-11-03).
 
 Ordre de travail décidé le 2026-11-03 : nettoyage du dépôt, MapLibre natif (carte sur téléphone), refonte visuelle selon cette maquette (spec à écrire), puis app entièrement fonctionnelle (les données de démonstration restent jusque-là).
