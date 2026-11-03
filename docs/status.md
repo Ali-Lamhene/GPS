@@ -86,7 +86,7 @@ Reste aussi à coder la spec 006 « sens de lecture » (à replacer dans la refo
 
 À trancher (relectures des specs 007 et 008) :
 
-- Accueil émeraude (relecture spec 009) : la poignée du panneau du bas invite à tirer, mais rien ne se passe. Faire ouvrir « tous les lieux » par un glissement vers le haut, ou retirer la poignée ? À tester sur le terrain : halo pâle au soleil, badge épingle / drapeau lisible, contraste crème / rues blanches sur un écran bas de gamme, épingles de 42 dp et ⓘ de 34 dp pour un pouce stressé, point émeraude reconnu comme « moi », ✓ compris partout.
+- Accueil émeraude (relecture spec 009) : poignée du panneau retirée (rien ne se tire, décidé le 2026-11-03). À tester sur le terrain : halo pâle au soleil, badge épingle / drapeau lisible, contraste crème / rues blanches sur un écran bas de gamme, épingles de 42 dp et ⓘ de 34 dp pour un pouce stressé, point émeraude reconnu comme « moi », ✓ compris partout.
 
 - « + » flottant (spec 008) : peut se lire comme une croix de pharmacie ; un voyageur en détresse peut le garder enfoncé 3 s (formulaire en texte). À observer lors des tests avec des voyageurs.
 - Halo de la pastille à remplir sans son ni vibration (choix de l'utilisateur, dérogation à la règle des deux canaux) : à observer en test.

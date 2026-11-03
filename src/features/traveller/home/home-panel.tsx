@@ -11,7 +11,6 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Place } from '@/domain/place';
-import { GrabHandle } from '@/ui/components/grab-handle';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii, shadows, spacing } from '@/ui/theme';
@@ -60,7 +59,6 @@ export function HomePanel({
 
   return (
     <View style={[styles.panel, { bottom }]} onLayout={report}>
-      <GrabHandle />
       {choosing ? (
         <Animated.View key="tiles" entering={FadeInDown.springify().damping(18)}>
           {/* Never mirrored, like the map and the way: the first place stays on the left. */}
@@ -123,7 +121,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: spacing.gutter,
     right: spacing.gutter,
-    paddingTop: spacing.sm,
+    paddingTop: spacing.lg,
     paddingBottom: spacing.lg,
     gap: spacing.md,
     borderRadius: radii.sheet,

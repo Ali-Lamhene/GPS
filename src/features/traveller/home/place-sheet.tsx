@@ -3,7 +3,6 @@ import { BackHandler, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Place } from '@/domain/place';
-import { GrabHandle } from '@/ui/components/grab-handle';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii, shadows, spacing } from '@/ui/theme';
 
@@ -49,7 +48,6 @@ export function PlaceSheet({ end, places, excludedId, onPick, onClose }: PlaceSh
         style={[StyleSheet.absoluteFill, styles.scrim]}
       />
       <View style={[styles.sheet, { bottom: spacing.gutter + insets.bottom }]}>
-        <GrabHandle />
         <Icon
           name={end === 'origin' ? 'location_on' : 'flag'}
           size={30}
