@@ -17,8 +17,8 @@ import { colors, shadows, spacing } from '@/ui/theme';
 
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 
-/** The round ends of the pill, at the size of the emerald mockup (spec 009). */
-const END_SIZE = 42;
+/** The round ends: large on the home (spec 011), compact in the headers of E06 to E08. */
+const END_SIZES = { large: 56, compact: 42 } as const;
 const DOT_COUNT = 12;
 
 /** The place shown in a disc of the way: « here » wears the target. */
@@ -53,32 +53,44 @@ type EndDiscProps = {
   calling: boolean;
   /** None on the screens after the home: the pill only reminds the trip (spec 010). */
   onPress?: () => void;
+  size: number;
 };
 
-function EndDisc({ end, place, calling, onPress }: EndDiscProps) {
+function EndDisc({ end, place, calling, onPress, size }: EndDiscProps) {
+  const round = { width: size, height: size, borderRadius: size / 2 };
+  const iconSize = Math.round(size * 0.57);
   const haloStyle = useCall(calling);
   const symbol: IconName = end === 'origin' ? 'location_on' : 'flag';
   const label = end === 'origin' ? 'Départ' : 'Arrivée';
   const content = (
     <>
-      <Animated.View pointerEvents="none" style={[styles.halo, haloStyle]} />
+      <Animated.View pointerEvents="none" style={[styles.halo, round, haloStyle]} />
       {place ? (
-        <View style={styles.disc}>
-          <View style={styles.clip}>
+        <View style={[styles.disc, round]}>
+          <View style={[styles.clip, { borderRadius: size / 2 }]}>
             {/* Seen as soon as the app opens: a hidden place shows no facade (spec 005). */}
-            <PlaceFace place={endPlace(place)} iconSize={24} showPhoto={!isHiddenOnMap(place)} />
+            <PlaceFace
+              place={endPlace(place)}
+              iconSize={iconSize}
+              showPhoto={!isHiddenOnMap(place)}
+            />
           </View>
           {/* The end stays known by its symbol, not its side (spec 006). */}
           <View style={styles.badge}>
-            <Icon name={symbol} size={15} color={colors.white} variant="outlined" />
+            <Icon
+              name={symbol}
+              size={size > 50 ? 18 : 15}
+              color={colors.white}
+              variant="outlined"
+            />
           </View>
         </View>
       ) : (
         // The end to fill also differs at rest: thick emerald ring, the other one muted.
-        <View style={[styles.disc, styles.empty, calling && styles.emptyCalling]}>
+        <View style={[styles.disc, round, styles.empty, calling && styles.emptyCalling]}>
           <Icon
             name={symbol}
-            size={24}
+            size={iconSize}
             color={calling ? colors.emerald : colors.inkMuted}
             variant="outlined"
           />
@@ -88,7 +100,7 @@ function EndDisc({ end, place, calling, onPress }: EndDiscProps) {
   );
   if (!onPress) {
     return (
-      <View accessibilityLabel={label} style={styles.slot}>
+      <View accessibilityLabel={label} style={[styles.slot, round]}>
         {content}
       </View>
     );
@@ -99,7 +111,7 @@ function EndDisc({ end, place, calling, onPress }: EndDiscProps) {
       accessibilityLabel={label}
       accessibilityState={{ selected: calling }}
       onPress={onPress}
-      style={styles.slot}
+      style={[styles.slot, round]}
     >
       {content}
     </Pressable>
@@ -125,21 +137,40 @@ type WayCardProps = {
   /** Touching an end on the home; none elsewhere, where the pill is a reminder. */
   onEnd?: (end: TripEnd) => void;
   onLayout?: (event: LayoutChangeEvent) => void;
+  /** Large on the home, compact in a header beside other buttons. */
+  size?: keyof typeof END_SIZES;
 };
 
 /**
  * The way at the top of the home (spec 009): start ····· arrival in a floating white pill.
  * Nothing is chosen at first; the end to fill calls with a halo, the start then the arrival.
  */
-export function WayCard({ origin, destination, calling, onEnd, onLayout }: WayCardProps) {
+export function WayCard({
+  origin,
+  destination,
+  calling,
+  onEnd,
+  onLayout,
+  size = 'compact',
+}: WayCardProps) {
+  const end = END_SIZES[size];
+  const padding = size === 'large' ? spacing.sm : spacing.xs;
   return (
     // Never mirrored, like the map (spec 006).
-    <View style={[styles.card, I18nManager.isRTL && styles.unmirrored]} onLayout={onLayout}>
+    <View
+      style={[
+        styles.card,
+        { padding, borderRadius: (end + 2 * padding) / 2 },
+        I18nManager.isRTL && styles.unmirrored,
+      ]}
+      onLayout={onLayout}
+    >
       <EndDisc
         end="origin"
         place={origin}
         calling={calling === 'origin'}
         onPress={onEnd && (() => onEnd('origin'))}
+        size={end}
       />
       <Dots />
       <EndDisc
@@ -147,6 +178,7 @@ export function WayCard({ origin, destination, calling, onEnd, onLayout }: WayCa
         place={destination}
         calling={calling === 'destination'}
         onPress={onEnd && (() => onEnd('destination'))}
+        size={end}
       />
     </View>
   );
@@ -157,8 +189,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    padding: spacing.xs,
-    borderRadius: (END_SIZE + 2 * spacing.xs) / 2,
     backgroundColor: colors.warmWhite,
     boxShadow: shadows.warm,
   },
@@ -167,28 +197,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
   },
   slot: {
-    width: END_SIZE,
-    height: END_SIZE,
     alignItems: 'center',
     justifyContent: 'center',
   },
   halo: {
     position: 'absolute',
-    width: END_SIZE,
-    height: END_SIZE,
-    borderRadius: END_SIZE / 2,
     backgroundColor: colors.emerald,
   },
   disc: {
-    width: END_SIZE,
-    height: END_SIZE,
-    borderRadius: END_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
   clip: {
     ...StyleSheet.absoluteFill,
-    borderRadius: END_SIZE / 2,
     borderWidth: 2,
     borderColor: colors.emerald,
     overflow: 'hidden',
@@ -206,9 +227,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -5,
     right: -5,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     borderWidth: 1.5,
     borderColor: colors.white,
     backgroundColor: colors.emerald,

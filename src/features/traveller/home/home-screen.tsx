@@ -43,13 +43,15 @@ export function HomeScreen() {
   const plan = useTripPlan();
   const { origin, destination, dispatch } = plan;
   const [sheet, setSheet] = useState<TripEnd | null>(null);
-  // An end the traveller touched to change it; otherwise the first one still empty calls.
-  const [reopened, setReopened] = useState<TripEnd | undefined>();
   const [wayHeight, setWayHeight] = useState(0);
   const [panelHeight, setPanelHeight] = useState(0);
 
-  const calling: TripEnd | undefined =
-    reopened ?? (!origin ? 'origin' : !destination ? 'destination' : undefined);
+  // The first end still empty calls; the tiles fill it (spec 011).
+  const calling: TripEnd | undefined = !origin
+    ? 'origin'
+    : !destination
+      ? 'destination'
+      : undefined;
 
   // The demo position stands in for GPS until spec 004.
   const position = DEMO_CURRENT_POSITION;
@@ -79,21 +81,22 @@ export function HomeScreen() {
     if (endToFill === 'origin') dispatch({ type: 'chooseOrigin', placeId });
     else dispatch({ type: 'chooseDestination', placeId });
     playCue('select');
-    setReopened(undefined);
     setSheet(null);
   };
 
   const createPlace = (source: 'position' | 'address') => {
     const point = source === 'position' ? position : undefined;
     dispatch({ type: 'startPlace', source, point });
-    playCue(source === 'address' ? 'hold' : 'select');
+    playCue('select');
     setSheet(null);
     router.push(source === 'position' ? '/add-place/position' : '/add-place/address');
   };
 
+  // The other end's place is never offered: choosing it would silently empty that end
+  // (the arrival may now be chosen first, spec 011).
   const choices =
     calling === 'origin'
-      ? plan.originChoices
+      ? plan.originChoices.filter((place) => place.id !== destination?.id)
       : plan.destinationChoices.filter((place) => place.id !== origin?.id);
   const top = insets.top + spacing.md;
 
@@ -129,11 +132,12 @@ export function HomeScreen() {
 
       <Animated.View entering={FadeInUp.springify().damping(18)} style={[styles.way, { top }]}>
         <WayCard
+          size="large"
           origin={origin}
           destination={destination}
           calling={calling}
-          // Touching the end that is open again closes it: a stray touch is undone.
-          onEnd={(touched) => setReopened(reopened === touched ? undefined : touched)}
+          // Touching an end, empty or chosen, opens every place for it (spec 011).
+          onEnd={setSheet}
           onLayout={(event) => setWayHeight(event.nativeEvent.layout.height)}
         />
       </Animated.View>
@@ -141,9 +145,7 @@ export function HomeScreen() {
       <HomePanel
         choosing={calling !== undefined}
         places={choices}
-        selectedId={calling === 'origin' ? origin?.id : destination?.id}
         onChoose={(place) => choose(calling ?? 'destination', place.id)}
-        onAllPlaces={() => setSheet(calling ?? 'destination')}
         onCancel={() => dispatch({ type: 'clearDestination' })}
         onContinue={() => router.push('/mode')}
         onHeight={setPanelHeight}
@@ -160,7 +162,7 @@ export function HomeScreen() {
         <PlaceSheet
           end={sheet}
           places={sheet === 'origin' ? plan.originChoices : plan.destinationChoices}
-          excludedId={sheet === 'destination' ? origin?.id : undefined}
+          excludedId={sheet === 'destination' ? origin?.id : destination?.id}
           onPick={(place) => choose(sheet, place.id)}
           onClose={() => setSheet(null)}
         />

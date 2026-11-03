@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
-import { BackHandler, Pressable, StyleSheet, View } from 'react-native';
+import {
+  BackHandler,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { Place } from '@/domain/place';
@@ -7,10 +14,13 @@ import { Icon } from '@/ui/icon/icon';
 import { colors, radii, shadows, spacing } from '@/ui/theme';
 
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
+import { cutHeight } from '../add-place/pictogram-grid';
 import { SheetPlaceTile } from './sheet-place-tile';
 
 const COLUMNS = 3;
 const GAP = 12;
+/** The grid scrolls within this share of the screen. */
+const SHEET_SHARE = 0.6;
 
 type PlaceSheetProps = {
   end: TripEnd;
@@ -27,6 +37,7 @@ type PlaceSheetProps = {
  */
 export function PlaceSheet({ end, places, excludedId, onPick, onClose }: PlaceSheetProps) {
   const insets = useSafeAreaInsets();
+  const { height } = useWindowDimensions();
   const [gridWidth, setGridWidth] = useState(0);
   const tile = gridWidth > 0 ? (gridWidth - GAP * (COLUMNS - 1)) / COLUMNS : 0;
 
@@ -54,25 +65,29 @@ export function PlaceSheet({ end, places, excludedId, onPick, onClose }: PlaceSh
           color={colors.emerald}
           variant="outlined"
         />
-        <View
-          testID="place-grid"
-          style={styles.grid}
-          onLayout={(event) => setGridWidth(event.nativeEvent.layout.width)}
-        >
-          {tile > 0 && (
-            <>
-              {places.map((place) => (
-                <SheetPlaceTile
-                  key={place.id}
-                  place={place}
-                  size={tile}
-                  disabled={place.id === excludedId}
-                  onPress={() => onPick(place)}
-                />
-              ))}
-            </>
-          )}
-        </View>
+        {/* Many places scroll under the fixed pin or flag, which says the end being filled;
+            a row cut in half shows there is more (spec 011). */}
+        <ScrollView style={{ maxHeight: cutHeight(height * SHEET_SHARE, tile, GAP) }}>
+          <View
+            testID="place-grid"
+            style={styles.grid}
+            onLayout={(event) => setGridWidth(event.nativeEvent.layout.width)}
+          >
+            {tile > 0 && (
+              <>
+                {places.map((place) => (
+                  <SheetPlaceTile
+                    key={place.id}
+                    place={place}
+                    size={tile}
+                    disabled={place.id === excludedId}
+                    onPress={() => onPick(place)}
+                  />
+                ))}
+              </>
+            )}
+          </View>
+        </ScrollView>
       </View>
     </View>
   );

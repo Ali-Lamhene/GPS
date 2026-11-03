@@ -56,7 +56,7 @@ describe('tripPlanReducer', () => {
     state = tripPlanReducer(state, { type: 'finishPlace' });
 
     expect(state.customPlaces[0]).toMatchObject({
-      icon: 'location_on',
+      icon: 'push_pin',
       helpName: 'Pharmacie du Port',
     });
     expect(state.originId).toBeUndefined();
@@ -86,7 +86,7 @@ describe('tripPlanReducer', () => {
       type: 'startPlace',
       source: 'address',
     });
-    state = tripPlanReducer(state, { type: 'setDraftIcon', icon: 'family_restroom' });
+    state = tripPlanReducer(state, { type: 'setDraftIcon', icon: 'family_home' });
     state = tripPlanReducer(state, { type: 'finishPlace' });
 
     expect(state.customPlaces[0]?.hiddenOnMap).toBe(true);

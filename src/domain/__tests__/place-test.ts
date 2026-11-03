@@ -40,7 +40,7 @@ describe('placesOnMap', () => {
 describe('hiddenOnMapByDefault', () => {
   test('hides home and family, shows the rest', () => {
     expect(hiddenOnMapByDefault('home')).toBe(true);
-    expect(hiddenOnMapByDefault('family_restroom')).toBe(true);
+    expect(hiddenOnMapByDefault('family_home')).toBe(true);
     expect(hiddenOnMapByDefault('school')).toBe(false);
   });
 });

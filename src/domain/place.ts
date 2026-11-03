@@ -1,25 +1,8 @@
 import { distanceMeters, pathsBounds, type LngLat } from './geo';
+import { PICTOGRAM_CATALOGUE, type CataloguePictogram } from './pictograms';
 
-/** Pictograms a place can wear (Material Symbols names). */
-export type PlaceIcon =
-  | 'my_location'
-  | 'home'
-  | 'work'
-  | 'location_city'
-  | 'beach_access'
-  | 'fitness_center'
-  | 'shopping_bag'
-  | 'school'
-  | 'family_restroom'
-  | 'local_hospital'
-  | 'local_pharmacy'
-  | 'shopping_cart'
-  | 'restaurant'
-  | 'park'
-  | 'sports_soccer'
-  | 'local_library'
-  | 'favorite'
-  | 'location_on';
+/** Pictograms a place can wear: the catalogue (spec 011), plus « here » for the start. */
+export type PlaceIcon = CataloguePictogram | 'my_location';
 
 export type Place = {
   id: string;
@@ -43,25 +26,30 @@ export type Place = {
 /** The traveller's current position, offered as a starting point. */
 export const CURRENT_POSITION: Place = { id: 'here', icon: 'my_location', helpName: 'ma position' };
 
-/** Pictograms offered when a place is created (E28). */
-export const PICTOGRAM_CHOICES: readonly PlaceIcon[] = [
+/** Pictograms offered when a place is created (E28), in the order of the catalogue. */
+export const PICTOGRAM_CHOICES: readonly PlaceIcon[] = PICTOGRAM_CATALOGUE.flatMap(
+  ({ pictograms }) => pictograms.map(({ icon }) => icon),
+);
+
+/**
+ * Places kept off the home map unless said otherwise (spec 011): every kind of home, and
+ * health places a passer-by should not read over the traveller's shoulder.
+ */
+const PRIVATE_PICTOGRAMS: readonly PlaceIcon[] = [
   'home',
-  'family_restroom',
-  'work',
-  'school',
-  'local_hospital',
-  'local_pharmacy',
-  'shopping_cart',
-  'restaurant',
-  'park',
-  'sports_soccer',
-  'local_library',
-  'favorite',
+  'family_home',
+  'group',
+  'night_shelter',
+  'hotel',
+  'apartment',
+  'gynecology',
+  'psychology',
+  'pregnant_woman',
 ];
 
 /** Private places stay off the home map unless the person creating them says otherwise. */
 export function hiddenOnMapByDefault(icon: PlaceIcon): boolean {
-  return icon === 'home' || icon === 'family_restroom';
+  return PRIVATE_PICTOGRAMS.includes(icon);
 }
 
 /**

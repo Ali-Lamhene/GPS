@@ -95,7 +95,7 @@ function finishPlace(state: TripPlanState, photo?: string): TripPlanState {
   const { draft } = state;
   if (!draft) return state;
 
-  const icon = draft.icon ?? 'location_on';
+  const icon = draft.icon ?? 'push_pin';
   const place: Place = {
     id: `custom-${state.customPlaces.length + 1}`,
     icon,

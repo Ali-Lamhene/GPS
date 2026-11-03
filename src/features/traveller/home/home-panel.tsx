@@ -25,11 +25,7 @@ type HomePanelProps = {
   choosing: boolean;
   /** Places offered for the end that calls, in the order of the place sheet. */
   places: readonly Place[];
-  /** The place already chosen for the end that calls, ringed in emerald. */
-  selectedId?: string;
   onChoose: (place: Place) => void;
-  /** Opens the sheet with every place. */
-  onAllPlaces: () => void;
   onCancel: () => void;
   onContinue: () => void;
   /** Room taken at the bottom of the screen, so the map frames above it. */
@@ -37,16 +33,14 @@ type HomePanelProps = {
 };
 
 /**
- * Bottom of the home (spec 009): a warm-white panel with square place tiles to fill the
- * end that calls, swiped sideways, then « … » for every place; once both ends are chosen,
- * cancel and continue.
+ * Bottom of the home (specs 009, 011): a warm-white panel with large square place tiles,
+ * shortcuts that fill the end that calls, swiped sideways; once both ends are chosen,
+ * cancel and continue. Every place opens from the ends of the way.
  */
 export function HomePanel({
   choosing,
   places,
-  selectedId,
   onChoose,
-  onAllPlaces,
   onCancel,
   onContinue,
   onHeight,
@@ -75,22 +69,10 @@ export function HomePanel({
                 key={place.id}
                 place={place}
                 size={tile}
-                selected={place.id === selectedId}
+                selected={false}
                 onPress={() => onChoose(place)}
               />
             ))}
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Tous les lieux"
-              onPress={onAllPlaces}
-              style={({ pressed }) => [
-                styles.all,
-                { width: tile, height: tile },
-                pressed && styles.pressed,
-              ]}
-            >
-              <Icon name="more_horiz" size={34} color={colors.emerald} variant="outlined" />
-            </Pressable>
           </ScrollView>
         </Animated.View>
       ) : (
@@ -137,15 +119,6 @@ const styles = StyleSheet.create({
   unmirrored: {
     // In a right-to-left layout, 'row-reverse' lays the row out left to right again.
     flexDirection: 'row-reverse',
-  },
-  all: {
-    borderRadius: radii.tile,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.warmEdge,
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: shadows.warm,
   },
   actions: {
     flexDirection: 'row',

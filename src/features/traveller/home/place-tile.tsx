@@ -4,17 +4,17 @@ import { CURRENT_POSITION, isHiddenOnMap, type Place } from '@/domain/place';
 import { PlaceFace } from '@/ui/components/place-face';
 import { colors, radii, shadows } from '@/ui/theme';
 
-const TILE_MIN = 70;
-const TILE_MAX = 92;
+const TILE_MIN = 96;
+const TILE_MAX = 120;
 /** How many tiles show across the panel: the last one is always cut by the edge. */
-const TILES_SHOWN = 3.5;
+const TILES_SHOWN = 2.75;
 
 /**
- * Side of the square tiles of the emerald mockup (spec 009): three and a half fit across
- * the panel, so the cut one invites to swipe, within 70 to 92 dp.
+ * Side of the square place tiles (spec 011): about two and three quarters fit across the panel, so the
+ * cut one invites to swipe, within 96 to 120 dp.
  */
 export function tileSize(railWidth: number, gap: number, padding: number): number {
-  const fit = (railWidth - padding - 3 * gap) / TILES_SHOWN;
+  const fit = (railWidth - padding - 2 * gap) / TILES_SHOWN;
   return Math.round(Math.min(TILE_MAX, Math.max(TILE_MIN, fit)));
 }
 
@@ -50,7 +50,7 @@ export function PlaceTile({ place, size, selected, onPress }: PlaceTileProps) {
           place={shown}
           iconSize={Math.round(size * 0.45)}
           showPhoto={!isHiddenOnMap(place)}
-          badgeSize={24}
+          badgeSize={30}
         />
       </View>
       {selected && <View pointerEvents="none" style={styles.ring} />}
