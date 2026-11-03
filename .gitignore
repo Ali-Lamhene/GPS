@@ -51,3 +51,6 @@ assets/images/[A-Z]*
 
 # Copied from node_modules by the postinstall script.
 public/maplibre-gl-worker.mjs
+
+# EAS credentials, never committed (signing keys).
+credentials.json

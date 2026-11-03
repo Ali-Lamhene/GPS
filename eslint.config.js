@@ -3,7 +3,7 @@ const { defineConfig } = require('eslint/config');
 const expoConfig = require('eslint-config-expo/flat');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 
-const { FORBIDDEN_PACKAGES } = require('./eslint/forbidden-packages');
+const { FORBIDDEN_PACKAGES, MAPLIBRE_NATIVE_FORBIDDEN } = require('./eslint/forbidden-packages');
 const gpsPlugin = require('./eslint/plugin');
 
 // Packages that can reach the network or the speech engine, each wrapped by one module.
@@ -25,6 +25,10 @@ const WRAPPED_PACKAGES = [
     name: 'pmtiles',
     message: 'Load tiles through src/services/offline-map.ts (bundled archive only).',
   },
+  {
+    name: '@maplibre/maplibre-react-native',
+    message: 'Use the TripMap component (src/ui/map): it only shows the bundled tiles (spec 002).',
+  },
 ];
 
 /** The no-restricted-imports rule, minus the wrapped packages a module is allowed to use. */
@@ -41,6 +45,16 @@ function restrictedImports(allow = []) {
           message:
             'These download a remote URL outside src/services/ (docs/engineering/securite.md).',
         },
+        ...(allow.includes('@maplibre/maplibre-react-native')
+          ? [
+              {
+                name: '@maplibre/maplibre-react-native',
+                importNames: MAPLIBRE_NATIVE_FORBIDDEN,
+                message:
+                  'Downloads tiles, rewrites requests, loads remote images or starts location (securite.md).',
+              },
+            ]
+          : []),
       ],
       patterns: [
         {
@@ -50,8 +64,12 @@ function restrictedImports(allow = []) {
         },
         ...wrapped.map(({ name, message }) => ({ group: [`${name}/*`], message })),
         {
-          group: ['@maplibre/*'],
+          group: ['@maplibre/*', '!@maplibre/maplibre-react-native'],
           message: 'Native maps need their own security review first (spec 002).',
+        },
+        {
+          group: ['@maplibre/maplibre-react-native/*'],
+          message: 'Import the reviewed entry point only (securite.md).',
         },
       ],
     },
@@ -89,7 +107,12 @@ module.exports = defineConfig([
   },
   {
     files: ['src/ui/map/**'],
-    rules: { 'no-restricted-imports': restrictedImports(['maplibre-gl']) },
+    rules: {
+      'no-restricted-imports': restrictedImports([
+        'maplibre-gl',
+        '@maplibre/maplibre-react-native',
+      ]),
+    },
   },
   {
     // Tests mock the wrapped packages.
@@ -100,6 +123,7 @@ module.exports = defineConfig([
         'expo-speech',
         'maplibre-gl',
         'pmtiles',
+        '@maplibre/maplibre-react-native',
       ]),
     },
   },
@@ -121,6 +145,7 @@ module.exports = defineConfig([
       'src/features/traveller/components/line-badge.tsx',
       'src/features/traveller/components/station-name.tsx',
       'src/features/traveller/help/help-message.tsx',
+      'src/ui/map/map-texts.tsx',
     ],
     plugins: { gps: gpsPlugin },
     rules: { 'gps/no-text-in-traveller-ui': 'error' },

@@ -63,3 +63,28 @@ export function registerOfflineTiles(
   });
   return registered;
 }
+
+/**
+ * Style URL of the archive for the phone's map (MapLibre Native reads it in place): only a
+ * file already in the app's own storage. In a development build the asset's address is
+ * the dev server (http): reading tiles from there would show the host which area the
+ * traveller looks at, so it is refused (security review of the native map).
+ */
+export function localTilesUrl(localUri: string | null | undefined): string | null {
+  if (!localUri?.startsWith('file:///')) return null;
+  return `pmtiles://${localUri}`;
+}
+
+let localUrl: Promise<string | null> | undefined;
+
+/** Copies the bundled archive into the app's storage once, then gives its style URL. */
+export function loadLocalTilesUrl(): Promise<string | null> {
+  // Unreadable archive (fromModule throws): plain ground, routes and markers still drawn.
+  localUrl ??= Promise.resolve()
+    .then(() => Asset.fromModule(ARCHIVE).downloadAsync())
+    .then(
+      (asset) => localTilesUrl(asset.localUri),
+      () => null,
+    );
+  return localUrl;
+}

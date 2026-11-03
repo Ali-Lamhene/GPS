@@ -25,6 +25,32 @@ const FORBIDDEN_PACKAGES = [
   'expo-insights',
   'expo-observe',
   'expo-tracking-transparency',
+  // Checks an Expo server at each launch (securite.md §2): no spec needs it yet.
+  'expo-updates',
+  // Map SDKs easy to mistake for MapLibre: Mapbox telemetry, Google Maps SDK.
+  '@rnmapbox/maps',
+  'react-native-maps',
 ];
 
-module.exports = { FORBIDDEN_PACKAGES };
+/**
+ * Parts of the native map library that download, write or locate, refused even in
+ * src/ui/map (security review of the native map, 2026-11-03). A test checks that each
+ * name is still exported by the package, so a rename cannot silently reopen it.
+ */
+const MAPLIBRE_NATIVE_FORBIDDEN = [
+  'OfflineManager',
+  'OfflinePack',
+  'StaticMapImageManager',
+  'TransformRequestManager',
+  'LocationManager',
+  'UserLocation',
+  'NativeUserLocation',
+  'useCurrentPosition',
+  'VectorSource',
+  'RasterSource',
+  'RasterDEMSource',
+  'ImageSource',
+  'Images',
+];
+
+module.exports = { FORBIDDEN_PACKAGES, MAPLIBRE_NATIVE_FORBIDDEN };

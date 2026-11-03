@@ -9,3 +9,30 @@ jest.mock('expo-speech', () => ({
   speak: jest.fn(),
   getAvailableVoicesAsync: jest.fn(() => Promise.resolve([])),
 }));
+
+// MapLibre Native has no Jest implementation: an empty map, so screens are tested as they
+// were before it. src/ui/map/__tests__/trip-map-test.tsx draws the markers.
+jest.mock('@maplibre/maplibre-react-native', () => {
+  const React = jest.requireActual<typeof import('react')>('react');
+  const { View } = jest.requireActual<typeof import('react-native')>('react-native');
+  const container = (name: string) => {
+    const Component = ({ children }: { children?: React.ReactNode }) =>
+      React.createElement(View, { testID: name }, children);
+    Component.displayName = name;
+    return Component;
+  };
+  const Camera = React.forwardRef((_props: object, ref: React.Ref<unknown>) => {
+    React.useImperativeHandle(ref, () => ({ easeTo: jest.fn(), fitBounds: jest.fn() }));
+    return null;
+  });
+  Camera.displayName = 'Camera';
+  return {
+    Map: container('MapLibreMap'),
+    Camera,
+    GeoJSONSource: container('GeoJSONSource'),
+    Layer: () => null,
+    Marker: () => null,
+    NetworkManager: { setConnected: jest.fn() },
+    LogManager: { setLogLevel: jest.fn(), onLog: jest.fn() },
+  };
+});

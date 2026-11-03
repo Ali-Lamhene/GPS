@@ -41,12 +41,17 @@ Inchangés par rapport à la maquette v7 (sons et vibrations de `src/services/fe
 - **Fond de carte embarqué** : un fichier PMTiles du centre de Marseille, extrait de la carte publique Protomaps (données OpenStreetMap), livré dans l'app (`assets/`). Aucune tuile, police ni image n'est téléchargée à l'usage : rien ne quitte le téléphone (D1).
 - **Style sans étiquettes** : aucun nom de rue, de lieu ni de ligne sur la carte (principe zéro texte) ; donc aucune police de caractères à charger.
 - **Crédit OpenStreetMap** (licence ODbL) : un petit bouton ⓘ dans un coin de la carte ; le texte « © OpenStreetMap » ne s'affiche qu'en le touchant. **Nouvelle exception de texte, à ajouter à D9.**
-- **Nouvelles dépendances** : `maplibre-gl` (affichage web), `pmtiles` (lecture du fichier). Pour le téléphone, `@maplibre/maplibre-react-native` viendra à la généralisation (code natif, build de développement). À relire par `security-reviewer` : aucun appel réseau, pas de télémétrie.
+- **Nouvelles dépendances** : `maplibre-gl` (affichage web), `pmtiles` (lecture du fichier).
+- **Carte sur téléphone** (ajouté le 2026-11-03, relu par `security-reviewer`) :
+  - `@maplibre/maplibre-react-native` 11.5.1, version exacte : code natif, sans télémétrie. Son accès réseau est coupé au démarrage (`NetworkManager.setConnected(false)`) ; l'archive est lue depuis un fichier `file://` du stockage de l'app, jamais depuis le serveur de développement (`localTilesUrl`). Ses logs ne passent plus par la console JS ; ses lignes d'erreur natives restent dans logcat (`securite.md` §5). Import réservé à `src/ui/map/`, sans les modules qui téléchargent, réécrivent les requêtes, chargent des images distantes ou localisent (ESLint).
+  - Permissions de localisation que son manifeste ajoute : bloquées (`blockedPermissions`) jusqu'à la spec qui branche le GPS ; la localisation en arrière-plan reste bloquée. Moteur de localisation `default` (jamais Google Play Services), vérifié par un test.
+  - Crédit : le bouton et le logo de MapLibre sont retirés (leurs liens ouvrent des sites) ; le crédit est notre ⓘ replié (`map-texts.tsx`, D9).
+  - `expo-dev-client` : builds de développement seulement, sans schéma de lien supplémentaire. La build de développement a son propre identifiant (`org.gpssanstexte.app.dev`) : elle ne partage ni signature ni données avec l'app publiée, et ne s'installe jamais sur le téléphone d'un voyageur ou d'un accompagnant.
+  - EAS Build : le code source part chez Expo pour être compilé ; aucune donnée de voyageur.
 - **Photos** : plus aucune illustration (guidage, récapitulatif, aide). Seule la photo qu'un voyageur prend lui-même d'un nouveau lieu (E29) reste.
 
 ## Hors périmètre
 
-- La carte sur téléphone (MapLibre natif) : à la généralisation, après validation des témoins.
 - Le mode nuit de la carte.
 - Le vrai GPS, le vrai calcul d'itinéraire, la vraie carte hors de la zone embarquée (specs 003 et 004).
 - Les écrans autres que l'accueil et le guidage, tant que les témoins ne sont pas validés.

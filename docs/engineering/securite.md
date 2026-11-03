@@ -49,6 +49,7 @@ Le lien de partage est une **entrée non fiable** : n'importe qui peut en fabriq
 
 - Pas de `console.*` dans `src/` (ESLint). Les logs Android (`adb logcat`) sont lisibles par d'autres outils et finissent dans les rapports de bug.
 - Jamais de coordonnées, de lien de partage, de numéro de téléphone dans un message d'erreur.
+- MapLibre Native écrit ses erreurs dans logcat (`Log.e`), avec parfois des numéros de tuile, donc la zone regardée. On ne peut pas les couper sans modifier la bibliothèque : accepté, ses logs ne passent plus par la console JS (`src/ui/map/native-map-setup.ts`).
 
 ## 6. Permissions
 

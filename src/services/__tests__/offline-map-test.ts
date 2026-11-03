@@ -1,4 +1,4 @@
-import { BUNDLED_TILES_URL, onlyBundledTiles } from '../offline-map';
+import { BUNDLED_TILES_URL, localTilesUrl, onlyBundledTiles } from '../offline-map';
 
 jest.mock('expo-asset', () => ({ Asset: { fromModule: jest.fn() } }));
 
@@ -25,5 +25,21 @@ describe('onlyBundledTiles', () => {
     ).rejects.toThrow();
 
     expect(tile).not.toHaveBeenCalled();
+  });
+});
+
+describe('localTilesUrl', () => {
+  test('reads the archive from the app storage', () => {
+    expect(localTilesUrl('file:///data/user/0/app/cache/marseille.pmtiles')).toBe(
+      'pmtiles://file:///data/user/0/app/cache/marseille.pmtiles',
+    );
+  });
+
+  test('refuses any address that would read tiles over the network', () => {
+    expect(localTilesUrl('http://192.168.1.2:8081/assets/marseille.pmtiles')).toBeNull();
+    expect(localTilesUrl('https://example.org/marseille.pmtiles')).toBeNull();
+    expect(localTilesUrl('pmtiles://https://example.org/x')).toBeNull();
+    expect(localTilesUrl(null)).toBeNull();
+    expect(localTilesUrl(undefined)).toBeNull();
   });
 });
