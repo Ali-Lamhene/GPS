@@ -1,5 +1,7 @@
 # Écrans à refaire selon la direction émeraude
 
+> **Document à donner à l'IA de maquettes** : `ecrans-actuels.pdf` (consignes, maquette de référence, captures de chaque écran tel qu'il est codé au 2026-11-03). Ce fichier-ci en est la version texte détaillée.
+
 État au 2026-11-03. L'accueil est refait (spec 009, maquette `maquette-emeraude.png`). Ce document liste les écrans qui gardent encore l'interface bleue « clair premium » (spec 008). Pour chacun d'eux, une maquette est attendue ; chaque maquette donnera lieu à une spec (skill `feature`) avant le code.
 
 ## Comment fournir les maquettes
