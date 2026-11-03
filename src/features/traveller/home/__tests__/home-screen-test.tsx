@@ -6,7 +6,8 @@ import { layout, renderWithProviders } from '@/testing/render-with-providers';
 
 import { playCue } from '@/services/feedback';
 
-import { cardSize, HomePanel } from '../home-panel';
+import { HomePanel } from '../home-panel';
+import { tileSize } from '../place-tile';
 import { HomeScreen } from '../home-screen';
 import { WayCard } from '../way-card';
 
@@ -85,6 +86,17 @@ describe('<HomeScreen />', () => {
 
     await choose('mon domicile');
     expect(screen.getByRole('button', { name: 'Continuer' })).toBeOnTheScreen();
+  });
+
+  test('the place chosen for the reopened end is ringed among the tiles', async () => {
+    await renderHome();
+    await choose('ma position');
+    await choose('la plage du Prado');
+
+    await fireEvent.press(button('Arrivée'));
+
+    expect(button('la plage du Prado')).toBeSelected();
+    expect(button('mon domicile')).not.toBeSelected();
   });
 
   test('touching the reopened end again closes it: a stray touch is undone', async () => {
@@ -259,10 +271,10 @@ describe('<HomePanel />', () => {
   });
 });
 
-describe('cardSize', () => {
-  test('about three quarters of the screen wide, at least 200 high, capped on a tablet', () => {
-    expect(cardSize(360)).toEqual({ width: 270, height: 221 });
-    expect(cardSize(320).height).toBe(200);
-    expect(cardSize(1024).width).toBe(360);
+describe('tileSize', () => {
+  test('three and a half tiles across the panel, between 70 and 92 dp', () => {
+    expect(tileSize(362, 12, 16)).toBe(89);
+    expect(tileSize(292, 12, 16)).toBe(70);
+    expect(tileSize(1000, 12, 16)).toBe(92);
   });
 });

@@ -50,7 +50,12 @@ export function PlaceSheet({ end, places, excludedId, onPick, onClose }: PlaceSh
       />
       <View style={[styles.sheet, { bottom: spacing.gutter + insets.bottom }]}>
         <GrabHandle />
-        <Icon name={end === 'origin' ? 'location_on' : 'flag'} size={30} color={colors.inkMuted} />
+        <Icon
+          name={end === 'origin' ? 'location_on' : 'flag'}
+          size={30}
+          color={colors.emerald}
+          variant="outlined"
+        />
         <View
           testID="place-grid"
           style={styles.grid}
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: spacing.gutter,
     right: spacing.gutter,
-    backgroundColor: colors.white,
+    backgroundColor: colors.warmWhite,
     borderRadius: radii.sheet,
     paddingTop: spacing.md,
     paddingBottom: spacing.xl,

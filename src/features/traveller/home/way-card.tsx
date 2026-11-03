@@ -11,16 +11,17 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { CURRENT_POSITION, isHiddenOnMap, type Place } from '@/domain/place';
-import { PlaceArt } from '@/ui/components/place-art';
+import { PlaceFace } from '@/ui/components/place-face';
 import { Icon, type IconName } from '@/ui/icon/icon';
-import { colors, radii, shadows, spacing } from '@/ui/theme';
+import { colors, shadows, spacing } from '@/ui/theme';
 
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 
-/** The discs of the way: large, so the next thing to do is plain (spec 008). */
-const END_SIZE = 76;
+/** The round ends of the pill, at the size of the emerald mockup (spec 009). */
+const END_SIZE = 42;
+const DOT_COUNT = 12;
 
-/** The place shown in a disc of the way: « here » wears the target, on the action blue. */
+/** The place shown in a disc of the way: « here » wears the target. */
 function endPlace(place: Place): Place {
   return place.id === CURRENT_POSITION.id ? { ...place, icon: 'my_location' } : place;
 }
@@ -48,7 +49,7 @@ function useCall(active: boolean) {
 type EndDiscProps = {
   end: TripEnd;
   place?: Place;
-  /** The end to fill now: dashed blue, with a halo. */
+  /** The end to fill now: an emerald halo grows and fades around it. */
   calling: boolean;
   onPress: () => void;
 };
@@ -69,27 +70,34 @@ function EndDisc({ end, place, calling, onPress }: EndDiscProps) {
         <View style={styles.disc}>
           <View style={styles.clip}>
             {/* Seen as soon as the app opens: a hidden place shows no facade (spec 005). */}
-            <PlaceArt place={endPlace(place)} iconSize={36} showPhoto={!isHiddenOnMap(place)} />
+            <PlaceFace place={endPlace(place)} iconSize={24} showPhoto={!isHiddenOnMap(place)} />
           </View>
+          {/* The end stays known by its symbol, not its side (spec 006). */}
           <View style={styles.badge}>
-            <Icon name={symbol} size={14} color={colors.white} />
+            <Icon name={symbol} size={15} color={colors.white} variant="outlined" />
           </View>
         </View>
       ) : (
+        // The end to fill also differs at rest: thick emerald ring, the other one muted.
         <View style={[styles.disc, styles.empty, calling && styles.emptyCalling]}>
-          <Icon name={symbol} size={34} color={calling ? colors.primary : colors.inkMuted} />
+          <Icon
+            name={symbol}
+            size={24}
+            color={calling ? colors.emerald : colors.inkMuted}
+            variant="outlined"
+          />
         </View>
       )}
     </Pressable>
   );
 }
 
-/** Dotted way, drawn with dots: Android cannot dot a single border side. */
-function Dots({ color }: { color: string }) {
+/** The way between the ends: emerald dots, all filled, a path and nothing more (spec 009). */
+function Dots() {
   return (
     <View style={styles.dots}>
-      {[0, 1, 2, 3].map((i) => (
-        <View key={i} style={[styles.dot, { backgroundColor: color }]} />
+      {Array.from({ length: DOT_COUNT }, (_, i) => (
+        <View key={i} style={styles.dot} />
       ))}
     </View>
   );
@@ -105,14 +113,12 @@ type WayCardProps = {
 };
 
 /**
- * The way at the top of the home (spec 008): start, walker, arrival, in a floating card.
+ * The way at the top of the home (spec 009): start ····· arrival in a floating white pill.
  * Nothing is chosen at first; the end to fill calls with a halo, the start then the arrival.
  */
 export function WayCard({ origin, destination, calling, onEnd, onLayout }: WayCardProps) {
-  const ready = origin !== undefined && destination !== undefined;
-  const way = ready ? colors.primary : colors.emptyRing;
   return (
-    // Never mirrored, like the map: the walker always faces the arrival.
+    // Never mirrored, like the map (spec 006).
     <View style={[styles.card, I18nManager.isRTL && styles.unmirrored]} onLayout={onLayout}>
       <EndDisc
         end="origin"
@@ -120,11 +126,7 @@ export function WayCard({ origin, destination, calling, onEnd, onLayout }: WayCa
         calling={calling === 'origin'}
         onPress={() => onEnd('origin')}
       />
-      <Dots color={way} />
-      <View style={[styles.walker, ready && styles.walkerReady]}>
-        <Icon name="directions_walk" size={26} color={colors.white} />
-      </View>
-      <Dots color={way} />
+      <Dots />
       <EndDisc
         end="destination"
         place={destination}
@@ -139,12 +141,11 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
-    paddingVertical: spacing.md,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radii.sheet,
-    backgroundColor: colors.white,
-    boxShadow: shadows.float,
+    gap: spacing.md,
+    padding: spacing.xs,
+    borderRadius: (END_SIZE + 2 * spacing.xs) / 2,
+    backgroundColor: colors.warmWhite,
+    boxShadow: shadows.warm,
   },
   unmirrored: {
     // In a right-to-left layout, 'row-reverse' lays the row out left to right again.
@@ -161,7 +162,7 @@ const styles = StyleSheet.create({
     width: END_SIZE,
     height: END_SIZE,
     borderRadius: END_SIZE / 2,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.emerald,
   },
   disc: {
     width: END_SIZE,
@@ -173,51 +174,42 @@ const styles = StyleSheet.create({
   clip: {
     ...StyleSheet.absoluteFill,
     borderRadius: END_SIZE / 2,
+    borderWidth: 2,
+    borderColor: colors.emerald,
     overflow: 'hidden',
   },
-  // Empty stays visibly empty, even while it calls: white, dashed, the end symbol in
-  // outline colour. Only a chosen place fills it with colour.
   empty: {
     backgroundColor: colors.white,
-    borderWidth: 3,
-    borderStyle: 'dashed',
-    borderColor: colors.emptyRing,
+    borderWidth: 1.5,
+    borderColor: colors.warmEdge,
   },
   emptyCalling: {
-    borderColor: colors.primary,
+    borderWidth: 3,
+    borderColor: colors.emerald,
   },
   badge: {
     position: 'absolute',
-    top: -2,
-    right: -2,
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    borderWidth: 2,
+    top: -5,
+    right: -5,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 1.5,
     borderColor: colors.white,
-    backgroundColor: colors.ink,
+    backgroundColor: colors.emerald,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dots: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.xs,
   },
   dot: {
     width: 5,
     height: 5,
     borderRadius: 2.5,
-  },
-  walker: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: colors.ink,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  walkerReady: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.emerald,
   },
 });

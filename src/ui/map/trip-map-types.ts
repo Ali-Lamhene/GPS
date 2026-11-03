@@ -61,6 +61,8 @@ export type TripMapProps = {
   interactive?: boolean;
   /** Distance from the bottom of the map to its controls. */
   controlsBottom?: number;
+  /** Distance from the bottom to the recenter button, when it must clear other buttons. */
+  recenterBottom?: number;
   /** Pictogram of the button that brings the map back: the traveller, or the whole trip. */
   recenterIcon?: IconName;
 };

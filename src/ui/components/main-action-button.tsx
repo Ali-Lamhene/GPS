@@ -8,6 +8,8 @@ type MainActionButtonProps = {
   label: string;
   onPress: () => void;
   disabled?: boolean;
+  /** Blue on the screens not yet redone, emerald on the home (spec 009). */
+  tone?: 'primary' | 'emerald';
 };
 
 /**
@@ -19,6 +21,7 @@ export function MainActionButton({
   label,
   onPress,
   disabled = false,
+  tone = 'primary',
 }: MainActionButtonProps) {
   return (
     <Pressable
@@ -27,7 +30,12 @@ export function MainActionButton({
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [styles.pill, disabled && styles.disabled, pressed && styles.pressed]}
+      style={({ pressed }) => [
+        styles.pill,
+        tone === 'emerald' && styles.emerald,
+        disabled && styles.disabled,
+        pressed && styles.pressed,
+      ]}
     >
       <Icon name={icon} size={34} color={colors.onPrimary} />
     </Pressable>
@@ -42,6 +50,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: shadows.accent,
+  },
+  emerald: {
+    backgroundColor: colors.emerald,
+    boxShadow: shadows.emerald,
   },
   disabled: {
     opacity: 0.35,

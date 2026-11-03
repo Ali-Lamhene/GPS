@@ -10,6 +10,7 @@ import type { IconName } from '@/ui/icon/glyphs';
 import { colors } from '@/ui/theme';
 
 import { MapMetroLetter } from './map-texts';
+import { PIN_BOX, PIN_PATH, pinFace, pinWidth } from './pin-shape';
 
 // Markers drawn over the phone's map, the same as the browser ones (map-markers.web.ts).
 
@@ -17,7 +18,7 @@ function deepColor(icon: IconName): string {
   return colors.category[categoryOfIcon(icon)];
 }
 
-/** The traveller: a large blue dot with a white ring and a dark outline. */
+/** The traveller: an emerald dot ringed in white, in a pale emerald halo (spec 009). */
 export function TravellerDot() {
   return (
     <View pointerEvents="none" style={styles.dotArea}>
@@ -34,8 +35,8 @@ export function TravellerCone({ rotation }: { rotation: number }) {
       <Svg width={96} height={96}>
         <Defs>
           <RadialGradient id="cone" cx="48" cy="48" r="48" gradientUnits="userSpaceOnUse">
-            <Stop offset="0" stopColor={colors.primary} stopOpacity={0.6} />
-            <Stop offset="1" stopColor={colors.primary} stopOpacity={0} />
+            <Stop offset="0" stopColor={colors.emerald} stopOpacity={0.55} />
+            <Stop offset="1" stopColor={colors.emerald} stopOpacity={0} />
           </RadialGradient>
         </Defs>
         <Path d="M48 48 L25.46 5.62 A48 48 0 0 1 70.54 5.62 Z" fill="url(#cone)" />
@@ -88,52 +89,58 @@ type PlacePinProps = {
 };
 
 /**
- * A saved place the traveller can touch (specs 005, 008): a disc of its family colour with
- * its white pictogram, or its photo edged in that colour with the pictogram in the
- * bottom-left corner, and a pointer to the exact spot. The chosen one is larger, ringed in
- * blue.
+ * A saved place the traveller can touch (spec 009): a white teardrop edged in emerald with
+ * the emerald outlined pictogram, or the place's photo in its round head with the
+ * pictogram in a small white disc. The chosen place is larger and solid emerald.
  */
 export function PlacePin({ icon, photo, selected }: PlacePinProps) {
-  const size = selected ? 62 : 50;
-  const deep = deepColor(icon);
+  const width = pinWidth(selected);
+  const face = pinFace(width, selected);
   const picture = photo !== undefined && isLocalPicture(photo) ? photo : undefined;
   return (
-    <View style={styles.column}>
-      <View>
-        <View
-          style={[
-            styles.placeHead,
-            {
-              width: size,
-              height: size,
-              borderRadius: size / 2,
-              borderColor: picture ? deep : colors.white,
-              boxShadow: selected
-                ? `0 0 0 4px ${colors.primary}, 0 4px 12px rgba(17,24,39,.35)`
-                : '0 3px 10px rgba(17,24,39,.3)',
-            },
-          ]}
-        >
-          <VividFill icon={icon} />
-          {picture ? (
-            <Image source={{ uri: picture }} contentFit="cover" style={StyleSheet.absoluteFill} />
-          ) : (
-            <Icon name={icon} size={selected ? 32 : 26} color={colors.white} />
-          )}
-        </View>
-        {picture && (
-          <View style={styles.placeBadge}>
-            <Icon name={icon} size={17} color={deep} />
-          </View>
-        )}
-      </View>
+    <View style={{ width, height: face.height }}>
+      <View style={[styles.pinShadow, { left: width / 2 - 9 }]} />
+      <Svg
+        width={width}
+        height={face.height}
+        viewBox={`0 0 ${PIN_BOX.width} ${PIN_BOX.height}`}
+        style={StyleSheet.absoluteFill}
+      >
+        <Path
+          d={PIN_PATH}
+          fill={selected ? colors.emerald : colors.white}
+          stroke={colors.emerald}
+          strokeWidth={selected ? 0 : 2.2}
+        />
+      </Svg>
       <View
         style={[
-          styles.pointer,
-          styles.placePointer,
-          { borderTopColor: selected ? colors.primary : deep },
+          styles.pinFace,
+          {
+            left: face.left,
+            top: face.top,
+            width: face.size,
+            height: face.size,
+            borderRadius: face.size / 2,
+          },
         ]}
-      />
+      >
+        {picture ? (
+          <Image source={{ uri: picture }} contentFit="cover" style={StyleSheet.absoluteFill} />
+        ) : (
+          <Icon
+            name={icon}
+            size={Math.round(face.size * 0.62)}
+            color={colors.emerald}
+            variant="outlined"
+          />
+        )}
+      </View>
+      {picture && (
+        <View style={[styles.pinBadge, { left: face.left - 4, top: face.top + face.size - 16 }]}>
+          <Icon name={icon} size={13} color={colors.emerald} variant="outlined" />
+        </View>
+      )}
     </View>
   );
 }
@@ -177,26 +184,28 @@ export function StopPin({ symbol, color, alight }: StopPinProps) {
 
 const styles = StyleSheet.create({
   dotArea: {
-    width: 44,
-    height: 44,
+    width: 68,
+    height: 68,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dotHalo: {
     position: 'absolute',
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
     backgroundColor: colors.accuracy,
+    borderWidth: 1,
+    borderColor: colors.accuracyEdge,
   },
   dot: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.primary,
-    borderWidth: 5,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.emerald,
+    borderWidth: 4,
     borderColor: colors.white,
-    boxShadow: `0 0 0 2px ${colors.onSecondaryContainer}, 0 2px 6px rgba(0,0,0,.35)`,
+    boxShadow: '0 2px 6px rgba(0,0,0,.3)',
   },
   maneuver: {
     width: 52,
@@ -236,12 +245,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 10,
     marginTop: -2,
   },
-  placePointer: {
-    borderLeftWidth: 7,
-    borderRightWidth: 7,
-    borderTopWidth: 9,
-    marginTop: -1,
-  },
   origin: {
     width: 46,
     height: 46,
@@ -253,23 +256,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     boxShadow: '0 2px 6px rgba(0,0,0,.3)',
   },
-  placeHead: {
-    borderWidth: 3,
+  pinShadow: {
+    position: 'absolute',
+    bottom: -3,
+    width: 18,
+    height: 6,
+    borderRadius: 9,
+    backgroundColor: 'rgba(17,24,39,.14)',
+  },
+  pinFace: {
+    position: 'absolute',
+    backgroundColor: colors.white,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  placeBadge: {
+  pinBadge: {
     position: 'absolute',
-    left: -4,
-    bottom: -4,
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 2px 6px rgba(0,0,0,.3)',
+    boxShadow: '0 1px 4px rgba(0,0,0,.3)',
   },
   stop: {
     width: 40,

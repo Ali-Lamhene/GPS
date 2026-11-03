@@ -50,28 +50,30 @@ const styles = StyleSheet.create({
     fontFamily: fontFamilies.bold,
     fontSize: 22,
   },
+  // Round warm-white ⓘ of the emerald mockup (spec 009).
   credit: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    paddingRight: 8,
-    borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,.85)',
+    borderRadius: 17,
+    backgroundColor: colors.warmWhite,
+    boxShadow: '0 2px 6px rgba(17,24,39,.18)',
   },
   info: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     alignItems: 'center',
     justifyContent: 'center',
   },
   infoGlyph: {
-    color: colors.inkMuted,
+    color: colors.emerald,
     fontFamily: fontFamilies.bold,
-    fontSize: 16,
+    fontSize: 18,
   },
   creditText: {
     color: colors.ink,
     fontSize: 12,
+    paddingRight: 12,
   },
 });

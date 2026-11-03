@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet } from 'react-native';
 
 import type { Place } from '@/domain/place';
-import { PlaceArt } from '@/ui/components/place-art';
-import { radii } from '@/ui/theme';
+import { PlaceFace } from '@/ui/components/place-face';
+import { colors, radii } from '@/ui/theme';
 
 type SheetPlaceTileProps = {
   place: Place;
@@ -11,7 +11,7 @@ type SheetPlaceTileProps = {
   disabled?: boolean;
 };
 
-/** A saved place in the place sheet: its family colour and pictogram, or its photo (spec 008). */
+/** A saved place in the place sheet: its emerald pictogram, or its photo (spec 009). */
 export function SheetPlaceTile({ place, size, onPress, disabled = false }: SheetPlaceTileProps) {
   return (
     <Pressable
@@ -28,14 +28,16 @@ export function SheetPlaceTile({ place, size, onPress, disabled = false }: Sheet
       ]}
     >
       {/* The sheet may show it: the place is being chosen (spec 005). */}
-      <PlaceArt place={place} iconSize={Math.round(size * 0.42)} badgeSize={30} showPhoto />
+      <PlaceFace place={place} iconSize={Math.round(size * 0.42)} badgeSize={28} showPhoto />
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   tile: {
-    borderRadius: radii.control,
+    borderRadius: radii.tile,
+    borderWidth: 1,
+    borderColor: colors.warmEdge,
     overflow: 'hidden',
   },
   disabled: {

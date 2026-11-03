@@ -15,12 +15,12 @@ import {
 import { playCue } from '@/services/feedback';
 import { TripMap } from '@/ui/map/trip-map';
 import type { MapPin } from '@/ui/map/trip-map-types';
-import { colors, sizes, spacing } from '@/ui/theme';
+import { colors, spacing } from '@/ui/theme';
 
 import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
-import { AddPlaceButton } from './add-place-button';
+import { ADD_BUTTON_SIZE, AddPlaceButton } from './add-place-button';
 import { HomePanel } from './home-panel';
 import { PlaceSheet } from './place-sheet';
 import { WayCard } from './way-card';
@@ -32,8 +32,8 @@ function visiblePoint(place: Place | undefined, position: LngLat): LngLat | unde
 }
 
 /**
- * Home (E01-E05, spec 008): the pearl map around the traveller with their places as pins,
- * the way at the top and big place cards at the bottom. Nothing is chosen at first: the
+ * Home (E01-E05, spec 009): the cream map around the traveller with their places as
+ * emerald pins, the way in a pill at the top and square place tiles at the bottom. Nothing is chosen at first: the
  * start calls, then the arrival; the cards fill the end that calls. Once both are chosen,
  * cancel or go on. The floating « + » adds a place; no help here, there is no trip yet
  * (D13 revised).
@@ -118,12 +118,13 @@ export function HomeScreen() {
             right: spacing.xxl,
           },
         }}
-        lines={start && end ? [{ path: [start, end], color: colors.primary, style: 'walk' }] : []}
+        lines={start && end ? [{ path: [start, end], color: colors.emerald, style: 'walk' }] : []}
         traveller={{ point: position }}
         pins={pins}
         onPinPress={(placeId) => choose(calling ?? 'destination', placeId)}
-        // Above the floating « + », never under it.
-        controlsBottom={panelHeight + spacing.lg + sizes.minTarget + spacing.md}
+        // ⓘ at the bottom left above the panel; recenter above the floating « + ».
+        controlsBottom={panelHeight + spacing.md}
+        recenterBottom={panelHeight + spacing.md + ADD_BUTTON_SIZE + spacing.md}
       />
 
       <Animated.View entering={FadeInUp.springify().damping(18)} style={[styles.way, { top }]}>
@@ -140,6 +141,7 @@ export function HomeScreen() {
       <HomePanel
         choosing={calling !== undefined}
         places={choices}
+        selectedId={calling === 'origin' ? origin?.id : destination?.id}
         onChoose={(place) => choose(calling ?? 'destination', place.id)}
         onAllPlaces={() => setSheet(calling ?? 'destination')}
         onCancel={() => dispatch({ type: 'clearDestination' })}
@@ -147,7 +149,7 @@ export function HomeScreen() {
         onHeight={setPanelHeight}
       />
 
-      <View style={[styles.add, { bottom: panelHeight + spacing.lg }]}>
+      <View style={[styles.add, { bottom: panelHeight + spacing.md }]}>
         <AddPlaceButton
           onAddHere={() => createPlace('position')}
           onAddAddress={() => createPlace('address')}

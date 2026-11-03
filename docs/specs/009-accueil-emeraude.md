@@ -1,6 +1,6 @@
 # 009 — Accueil « carte urbaine émeraude »
 
-- **Statut** : validé
+- **Statut** : livré
 - **Date** : 2026-11-03
 - **Persona** : voyageur
 - **Référence visuelle** : `docs/design/maquette-emeraude.png` (D15)
@@ -91,3 +91,10 @@ Aucun changement : rien de nouveau stocké, rien ne quitte le téléphone, aucun
 - Couleurs par famille : abandonnées à l'accueil, tout en émeraude (confirmé).
 - Point de position : émeraude sur tous les écrans.
 - Épingles : tout lieu avec photo a son épingle photo ; le lieu choisi est plus grand et bordé d'émeraude plein.
+
+## Ajustements de la relecture `ux-sans-texte-reviewer` (2026-11-03)
+
+- Le rond à remplir se distingue aussi au repos : contour émeraude épais ; l'autre rond vide a un contour et un pictogramme gris (comme le drapeau gris de la maquette). Le halo reste.
+- Badge épingle / drapeau d'un bout choisi : 22 dp, pictogramme de 15 dp (la maquette ne le dessine pas).
+- Tuiles : 70 à 92 dp, pour qu'environ 40 % de la quatrième reste visible à 320 dp.
+- Navigateur : ⓘ au « i » émeraude, comme sur le téléphone.

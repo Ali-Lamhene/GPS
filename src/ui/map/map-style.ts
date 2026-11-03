@@ -1,6 +1,6 @@
 import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
 
-// Base map without any label (spec 002), in the pearl colours of spec 008: no symbol
+// Base map without any label (spec 002), in the colours of the emerald mockup (spec 009): no symbol
 // layer, no glyphs, no sprite, so nothing to read and nothing to download. Layers follow
 // the Protomaps basemap schema of the bundled archive.
 
@@ -21,22 +21,22 @@ export type MapPalette = Record<
 >;
 
 /**
- * "Pearl" base map (spec 008): cool, desaturated greys, so that only the route
- * and the markers carry colour (like the map apps the user picked as references).
+ * Warm city map of the emerald mockup (spec 009, D15): cream ground, flat soft green
+ * parks, bright blue water, white streets, hatched railways.
  */
 export const MAP_COLORS: MapPalette = {
-  ground: '#EEF0F3',
-  park: '#DDEEDB',
-  civic: '#E8EBEF',
-  water: '#C7DCF0',
-  building: '#E2E5EA',
-  buildingEdge: '#D5D9DF',
-  roadCasing: '#DCE0E5',
+  ground: '#F8F1EE',
+  park: '#D6E4A4',
+  civic: '#F3EAE6',
+  water: '#8BCBEF',
+  building: '#F1E8E4',
+  buildingEdge: '#E8DDD8',
+  roadCasing: '#EDE3DF',
   road: '#FFFFFF',
   majorRoad: '#FFFFFF',
-  majorRoadCasing: '#CDD2D9',
-  path: '#E0E3E8',
-  rail: '#C9CED5',
+  majorRoadCasing: '#E6DBD6',
+  path: '#EFE6E2',
+  rail: '#C9C4C5',
 };
 
 const PARKS = [
@@ -129,10 +129,20 @@ export function buildMapStyle(
         source,
         'source-layer': 'roads',
         filter: ['==', ['get', 'kind'], 'rail'],
+        paint: { 'line-color': palette.rail, 'line-width': width(0.5, 2) },
+      },
+      // Short wide dashes across the rail line: the ties of a hatched railway.
+      {
+        id: 'rail-ties',
+        type: 'line',
+        source,
+        'source-layer': 'roads',
+        minzoom: 14,
+        filter: ['==', ['get', 'kind'], 'rail'],
         paint: {
           'line-color': palette.rail,
-          'line-width': width(0.5, 2),
-          'line-dasharray': [3, 2],
+          'line-width': width(2, 7),
+          'line-dasharray': [0.25, 1.25],
         },
       },
       {

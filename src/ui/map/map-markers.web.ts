@@ -3,12 +3,17 @@ import { categoryOfIcon } from '@/domain/place-category';
 import { GLYPHS, type IconName } from '@/ui/icon/glyphs';
 import { colors, fontFamilies } from '@/ui/theme';
 
+import { PIN_BOX, PIN_PATH, pinFace, pinWidth } from './pin-shape';
+
 // DOM elements drawn over the MapLibre map in the browser. Built with createElement and
 // textContent only: place data may one day come from a share link, an untrusted input.
 
 const CSS = `
 .trip-map .maplibregl-ctrl-bottom-left,
 .trip-map .maplibregl-ctrl-bottom-right { bottom: var(--controls-bottom, 0px); }
+/* The credit button: a round warm-white ⓘ with an emerald « i », like the phone's (spec 009). */
+.trip-map .maplibregl-ctrl-attrib.maplibregl-compact { transform: scale(1.4); transform-origin: bottom left; background: ${colors.warmWhite}; box-shadow: 0 2px 6px rgba(17,24,39,.18); }
+.trip-map .maplibregl-ctrl-attrib-button { background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='7' r='1.7' fill='%23037C6D'/%3E%3Crect x='10.6' y='10' width='2.8' height='8' rx='1.4' fill='%23037C6D'/%3E%3C/svg%3E"); }
 @keyframes trip-map-pulse { 0% { transform: scale(1); opacity: .45 } 100% { transform: scale(2.4); opacity: 0 } }
 `;
 
@@ -39,9 +44,9 @@ function deepColor(icon: IconName): string {
   return colors.category[categoryOfIcon(icon)];
 }
 
-function glyph(icon: IconName, size: number, color: string): HTMLDivElement {
+function glyph(icon: IconName, size: number, color: string, outlined = false): HTMLDivElement {
   const element = box({
-    fontFamily: `'${fontFamilies.iconFilled}'`,
+    fontFamily: `'${outlined ? fontFamilies.icon : fontFamilies.iconFilled}'`,
     fontSize: `${size}px`,
     lineHeight: '1',
     color,
@@ -50,25 +55,34 @@ function glyph(icon: IconName, size: number, color: string): HTMLDivElement {
   return element;
 }
 
-/** The traveller: a large blue dot with a dark outline and a soft pulse, facing the screen. */
+/** The traveller: an emerald dot ringed in white, in a pale emerald halo (spec 009). */
 export function createTravellerDot(): HTMLElement {
-  const root = box({ position: 'relative', width: '36px', height: '36px', pointerEvents: 'none' });
+  // No inline position: MapLibre's marker class keeps the root absolute, on its spot.
+  const root = box({ width: '68px', height: '68px', pointerEvents: 'none' });
   root.append(
-    box({
-      position: 'absolute',
-      inset: '4px',
-      borderRadius: '50%',
-      background: colors.primary,
-      animation: 'trip-map-pulse 2s ease-out infinite',
-    }),
     box({
       position: 'absolute',
       inset: '0',
       borderRadius: '50%',
-      background: colors.primary,
-      border: '5px solid #FFFFFF',
+      background: colors.accuracy,
+      border: `1px solid ${colors.accuracyEdge}`,
       boxSizing: 'border-box',
-      boxShadow: `0 0 0 2px ${colors.onSecondaryContainer}, 0 2px 6px rgba(0,0,0,.35)`,
+    }),
+    box({
+      position: 'absolute',
+      inset: '20px',
+      borderRadius: '50%',
+      background: colors.emerald,
+      animation: 'trip-map-pulse 2s ease-out infinite',
+    }),
+    box({
+      position: 'absolute',
+      inset: '20px',
+      borderRadius: '50%',
+      background: colors.emerald,
+      border: '4px solid #FFFFFF',
+      boxSizing: 'border-box',
+      boxShadow: '0 2px 6px rgba(0,0,0,.3)',
     }),
   );
   return root;
@@ -77,7 +91,7 @@ export function createTravellerDot(): HTMLElement {
 /** Cone laid on the ground in front of the traveller, pointing the way they go. */
 export function createTravellerCone(): HTMLElement {
   const root = box({ width: '96px', height: '96px', pointerEvents: 'none' });
-  root.style.background = `conic-gradient(from -28deg at 50% 50%, ${colors.primary}99 0deg, ${colors.primary}00 56deg, transparent 56deg)`;
+  root.style.background = `conic-gradient(from -28deg at 50% 50%, ${colors.emerald}8C 0deg, ${colors.emerald}00 56deg, transparent 56deg)`;
   root.style.clipPath = 'circle(50%)';
   return root;
 }
@@ -111,11 +125,12 @@ export function createDestinationPin(icon: IconName): HTMLElement {
   return root;
 }
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+
 /**
- * A saved place the traveller can touch (specs 005, 008): a disc of its family colour with
- * its white pictogram, or its photo edged in that colour with the pictogram in the
- * bottom-left corner, and a pointer to the exact spot. The chosen one is larger, ringed in
- * blue.
+ * A saved place the traveller can touch (spec 009): a white teardrop edged in emerald with
+ * the emerald outlined pictogram, or the place's photo in its round head with the
+ * pictogram in a small white disc. The chosen place is larger and solid emerald.
  */
 export function createPlacePin(
   icon: IconName,
@@ -123,38 +138,53 @@ export function createPlacePin(
   selected: boolean,
   label: string,
 ): HTMLElement {
-  const size = selected ? 62 : 50;
-  const deep = deepColor(icon);
+  const width = pinWidth(selected);
+  const face = pinFace(width, selected);
   const hasPhoto = photo !== undefined && isLocalPicture(photo);
-  const edge = hasPhoto ? deep : '#FFFFFF';
-  // A 64 px touch area around the drawn pin, for a stressed thumb (principes.md).
+  // No inline position: MapLibre's marker class keeps the root absolute, on its spot.
   const root = box({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    minWidth: '64px',
-    minHeight: '64px',
+    width: `${width}px`,
+    height: `${face.height}px`,
     cursor: 'pointer',
     zIndex: selected ? '2' : '1',
   });
   root.setAttribute('role', 'button');
   root.setAttribute('aria-label', label);
-  const face = box({ position: 'relative' });
+  root.append(
+    box({
+      position: 'absolute',
+      left: `${width / 2 - 9}px`,
+      bottom: '-3px',
+      width: '18px',
+      height: '6px',
+      borderRadius: '9px',
+      background: 'rgba(17,24,39,.14)',
+    }),
+  );
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('width', String(width));
+  svg.setAttribute('height', String(face.height));
+  svg.setAttribute('viewBox', `0 0 ${PIN_BOX.width} ${PIN_BOX.height}`);
+  Object.assign(svg.style, { position: 'absolute', inset: '0', overflow: 'visible' });
+  const path = document.createElementNS(SVG_NS, 'path');
+  path.setAttribute('d', PIN_PATH);
+  path.setAttribute('fill', selected ? colors.emerald : '#FFFFFF');
+  path.setAttribute('stroke', colors.emerald);
+  path.setAttribute('stroke-width', selected ? '0' : '2.2');
+  svg.append(path);
+  root.append(svg);
   const head = box({
-    width: `${size}px`,
-    height: `${size}px`,
+    position: 'absolute',
+    left: `${face.left}px`,
+    top: `${face.top}px`,
+    width: `${face.size}px`,
+    height: `${face.size}px`,
     borderRadius: '50%',
-    background: vividBackground(icon),
-    border: `3px solid ${edge}`,
-    boxSizing: 'border-box',
+    background: '#FFFFFF',
     overflow: 'hidden',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: selected
-      ? `0 0 0 4px ${colors.primary}, 0 4px 12px rgba(17,24,39,.35)`
-      : '0 3px 10px rgba(17,24,39,.3)',
   });
   if (photo && hasPhoto) {
     const image = document.createElement('img');
@@ -162,36 +192,25 @@ export function createPlacePin(
     image.alt = '';
     Object.assign(image.style, { width: '100%', height: '100%', objectFit: 'cover' });
     head.append(image);
-    // Outside the clipped disc, so the badge may overlap its edge.
     const badge = box({
       position: 'absolute',
-      left: '-4px',
-      bottom: '-4px',
-      width: '26px',
-      height: '26px',
+      left: `${face.left - 4}px`,
+      top: `${face.top + face.size - 16}px`,
+      width: '20px',
+      height: '20px',
       borderRadius: '50%',
       background: '#FFFFFF',
-      boxShadow: '0 2px 6px rgba(0,0,0,.3)',
+      boxShadow: '0 1px 4px rgba(0,0,0,.3)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
     });
-    badge.append(glyph(icon, 17, deep));
-    face.append(badge);
+    badge.append(glyph(icon, 13, colors.emerald, true));
+    root.append(head, badge);
   } else {
-    head.append(glyph(icon, selected ? 32 : 26, '#FFFFFF'));
+    head.append(glyph(icon, Math.round(face.size * 0.62), colors.emerald, true));
+    root.append(head);
   }
-  const pointer = box({
-    width: '0',
-    height: '0',
-    borderLeft: '7px solid transparent',
-    borderRight: '7px solid transparent',
-    borderTop: `9px solid ${selected ? colors.primary : deep}`,
-    marginTop: '-1px',
-    filter: 'drop-shadow(0 2px 1px rgba(0,0,0,.25))',
-  });
-  face.prepend(head);
-  root.append(face, pointer);
   return root;
 }
 

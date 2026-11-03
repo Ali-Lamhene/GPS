@@ -3,12 +3,15 @@ import { Pressable, StyleSheet } from 'react-native';
 import { Icon, type IconName } from '@/ui/icon/icon';
 import { colors, radii, shadows, sizes } from '@/ui/theme';
 
-type Tone = 'plain' | 'tonal' | 'raised' | 'help' | 'glass' | 'night' | 'nightAccent' | 'primary';
+type Tone =
+  'plain' | 'tonal' | 'raised' | 'warm' | 'help' | 'glass' | 'night' | 'nightAccent' | 'primary';
 
 const TONES: Record<Tone, { background: string; ink: string; shadow?: string }> = {
   plain: { background: 'transparent', ink: colors.ink },
   tonal: { background: colors.tonal, ink: colors.ink },
   raised: { background: colors.white, ink: colors.ink, shadow: shadows.floating },
+  /** Round warm-white button with an emerald pictogram, over the cream map (spec 009). */
+  warm: { background: colors.warmWhite, ink: colors.emerald, shadow: shadows.warm },
   /** Help looks the same everywhere: dark disc, white question mark. */
   help: { background: colors.ink, ink: colors.white, shadow: shadows.floating },
   glass: { background: colors.blackGlass, ink: colors.white },

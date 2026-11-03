@@ -177,6 +177,7 @@ export function TripMap({
   backdrop = false,
   interactive = true,
   controlsBottom = 16,
+  recenterBottom,
   recenterIcon = 'my_location',
   pins = [],
   onPinPress,
@@ -372,14 +373,15 @@ export function TripMap({
       />
       {backdrop && <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.veil]} />}
       {!following && (
-        <View style={[styles.recenter, { bottom: controlsBottom + 8 }]}>
+        <View style={[styles.recenter, { bottom: recenterBottom ?? controlsBottom + 8 }]}>
+          {/* Round warm-white target of the emerald mockup (spec 009). */}
           <IconButton
             icon={recenterIcon}
             label="Recentrer"
-            tone="raised"
-            size={64}
-            iconSize={32}
-            iconVariant="filled"
+            tone="warm"
+            size={40}
+            iconSize={24}
+            iconVariant="outlined"
             onPress={() => setMovedFrom(null)}
           />
         </View>

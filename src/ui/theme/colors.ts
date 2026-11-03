@@ -37,10 +37,21 @@ export const colors = {
   whiteFaded: 'rgba(255,255,255,.22)',
   blackGlass: 'rgba(0,0,0,.4)',
 
+  // Emerald mockup (D15, spec 009): one accent for places, the traveller and actions on
+  // the home; other screens move to it with their own specs.
+  emerald: '#037C6D',
+  /** Pale ring of the end to fill and of the traveller's position. */
+  emeraldHalo: '#B4D8D1',
+  /** Warm white of the floating pill, panel and buttons. */
+  warmWhite: '#FBF8F6',
+  /** Thin warm edge of white tiles and buttons on the cream map. */
+  warmEdge: '#EBE3DF',
+  emeraldGlow: 'rgba(3,124,109,.35)',
+
   // Map screens (the base map itself is styled in src/ui/map/map-style.ts).
-  mapGround: '#EEF0F3',
-  accuracy: 'rgba(47,107,255,.12)',
-  accuracyEdge: 'rgba(47,107,255,.35)',
+  mapGround: '#F8F1EE',
+  accuracy: 'rgba(3,124,109,.16)',
+  accuracyEdge: 'rgba(3,124,109,.4)',
   car: '#5E6670',
   walkRail: '#A8A8A1',
 

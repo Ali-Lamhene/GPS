@@ -20,6 +20,8 @@ export const radii = {
   control: 16,
   /** Cards floating over the map, sheets included. */
   sheet: 28,
+  /** Square place tiles of the emerald home (spec 009). */
+  tile: 18,
   /** Big place cards of the home carousel. */
   placeCard: 26,
 } as const;
@@ -39,6 +41,10 @@ export const shadows = {
   marker: '0 1px 4px rgba(0,0,0,.3)',
   /** Large soft shadow of the cards floating over the map (spec 008). */
   float: '0 12px 32px rgba(17,24,39,.14), 0 2px 6px rgba(17,24,39,.06)',
+  /** Soft warm shadow of the round buttons and the pill of the emerald mockup (spec 009). */
+  warm: '0 2px 8px rgba(60,40,30,.16)',
+  /** Glow under the emerald « + » and pill (spec 009). */
+  emerald: '0 6px 16px rgba(3,124,109,.35)',
   /** Coloured glow under the blue pill. */
   accent: '0 10px 24px rgba(47,107,255,.38)',
 } as const;

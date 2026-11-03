@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 import { Icon } from '@/ui/icon/icon';
-import { colors, shadows, sizes } from '@/ui/theme';
+import { colors, shadows } from '@/ui/theme';
 
 import { useHoldProgress } from '../hooks/use-hold-progress';
 
@@ -14,7 +14,9 @@ const HIDDEN_SHARE = 1 / 3;
  * E27 instead of nothing.
  */
 const TAP_MAX_MS = 1000;
-const SIZE = sizes.minTarget;
+/** The size of the emerald mockup, without a larger touch area (D15). */
+export const ADD_BUTTON_SIZE = 48;
+const SIZE = ADD_BUTTON_SIZE;
 const RING = 4;
 const OUTER = SIZE + 4 * RING;
 const RADIUS = (OUTER - RING) / 2;
@@ -28,8 +30,8 @@ type AddPlaceButtonProps = {
 };
 
 /**
- * Round blue « + » floating at the bottom right of the home, above the cards (specs 007,
- * 008). A tap starts the traveller's new
+ * Round emerald « + » floating at the bottom right of the home, above the panel (specs 007,
+ * 009). A tap starts the traveller's new
  * place; a 3 second hold opens the companion's address form, with a ring that only shows
  * after the first second. Nothing on screen tells about the hold: no text for the
  * traveller to stumble on.
@@ -59,7 +61,6 @@ export function AddPlaceButton({ onAddHere, onAddAddress }: AddPlaceButtonProps)
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Ajouter un lieu"
-        hitSlop={(sizes.minTarget - SIZE) / 2}
         onPress={onAddHere}
         // A long press swallows the tap, so a released hold never opens E27.
         onLongPress={() => undefined}
@@ -68,7 +69,7 @@ export function AddPlaceButton({ onAddHere, onAddAddress }: AddPlaceButtonProps)
         onPressOut={cancel}
         style={({ pressed }) => [styles.button, pressed && styles.pressed]}
       >
-        <Icon name="add" size={36} color={colors.onPrimary} />
+        <Icon name="add" size={30} color={colors.white} />
       </Pressable>
     </View>
   );
@@ -90,10 +91,10 @@ const styles = StyleSheet.create({
     width: SIZE,
     height: SIZE,
     borderRadius: SIZE / 2,
-    backgroundColor: colors.primary,
+    backgroundColor: colors.emerald,
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: shadows.accent,
+    boxShadow: shadows.emerald,
   },
   pressed: {
     opacity: 0.8,
