@@ -70,6 +70,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2abf3a81-c94e-463a-aa91-2f78aa4a7f65"
+      }
+    },
+    "owner": "otakumi"
   }
 }
