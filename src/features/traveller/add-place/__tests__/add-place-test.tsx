@@ -57,3 +57,24 @@ describe('cutHeight', () => {
     expect(cutHeight(300, 0)).toBe(300);
   });
 });
+
+describe('a place sent by the companion (spec 019)', () => {
+  test('E28 ✓ opens the share sheet with the link and keeps nothing', async () => {
+    const share = jest
+      .spyOn(jest.requireActual<typeof import('react-native')>('react-native').Share, 'share')
+      .mockResolvedValue({ action: 'sharedAction', activityType: undefined });
+    await renderWithProviders(<PictogramScreen />, [
+      { type: 'startPlace', source: 'address' },
+      { type: 'setDraftAddress', helpName: 'Pharmacie', point: [5.37722, 43.29655], send: true },
+      { type: 'setDraftIcon', icon: 'local_pharmacy' },
+    ]);
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Envoyer' }));
+
+    expect(share).toHaveBeenCalledWith({
+      message: 'https://ali-lamhene.github.io/gps/lieu#1/43.29655/5.37722/local_pharmacy',
+    });
+    expect(router.dismissTo).toHaveBeenCalledWith('/');
+    expect(router.push).not.toHaveBeenCalledWith('/add-place/photo');
+  });
+});

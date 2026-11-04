@@ -15,6 +15,8 @@ export type PlaceDraft = {
   point?: LngLat;
   icon?: PlaceIcon;
   helpName?: string;
+  /** Companion only (spec 019): the place is sent by link, never kept on this phone. */
+  send?: boolean;
 };
 
 export type TripPlanState = {
@@ -38,7 +40,9 @@ export type TripPlanAction =
   | { type: 'startPlace'; source: PlaceDraft['source']; point?: LngLat }
   | { type: 'setDraftIcon'; icon: PlaceIcon }
   | { type: 'setDraftName'; helpName: string }
-  | { type: 'addPlace'; place: Place }
+  | { type: 'setDraftAddress'; helpName: string; point: LngLat; send: boolean }
+  /** `keepDraft`: a place received by link while a new place is being made (spec 019). */
+  | { type: 'addPlace'; place: Place; keepDraft?: boolean }
   | { type: 'placeSaveFailed' }
   | { type: 'clearSaveFailed' }
   | { type: 'cancelPlace' }
@@ -82,8 +86,24 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
       return state.draft
         ? { ...state, draft: { ...state.draft, helpName: action.helpName } }
         : state;
+    case 'setDraftAddress':
+      return state.draft
+        ? {
+            ...state,
+            draft: {
+              ...state.draft,
+              helpName: action.helpName,
+              point: action.point,
+              send: action.send,
+            },
+          }
+        : state;
     case 'addPlace':
-      return { ...state, customPlaces: [...state.customPlaces, action.place], draft: undefined };
+      return {
+        ...state,
+        customPlaces: [...state.customPlaces, action.place],
+        draft: action.keepDraft ? state.draft : undefined,
+      };
     case 'placeSaveFailed':
       return { ...state, draft: undefined, saveFailed: true };
     case 'clearSaveFailed':

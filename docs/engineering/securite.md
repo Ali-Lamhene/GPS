@@ -19,7 +19,7 @@ Contre qui :
 - Seuls les services listés dans la section « Données et confidentialité » d'une spec validée sont appelés. Pour chacun : ce qu'il reçoit (y compris l'adresse IP).
 - HTTPS uniquement. Pas de trafic en clair (`http://`).
 - Les hôtes appelés sont centralisés dans un seul module de `src/services/` : pas d'URL éparpillée dans le code.
-- Hôtes appelés aujourd'hui : `tiles.openfreemap.org` (tuiles de la carte, D16, `src/services/map-tiles.ts`). La position du téléphone passe par le fournisseur standard d'Android (services Google), réglé par le téléphone, pas par l'app.
+- Hôtes, tous déclarés dans `src/services/hosts.ts` : `tiles.openfreemap.org` (tuiles de la carte, D16 : IP et zones affichées), `photon.komoot.io` (recherche d'adresse, partie accompagnant seulement, spec 019 : texte tapé, position à environ 1 km, IP), `ali-lamhene.github.io` (page et vérification du lien de partage, jamais appelée par l'app). La position du téléphone passe par le fournisseur standard d'Android (services Google), réglé par le téléphone, pas par l'app.
 - L'accueil et le guidage du voyageur n'appellent aucun service sauf si une spec le dit.
 - Interdits par principe : analytics, rapport de plantage, publicité, notifications push distantes, configuration à distance. La liste des paquets interdits est dans `eslint/forbidden-packages.js`. Elle est vérifiée par ESLint (imports) et par un test sur `package.json` (une dépendance native s'active même sans import).
 - EAS Update (`expo-updates`), si on l'ajoute un jour, interroge un serveur Expo à chaque lancement : à justifier dans une spec avant de l'installer.

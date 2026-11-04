@@ -13,6 +13,7 @@ import { TripMap } from '@/ui/map/trip-map';
 import { colors } from '@/ui/theme';
 
 import { positionPoint, useTravellerPosition } from '../location/location-context';
+import { sendPlace } from './send-place';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { PictogramGrid } from './pictogram-grid';
 
@@ -28,6 +29,7 @@ export function PictogramScreen() {
   const here = positionPoint(position);
   const center = draft?.point ?? here;
   const [sheetHeight, setSheetHeight] = useState(360);
+  const [sending, setSending] = useState(false);
 
   return (
     <View style={styles.screen}>
@@ -62,10 +64,23 @@ export function PictogramScreen() {
           onSelect={(next) => dispatch({ type: 'setDraftIcon', icon: next })}
         />
         <MainActionButton
-          icon="check"
-          label="Continuer"
+          icon={draft?.send ? 'send' : 'check'}
+          label={draft?.send ? 'Envoyer' : 'Continuer'}
           disabled={!icon}
-          onPress={() => router.push('/add-place/photo')}
+          onPress={async () => {
+            // Sent by the companion (spec 019): share sheet, then home; nothing kept here.
+            if (draft?.send) {
+              if (sending) return;
+              setSending(true);
+              const sent = await sendPlace(draft);
+              setSending(false);
+              if (!sent) return;
+              dispatch({ type: 'cancelPlace' });
+              router.dismissTo('/');
+              return;
+            }
+            router.push('/add-place/photo');
+          }}
         />
       </FloatingSheet>
     </View>

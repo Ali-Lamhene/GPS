@@ -20,3 +20,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 016 | [Lieux hors de toute sauvegarde et de tout transfert](016-lieux-hors-des-sauvegardes.md)          | validé (code fait, à vérifier dans la prochaine build) |
 | 017 | [Carte opérante : carte en ligne et vraie position](017-carte-operante.md)                        | validé (à vérifier sur téléphone)                      |
 | 018 | [Préparation native de la build complète](018-build-complete.md)                                  | validé (à vérifier dans la build)                      |
+| 019 | [Lien de partage et recherche d'adresse](019-lien-et-adresse.md)                                  | validé (à vérifier sur téléphone, build preview)       |

@@ -75,5 +75,6 @@ describe('finishing a new place (spec 015)', () => {
 
     expect(writePlacesFile).toHaveBeenCalledTimes(1);
     expect(result.current.plan.customPlaces).toHaveLength(2);
+    expect(result.current.plan.saveFailed).toBeUndefined();
   });
 });

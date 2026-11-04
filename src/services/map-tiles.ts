@@ -3,11 +3,12 @@
 // and when: an exception to D1, accepted for the first version until the map is bundled
 // again. HTTPS only.
 
-/** TileJSON of the OpenStreetMap vector tiles (OpenMapTiles schema). */
-export const MAP_TILES_URL = 'https://tiles.openfreemap.org/planet/latest';
+import { MAP_TILES_HOST } from './hosts';
 
-/** Host of every tile request, for the checks that nothing else is called. */
-export const MAP_TILES_HOST = 'tiles.openfreemap.org';
+export { MAP_TILES_HOST };
+
+/** TileJSON of the OpenStreetMap vector tiles (OpenMapTiles schema). */
+export const MAP_TILES_URL = `https://${MAP_TILES_HOST}/planet/latest`;
 
 /** Credit required by the tiles' licences, folded behind ⓘ (D9). */
 export const MAP_CREDIT = '© OpenFreeMap © OpenMapTiles © OpenStreetMap';

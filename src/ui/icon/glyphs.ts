@@ -98,6 +98,7 @@ export const GLYPHS = {
   restaurant: 0xe56c,
   savings: 0xe2eb,
   school: 0xe80c,
+  send: 0xe163,
   shopping_bag: 0xf1cc,
   shopping_cart: 0xe8cc,
   shower: 0xf061,

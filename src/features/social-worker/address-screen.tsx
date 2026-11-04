@@ -3,29 +3,38 @@ import { useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import type { AddressResult } from '@/domain/address';
+import {
+  positionPoint,
+  useTravellerPosition,
+} from '@/features/traveller/location/location-context';
 import { useTripPlan } from '@/features/traveller/trip-plan/trip-plan-context';
 import { IconButton } from '@/ui/components/icon-button';
 import { Icon } from '@/ui/icon/icon';
 import { colors, fontFamilies, radii } from '@/ui/theme';
 
-import { matchAddresses } from './demo/addresses';
+import { type AddressSearchState, useAddressSearch } from './use-address-search';
 
 /**
- * E30, companion area (text allowed, D8): find the address of a new place. The traveller
- * then picks its pictogram and photo (E28, E29).
+ * E30, companion area (text allowed, D8): find the address of a place (Photon, spec 001),
+ * then keep it on this phone (the traveller's) or send it by link (the companion's own
+ * phone, spec 019). The pictogram comes next (E28), then the photo or the share sheet.
  */
 export function AddressScreen() {
   const insets = useSafeAreaInsets();
   const { dispatch } = useTripPlan();
+  const { position } = useTravellerPosition();
   const [query, setQuery] = useState('');
-  const suggestions = matchAddresses(query);
+  const [picked, setPicked] = useState<AddressResult | null>(null);
+  const search = useAddressSearch(query, positionPoint(position));
 
   const close = () => {
     dispatch({ type: 'cancelPlace' });
     router.dismissTo('/');
   };
-  const pick = (name: string) => {
-    dispatch({ type: 'setDraftName', helpName: name });
+  const go = (send: boolean) => {
+    if (!picked) return;
+    dispatch({ type: 'setDraftAddress', helpName: picked.name, point: picked.point, send });
     router.push('/add-place/pictogram');
   };
 
@@ -38,12 +47,7 @@ export function AddressScreen() {
         <Text style={styles.title}>Ajouter un lieu</Text>
       </View>
       <View style={styles.chip}>
-        <Icon
-          name="supervisor_account"
-          size={18}
-          color={colors.onSecondaryContainer}
-          variant="outlined"
-        />
+        <Icon name="keyboard" size={18} color={colors.onSecondaryContainer} variant="outlined" />
         <Text style={styles.chipText}>Espace accompagnant</Text>
       </View>
       <View style={styles.field}>
@@ -53,39 +57,131 @@ export function AddressScreen() {
         <TextInput
           accessibilityLabelledBy="address-label"
           value={query}
-          onChangeText={setQuery}
-          placeholder="Ex. 14 quai du Port"
+          onChangeText={(text) => {
+            setQuery(text);
+            setPicked(null);
+          }}
+          placeholder="Ex. 14 quai du Port, Marseille"
           placeholderTextColor={colors.outline}
           autoCorrect={false}
+          // The keyboard must not learn the address, nor sync it to its cloud (spec 019).
+          autoComplete="off"
+          importantForAutofill="no"
+          spellCheck={false}
+          textContentType="none"
           style={styles.input}
         />
       </View>
-      <View style={styles.list}>
-        {suggestions.map((item, i) => (
-          <Pressable
-            key={item.name}
-            accessibilityRole="button"
-            onPress={() => pick(item.name)}
-            style={[styles.suggestion, i > 0 && styles.divider]}
-          >
+      {picked ? (
+        <View style={styles.choice}>
+          <View style={styles.suggestion}>
             <Icon name="location_on" size={24} color={colors.emerald} variant="outlined" />
             <View style={styles.suggestionText}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.address}>{item.address}</Text>
+              <Text style={styles.name}>{picked.name}</Text>
+              <Text style={styles.address}>{picked.detail}</Text>
             </View>
+          </View>
+          <Pressable accessibilityRole="button" onPress={() => go(false)} style={styles.primary}>
+            <Text style={styles.primaryText}>Garder sur ce téléphone</Text>
           </Pressable>
-        ))}
-      </View>
+          <Pressable accessibilityRole="button" onPress={() => go(true)} style={styles.secondary}>
+            <Text style={styles.secondaryText}>Envoyer par lien au voyageur</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <SearchList search={search} onPick={setPicked} />
+      )}
       <View style={styles.spacer} />
       <Text style={styles.note}>
-        Ensuite : choix du pictogramme, puis photo (facultative). Le voyageur pourra le faire
-        lui-même.
+        La recherche passe par Photon (OpenStreetMap), qui reçoit le texte tapé, la position
+        approximative du téléphone et son adresse IP. Le lien contient le lieu exact : préférez une
+        messagerie chiffrée (Signal, WhatsApp) au SMS.
       </Text>
     </View>
   );
 }
 
+function SearchList({
+  search,
+  onPick,
+}: {
+  search: AddressSearchState;
+  onPick: (result: AddressResult) => void;
+}) {
+  switch (search.kind) {
+    case 'idle':
+      return null;
+    case 'searching':
+      return <Text style={styles.message}>Recherche…</Text>;
+    case 'none':
+      return <Text style={styles.message}>Aucune adresse trouvée. Essayez autrement.</Text>;
+    case 'offline':
+      return (
+        <Text style={styles.message}>
+          Pas de connexion : la recherche d’adresse a besoin d’internet. Réessayez.
+        </Text>
+      );
+    case 'results':
+      return (
+        <View style={styles.list}>
+          {search.results.map((item, i) => (
+            <Pressable
+              key={`${item.name}-${item.point[0]}-${item.point[1]}`}
+              accessibilityRole="button"
+              onPress={() => onPick(item)}
+              style={[styles.suggestion, i > 0 && styles.divider]}
+            >
+              <Icon name="location_on" size={24} color={colors.emerald} variant="outlined" />
+              <View style={styles.suggestionText}>
+                <Text style={styles.name}>{item.name}</Text>
+                <Text style={styles.address}>{item.detail}</Text>
+              </View>
+            </Pressable>
+          ))}
+        </View>
+      );
+    default: {
+      const unknown: never = search;
+      return unknown;
+    }
+  }
+}
+
 const styles = StyleSheet.create({
+  choice: {
+    gap: 12,
+  },
+  primary: {
+    height: 56,
+    borderRadius: radii.control,
+    backgroundColor: colors.emerald,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  primaryText: {
+    fontSize: 17,
+    fontFamily: fontFamilies.semiBold,
+    color: colors.white,
+  },
+  secondary: {
+    height: 56,
+    borderRadius: radii.control,
+    borderWidth: 2,
+    borderColor: colors.emerald,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryText: {
+    fontSize: 17,
+    fontFamily: fontFamilies.semiBold,
+    color: colors.emerald,
+  },
+  message: {
+    fontSize: 15,
+    fontFamily: fontFamilies.regular,
+    color: colors.inkMuted,
+  },
   screen: {
     flex: 1,
     paddingHorizontal: 16,
