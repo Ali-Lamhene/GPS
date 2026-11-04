@@ -14,13 +14,13 @@ import {
 } from '@/domain/place';
 import { playCue } from '@/services/feedback';
 import { TripMap } from '@/ui/map/trip-map';
-import type { MapPin } from '@/ui/map/trip-map-types';
+import { RECENTER_SIZE, type MapPin } from '@/ui/map/trip-map-types';
 import { colors, spacing } from '@/ui/theme';
 
 import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
-import { ADD_BUTTON_SIZE, AddPlaceButton } from './add-place-button';
+import { ADD_BUTTON_SIZE, AddPlaceButton, COLUMN_GAP, COMPANION_SIZE } from './add-place-button';
 import { HomePanel } from './home-panel';
 import { PlaceSheet } from './place-sheet';
 import { WayCard } from '../components/way-card';
@@ -113,21 +113,26 @@ export function HomeScreen() {
                   position,
                   pins.map((pin) => pin.point),
                 ),
-          // Sides: room for half of the chosen pin, which stands over its spot.
+          // Sides: room for half of the chosen pin, which stands over its spot; on the right,
+          // no pin under the column of buttons, where a touch would open another screen.
           padding: {
             top: top + wayHeight + spacing.lg,
             bottom: panelHeight + spacing.lg,
             left: spacing.xxl,
-            right: spacing.xxl,
+            right: spacing.gutter + ADD_BUTTON_SIZE + spacing.sm,
           },
         }}
         lines={start && end ? [{ path: [start, end], color: colors.emerald, style: 'walk' }] : []}
         traveller={{ point: position }}
         pins={pins}
         onPinPress={(placeId) => choose(calling ?? 'destination', placeId)}
-        // ⓘ at the bottom left above the panel; recenter above the floating « + ».
+        // ⓘ at the bottom left above the panel; recenter on top of the column of « + » and
+        // companion, on the same axis (spec 013).
         controlsBottom={panelHeight + spacing.md}
-        recenterBottom={panelHeight + spacing.md + ADD_BUTTON_SIZE + spacing.md}
+        recenterBottom={
+          panelHeight + spacing.md + ADD_BUTTON_SIZE + COLUMN_GAP + COMPANION_SIZE + COLUMN_GAP
+        }
+        recenterRight={spacing.gutter + (ADD_BUTTON_SIZE - RECENTER_SIZE) / 2}
       />
 
       <Animated.View entering={FadeInUp.springify().damping(18)} style={[styles.way, { top }]}>

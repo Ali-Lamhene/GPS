@@ -11,8 +11,9 @@ const CSS = `
 .trip-map .maplibregl-ctrl-bottom-left,
 .trip-map .maplibregl-ctrl-bottom-right { bottom: var(--controls-bottom, 0px); }
 /* The credit button: a round warm-white ⓘ with an emerald « i », like the phone's (spec 009). */
-.trip-map .maplibregl-ctrl-attrib.maplibregl-compact { transform: scale(1.4); transform-origin: bottom left; background: ${colors.warmWhite}; box-shadow: 0 2px 6px rgba(17,24,39,.18); }
-.trip-map .maplibregl-ctrl-attrib-button { background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='7' r='1.7' fill='%23037C6D'/%3E%3Crect x='10.6' y='10' width='2.8' height='8' rx='1.4' fill='%23037C6D'/%3E%3C/svg%3E"); }
+.trip-map .maplibregl-ctrl-attrib.maplibregl-compact { background: ${colors.warmWhite}; box-shadow: 0 2px 6px rgba(17,24,39,.18); }
+.trip-map .maplibregl-ctrl-attrib-button::after { content: ''; position: absolute; inset: -12px; }
+.trip-map .maplibregl-ctrl-attrib-button { position: relative; background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='7' r='1.7' fill='%23037C6D'/%3E%3Crect x='10.6' y='10' width='2.8' height='8' rx='1.4' fill='%23037C6D'/%3E%3C/svg%3E"); }
 @keyframes trip-map-pulse { 0% { transform: scale(1); opacity: .45 } 100% { transform: scale(2.4); opacity: 0 } }
 `;
 

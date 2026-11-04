@@ -63,6 +63,11 @@ export type TripMapProps = {
   controlsBottom?: number;
   /** Distance from the bottom to the recenter button, when it must clear other buttons. */
   recenterBottom?: number;
+  /** Distance from the right to the recenter button, to line it up with a column of buttons. */
+  recenterRight?: number;
   /** Pictogram of the button that brings the map back: the traveller, or the whole trip. */
   recenterIcon?: IconName;
 };
+
+/** Side of the round recenter button of the map. */
+export const RECENTER_SIZE = 40;

@@ -3,6 +3,9 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fontFamilies } from '@/ui/theme';
 
+/** Side of the round ⓘ of the map credit (spec 013). */
+const INFO_SIZE = 24;
+
 // Decision D9: the only texts of the phone's map. The metro "M" is the official sign, like
 // the line ids; the OpenStreetMap credit, required by its licence, stays folded behind ⓘ.
 
@@ -26,7 +29,8 @@ export function MapCredit() {
       accessibilityRole="button"
       accessibilityLabel="Crédit de la carte"
       accessibilityState={{ expanded: open }}
-      hitSlop={8}
+      // 24 dp ⓘ (spec 013), touched within 48 dp.
+      hitSlop={12}
       onPress={() => setOpen((value) => !value)}
       style={styles.credit}
     >
@@ -50,30 +54,30 @@ const styles = StyleSheet.create({
     fontFamily: fontFamilies.bold,
     fontSize: 22,
   },
-  // Round warm-white ⓘ of the emerald mockup (spec 009).
+  // Round warm-white ⓘ of the emerald mockup (spec 009), made smaller (spec 013).
   credit: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    borderRadius: 17,
+    borderRadius: INFO_SIZE / 2,
     backgroundColor: colors.warmWhite,
     boxShadow: '0 2px 6px rgba(17,24,39,.18)',
   },
   info: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: INFO_SIZE,
+    height: INFO_SIZE,
+    borderRadius: INFO_SIZE / 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
   infoGlyph: {
     color: colors.emerald,
     fontFamily: fontFamilies.bold,
-    fontSize: 18,
+    fontSize: 13,
   },
   creditText: {
     color: colors.ink,
     fontSize: 12,
-    paddingRight: 12,
+    paddingRight: 10,
   },
 });

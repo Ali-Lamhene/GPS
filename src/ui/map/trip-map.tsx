@@ -27,7 +27,7 @@ import {
 } from './map-markers';
 import { MapCredit } from './map-texts';
 import { buildFallbackStyle, buildMapStyle } from './map-style';
-import type { MapLine, TripMapProps } from './trip-map-types';
+import { RECENTER_SIZE, type MapLine, type TripMapProps } from './trip-map-types';
 
 // Phone map of spec 002: MapLibre Native over the bundled Marseille tiles, without labels,
 // the same as the browser one (trip-map.web.tsx).
@@ -115,6 +115,7 @@ export function TripMap({
   interactive = true,
   controlsBottom = 16,
   recenterBottom,
+  recenterRight,
   recenterIcon = 'my_location',
   pins = [],
   onPinPress,
@@ -304,13 +305,19 @@ export function TripMap({
         <MapCredit />
       </View>
       {!following && (
-        <View style={[styles.recenter, { bottom: recenterBottom ?? controlsBottom + 8 }]}>
+        <View
+          style={[
+            styles.recenter,
+            { bottom: recenterBottom ?? controlsBottom + 8 },
+            recenterRight !== undefined && { right: recenterRight },
+          ]}
+        >
           {/* Round warm-white target of the emerald mockup (spec 009). */}
           <IconButton
             icon={recenterIcon}
             label="Recentrer"
             tone="warm"
-            size={40}
+            size={RECENTER_SIZE}
             iconSize={24}
             iconVariant="outlined"
             onPress={() => setMovedFrom(null)}

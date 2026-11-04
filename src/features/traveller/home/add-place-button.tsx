@@ -1,12 +1,14 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Icon } from '@/ui/icon/icon';
-import { colors, shadows, spacing } from '@/ui/theme';
+import { colors, shadows } from '@/ui/theme';
 
 /** The size of the emerald mockup, without a larger touch area (D15). */
 export const ADD_BUTTON_SIZE = 48;
 /** The companion's button stays small beside the « + »: the traveller's action comes first. */
-const COMPANION_SIZE = 36;
+export const COMPANION_SIZE = 36;
+/** Space between the buttons of the column (spec 013). */
+export const COLUMN_GAP = 12;
 
 type AddPlaceButtonProps = {
   /** A tap on « + »: the traveller keeps the place where they stand (E27-E29). */
@@ -16,13 +18,14 @@ type AddPlaceButtonProps = {
 };
 
 /**
- * Bottom right of the home (spec 011): the round emerald « + » to keep the place where the
- * traveller stands, and, beside it, a small warm-white button with two people that
- * opens the companion's address form. No hidden hold any more.
+ * Bottom right of the home (specs 011, 013): a column with, at the bottom, the round emerald
+ * « + » to keep the place where the traveller stands and, above it, a small warm-white button
+ * with two people that opens the companion's address form. The map's recenter button sits on
+ * top of this column, on the same axis.
  */
 export function AddPlaceButton({ onAddHere, onAddAddress }: AddPlaceButtonProps) {
   return (
-    <View style={styles.row}>
+    <View style={styles.column}>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="Ajouter une adresse (accompagnant)"
@@ -44,10 +47,9 @@ export function AddPlaceButton({ onAddHere, onAddAddress }: AddPlaceButtonProps)
 }
 
 const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
+  column: {
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: COLUMN_GAP,
   },
   companion: {
     width: COMPANION_SIZE,

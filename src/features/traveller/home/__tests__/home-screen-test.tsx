@@ -151,12 +151,22 @@ describe('« + » on the home', () => {
     expect(router.push).toHaveBeenCalledWith('/add-place/position');
   });
 
-  test('the small button beside it opens the address form for the companion', async () => {
+  test('the small button above it opens the address form for the companion', async () => {
     await renderHome();
 
     await fireEvent.press(button('Ajouter une adresse (accompagnant)'));
 
     expect(router.push).toHaveBeenCalledWith('/add-place/address');
+  });
+
+  test('companion above « + », in one column (spec 013)', async () => {
+    await renderHome();
+
+    const column = button('Ajouter un lieu').parent?.parent;
+    const order = within(column as never)
+      .getAllByRole('button')
+      .map((element) => element.props.accessibilityLabel as string);
+    expect(order).toEqual(['Ajouter une adresse (accompagnant)', 'Ajouter un lieu']);
   });
 });
 
