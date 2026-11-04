@@ -162,10 +162,31 @@ Points laissés ouverts par les relectures de la spec 002 :
     - sans voix locale, quel signal sans texte montre que « écouter » ne marche pas ? La partie préparation doit-elle vérifier la voix et aider à l'installer ?
 14. Avant le premier build natif : bloquer `SYSTEM_ALERT_WINDOW` en version publiée, vérifier `NSAllowsArbitraryLoads` (HTTPS seulement) sur iOS après prebuild, contrôler l'APK avec `aapt dump permissions`.
 
+## Reprise du 2026-11-05 (décidé le 2026-11-04 au soir)
+
+**Décisions et actions de l'utilisateur, à traiter en premier :**
+
+1. Choisir une **licence libre** pour le projet et **rendre le dépôt public** : condition d'usage de Transitous, le service qui calcule les trajets (D17, choisi par Claude en autonomie : seul service sans compte qui couvre les transports en commun français ; à confirmer).
+2. Créer le dépôt **GitHub Pages `ali-lamhene.github.io`** pour les liens de partage (`.well-known/assetlinks.json`, `.nojekyll`, page de repli sans texte). Claude guide pas à pas.
+3. **Arbitrages de sécurité** (détail dans les specs 019 à 022) :
+   - Transitous exige que les requêtes nomment l'app (en-tête) : accepter, ou lui demander un en-tête neutre ?
+   - N'importe qui peut fabriquer un lien qui ajoute un lieu sans question : marquer les lieux reçus, ou une validation ?
+   - Le domaine des liens (`ali-lamhene.github.io/gps/lieu`) contient le nom du développeur et dit la fonction de l'app : domaine neutre ?
+   - Faut-il déconseiller, ou ne pas proposer, les photos des lieux cachés de la carte (domicile, famille) ?
+
+**Puis tester toute l'app en réel** avec la build complète (https://expo.dev/accounts/otakumi/projects/GPS/builds/ef0b3be7-85ee-492e-9a0f-c19c4af368d4) : l'installer à la place de l'ancienne (les lieux de test seront effacés). Les liens de partage ne s'ouvrent pas dans la build de dev (voulu) : il faudra une build « preview ».
+
+**Ce qui reste pour une app complète (Claude, en autonomie) :**
+
+- Garder les trajets sur le téléphone, utilisables sans réseau (D5).
+- Compter les arrêts dans le métro sans GPS (capteurs déjà dans la build, spec 004).
+- Spec 006 : sens de lecture, vérification de droite à gauche.
+- Effacement rapide des lieux en cas de fouille (spec dédiée).
+
 ## En attente côté humain
 
 - Pousser les commits : le shell de Claude n'a pas d'identifiants GitHub. Installer `gh` puis `gh auth login`, ou ajouter la clé SSH à GitHub.
-- Brancher un téléphone Android (débogage USB) pour les vérifications sur appareil. Pas d'émulateur ni de SDK Android installé sur la machine.
-- Choisir une licence pour le projet (le fichier `LICENSE` du template Expo a été supprimé), compatible ARASAAC.
+- Vérifications sur appareil : le téléphone se connecte au serveur Metro par le Wi-Fi ou le partage de connexion (`EXPO_OFFLINE=1 REACT_NATIVE_PACKAGER_HOSTNAME=<ip> npx expo start --dev-client --host lan`, puis QR code `gps-dev://expo-development-client/?url=…`). Pas d'adb sur la machine (`sudo apt install adb` pour l'adb sans fil).
+- Choisir une licence pour le projet (le fichier `LICENSE` du template Expo a été supprimé) : libre, condition de Transitous (voir « Reprise du 2026-11-05 »).
 - Créer le dépôt GitHub Pages `ali-lamhene.github.io` (page du lien de partage, fichiers App Links / Universal Links).
 - Compte Apple développeur, quand on attaquera l'iPhone.
