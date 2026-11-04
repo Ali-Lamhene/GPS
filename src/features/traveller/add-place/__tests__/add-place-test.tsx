@@ -10,6 +10,8 @@ import { PositionScreen } from '../position-screen';
 
 jest.mock('expo-router', () => ({
   router: { push: jest.fn(), back: jest.fn(), dismissTo: jest.fn() },
+  // The screen in front: its focus effect runs once mounted.
+  useFocusEffect: (effect: () => void) => jest.requireActual('react').useEffect(effect, [effect]),
 }));
 
 const drafting = [{ type: 'startPlace', source: 'position' }] as const;

@@ -13,14 +13,14 @@ export const COLUMN_GAP = 12;
 type AddPlaceButtonProps = {
   /** A tap on « + »: the traveller keeps the place where they stand (E27-E29). */
   onAddHere: () => void;
-  /** A tap on the small two-people button: the companion types an address (E30). */
+  /** A tap on the small keyboard button: the companion types an address (E30). */
   onAddAddress: () => void;
 };
 
 /**
  * Bottom right of the home (specs 011, 013): a column with, at the bottom, the round emerald
  * « + » to keep the place where the traveller stands and, above it, a small warm-white button
- * with two people that opens the companion's address form. The map's recenter button sits on
+ * with a keyboard that opens the companion's address form, where an address is typed. The map's recenter button sits on
  * top of this column, on the same axis.
  */
 export function AddPlaceButton({ onAddHere, onAddAddress }: AddPlaceButtonProps) {
@@ -32,7 +32,7 @@ export function AddPlaceButton({ onAddHere, onAddAddress }: AddPlaceButtonProps)
         onPress={onAddAddress}
         style={({ pressed }) => [styles.companion, pressed && styles.pressed]}
       >
-        <Icon name="supervisor_account" size={22} color={colors.emerald} variant="outlined" />
+        <Icon name="keyboard" size={22} color={colors.emerald} variant="outlined" />
       </Pressable>
       <Pressable
         accessibilityRole="button"

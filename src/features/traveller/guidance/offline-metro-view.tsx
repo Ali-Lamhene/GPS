@@ -3,6 +3,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { TransitLeg } from '@/domain/trip';
 import { HelpButton } from '@/ui/components/help-button';
+import { useDarkSystemBars } from '@/ui/system-bars/system-bars-frame';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii, shadows, sizes, spacing } from '@/ui/theme';
 
@@ -25,6 +26,7 @@ type OfflineMetroViewProps = {
  */
 export function OfflineMetroView({ leg, fraction, onGotOff, onHelp }: OfflineMetroViewProps) {
   const insets = useSafeAreaInsets();
+  useDarkSystemBars(colors.night.background);
   return (
     <View
       style={[

@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
 import { MapHeader } from '@/ui/components/map-header';
+import { useDarkSystemBars } from '@/ui/system-bars/system-bars-frame';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii } from '@/ui/theme';
 
@@ -14,9 +15,13 @@ import { usePlaceDraft } from './use-place-draft';
 // place without one. The real camera and gallery come with spec 001.
 
 /** E29: optional photo of the new place, to recognise it later. */
+/** Dark camera backdrop of E29, also behind the system bars (spec 014). */
+const PHOTO_BACKGROUND = '#1B1C1A';
+
 export function PhotoScreen() {
   const insets = useSafeAreaInsets();
   const { finish } = usePlaceDraft();
+  useDarkSystemBars(PHOTO_BACKGROUND);
 
   return (
     <View style={styles.screen}>
@@ -67,7 +72,7 @@ export function PhotoScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#1B1C1A',
+    backgroundColor: PHOTO_BACKGROUND,
   },
   frame: {
     position: 'absolute',

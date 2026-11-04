@@ -8,7 +8,11 @@ import type { TripPlanAction } from '@/features/traveller/trip-plan/trip-plan-re
 import { DEMO_GUIDANCE } from '../../demo/guidance';
 import { GuidanceScreen } from '../guidance-screen';
 
-jest.mock('expo-router', () => ({ router: { push: jest.fn(), replace: jest.fn() } }));
+jest.mock('expo-router', () => ({
+  router: { push: jest.fn(), replace: jest.fn() },
+  // The screen in front: its focus effect runs once mounted.
+  useFocusEffect: (effect: () => void) => jest.requireActual('react').useEffect(effect, [effect]),
+}));
 
 function startedAt(index: number, mode: 'walk' | 'transit' = 'transit'): TripPlanAction[] {
   return [
