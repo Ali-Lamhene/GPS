@@ -2,6 +2,8 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { CURRENT_POSITION, isHiddenOnMap, type Place } from '@/domain/place';
 import { PlaceFace } from '@/ui/components/place-face';
+
+import { hereIcon, type HereUnavailable } from './here-state';
 import { colors, shadows } from '@/ui/theme';
 
 const TILE_MIN = 56;
@@ -53,6 +55,8 @@ type PlaceTileProps = {
   size: number;
   /** The place already chosen for the end that calls: ringed in emerald. */
   selected: boolean;
+  /** « Here » without a usable position (spec 017): greyed, crossed out when unavailable. */
+  unavailable?: HereUnavailable;
   onPress: () => void;
 };
 
@@ -61,8 +65,9 @@ type PlaceTileProps = {
  * or its emerald outlined pictogram on warm white. A place kept off the map (home, family)
  * never shows its photo here: the home is seen as soon as the app opens.
  */
-export function PlaceTile({ place, size, selected, onPress }: PlaceTileProps) {
-  const shown: Place = place.id === CURRENT_POSITION.id ? { ...place, icon: 'my_location' } : place;
+export function PlaceTile({ place, size, selected, unavailable, onPress }: PlaceTileProps) {
+  const here = place.id === CURRENT_POSITION.id;
+  const shown: Place = here ? { ...place, icon: hereIcon(unavailable, 'my_location') } : place;
   return (
     <Pressable
       accessibilityRole="button"
@@ -81,6 +86,7 @@ export function PlaceTile({ place, size, selected, onPress }: PlaceTileProps) {
           iconSize={Math.round(size * 0.45)}
           showPhoto={!isHiddenOnMap(place)}
           badgeSize={BADGE_SIZE}
+          muted={here && unavailable !== undefined}
         />
       </View>
       {selected && <View pointerEvents="none" style={styles.ring} />}

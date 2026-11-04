@@ -3,6 +3,8 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Icon } from '@/ui/icon/icon';
 import { colors, shadows } from '@/ui/theme';
 
+import { hereIcon, type HereUnavailable } from './here-state';
+
 /** The size of the emerald mockup, without a larger touch area (D15). */
 export const ADD_BUTTON_SIZE = 48;
 /** The companion's button stays small beside the « + »: the traveller's action comes first. */
@@ -13,6 +15,8 @@ export const COLUMN_GAP = 12;
 type AddPlaceButtonProps = {
   /** A tap on « + »: the traveller keeps the place where they stand (E27-E29). */
   onAddHere: () => void;
+  /** No usable position (spec 017): « + » greyed, crossed out when unavailable. */
+  hereUnavailable?: HereUnavailable;
   /** A tap on the small keyboard button: the companion types an address (E30). */
   onAddAddress: () => void;
 };
@@ -23,7 +27,7 @@ type AddPlaceButtonProps = {
  * with a keyboard that opens the companion's address form, where an address is typed. The map's recenter button sits on
  * top of this column, on the same axis.
  */
-export function AddPlaceButton({ onAddHere, onAddAddress }: AddPlaceButtonProps) {
+export function AddPlaceButton({ onAddHere, hereUnavailable, onAddAddress }: AddPlaceButtonProps) {
   return (
     <View style={styles.column}>
       <Pressable
@@ -38,9 +42,13 @@ export function AddPlaceButton({ onAddHere, onAddAddress }: AddPlaceButtonProps)
         accessibilityRole="button"
         accessibilityLabel="Ajouter un lieu"
         onPress={onAddHere}
-        style={({ pressed }) => [styles.button, pressed && styles.pressed]}
+        style={({ pressed }) => [
+          styles.button,
+          hereUnavailable !== undefined && styles.unavailable,
+          pressed && styles.pressed,
+        ]}
       >
-        <Icon name="add" size={30} color={colors.white} />
+        <Icon name={hereIcon(hereUnavailable, 'add')} size={30} color={colors.white} />
       </Pressable>
     </View>
   );
@@ -68,6 +76,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     boxShadow: shadows.emerald,
+  },
+  unavailable: {
+    backgroundColor: colors.outline,
+    boxShadow: shadows.warm,
   },
   pressed: {
     opacity: 0.8,

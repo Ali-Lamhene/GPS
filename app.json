@@ -25,9 +25,11 @@
         "android.permission.FOREGROUND_SERVICE_MICROPHONE",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_BACKGROUND_LOCATION"
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.FOREGROUND_SERVICE_LOCATION",
+        "android.permission.ACTIVITY_RECOGNITION",
+        "com.google.android.gms.permission.ACTIVITY_RECOGNITION"
       ]
     },
     "web": {
@@ -64,6 +66,15 @@
         "expo-dev-client",
         {
           "addGeneratedScheme": false
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "La carte montre où vous êtes, pour vous guider.",
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false,
+          "isIosBackgroundLocationEnabled": false
         }
       ],
       "./plugins/with-no-data-extraction"

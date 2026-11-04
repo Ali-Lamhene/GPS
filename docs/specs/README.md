@@ -18,3 +18,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 014 | [Barres système d'Android et pictogramme clavier](014-barres-systeme-et-clavier.md)               | livré                                                  |
 | 015 | [Lieux gardés sur le téléphone](015-lieux-gardes-sur-le-telephone.md)                             | livré                                                  |
 | 016 | [Lieux hors de toute sauvegarde et de tout transfert](016-lieux-hors-des-sauvegardes.md)          | validé (code fait, à vérifier dans la prochaine build) |
+| 017 | [Carte opérante : carte en ligne et vraie position](017-carte-operante.md)                        | validé (à vérifier sur téléphone)                      |

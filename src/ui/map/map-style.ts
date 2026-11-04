@@ -1,8 +1,8 @@
 import type { ExpressionSpecification, StyleSpecification } from 'maplibre-gl';
 
 // Base map without any label (spec 002), in the colours of the emerald mockup (spec 009): no symbol
-// layer, no glyphs, no sprite, so nothing to read and nothing to download. Layers follow
-// the Protomaps basemap schema of the bundled archive.
+// layer, no glyphs, no sprite, so nothing to read and nothing more to download. Layers follow
+// the OpenMapTiles schema of the online tiles (spec 017).
 
 export type MapPalette = Record<
   | 'ground'
@@ -39,36 +39,32 @@ export const MAP_COLORS: MapPalette = {
   rail: '#C9C4C5',
 };
 
-const PARKS = [
-  'park',
-  'garden',
-  'grass',
-  'forest',
-  'wood',
-  'cemetery',
-  'nature_reserve',
-  'golf_course',
+/** OpenMapTiles landcover classes drawn as parks. */
+const GREEN = ['grass', 'wood', 'farmland'];
+/** OpenMapTiles landuse classes drawn as parks; then the civic grounds. */
+const GREEN_LANDUSE = ['cemetery'];
+const CIVIC = ['school', 'university', 'college', 'hospital', 'kindergarten', 'stadium'];
+/** OpenMapTiles transportation classes, from small streets to motorways. */
+const STREETS = ['minor', 'service', 'tertiary', 'secondary', 'busway'];
+const MAJOR = ['primary', 'trunk', 'motorway'];
+const PATHS = ['path', 'track'];
+const RAIL = ['rail', 'transit'];
+
+const isLine: ExpressionSpecification = ['==', ['geometry-type'], 'LineString'];
+const inClass = (classes: string[]): ExpressionSpecification => [
+  'all',
+  isLine,
+  ['in', ['get', 'class'], ['literal', classes]],
 ];
-const CIVIC = ['school', 'university', 'hospital', 'pedestrian', 'parking'];
 
 /** Road width in pixels by zoom, from thin at 12 to wide at 18. */
 function width(at12: number, at18: number): ExpressionSpecification {
   return ['interpolate', ['exponential', 1.6], ['zoom'], 12, at12, 18, at18];
 }
 
-/** Plain ground, when the bundled tiles cannot be read: routes and markers still show. */
-export function buildFallbackStyle(palette: MapPalette = MAP_COLORS): StyleSpecification {
-  return {
-    version: 8,
-    sources: {},
-    layers: [
-      { id: 'background', type: 'background', paint: { 'background-color': palette.ground } },
-    ],
-  };
-}
-
 export function buildMapStyle(
   tilesUrl: string,
+  credit: string,
   palette: MapPalette = MAP_COLORS,
 ): StyleSpecification {
   const source = 'base';
@@ -78,7 +74,7 @@ export function buildMapStyle(
       [source]: {
         type: 'vector',
         url: tilesUrl,
-        attribution: '© OpenStreetMap, Protomaps',
+        attribution: credit,
       },
     },
     layers: [
@@ -87,8 +83,23 @@ export function buildMapStyle(
         id: 'parks',
         type: 'fill',
         source,
+        'source-layer': 'landcover',
+        filter: ['in', ['get', 'class'], ['literal', GREEN]],
+        paint: { 'fill-color': palette.park },
+      },
+      {
+        id: 'park',
+        type: 'fill',
+        source,
+        'source-layer': 'park',
+        paint: { 'fill-color': palette.park },
+      },
+      {
+        id: 'green-landuse',
+        type: 'fill',
+        source,
         'source-layer': 'landuse',
-        filter: ['in', ['get', 'kind'], ['literal', PARKS]],
+        filter: ['in', ['get', 'class'], ['literal', GREEN_LANDUSE]],
         paint: { 'fill-color': palette.park },
       },
       {
@@ -96,7 +107,7 @@ export function buildMapStyle(
         type: 'fill',
         source,
         'source-layer': 'landuse',
-        filter: ['in', ['get', 'kind'], ['literal', CIVIC]],
+        filter: ['in', ['get', 'class'], ['literal', CIVIC]],
         paint: { 'fill-color': palette.civic },
       },
       {
@@ -110,7 +121,7 @@ export function buildMapStyle(
         id: 'buildings',
         type: 'fill',
         source,
-        'source-layer': 'buildings',
+        'source-layer': 'building',
         minzoom: 14,
         paint: { 'fill-color': palette.building, 'fill-outline-color': palette.buildingEdge },
       },
@@ -118,17 +129,17 @@ export function buildMapStyle(
         id: 'paths',
         type: 'line',
         source,
-        'source-layer': 'roads',
+        'source-layer': 'transportation',
         minzoom: 15,
-        filter: ['==', ['get', 'kind'], 'path'],
+        filter: inClass(PATHS),
         paint: { 'line-color': palette.path, 'line-width': width(0.5, 3) },
       },
       {
         id: 'rail',
         type: 'line',
         source,
-        'source-layer': 'roads',
-        filter: ['==', ['get', 'kind'], 'rail'],
+        'source-layer': 'transportation',
+        filter: inClass(RAIL),
         paint: { 'line-color': palette.rail, 'line-width': width(0.5, 2) },
       },
       // Short wide dashes across the rail line: the ties of a hatched railway.
@@ -136,9 +147,9 @@ export function buildMapStyle(
         id: 'rail-ties',
         type: 'line',
         source,
-        'source-layer': 'roads',
+        'source-layer': 'transportation',
         minzoom: 14,
-        filter: ['==', ['get', 'kind'], 'rail'],
+        filter: inClass(RAIL),
         paint: {
           'line-color': palette.rail,
           'line-width': width(2, 7),
@@ -149,8 +160,8 @@ export function buildMapStyle(
         id: 'roads-casing',
         type: 'line',
         source,
-        'source-layer': 'roads',
-        filter: ['in', ['get', 'kind'], ['literal', ['minor_road', 'medium_road']]],
+        'source-layer': 'transportation',
+        filter: inClass(STREETS),
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: { 'line-color': palette.roadCasing, 'line-width': width(1.5, 18) },
       },
@@ -158,8 +169,8 @@ export function buildMapStyle(
         id: 'major-roads-casing',
         type: 'line',
         source,
-        'source-layer': 'roads',
-        filter: ['in', ['get', 'kind'], ['literal', ['major_road', 'highway']]],
+        'source-layer': 'transportation',
+        filter: inClass(MAJOR),
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: { 'line-color': palette.majorRoadCasing, 'line-width': width(2.5, 26) },
       },
@@ -167,8 +178,8 @@ export function buildMapStyle(
         id: 'roads',
         type: 'line',
         source,
-        'source-layer': 'roads',
-        filter: ['in', ['get', 'kind'], ['literal', ['minor_road', 'medium_road']]],
+        'source-layer': 'transportation',
+        filter: inClass(STREETS),
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: { 'line-color': palette.road, 'line-width': width(1, 15) },
       },
@@ -176,8 +187,8 @@ export function buildMapStyle(
         id: 'major-roads',
         type: 'line',
         source,
-        'source-layer': 'roads',
-        filter: ['in', ['get', 'kind'], ['literal', ['major_road', 'highway']]],
+        'source-layer': 'transportation',
+        filter: inClass(MAJOR),
         layout: { 'line-cap': 'round', 'line-join': 'round' },
         paint: { 'line-color': palette.majorRoad, 'line-width': width(2, 22) },
       },

@@ -18,6 +18,8 @@
     "expo-glass-effect": "~58.0.5",
     "expo-image": "~58.0.18",
     "expo-linking": "~58.0.15",
+    "expo-location": "~58.0.20",
+    "expo-network": "~58.0.4",
     "expo-router": "~58.0.28",
     "expo-speech": "~58.0.3",
     "expo-splash-screen": "~58.0.12",
@@ -26,7 +28,6 @@
     "expo-system-ui": "~58.0.7",
     "expo-web-browser": "~58.0.7",
     "maplibre-gl": "^6.16.0",
-    "pmtiles": "^4.5.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.1",
@@ -85,10 +86,7 @@
     "testTimeout": 15000,
     "setupFiles": [
       "<rootDir>/jest.setup.ts"
-    ],
-    "moduleNameMapper": {
-      "\\.pmtiles$": "<rootDir>/jest/asset-stub.js"
-    }
+    ]
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

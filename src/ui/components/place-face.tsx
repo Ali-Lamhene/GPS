@@ -16,6 +16,8 @@ type PlaceFaceProps = {
   showPhoto: boolean;
   /** Size of the white disc that carries the pictogram over a photo; none hides it. */
   badgeSize?: number;
+  /** « Here » without a usable position (spec 017): grey ground, grey pictogram, still sharp. */
+  muted?: boolean;
 };
 
 /**
@@ -24,12 +26,23 @@ type PlaceFaceProps = {
  * bottom-left corner. Fills its parent, which sets the size, the shape and
  * `overflow: 'hidden'`.
  */
-export function PlaceFace({ place, iconSize, showPhoto, badgeSize }: PlaceFaceProps) {
+export function PlaceFace({
+  place,
+  iconSize,
+  showPhoto,
+  badgeSize,
+  muted = false,
+}: PlaceFaceProps) {
   const photo = showPhoto && place.photo && isLocalPicture(place.photo) ? place.photo : undefined;
   if (!photo) {
     return (
-      <View style={[StyleSheet.absoluteFill, styles.plain]}>
-        <Icon name={place.icon} size={iconSize} color={colors.emerald} variant="outlined" />
+      <View style={[StyleSheet.absoluteFill, styles.plain, muted && styles.muted]}>
+        <Icon
+          name={place.icon}
+          size={iconSize}
+          color={muted ? colors.outline : colors.emerald}
+          variant="outlined"
+        />
       </View>
     );
   }
@@ -56,6 +69,9 @@ export function PlaceFace({ place, iconSize, showPhoto, badgeSize }: PlaceFacePr
 }
 
 const styles = StyleSheet.create({
+  muted: {
+    backgroundColor: colors.warmEdge,
+  },
   plain: {
     backgroundColor: colors.warmWhite,
     alignItems: 'center',

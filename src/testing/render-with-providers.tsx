@@ -2,6 +2,11 @@ import { render } from '@testing-library/react-native';
 import type { ReactElement } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import {
+  LocationProvider,
+  type TravellerPosition,
+} from '@/features/traveller/location/location-context';
+import { DEMO_CURRENT_POSITION } from '@/features/traveller/demo/trips';
 import { TripPlanProvider } from '@/features/traveller/trip-plan/trip-plan-context';
 import type { TripPlanAction } from '@/features/traveller/trip-plan/trip-plan-reducer';
 
@@ -14,12 +19,18 @@ const metrics = {
  * Renders a screen inside the app providers, with the demonstration places, optionally after
  * some trip plan actions.
  */
-export function renderWithProviders(ui: ReactElement, actions: TripPlanAction[] = []) {
+export function renderWithProviders(
+  ui: ReactElement,
+  actions: TripPlanAction[] = [],
+  position: TravellerPosition = { kind: 'located', point: DEMO_CURRENT_POSITION },
+) {
   return render(
     <SafeAreaProvider initialMetrics={metrics}>
-      <TripPlanProvider demo initialActions={actions}>
-        {ui}
-      </TripPlanProvider>
+      <LocationProvider fixed={position}>
+        <TripPlanProvider demo initialActions={actions}>
+          {ui}
+        </TripPlanProvider>
+      </LocationProvider>
     </SafeAreaProvider>,
   );
 }

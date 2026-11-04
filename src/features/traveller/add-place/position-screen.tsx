@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FRANCE_CENTER } from '@/domain/geo';
 import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
 import { MapHeader } from '@/ui/components/map-header';
@@ -12,20 +13,20 @@ import { colors, shadows } from '@/ui/theme';
 import { PlacePin } from '@/ui/components/place-pin';
 import { TripMap } from '@/ui/map/trip-map';
 
-import { DEMO_CURRENT_POSITION } from '../demo/trips';
 import { usePlaceDraft } from './use-place-draft';
 
 /**
- * E27: the current position on the real map, to be saved as a new place. The demo position
- * stands in for GPS until spec 001 (D11).
+ * E27: the current position on the real map, to be saved as a new place: the point the
+ * home took when « + » was touched (spec 017).
  */
 export function PositionScreen() {
   const insets = useSafeAreaInsets();
-  const { cancel } = usePlaceDraft();
+  const { draft, cancel } = usePlaceDraft();
+  const point = draft?.point ?? FRANCE_CENTER;
 
   return (
     <View style={styles.screen}>
-      <TripMap camera={{ center: DEMO_CURRENT_POSITION, zoom: 17.5 }} interactive={false} />
+      <TripMap camera={{ center: point, zoom: 17.5 }} interactive={false} />
       <View style={styles.center}>
         <View style={styles.accuracy} />
         <View style={styles.dotBox}>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { MAP_CREDIT } from '@/services/map-tiles';
 import { colors, fontFamilies } from '@/ui/theme';
 
 /** Side of the round ⓘ of the map credit (spec 013). */
@@ -41,7 +42,7 @@ export function MapCredit() {
       </View>
       {open && (
         <Text maxFontSizeMultiplier={1.3} style={styles.creditText}>
-          © OpenStreetMap, Protomaps
+          {MAP_CREDIT}
         </Text>
       )}
     </Pressable>

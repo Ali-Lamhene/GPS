@@ -11,8 +11,11 @@ import { playCue } from '@/services/feedback';
 import { HomePanel } from '../home-panel';
 import { lastTileShown, tileLayout } from '../place-tile';
 import { HomeScreen } from '../home-screen';
+import { LocationProvider } from '../../location/location-context';
 import { TripPlanProvider } from '../../trip-plan/trip-plan-context';
 import { WayCard } from '../../components/way-card';
+import { DEMO_CURRENT_POSITION } from '../../demo/trips';
+import { useNetworkState } from 'expo-network';
 
 jest.mock('expo-router', () => ({
   router: { push: jest.fn() },
@@ -293,9 +296,11 @@ describe('home on the first start, without any place (spec 015)', () => {
   const renderEmpty = (actions: Parameters<typeof TripPlanProvider>[0]['initialActions'] = []) =>
     render(
       <SafeAreaProvider initialMetrics={metrics}>
-        <TripPlanProvider initialActions={actions}>
-          <HomeScreen />
-        </TripPlanProvider>
+        <LocationProvider fixed={{ kind: 'located', point: DEMO_CURRENT_POSITION }}>
+          <TripPlanProvider initialActions={actions}>
+            <HomeScreen />
+          </TripPlanProvider>
+        </LocationProvider>
       </SafeAreaProvider>,
     );
 
@@ -336,5 +341,49 @@ describe('home on the first start, without any place (spec 015)', () => {
     const grid = screen.getByTestId('place-grid');
     await fireEvent(grid, 'layout', layout(300, 0));
     expect(within(grid).getByRole('button', { name: 'Ajouter un lieu' })).toBeOnTheScreen();
+  });
+});
+
+describe('home with the real position (spec 017)', () => {
+  beforeEach(() => jest.mocked(router.push).mockClear());
+
+  test('position refused: « here » and « + » greyed; a touch asks again', async () => {
+    const retry = jest.fn();
+    await render(
+      <SafeAreaProvider
+        initialMetrics={{
+          frame: { x: 0, y: 0, width: 360, height: 800 },
+          insets: { top: 0, right: 0, bottom: 0, left: 0 },
+        }}
+      >
+        <LocationProvider fixed={{ kind: 'unavailable' }} onRetry={retry}>
+          <TripPlanProvider>
+            <HomeScreen />
+          </TripPlanProvider>
+        </LocationProvider>
+      </SafeAreaProvider>,
+    );
+
+    await choose('ma position');
+    await fireEvent.press(button('Ajouter un lieu'));
+
+    expect(retry).toHaveBeenCalledTimes(2);
+    // Nothing chosen: the start still calls.
+    expect(button('Départ')).toBeSelected();
+    expect(router.push).not.toHaveBeenCalled();
+  });
+
+  test('no network: the crossed-out cloud shows at the top', async () => {
+    jest.mocked(useNetworkState).mockReturnValue({ isConnected: false });
+    await renderHome();
+
+    expect(screen.getByTestId('offline-badge')).toBeOnTheScreen();
+    jest.mocked(useNetworkState).mockReturnValue({ isConnected: true, isInternetReachable: true });
+  });
+
+  test('online: no cloud', async () => {
+    await renderHome();
+
+    expect(screen.queryByTestId('offline-badge')).toBeNull();
   });
 });

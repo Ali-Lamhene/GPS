@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { FRANCE_CENTER, FRANCE_ZOOM } from '@/domain/geo';
 import { FloatingSheet } from '@/ui/components/floating-sheet';
 import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
@@ -11,7 +12,7 @@ import { PlacePin } from '@/ui/components/place-pin';
 import { TripMap } from '@/ui/map/trip-map';
 import { colors } from '@/ui/theme';
 
-import { DEMO_CURRENT_POSITION } from '../demo/trips';
+import { positionPoint, useTravellerPosition } from '../location/location-context';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { PictogramGrid } from './pictogram-grid';
 
@@ -22,17 +23,21 @@ import { PictogramGrid } from './pictogram-grid';
 export function PictogramScreen() {
   const { draft, dispatch } = useTripPlan();
   const icon = draft?.icon;
+  // The place's point, else the traveller's (companion's address), else France (spec 017).
+  const { position } = useTravellerPosition();
+  const here = positionPoint(position);
+  const center = draft?.point ?? here;
   const [sheetHeight, setSheetHeight] = useState(360);
 
   return (
     <View style={styles.screen}>
       <TripMap
         camera={{
-          center: DEMO_CURRENT_POSITION,
-          zoom: 16.5,
+          center: center ?? FRANCE_CENTER,
+          zoom: center ? 16.5 : FRANCE_ZOOM,
           padding: { top: 0, bottom: sheetHeight },
         }}
-        traveller={{ point: DEMO_CURRENT_POSITION }}
+        traveller={here ? { point: here } : undefined}
         controlsBottom={sheetHeight + 8}
         backdrop
       />

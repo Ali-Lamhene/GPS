@@ -19,6 +19,7 @@ Contre qui :
 - Seuls les services listés dans la section « Données et confidentialité » d'une spec validée sont appelés. Pour chacun : ce qu'il reçoit (y compris l'adresse IP).
 - HTTPS uniquement. Pas de trafic en clair (`http://`).
 - Les hôtes appelés sont centralisés dans un seul module de `src/services/` : pas d'URL éparpillée dans le code.
+- Hôtes appelés aujourd'hui : `tiles.openfreemap.org` (tuiles de la carte, D16, `src/services/map-tiles.ts`). La position du téléphone passe par le fournisseur standard d'Android (services Google), réglé par le téléphone, pas par l'app.
 - L'accueil et le guidage du voyageur n'appellent aucun service sauf si une spec le dit.
 - Interdits par principe : analytics, rapport de plantage, publicité, notifications push distantes, configuration à distance. La liste des paquets interdits est dans `eslint/forbidden-packages.js`. Elle est vérifiée par ESLint (imports) et par un test sur `package.json` (une dépendance native s'active même sans import).
 - EAS Update (`expo-updates`), si on l'ajoute un jour, interroge un serveur Expo à chaque lancement : à justifier dans une spec avant de l'installer.
@@ -56,8 +57,8 @@ Le lien de partage est une **entrée non fiable** : n'importe qui peut en fabriq
 
 ## 6. Permissions
 
-- Demander une permission au moment où elle sert, pas au lancement.
-- Localisation : au premier plan seulement, tant qu'aucune spec n'exige l'arrière-plan.
+- Demander une permission au moment où elle sert, pas au lancement. Exception : la localisation est demandée au premier lancement, en général en présence de l'accompagnant (D16, spec 017).
+- Localisation : au premier plan seulement, tant qu'aucune spec n'exige l'arrière-plan. `expo-location` passe par les services Google Play (fournisseur « fused ») ; l'app n'ouvre jamais la fenêtre Google « activer la précision », qui enverrait les Wi-Fi alentour à Google.
 - Les permissions inutiles ajoutées par des bibliothèques sont retirées avec `android.blockedPermissions` dans `app.json`.
 - Chaque permission demandée figure dans la spec, avec le parcours sans texte qui permet au voyageur de passer la fenêtre système (qui, elle, contient du texte).
 

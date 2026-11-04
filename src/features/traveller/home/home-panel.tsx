@@ -10,12 +10,13 @@ import {
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { Place } from '@/domain/place';
+import { CURRENT_POSITION, type Place } from '@/domain/place';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii, shadows, spacing } from '@/ui/theme';
 
 import { AddPlaceTile } from './add-place-tile';
+import type { HereUnavailable } from './here-state';
 import { PlaceTile, TILE_RADIUS, tileLayout } from './place-tile';
 
 const CANCEL_SIZE = 56;
@@ -28,6 +29,8 @@ type HomePanelProps = {
   onChoose: (place: Place) => void;
   /** No place to offer: the only tile opens « new place here » (spec 015). */
   onAdd: () => void;
+  /** No usable position (spec 017): « here » and « + » greyed. */
+  hereUnavailable?: HereUnavailable;
   onCancel: () => void;
   onContinue: () => void;
   /** Room taken at the bottom of the screen, so the map frames above it. */
@@ -44,6 +47,7 @@ export function HomePanel({
   places,
   onChoose,
   onAdd,
+  hereUnavailable,
   onCancel,
   onContinue,
   onHeight,
@@ -75,7 +79,12 @@ export function HomePanel({
             ]}
           >
             {places.length === 0 && (
-              <AddPlaceTile size={tile} radius={TILE_RADIUS} onPress={onAdd} />
+              <AddPlaceTile
+                size={tile}
+                radius={TILE_RADIUS}
+                unavailable={hereUnavailable}
+                onPress={onAdd}
+              />
             )}
             {places.map((place) => (
               <PlaceTile
@@ -83,6 +92,7 @@ export function HomePanel({
                 place={place}
                 size={tile}
                 selected={false}
+                unavailable={place.id === CURRENT_POSITION.id ? hereUnavailable : undefined}
                 onPress={() => onChoose(place)}
               />
             ))}

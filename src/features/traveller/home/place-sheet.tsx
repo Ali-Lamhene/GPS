@@ -9,13 +9,14 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { Place } from '@/domain/place';
+import { CURRENT_POSITION, type Place } from '@/domain/place';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii, shadows, spacing } from '@/ui/theme';
 
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { cutHeight } from '../add-place/pictogram-grid';
 import { AddPlaceTile } from './add-place-tile';
+import type { HereUnavailable } from './here-state';
 import { SheetPlaceTile } from './sheet-place-tile';
 
 const COLUMNS = 3;
@@ -31,6 +32,8 @@ type PlaceSheetProps = {
   onPick: (place: Place) => void;
   /** No place to offer: the only tile opens « new place here » (spec 015). */
   onAdd: () => void;
+  /** No usable position (spec 017): « here » and « + » greyed. */
+  hereUnavailable?: HereUnavailable;
   onClose: () => void;
 };
 
@@ -38,7 +41,15 @@ type PlaceSheetProps = {
  * Bottom sheet of saved places, to choose the start (E02) or the arrival (E04). Only to
  * choose: places are added from the home « + » (spec 007).
  */
-export function PlaceSheet({ end, places, excludedId, onPick, onAdd, onClose }: PlaceSheetProps) {
+export function PlaceSheet({
+  end,
+  places,
+  excludedId,
+  onPick,
+  onAdd,
+  hereUnavailable,
+  onClose,
+}: PlaceSheetProps) {
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const [gridWidth, setGridWidth] = useState(0);
@@ -79,7 +90,12 @@ export function PlaceSheet({ end, places, excludedId, onPick, onAdd, onClose }: 
             {tile > 0 && (
               <>
                 {places.every((place) => place.id === excludedId) && (
-                  <AddPlaceTile size={tile} radius={radii.tile} onPress={onAdd} />
+                  <AddPlaceTile
+                    size={tile}
+                    radius={radii.tile}
+                    unavailable={hereUnavailable}
+                    onPress={onAdd}
+                  />
                 )}
                 {places.map((place) => (
                   <SheetPlaceTile
@@ -87,6 +103,7 @@ export function PlaceSheet({ end, places, excludedId, onPick, onAdd, onClose }: 
                     place={place}
                     size={tile}
                     disabled={place.id === excludedId}
+                    unavailable={place.id === CURRENT_POSITION.id ? hereUnavailable : undefined}
                     onPress={() => onPick(place)}
                   />
                 ))}

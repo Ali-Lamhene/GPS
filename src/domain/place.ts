@@ -2,7 +2,8 @@ import { distanceMeters, pathsBounds, type LngLat } from './geo';
 import { PICTOGRAM_CATALOGUE, type CataloguePictogram } from './pictograms';
 
 /** Pictograms a place can wear: the catalogue (spec 011), plus « here » for the start. */
-export type PlaceIcon = CataloguePictogram | 'my_location';
+/** A saved place's pictogram, « here », or « here » while the position is unknown (spec 017). */
+export type PlaceIcon = CataloguePictogram | 'my_location' | 'location_disabled';
 
 export type Place = {
   id: string;

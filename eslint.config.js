@@ -19,20 +19,24 @@ const WRAPPED_PACKAGES = [
   },
   {
     name: 'maplibre-gl',
-    message: 'Use the TripMap component (src/ui/map): it only shows the bundled tiles (spec 002).',
-  },
-  {
-    name: 'pmtiles',
-    message: 'Load tiles through src/services/offline-map.ts (bundled archive only).',
+    message: 'Use the TripMap component (src/ui/map): it only calls the tiles host (spec 017).',
   },
   {
     name: '@maplibre/maplibre-react-native',
-    message: 'Use the TripMap component (src/ui/map): it only shows the bundled tiles (spec 002).',
+    message: 'Use the TripMap component (src/ui/map): it only calls the tiles host (spec 017).',
+  },
+  {
+    name: 'expo-location',
+    message: 'Locate through src/services/location.ts: foreground only (spec 017).',
+  },
+  {
+    name: 'expo-network',
+    message: 'Read the network state through src/services/network.ts (spec 017).',
   },
 ];
 
 /** The no-restricted-imports rule, minus the wrapped packages a module is allowed to use. */
-function restrictedImports(allow = []) {
+function restrictedImports(allow = [], allowedMapNames = []) {
   const wrapped = WRAPPED_PACKAGES.filter(({ name }) => !allow.includes(name));
   return [
     'error',
@@ -49,9 +53,20 @@ function restrictedImports(allow = []) {
           ? [
               {
                 name: '@maplibre/maplibre-react-native',
-                importNames: MAPLIBRE_NATIVE_FORBIDDEN,
+                importNames: MAPLIBRE_NATIVE_FORBIDDEN.filter(
+                  (name) => !allowedMapNames.includes(name),
+                ),
                 message:
                   'Downloads tiles, rewrites requests, loads remote images or starts location (securite.md).',
+              },
+            ]
+          : []),
+        ...(allow.includes('expo-network')
+          ? [
+              {
+                name: 'expo-network',
+                importNames: ['getIpAddressAsync'],
+                message: 'On the web it calls api.ipify.org with the IP address (spec 017).',
               },
             ]
           : []),
@@ -102,8 +117,12 @@ module.exports = defineConfig([
     rules: { 'no-restricted-imports': restrictedImports(['expo-speech']) },
   },
   {
-    files: ['src/services/offline-map.ts'],
-    rules: { 'no-restricted-imports': restrictedImports(['pmtiles']) },
+    files: ['src/services/location.ts'],
+    rules: { 'no-restricted-imports': restrictedImports(['expo-location']) },
+  },
+  {
+    files: ['src/services/network.ts'],
+    rules: { 'no-restricted-imports': restrictedImports(['expo-network']) },
   },
   {
     files: ['src/ui/map/**'],
@@ -115,16 +134,30 @@ module.exports = defineConfig([
     },
   },
   {
+    // Only here: locks requests to the tiles host and wipes the tile cache (spec 017).
+    files: ['src/ui/map/native-map-setup.ts'],
+    rules: {
+      'no-restricted-imports': restrictedImports(
+        ['maplibre-gl', '@maplibre/maplibre-react-native'],
+        ['TransformRequestManager', 'OfflineManager'],
+      ),
+    },
+  },
+  {
     // Tests mock the wrapped packages.
     files: ['src/**/__tests__/**'],
     rules: {
-      'no-restricted-imports': restrictedImports([
-        'expo-audio',
-        'expo-speech',
-        'maplibre-gl',
-        'pmtiles',
-        '@maplibre/maplibre-react-native',
-      ]),
+      'no-restricted-imports': restrictedImports(
+        [
+          'expo-audio',
+          'expo-speech',
+          'maplibre-gl',
+          'expo-location',
+          'expo-network',
+          '@maplibre/maplibre-react-native',
+        ],
+        ['TransformRequestManager', 'OfflineManager'],
+      ),
     },
   },
   {

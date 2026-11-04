@@ -109,3 +109,11 @@ L'interface « clair premium » (spec 008) manque de personnalité : formes et c
 - Les anciens documents de conception (`docs/design/brief.md`, `ecrans.md`, `guide-claude-design.md`, `references.md`) sont supprimés (historique dans git). Le design system Claude Design « GPS sans texte » est supprimé (2026-11-03).
 
 Ordre de travail décidé le 2026-11-03 : nettoyage du dépôt, MapLibre natif (carte sur téléphone), refonte visuelle selon cette maquette (spec à écrire), puis app entièrement fonctionnelle (les données de démonstration restent jusque-là).
+
+## D16. Carte en ligne et vraie position, comme les applis de GPS classiques (2026-11-04, spec 017)
+
+Pour la première version, l'app copie et simplifie le comportement des applis de GPS classiques (Google Maps) : la carte se charge en ligne, tuile par tuile, depuis **OpenFreeMap** (gratuit, sans clé ni compte), et la position vient du téléphone (fournisseur standard d'Android, au premier plan seulement).
+
+- **Exception assumée à D1** : OpenFreeMap reçoit l'adresse IP du téléphone et les zones affichées, donc où se trouve le voyageur et quand. Les lieux, les trajets et la position ne sont pas envoyés en tant que tels.
+- **Révise D12 et D5 pour la carte** : plus de tuiles embarquées pour l'instant ; sans réseau, la carte reste vide, le reste de l'app marche. La carte embarquée, utilisable sans réseau, reviendra dans une évolution.
+- La permission de localisation est demandée au premier lancement, en général en présence de l'accompagnant.

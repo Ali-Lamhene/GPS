@@ -14,7 +14,9 @@ export type Cue =
   | 'arrival'
   | 'saved'
   /** End of the 3 second hold on the home « + » (spec 007): felt in the hand. */
-  | 'hold';
+  | 'hold'
+  /** « Here » touched while the position is unknown (spec 017): two low notes, falling. */
+  | 'unavailable';
 
 const SOUNDS: Record<Cue, number> = {
   select: require('../../assets/sounds/select.wav'),
@@ -26,6 +28,7 @@ const SOUNDS: Record<Cue, number> = {
   arrival: require('../../assets/sounds/arrival.wav'),
   saved: require('../../assets/sounds/saved.wav'),
   hold: require('../../assets/sounds/select.wav'),
+  unavailable: require('../../assets/sounds/unavailable.wav'),
 };
 
 /** Vibration, then pause, then vibration… in milliseconds. */
@@ -37,6 +40,7 @@ const VIBRATIONS: Partial<Record<Cue, number[]>> = {
   arrival: [60, 40, 60, 40, 200],
   saved: [80],
   hold: [150],
+  unavailable: [60, 60, 60],
 };
 
 const players = new Map<Cue, AudioPlayer>();

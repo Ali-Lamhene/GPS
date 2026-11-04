@@ -2,6 +2,8 @@ import { Pressable, StyleSheet } from 'react-native';
 
 import type { Place } from '@/domain/place';
 import { PlaceFace } from '@/ui/components/place-face';
+
+import { hereIcon, type HereUnavailable } from './here-state';
 import { colors, radii } from '@/ui/theme';
 
 type SheetPlaceTileProps = {
@@ -9,10 +11,19 @@ type SheetPlaceTileProps = {
   size: number;
   onPress: () => void;
   disabled?: boolean;
+  /** « Here » without a usable position (spec 017): greyed, still touchable to ask again. */
+  unavailable?: HereUnavailable;
 };
 
 /** A saved place in the place sheet: its emerald pictogram, or its photo (spec 009). */
-export function SheetPlaceTile({ place, size, onPress, disabled = false }: SheetPlaceTileProps) {
+export function SheetPlaceTile({
+  place,
+  size,
+  onPress,
+  disabled = false,
+  unavailable,
+}: SheetPlaceTileProps) {
+  const shown: Place = unavailable ? { ...place, icon: hereIcon(unavailable, place.icon) } : place;
   return (
     <Pressable
       accessibilityRole="button"
@@ -28,7 +39,13 @@ export function SheetPlaceTile({ place, size, onPress, disabled = false }: Sheet
       ]}
     >
       {/* The sheet may show it: the place is being chosen (spec 005). */}
-      <PlaceFace place={place} iconSize={Math.round(size * 0.42)} badgeSize={28} showPhoto />
+      <PlaceFace
+        place={shown}
+        iconSize={Math.round(size * 0.42)}
+        badgeSize={28}
+        showPhoto
+        muted={unavailable !== undefined}
+      />
     </Pressable>
   );
 }

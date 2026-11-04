@@ -1,4 +1,8 @@
-import { LogManager, NetworkManager } from '@maplibre/maplibre-react-native';
+import {
+  LogManager,
+  OfflineManager,
+  TransformRequestManager,
+} from '@maplibre/maplibre-react-native';
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { TripMap } from '../trip-map';
@@ -22,18 +26,28 @@ jest.mock('@maplibre/maplibre-react-native', () => {
     Marker: container,
     NetworkManager: { setConnected: jest.fn() },
     LogManager: { setLogLevel: jest.fn(), onLog: jest.fn() },
+    TransformRequestManager: { addUrlTransform: jest.fn(), addHeader: jest.fn() },
+    OfflineManager: { clearAmbientCache: jest.fn(() => Promise.resolve()) },
   };
 });
-
-jest.mock('@/services/offline-map', () => ({
-  loadLocalTilesUrl: () => Promise.resolve('pmtiles://file:///cache/marseille.pmtiles'),
-}));
 
 const camera = { center: [5.37, 43.29] as const, zoom: 15 };
 
 describe('<TripMap /> on the phone', () => {
-  test('switches off the map network and its logs before any map', () => {
-    expect(NetworkManager.setConnected).toHaveBeenCalledWith(false);
+  test('reaches only the tiles host, without naming the app, and wipes old tiles (spec 017)', () => {
+    const transform = jest.mocked(TransformRequestManager.addUrlTransform).mock.calls[0]?.[0];
+    expect(transform).toBeDefined();
+    const match = new RegExp(String(transform?.match));
+    expect(match.test('https://tiles.openfreemap.org/planet/latest')).toBe(false);
+    expect(match.test('https://evil.example/tiles/1/2/3.pbf')).toBe(true);
+    expect(match.test('http://tiles.openfreemap.org/planet/latest')).toBe(true);
+    expect(TransformRequestManager.addHeader).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'User-Agent', value: 'MapLibre Native' }),
+    );
+    expect(OfflineManager.clearAmbientCache).toHaveBeenCalled();
+  });
+
+  test('keeps the map logs out of the console before any map', () => {
     expect(LogManager.setLogLevel).toHaveBeenCalledWith('error');
     expect(LogManager.onLog).toHaveBeenCalled();
   });
@@ -60,6 +74,6 @@ describe('<TripMap /> on the phone', () => {
 
     await fireEvent.press(credit);
 
-    expect(screen.getByText('© OpenStreetMap, Protomaps')).toBeOnTheScreen();
+    expect(screen.getByText('© OpenFreeMap © OpenMapTiles © OpenStreetMap')).toBeOnTheScreen();
   });
 });

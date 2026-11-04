@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { pathsBounds, type LngLat } from '@/domain/geo';
+import { FRANCE_CENTER, FRANCE_ZOOM, pathsBounds, type LngLat } from '@/domain/geo';
 import {
   CURRENT_POSITION,
   homeFraming,
@@ -13,21 +13,26 @@ import {
   type Place,
 } from '@/domain/place';
 import { playCue } from '@/services/feedback';
+import { useIsOffline } from '@/services/network';
 import { TripMap } from '@/ui/map/trip-map';
 import { RECENTER_SIZE, type MapPin } from '@/ui/map/trip-map-types';
 import { colors, spacing } from '@/ui/theme';
 
-import { DEMO_CURRENT_POSITION } from '../demo/trips';
+import { positionPoint, useTravellerPosition } from '../location/location-context';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { ADD_BUTTON_SIZE, AddPlaceButton, COLUMN_GAP, COMPANION_SIZE } from './add-place-button';
 import { HomePanel } from './home-panel';
+import type { HereUnavailable } from './here-state';
+import { OfflineBadge } from './offline-badge';
 import { PlaceSheet } from './place-sheet';
 import { SaveFailedSignal } from './save-failed-signal';
 import { WayCard } from '../components/way-card';
 
+const STREET_ZOOM = 16;
+
 /** Where a place shows on the map, unless it is kept off it (spec 005). */
-function visiblePoint(place: Place | undefined, position: LngLat): LngLat | undefined {
+function visiblePoint(place: Place | undefined, position: LngLat | undefined): LngLat | undefined {
   if (place?.id === CURRENT_POSITION.id) return position;
   return place && !isHiddenOnMap(place) ? place.point : undefined;
 }
@@ -54,8 +59,17 @@ export function HomeScreen() {
       ? 'destination'
       : undefined;
 
-  // The demo position stands in for GPS until spec 004.
-  const position = DEMO_CURRENT_POSITION;
+  // The phone's position (spec 017); unknown while searching or refused.
+  const { position: located, retry } = useTravellerPosition();
+  const position = positionPoint(located);
+  const hereUnavailable: HereUnavailable | undefined =
+    located.kind === 'located' ? undefined : located.kind === 'searching' ? 'searching' : 'off';
+  const offline = useIsOffline();
+  // The framing follows the traveller by steps of about 100 m: each GPS update would
+  // otherwise take the map back from a traveller looking at a pin (spec 017).
+  const framingPoint: LngLat | undefined = position
+    ? [Math.round(position[0] * 1000) / 1000, Math.round(position[1] * 1000) / 1000]
+    : undefined;
   const start = visiblePoint(origin, position);
   const end = visiblePoint(destination, position);
 
@@ -78,7 +92,18 @@ export function HomeScreen() {
       : [],
   );
 
+  // A touch on « here » or « + » without a position: heard and felt, then asked again.
+  const positionUnavailable = () => {
+    playCue('unavailable');
+    retry();
+  };
+
   const choose = (endToFill: TripEnd, placeId: string) => {
+    // « Here » without a position asks for it again (spec 017).
+    if (placeId === CURRENT_POSITION.id && hereUnavailable) {
+      positionUnavailable();
+      return;
+    }
     if (endToFill === 'origin') dispatch({ type: 'chooseOrigin', placeId });
     else dispatch({ type: 'chooseDestination', placeId });
     playCue('select');
@@ -86,6 +111,10 @@ export function HomeScreen() {
   };
 
   const createPlace = (source: 'position' | 'address') => {
+    if (source === 'position' && !position) {
+      positionUnavailable();
+      return;
+    }
     const point = source === 'position' ? position : undefined;
     dispatch({ type: 'startPlace', source, point });
     playCue('select');
@@ -105,13 +134,13 @@ export function HomeScreen() {
     <View testID="home-screen" style={styles.screen}>
       <TripMap
         camera={{
-          center: start ?? position,
-          zoom: 16,
+          center: start ?? position ?? FRANCE_CENTER,
+          zoom: start || position ? STREET_ZOOM : FRANCE_ZOOM,
           bounds:
             start && end
               ? pathsBounds([[start, end]])
               : homeFraming(
-                  position,
+                  framingPoint,
                   pins.map((pin) => pin.point),
                 ),
           // Sides: room for half of the chosen pin, which stands over its spot; on the right,
@@ -124,7 +153,7 @@ export function HomeScreen() {
           },
         }}
         lines={start && end ? [{ path: [start, end], color: colors.emerald, style: 'walk' }] : []}
-        traveller={{ point: position }}
+        traveller={position ? { point: position } : undefined}
         pins={pins}
         onPinPress={(placeId) => choose(calling ?? 'destination', placeId)}
         // ⓘ at the bottom left above the panel; recenter on top of the column of « + » and
@@ -153,6 +182,7 @@ export function HomeScreen() {
         places={choices}
         onChoose={(place) => choose(calling ?? 'destination', place.id)}
         onAdd={() => createPlace('position')}
+        hereUnavailable={hereUnavailable}
         onCancel={() => dispatch({ type: 'clearDestination' })}
         onContinue={() => router.push('/mode')}
         onHeight={setPanelHeight}
@@ -161,6 +191,7 @@ export function HomeScreen() {
       <View style={[styles.add, { bottom: panelHeight + spacing.md }]}>
         <AddPlaceButton
           onAddHere={() => createPlace('position')}
+          hereUnavailable={hereUnavailable}
           onAddAddress={() => createPlace('address')}
         />
       </View>
@@ -172,9 +203,12 @@ export function HomeScreen() {
           excludedId={sheet === 'destination' ? origin?.id : destination?.id}
           onPick={(place) => choose(sheet, place.id)}
           onAdd={() => createPlace('position')}
+          hereUnavailable={hereUnavailable}
           onClose={() => setSheet(null)}
         />
       )}
+
+      {offline && <OfflineBadge top={top + wayHeight + spacing.sm} />}
 
       {plan.saveFailed && <SaveFailedSignal onDone={() => dispatch({ type: 'clearSaveFailed' })} />}
     </View>

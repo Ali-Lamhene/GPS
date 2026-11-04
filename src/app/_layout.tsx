@@ -3,6 +3,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import { useEffect } from 'react';
 
+import { LocationProvider } from '@/features/traveller/location/location-context';
 import { TripPlanProvider } from '@/features/traveller/trip-plan/trip-plan-context';
 import { useStoredPlaces } from '@/features/traveller/trip-plan/use-stored-places';
 import { SystemBarsFrame } from '@/ui/system-bars/system-bars-frame';
@@ -28,15 +29,20 @@ export default function RootLayout() {
   if (!ready) return null;
 
   return (
-    <TripPlanProvider places={stored.places} demo={DEMO_PLACES}>
-      <SystemBarsFrame>
-        <Stack
-          screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.surface } }}
-        >
-          {/* The help card opens over the current screen, as a full-screen dialog (E24). */}
-          <Stack.Screen name="help" options={{ presentation: 'fullScreenModal' }} />
-        </Stack>
-      </SystemBarsFrame>
-    </TripPlanProvider>
+    <LocationProvider>
+      <TripPlanProvider places={stored.places} demo={DEMO_PLACES}>
+        <SystemBarsFrame>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: colors.surface },
+            }}
+          >
+            {/* The help card opens over the current screen, as a full-screen dialog (E24). */}
+            <Stack.Screen name="help" options={{ presentation: 'fullScreenModal' }} />
+          </Stack>
+        </SystemBarsFrame>
+      </TripPlanProvider>
+    </LocationProvider>
   );
 }

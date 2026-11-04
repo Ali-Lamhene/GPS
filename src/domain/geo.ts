@@ -2,6 +2,10 @@
 
 export type LngLat = readonly [longitude: number, latitude: number];
 
+/** Middle of France: the map before any position or place is known (spec 017, D14). */
+export const FRANCE_CENTER: LngLat = [2.35, 46.6];
+export const FRANCE_ZOOM = 5;
+
 const EARTH_RADIUS_M = 6_371_008.8;
 const toRad = (deg: number) => (deg * Math.PI) / 180;
 const toDeg = (rad: number) => (rad * 180) / Math.PI;

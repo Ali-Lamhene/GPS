@@ -36,18 +36,26 @@ describe('app config', () => {
     expect(resolve().android?.allowBackup).toBe(false);
   });
 
-  test('blocks location until a spec turns the GPS on, and background location for good', () => {
-    expect(resolve().android?.blockedPermissions).toEqual(
+  test('locates in the foreground only, never in the background (spec 017)', () => {
+    const blocked = resolve().android?.blockedPermissions ?? [];
+    expect(blocked).toEqual(
       expect.arrayContaining([
-        'android.permission.ACCESS_FINE_LOCATION',
-        'android.permission.ACCESS_COARSE_LOCATION',
         'android.permission.ACCESS_BACKGROUND_LOCATION',
+        'android.permission.ACCESS_WIFI_STATE',
+        'android.permission.FOREGROUND_SERVICE_LOCATION',
+        'android.permission.ACTIVITY_RECOGNITION',
         'android.permission.RECORD_AUDIO',
       ]),
     );
+    expect(blocked).not.toContain('android.permission.ACCESS_FINE_LOCATION');
+    expect(pluginOptions(resolve(), 'expo-location')).toMatchObject({
+      isAndroidBackgroundLocationEnabled: false,
+      isAndroidForegroundServiceEnabled: false,
+      isIosBackgroundLocationEnabled: false,
+    });
   });
 
-  test('locates through Android itself, never Google Play Services', () => {
+  test('the location engine of MapLibre stays the one of Android, not Google Play', () => {
     expect(pluginOptions(resolve(), '@maplibre/maplibre-react-native')).toEqual({
       android: { locationEngine: 'default' },
     });

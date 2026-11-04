@@ -11,7 +11,7 @@ import type { FeatureCollection } from 'geojson';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { loadLocalTilesUrl } from '@/services/offline-map';
+import { MAP_CREDIT, MAP_TILES_URL } from '@/services/map-tiles';
 import { IconButton } from '@/ui/components/icon-button';
 import { colors } from '@/ui/theme';
 
@@ -26,7 +26,7 @@ import {
   TravellerDot,
 } from './map-markers';
 import { MapCredit } from './map-texts';
-import { buildFallbackStyle, buildMapStyle } from './map-style';
+import { buildMapStyle } from './map-style';
 import { RECENTER_SIZE, type MapLine, type TripMapProps } from './trip-map-types';
 
 // Phone map of spec 002: MapLibre Native over the bundled Marseille tiles, without labels,
@@ -120,22 +120,9 @@ export function TripMap({
   pins = [],
   onPinPress,
 }: TripMapProps) {
-  // Undefined while the archive is copied into the app's storage; null if it cannot be.
-  const [tilesUrl, setTilesUrl] = useState<string | null | undefined>(undefined);
-  useEffect(() => {
-    let cancelled = false;
-    loadLocalTilesUrl().then((url) => {
-      if (!cancelled) setTilesUrl(url);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-  // Unreadable archive: plain ground, routes and markers still drawn (spec 002).
-  const mapStyle = useMemo(
-    () => (tilesUrl ? buildMapStyle(tilesUrl) : buildFallbackStyle()),
-    [tilesUrl],
-  );
+  // Online tiles (spec 017): without network, the ground stays plain and routes and markers
+  // are still drawn.
+  const mapStyle = useMemo(() => buildMapStyle(MAP_TILES_URL, MAP_CREDIT), []);
 
   const cameraRef = useRef<CameraRef>(null);
   const [initial] = useState(camera);
@@ -165,7 +152,7 @@ export function TripMap({
   const paddingRight = camera.padding?.right ?? 0;
   useEffect(() => {
     const ref = cameraRef.current;
-    if (!ref || !following || tilesUrl === undefined) return;
+    if (!ref || !following) return;
     const bounds = JSON.parse(boundsKey) as TripMapProps['camera']['bounds'] | null;
     if (bounds) {
       const box: LngLatBounds = [bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]];
@@ -192,7 +179,6 @@ export function TripMap({
       duration: MOVE_MS,
     });
   }, [
-    tilesUrl,
     following,
     boundsKey,
     centerLon,
@@ -211,98 +197,96 @@ export function TripMap({
 
   return (
     <View style={[StyleSheet.absoluteFill, styles.ground]}>
-      {tilesUrl !== undefined && (
-        <MapView
-          style={StyleSheet.absoluteFill}
-          mapStyle={mapStyle}
-          // A texture draws inside the view tree: a GL surface shows black until its first
-          // frame and while screens slide over it.
-          androidView="texture"
-          // One finger moves the map, two zoom (spec 005); a double tap never zooms by
-          // mistake. The map comes back to the traveller on its own after a while.
-          dragPan={!still}
-          touchZoom={!still}
-          doubleTapZoom={false}
-          doubleTapHoldZoom={false}
-          touchRotate={false}
-          touchPitch={false}
-          // MapLibre's own credit opens websites, and its logo, compass and scale are text
-          // or figures: the credit is the folded ⓘ below (D9).
-          attribution={false}
-          logo={false}
-          compass={false}
-          scaleBar={false}
-          onRegionWillChange={(event) => {
-            if (!event.nativeEvent.userInteraction) return;
-            setMovedFrom(framing.current);
-            setLastMove(Date.now());
-          }}
-        >
-          <Camera
-            ref={cameraRef}
-            maxZoom={19}
-            initialViewState={
-              initial.bounds
-                ? {
-                    bounds: [
-                      initial.bounds[0][0],
-                      initial.bounds[0][1],
-                      initial.bounds[1][0],
-                      initial.bounds[1][1],
-                    ],
-                  }
-                : {
-                    center: [initial.center[0], initial.center[1]],
-                    zoom: initial.zoom,
-                    bearing: initial.heading ?? 0,
-                    pitch: initial.pitch ?? 0,
-                  }
-            }
-          />
-          <RouteLayers lines={lines} />
-          {stops.map((stop, index) => (
-            <Marker key={`stop-${index}`} lngLat={[stop.point[0], stop.point[1]]} anchor="bottom">
-              <StopPin symbol={stop.symbol} color={stop.color} alight={stop.alight ?? false} />
-            </Marker>
-          ))}
-          {origin && (
-            <Marker lngLat={[origin.point[0], origin.point[1]]} anchor="bottom">
-              <OriginPin icon={origin.icon} />
-            </Marker>
-          )}
-          {destination && (
-            <Marker lngLat={[destination.point[0], destination.point[1]]} anchor="bottom">
-              <DestinationPin icon={destination.icon} />
-            </Marker>
-          )}
-          {pins.map((pin) => (
-            <Marker key={pin.id} lngLat={[pin.point[0], pin.point[1]]} anchor="bottom">
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={pin.label}
-                onPress={() => onPinPress?.(pin.id)}
-              >
-                <PlacePin icon={pin.icon} photo={pin.photo} selected={pin.selected ?? false} />
-              </Pressable>
-            </Marker>
-          ))}
-          {maneuver && (
-            <Marker lngLat={[maneuver.point[0], maneuver.point[1]]}>
-              <ManeuverArrow rotation={turn(maneuver.heading)} />
-            </Marker>
-          )}
-          {traveller?.heading !== undefined && (
-            <Marker lngLat={[traveller.point[0], traveller.point[1]]}>
-              <TravellerCone rotation={turn(traveller.heading)} />
-            </Marker>
-          )}
-          {traveller && (
-            <Marker lngLat={[traveller.point[0], traveller.point[1]]}>
-              <TravellerDot />
-            </Marker>
-          )}
-        </MapView>
-      )}
+      <MapView
+        style={StyleSheet.absoluteFill}
+        mapStyle={mapStyle}
+        // A texture draws inside the view tree: a GL surface shows black until its first
+        // frame and while screens slide over it.
+        androidView="texture"
+        // One finger moves the map, two zoom (spec 005); a double tap never zooms by
+        // mistake. The map comes back to the traveller on its own after a while.
+        dragPan={!still}
+        touchZoom={!still}
+        doubleTapZoom={false}
+        doubleTapHoldZoom={false}
+        touchRotate={false}
+        touchPitch={false}
+        // MapLibre's own credit opens websites, and its logo, compass and scale are text
+        // or figures: the credit is the folded ⓘ below (D9).
+        attribution={false}
+        logo={false}
+        compass={false}
+        scaleBar={false}
+        onRegionWillChange={(event) => {
+          if (!event.nativeEvent.userInteraction) return;
+          setMovedFrom(framing.current);
+          setLastMove(Date.now());
+        }}
+      >
+        <Camera
+          ref={cameraRef}
+          maxZoom={19}
+          initialViewState={
+            initial.bounds
+              ? {
+                  bounds: [
+                    initial.bounds[0][0],
+                    initial.bounds[0][1],
+                    initial.bounds[1][0],
+                    initial.bounds[1][1],
+                  ],
+                }
+              : {
+                  center: [initial.center[0], initial.center[1]],
+                  zoom: initial.zoom,
+                  bearing: initial.heading ?? 0,
+                  pitch: initial.pitch ?? 0,
+                }
+          }
+        />
+        <RouteLayers lines={lines} />
+        {stops.map((stop, index) => (
+          <Marker key={`stop-${index}`} lngLat={[stop.point[0], stop.point[1]]} anchor="bottom">
+            <StopPin symbol={stop.symbol} color={stop.color} alight={stop.alight ?? false} />
+          </Marker>
+        ))}
+        {origin && (
+          <Marker lngLat={[origin.point[0], origin.point[1]]} anchor="bottom">
+            <OriginPin icon={origin.icon} />
+          </Marker>
+        )}
+        {destination && (
+          <Marker lngLat={[destination.point[0], destination.point[1]]} anchor="bottom">
+            <DestinationPin icon={destination.icon} />
+          </Marker>
+        )}
+        {pins.map((pin) => (
+          <Marker key={pin.id} lngLat={[pin.point[0], pin.point[1]]} anchor="bottom">
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={pin.label}
+              onPress={() => onPinPress?.(pin.id)}
+            >
+              <PlacePin icon={pin.icon} photo={pin.photo} selected={pin.selected ?? false} />
+            </Pressable>
+          </Marker>
+        ))}
+        {maneuver && (
+          <Marker lngLat={[maneuver.point[0], maneuver.point[1]]}>
+            <ManeuverArrow rotation={turn(maneuver.heading)} />
+          </Marker>
+        )}
+        {traveller?.heading !== undefined && (
+          <Marker lngLat={[traveller.point[0], traveller.point[1]]}>
+            <TravellerCone rotation={turn(traveller.heading)} />
+          </Marker>
+        )}
+        {traveller && (
+          <Marker lngLat={[traveller.point[0], traveller.point[1]]}>
+            <TravellerDot />
+          </Marker>
+        )}
+      </MapView>
       {backdrop && <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.veil]} />}
       <View style={[styles.credit, { bottom: controlsBottom }]}>
         <MapCredit />

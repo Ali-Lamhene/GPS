@@ -1,7 +1,7 @@
-import { buildFallbackStyle, buildMapStyle } from '../map-style';
+import { buildMapStyle } from '../map-style';
 
 describe('buildMapStyle', () => {
-  const style = buildMapStyle('pmtiles://marseille');
+  const style = buildMapStyle('https://tiles.example/planet', '© OpenStreetMap');
 
   test('has nothing to read: no symbol layer, no glyphs, no sprite (zero text)', () => {
     expect(style.layers.some((layer) => layer.type === 'symbol')).toBe(false);
@@ -9,17 +9,21 @@ describe('buildMapStyle', () => {
     expect(style.sprite).toBeUndefined();
   });
 
-  test('only reads the bundled tiles, and credits OpenStreetMap', () => {
+  test('reads only the given tiles, and carries their credit (spec 017)', () => {
     expect(Object.values(style.sources)).toEqual([
       expect.objectContaining({
-        url: 'pmtiles://marseille',
-        attribution: expect.stringContaining('OpenStreetMap'),
+        url: 'https://tiles.example/planet',
+        attribution: '© OpenStreetMap',
       }),
     ]);
   });
 
-  test('the fallback is plain ground, still without text', () => {
-    expect(buildFallbackStyle().layers.map((layer) => layer.type)).toEqual(['background']);
-    expect(buildFallbackStyle().sources).toEqual({});
+  test('draws the OpenMapTiles layers: water, parks, buildings, streets', () => {
+    const layers = style.layers.flatMap((layer) =>
+      'source-layer' in layer ? [layer['source-layer']] : [],
+    );
+    expect(new Set(layers)).toEqual(
+      new Set(['landcover', 'park', 'landuse', 'water', 'building', 'transportation']),
+    );
   });
 });

@@ -34,5 +34,24 @@ jest.mock('@maplibre/maplibre-react-native', () => {
     Marker: () => null,
     NetworkManager: { setConnected: jest.fn() },
     LogManager: { setLogLevel: jest.fn(), onLog: jest.fn() },
+    TransformRequestManager: { addUrlTransform: jest.fn(), addHeader: jest.fn() },
+    OfflineManager: { clearAmbientCache: jest.fn(() => Promise.resolve()) },
   };
 });
+
+// Network and location have no Jest implementation (spec 017): online by default; the
+// position comes from the fixed LocationProvider of the tests.
+jest.mock('expo-network', () => ({
+  useNetworkState: jest.fn(() => ({ isConnected: true, isInternetReachable: true })),
+}));
+
+jest.mock('expo-location', () => ({
+  Accuracy: { High: 4 },
+  requestForegroundPermissionsAsync: jest.fn(() =>
+    Promise.resolve({ granted: false, canAskAgain: true, status: 'undetermined' }),
+  ),
+  getForegroundPermissionsAsync: jest.fn(() =>
+    Promise.resolve({ granted: false, canAskAgain: true, status: 'undetermined' }),
+  ),
+  watchPositionAsync: jest.fn(() => Promise.resolve({ remove: jest.fn() })),
+}));

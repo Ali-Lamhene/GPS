@@ -2,20 +2,18 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 
 import type { FeatureCollection } from 'geojson';
 import {
-  addProtocol,
   AttributionControl,
   Map as MapLibreMap,
   Marker,
   setWorkerUrl,
   type ExpressionSpecification,
-  type AddProtocolAction,
   type GeoJSONSource,
 } from 'maplibre-gl';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import type { LngLat } from '@/domain/geo';
-import { BUNDLED_TILES_URL, registerOfflineTiles } from '@/services/offline-map';
+import { MAP_CREDIT, MAP_TILES_HOST, MAP_TILES_URL } from '@/services/map-tiles';
 import { IconButton } from '@/ui/components/icon-button';
 import type { IconName } from '@/ui/icon/icon';
 import { colors } from '@/ui/theme';
@@ -31,7 +29,7 @@ import {
   foldAttribution,
   injectMapCss,
 } from './map-markers.web';
-import { buildFallbackStyle, buildMapStyle } from './map-style';
+import { buildMapStyle } from './map-style';
 import { RECENTER_SIZE, type MapLine, type TripMapProps } from './trip-map-types';
 
 // Browser map of spec 002: MapLibre over the bundled Marseille tiles, without labels.
@@ -204,13 +202,14 @@ export function TripMap({
     injectMapCss();
     let created: MapLibreMap | undefined;
     let cancelled = false;
-    const create = (tilesReady: boolean) => {
+    const create = () => {
       const element = container.current;
       if (cancelled || !element) return;
       const { center, zoom, heading = 0, pitch = 0 } = initial.current.camera;
       const instance = new MapLibreMap({
         container: element,
-        style: tilesReady ? buildMapStyle(BUNDLED_TILES_URL) : buildFallbackStyle(),
+        // Online tiles (spec 017, D16): without network, plain ground, routes and markers.
+        style: buildMapStyle(MAP_TILES_URL, MAP_CREDIT),
         center: [center[0], center[1]],
         zoom,
         bearing: heading,
@@ -225,6 +224,10 @@ export function TripMap({
         keyboard: false,
         // Added below without MapLibre's default link: nothing in it can open a website.
         attributionControl: false,
+        // Only the tiles host, even for an address slipped into the remote TileJSON (spec 017).
+        transformRequest: (url) => ({
+          url: url.startsWith(`https://${MAP_TILES_HOST}/`) ? url : 'https://127.0.0.1:1/blocked',
+        }),
       });
       instance.addControl(new AttributionControl({ compact: true }), 'bottom-left');
       instance.touchZoomRotate.disableRotation();
@@ -242,14 +245,7 @@ export function TripMap({
     };
     // Served from public/ (scripts/copy-map-worker.js).
     setWorkerUrl('/maplibre-gl-worker.mjs');
-    registerOfflineTiles((name, handler) =>
-      // pmtiles and MapLibre describe the same tile response with different types.
-      addProtocol(name, handler as AddProtocolAction),
-    ).then(
-      () => create(true),
-      // Unreadable archive: plain ground, routes and markers still drawn (spec 002).
-      () => create(false),
-    );
+    create();
     return () => {
       cancelled = true;
       created?.remove();
