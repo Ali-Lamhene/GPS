@@ -22,3 +22,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 018 | [Préparation native de la build complète](018-build-complete.md)                                  | validé (à vérifier dans la build)                      |
 | 019 | [Lien de partage et recherche d'adresse](019-lien-et-adresse.md)                                  | validé (à vérifier sur téléphone, build preview)       |
 | 020 | [Photo d'un lieu](020-photo-d-un-lieu.md)                                                         | validé (à vérifier sur téléphone)                      |
+| 021 | [Vrai trajet et guidage par la position](021-vrai-trajet-et-guidage.md)                           | validé (à vérifier sur téléphone)                      |

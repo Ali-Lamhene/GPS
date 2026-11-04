@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { bearingAlong, findTurns, pathLength } from '@/domain/geo';
+import { distanceMeters, bearingAlong, findTurns, pathLength } from '@/domain/geo';
+import { locateOnTrip, stepAt } from '@/domain/guidance-plan';
 import { approachLeft, spokenName, type GuidanceStep } from '@/domain/guidance';
 import { remainingMinutes, tripPosition, tripProgress, type Leg } from '@/domain/trip';
 import { playCue } from '@/services/feedback';
@@ -12,8 +13,8 @@ import { HelpButton } from '@/ui/components/help-button';
 import { colors, spacing } from '@/ui/theme';
 
 import { tripLines, tripStops } from '../components/trip-map-layers';
-import { DEMO_GUIDANCE } from '../demo/guidance';
-import { DEMO_LEGS } from '../demo/trips';
+import { positionPoint, useTravellerPosition } from '../location/location-context';
+import { useRoutes } from '../trip-plan/routes-context';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { InstructionCard } from './instruction-card';
 import { stepCue } from './instruction-look';
@@ -36,18 +37,35 @@ function nextManeuver(legs: readonly Leg[], step: GuidanceStep) {
 }
 
 /**
- * E09-E23 (spec 002): the map fills the screen and follows the traveller; the instruction
- * floats on top beside help, time left at the bottom. In this static version (D11), touching the
- * instruction stands for reaching the next step.
+ * E09-E23 (specs 002, 021): the map fills the screen and follows the traveller; the
+ * instruction floats on top beside help, time left at the bottom. The phone's position moves
+ * the guidance on, and ends it near the arrival; touching the instruction still moves on
+ * (underground, or when the position is lost).
  */
+/** Within this distance of the arrival point, the trip is over. */
+const ARRIVED_METERS = 25;
+
 export function GuidanceScreen() {
   const insets = useSafeAreaInsets();
-  const { mode, destination, guidanceStep = 0, dispatch } = useTripPlan();
+  const { destination, guidanceStep = 0, dispatch } = useTripPlan();
   const [bannerHeight, setBannerHeight] = useState(0);
   const [panelHeight, setPanelHeight] = useState(0);
-  const steps = DEMO_GUIDANCE[mode];
-  const legs = DEMO_LEGS[mode];
+  const { steps, legs } = useRoutes();
   const step = steps[guidanceStep];
+  const here = positionPoint(useTravellerPosition().position);
+  const end = legs.at(-1)?.path.at(-1);
+
+  // The real position moves the guidance on, never back (spec 021).
+  useEffect(() => {
+    if (!here) return;
+    const last = guidanceStep >= steps.length - 1;
+    if (last && end && distanceMeters(here, end) <= ARRIVED_METERS) {
+      router.replace('/arrived');
+      return;
+    }
+    const next = stepAt(steps, legs, guidanceStep, here);
+    if (next !== undefined) dispatch({ type: 'goToStep', index: next });
+  }, [here, steps, legs, guidanceStep, end, dispatch]);
 
   useEffect(() => {
     const cue = step && stepCue(step);
@@ -75,8 +93,13 @@ export function GuidanceScreen() {
     );
   }
 
-  const position = tripPosition(legs, step.legIndex, step.legFraction);
-  const end = legs.at(-1)?.path.at(-1);
+  // Where the traveller is along the trip: from the phone's position when it lies on the
+  // trip, else where the step stands. Heading, approach and progress follow it (spec 021).
+  const located = here ? locateOnTrip(legs, step.legIndex, here) : undefined;
+  const legIndex = located?.legIndex ?? step.legIndex;
+  const fraction = located?.fraction ?? step.legFraction;
+  const planned = tripPosition(legs, legIndex, fraction);
+  const position = here && planned ? { point: here, heading: planned.heading } : planned;
   const destinationIcon = destination?.icon ?? 'flag';
 
   return (
@@ -110,7 +133,7 @@ export function GuidanceScreen() {
             instruction={step.instruction}
             destination={destination}
             approach={approachLeft(
-              step.legFraction,
+              legIndex === step.legIndex ? fraction : step.legFraction,
               nextCorner(legs, step)?.fraction,
               pathLength(legs[step.legIndex]?.path ?? []),
             )}
@@ -121,8 +144,8 @@ export function GuidanceScreen() {
         <HelpButton onPress={openHelp} />
       </View>
       <ProgressPanel
-        progress={tripProgress(legs, step.legIndex, step.legFraction)}
-        remainingMinutes={remainingMinutes(legs, step.legIndex, step.legFraction)}
+        progress={tripProgress(legs, legIndex, fraction)}
+        remainingMinutes={remainingMinutes(legs, legIndex, fraction)}
         spokenName={spokenName(step.instruction)}
         onLayout={(event) => setPanelHeight(event.nativeEvent.layout.height)}
       />

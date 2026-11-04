@@ -1,0 +1,85 @@
+{
+  "itineraries": [
+    {
+      "legs": [
+        {
+          "mode": "WALK",
+          "duration": 420,
+          "from": { "name": "START" },
+          "to": { "name": "Petit Chantier" },
+          "routeShortName": null,
+          "routeColor": null,
+          "routeTextColor": null,
+          "headsign": null,
+          "intermediateStops": null,
+          "legGeometry": {
+            "points": "{oaqqAwntfI_KmW??_OnMeBpAyAd@eBB{BC??p@z@??wl@@??WA??uBK??}@E??aCiA??lB{X??cFoL??HsGq@aG??}A{CkEaF{C_F??QTcCfEmAeBaAxBoBzA??wE`E??cQtE??sE~@??z@`J??rAlN??`AzJ??r@zH??T|B",
+            "precision": 6,
+            "length": 53
+          }
+        },
+        {
+          "mode": "BUS",
+          "duration": 360,
+          "from": { "name": "Petit Chantier" },
+          "to": { "name": "Vieux-Port" },
+          "routeShortName": "55",
+          "routeColor": "f59c00",
+          "routeTextColor": "000000",
+          "headsign": "Joliette",
+          "intermediateStops": [
+            { "name": "Place de la Corderie" },
+            { "name": "Fort Notre Dame" },
+            { "name": "Place aux Huiles" }
+          ],
+          "legGeometry": {
+            "points": "}_fqqAmutfIeEx@o@kHSwBcGgm@cGsl@_I{w@]uDqEmi@z@Sf@g@f@g@z@oARcBf@wB?wBg@{@g@{@{@{@oAg@cBSoARoAf@g@f@g@z@g@bB?z@?nARnAgm@rSgEbBcVvIII{Q~Fmh@fQaHnBqCl@wDkUg@wCf@Q{@aFwGsb@cGo_@cGo_@cG{^sIw[kCoFkC_DwBcBqBBiBPsD^gEt@w[zCcFd@kVhCcDd@IqA",
+            "precision": 6,
+            "length": 58
+          }
+        },
+        {
+          "mode": "WALK",
+          "duration": 120,
+          "from": { "name": "Vieux-Port" },
+          "to": { "name": "Vieux-Port" },
+          "routeShortName": null,
+          "routeColor": null,
+          "routeTextColor": null,
+          "headsign": null,
+          "intermediateStops": null,
+          "legGeometry": { "points": "e}pqqAgt_gIxBxA", "precision": 6, "length": 2 }
+        },
+        {
+          "mode": "SUBWAY",
+          "duration": 180,
+          "from": { "name": "Vieux-Port" },
+          "to": { "name": "Saint-Charles" },
+          "routeShortName": "M1",
+          "routeColor": "009fe3",
+          "routeTextColor": "ffffff",
+          "headsign": "La Rose",
+          "intermediateStops": [{ "name": "Colbert" }],
+          "legGeometry": {
+            "points": "kypqqAmq_gIFt@}t@lHce@j@ko@IsjAaCyiA_O?Aqb@wGuYaJ_b@wLw[cWci@it@kXgc@cBkEgFwSwDwPe@kHUmHb@_HbB{ZnEwRjImTh}@seA?Cl@p@",
+            "precision": 6,
+            "length": 26
+          }
+        },
+        {
+          "mode": "WALK",
+          "duration": 120,
+          "from": { "name": "Saint-Charles" },
+          "to": { "name": "END" },
+          "routeShortName": null,
+          "routeColor": null,
+          "routeTextColor": null,
+          "headsign": null,
+          "intermediateStops": null,
+          "legGeometry": { "points": "a|}qqAyakgI~C}D??_ByC??{EhG", "precision": 6, "length": 6 }
+        }
+      ]
+    }
+  ],
+  "direct": []
+}

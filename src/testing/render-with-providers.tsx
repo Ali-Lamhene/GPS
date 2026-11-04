@@ -7,6 +7,7 @@ import {
   type TravellerPosition,
 } from '@/features/traveller/location/location-context';
 import { DEMO_CURRENT_POSITION } from '@/features/traveller/demo/trips';
+import { RoutesProvider } from '@/features/traveller/trip-plan/routes-context';
 import { TripPlanProvider } from '@/features/traveller/trip-plan/trip-plan-context';
 import type { TripPlanAction } from '@/features/traveller/trip-plan/trip-plan-reducer';
 
@@ -28,7 +29,7 @@ export function renderWithProviders(
     <SafeAreaProvider initialMetrics={metrics}>
       <LocationProvider fixed={position}>
         <TripPlanProvider demo initialActions={actions}>
-          {ui}
+          <RoutesProvider demo>{ui}</RoutesProvider>
         </TripPlanProvider>
       </LocationProvider>
     </SafeAreaProvider>,

@@ -10,7 +10,10 @@ import { Icon } from '@/ui/icon/icon';
 import { TripMap } from '@/ui/map/trip-map';
 import { colors } from '@/ui/theme';
 
-import { DEMO_CURRENT_POSITION } from '../demo/trips';
+import { FRANCE_CENTER, FRANCE_ZOOM } from '@/domain/geo';
+
+import { positionPoint, useTravellerPosition } from '../location/location-context';
+import { useRoutes } from '../trip-plan/routes-context';
 import { useCueOnEnter } from '../hooks/use-cue-on-enter';
 
 /**
@@ -20,16 +23,18 @@ import { useCueOnEnter } from '../hooks/use-cue-on-enter';
 export function ConnectionErrorScreen() {
   useCueOnEnter('offline');
   const [sheetHeight, setSheetHeight] = useState(260);
+  const here = positionPoint(useTravellerPosition().position);
+  const { request } = useRoutes();
 
   return (
     <View style={styles.screen}>
       <TripMap
         camera={{
-          center: DEMO_CURRENT_POSITION,
-          zoom: 16,
+          center: here ?? FRANCE_CENTER,
+          zoom: here ? 16 : FRANCE_ZOOM,
           padding: { top: 0, bottom: sheetHeight },
         }}
-        traveller={{ point: DEMO_CURRENT_POSITION }}
+        traveller={here ? { point: here } : undefined}
         controlsBottom={sheetHeight + 8}
         backdrop
       />
@@ -41,7 +46,15 @@ export function ConnectionErrorScreen() {
             <Icon name="cloud_off" size={64} color={colors.alert} variant="outlined" />
           </View>
         </View>
-        <MainActionButton icon="refresh" label="Réessayer" onPress={() => router.back()} />
+        <MainActionButton
+          icon="refresh"
+          label="Réessayer"
+          onPress={() => {
+            // Asks for the trips again, then back to the choice of transport (spec 021).
+            request();
+            router.back();
+          }}
+        />
       </FloatingSheet>
     </View>
   );

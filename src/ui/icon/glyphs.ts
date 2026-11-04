@@ -12,6 +12,7 @@ export const GLYPHS = {
   badge: 0xea67,
   balance: 0xeaf6,
   beach_access: 0xeb3e,
+  block: 0xe14b,
   bloodtype: 0xefe4,
   business_center: 0xeb3f,
   cardiology: 0xe09c,
@@ -128,6 +129,7 @@ export const GLYPHS = {
   volunteer_activism: 0xea70,
   wifi_off: 0xe648,
   work: 0xe8f9,
+  wrong_location: 0xef78,
 } as const;
 
 export type IconName = keyof typeof GLYPHS;

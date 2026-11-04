@@ -14,9 +14,9 @@ import { Icon } from '@/ui/icon/icon';
 import { TripMap } from '@/ui/map/trip-map';
 import { colors } from '@/ui/theme';
 
-import { DEMO_LEGS } from '../demo/trips';
 import { useCueOnEnter } from '../hooks/use-cue-on-enter';
 import { useGoHome } from '../hooks/use-go-home';
+import { useRoutes } from '../trip-plan/routes-context';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 
 const SEAL = 58;
@@ -29,10 +29,11 @@ const DISC = 156;
  * with its own sound and vibration (spec 010).
  */
 export function ArrivedScreen() {
-  const { destination, mode } = useTripPlan();
+  const { destination } = useTripPlan();
   const goHome = useGoHome();
   useCueOnEnter('arrival');
-  const end = DEMO_LEGS[mode].at(-1)?.path.at(-1);
+  const { legs } = useRoutes();
+  const end = legs.at(-1)?.path.at(-1);
   const icon = destination?.icon ?? 'flag';
   const [sheetHeight, setSheetHeight] = useState(280);
 

@@ -160,3 +160,37 @@ export function pathsBounds(paths: readonly (readonly LngLat[])[]): [LngLat, Lng
     [east, north],
   ];
 }
+
+/**
+ * Where a point falls along a path (spec 021): the fraction of the path's length at the
+ * nearest point of the path, and how far the point is from it, in metres. Flat-earth
+ * projection on each segment, accurate enough over a street.
+ */
+export function locateOnPath(
+  path: readonly LngLat[],
+  point: LngLat,
+): { fraction: number; offMeters: number } | undefined {
+  if (path.length < 2) return undefined;
+  const total = pathLength(path);
+  if (total === 0) return { fraction: 0, offMeters: distanceMeters(path[0] ?? point, point) };
+  const cosLat = Math.cos((point[1] * Math.PI) / 180);
+  let best = { fraction: 0, offMeters: Infinity };
+  let walked = 0;
+  for (let i = 0; i < path.length - 1; i++) {
+    const a = path[i];
+    const b = path[i + 1];
+    if (!a || !b) continue;
+    const segment = distanceMeters(a, b);
+    const ax = (b[0] - a[0]) * cosLat;
+    const ay = b[1] - a[1];
+    const px = (point[0] - a[0]) * cosLat;
+    const py = point[1] - a[1];
+    const squared = ax * ax + ay * ay;
+    const t = squared === 0 ? 0 : Math.min(1, Math.max(0, (px * ax + py * ay) / squared));
+    const nearest: LngLat = [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+    const off = distanceMeters(nearest, point);
+    if (off < best.offMeters) best = { fraction: (walked + segment * t) / total, offMeters: off };
+    walked += segment;
+  }
+  return best;
+}

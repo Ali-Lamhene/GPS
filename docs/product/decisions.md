@@ -117,3 +117,7 @@ Pour la première version, l'app copie et simplifie le comportement des applis d
 - **Exception assumée à D1** : OpenFreeMap reçoit l'adresse IP du téléphone et les zones affichées, donc où se trouve le voyageur et quand. Les lieux, les trajets et la position ne sont pas envoyés en tant que tels.
 - **Révise D12 et D5 pour la carte** : plus de tuiles embarquées pour l'instant ; sans réseau, la carte reste vide, le reste de l'app marche. La carte embarquée, utilisable sans réseau, reviendra dans une évolution.
 - La permission de localisation est demandée au premier lancement, en général en présence de l'accompagnant.
+
+## D17. Calcul des trajets par Transitous (2026-11-04, spec 021)
+
+Les trajets (à pied, transports, voiture) sont calculés par **Transitous** (`api.transitous.org`), service communautaire gratuit et libre, depuis le téléphone du voyageur (D4). Il reçoit le départ, l'arrivée, l'heure et l'adresse IP, et l'en-tête nomme l'app (condition d'usage). Choisi par Claude en autonomie (2026-11-04) : seul service sans clé ni compte qui couvre les transports en commun français ; à confirmer par l'utilisateur. Conditions : projet sous licence libre et non commercial, lien vers ses sources de données.

@@ -13,8 +13,8 @@ import { colors } from '@/ui/theme';
 
 import { WayCard } from '../components/way-card';
 import { TripOverviewMap } from '../components/trip-overview-map';
-import { DEMO_LEGS } from '../demo/trips';
 import { useGoHome } from '../hooks/use-go-home';
+import { useRoutes } from '../trip-plan/routes-context';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { LegRow } from './leg-row';
 
@@ -23,12 +23,12 @@ import { LegRow } from './leg-row';
  * The bar starts the guidance.
  */
 export function SummaryScreen() {
-  const { origin, destination, mode, dispatch } = useTripPlan();
+  const { origin, destination, dispatch } = useTripPlan();
   const goHome = useGoHome();
   const [openLeg, setOpenLeg] = useState<number | null>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [sheetHeight, setSheetHeight] = useState(0);
-  const legs = DEMO_LEGS[mode];
+  const { legs } = useRoutes();
 
   return (
     <View style={styles.screen}>

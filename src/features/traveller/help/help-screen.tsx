@@ -13,8 +13,7 @@ import { MAP_RENDERS } from '@/ui/map/trip-map';
 import { colors, radii, shadows, sizes } from '@/ui/theme';
 
 import { LineBadge } from '../components/line-badge';
-import { DEMO_GUIDANCE } from '../demo/guidance';
-import { DEMO_LEGS } from '../demo/trips';
+import { useRoutes } from '../trip-plan/routes-context';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { helpCard } from './help-card';
 import { HelpMessage } from './help-message';
@@ -26,12 +25,13 @@ import { HelpSituationMap } from './help-situation-map';
  */
 export function HelpScreen() {
   const insets = useSafeAreaInsets();
-  const { mode, origin, destination, guidanceStep } = useTripPlan();
+  const { origin, destination, guidanceStep } = useTripPlan();
   const [large, setLarge] = useState(false);
 
-  const step = guidanceStep === undefined ? undefined : DEMO_GUIDANCE[mode][guidanceStep];
+  const { steps, legs } = useRoutes();
+  const step = guidanceStep === undefined ? undefined : steps[guidanceStep];
   // Before leaving, the first thing to find: the stop to take, or the place when walking.
-  const firstHelp = destination ? DEMO_GUIDANCE[mode][0]?.help : undefined;
+  const firstHelp = destination ? steps[0]?.help : undefined;
   const request: HelpRequest = step?.help ?? firstHelp ?? { kind: 'findPlace' };
   const card = helpCard(request, destination);
   // Before leaving, the passer-by sees neither the photo of the arrival nor a start that
@@ -60,7 +60,7 @@ export function HelpScreen() {
         )}
         <HelpMessage message={card.message} large={large} />
         {!large && !photo && showMap && (
-          <HelpSituationMap legs={DEMO_LEGS[mode]} step={step} destination={destination} />
+          <HelpSituationMap legs={legs} step={step} destination={destination} />
         )}
       </ScrollView>
       <View style={styles.actions}>

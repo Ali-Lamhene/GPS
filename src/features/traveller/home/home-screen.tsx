@@ -104,8 +104,13 @@ export function HomeScreen() {
       positionUnavailable();
       return;
     }
-    if (endToFill === 'origin') dispatch({ type: 'chooseOrigin', placeId });
-    else dispatch({ type: 'chooseDestination', placeId });
+    if (endToFill === 'origin') {
+      dispatch({
+        type: 'chooseOrigin',
+        placeId,
+        here: placeId === CURRENT_POSITION.id ? position : undefined,
+      });
+    } else dispatch({ type: 'chooseDestination', placeId });
     playCue('select');
     setSheet(null);
   };

@@ -29,10 +29,13 @@ export type TripPlanState = {
   guidanceStep?: number;
   /** The last new place could not be saved: the home shows the error signal (spec 015). */
   saveFailed?: boolean;
+  /** Where « here » was when chosen as the start: the trip starts there (spec 021). */
+  hereAtStart?: LngLat;
 };
 
 export type TripPlanAction =
-  | { type: 'chooseOrigin'; placeId: string }
+  /** `here`: the position when « here » was chosen, the start of the trip (spec 021). */
+  | { type: 'chooseOrigin'; placeId: string; here?: LngLat }
   | { type: 'chooseDestination'; placeId: string }
   | { type: 'clearDestination' }
   | { type: 'chooseMode'; mode: TravelMode }
@@ -63,6 +66,7 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
       return {
         ...state,
         originId: action.placeId,
+        hereAtStart: action.here,
         // A trip cannot start and end at the same place.
         destinationId: state.destinationId === action.placeId ? undefined : state.destinationId,
       };

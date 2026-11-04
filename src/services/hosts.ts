@@ -12,6 +12,13 @@ export const MAP_TILES_HOST = 'tiles.openfreemap.org';
 export const ADDRESS_SEARCH_HOST = 'photon.komoot.io';
 
 /**
+ * Trip computation (D4, spec 021): Transitous, a free community service (MOTIS). Receives
+ * the start and the arrival points, the time, the app's name with its project address (its
+ * terms ask for them), and the IP address.
+ */
+export const ROUTING_HOST = 'api.transitous.org';
+
+/**
  * Share links (spec 019): never called by the app. The page receives a visit only when the
  * app is not installed, never the place, which stays after `#`.
  */
