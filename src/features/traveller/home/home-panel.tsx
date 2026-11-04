@@ -15,9 +15,8 @@ import { MainActionButton } from '@/ui/components/main-action-button';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii, shadows, spacing } from '@/ui/theme';
 
-import { PlaceTile, tileSize } from './place-tile';
+import { PlaceTile, tileLayout } from './place-tile';
 
-const GAP = spacing.md;
 const CANCEL_SIZE = 56;
 
 type HomePanelProps = {
@@ -33,7 +32,7 @@ type HomePanelProps = {
 };
 
 /**
- * Bottom of the home (specs 009, 011): a warm-white panel with large square place tiles,
+ * Bottom of the home (specs 009, 011, 012): a slim warm-white panel with small square place tiles,
  * shortcuts that fill the end that calls, swiped sideways; once both ends are chosen,
  * cancel and continue. Every place opens from the ends of the way.
  */
@@ -47,7 +46,8 @@ export function HomePanel({
 }: HomePanelProps) {
   const insets = useSafeAreaInsets();
   const { width: screenWidth } = useWindowDimensions();
-  const tile = tileSize(screenWidth - 2 * spacing.gutter, GAP, spacing.lg);
+  // The rail starts one padding inside the panel; the panel edge cuts the last tile.
+  const { size: tile, gap } = tileLayout(screenWidth - 2 * spacing.gutter - spacing.md);
   const bottom = insets.bottom + spacing.gutter;
   const report = (event: LayoutChangeEvent) => onHeight?.(event.nativeEvent.layout.height + bottom);
 
@@ -59,10 +59,10 @@ export function HomePanel({
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            snapToInterval={tile + GAP}
+            snapToInterval={tile + gap}
             snapToAlignment="start"
             decelerationRate="fast"
-            contentContainerStyle={[styles.rail, I18nManager.isRTL && styles.unmirrored]}
+            contentContainerStyle={[styles.rail, { gap }, I18nManager.isRTL && styles.unmirrored]}
           >
             {places.map((place) => (
               <PlaceTile
@@ -103,8 +103,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: spacing.gutter,
     right: spacing.gutter,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.md,
     gap: spacing.md,
     borderRadius: radii.sheet,
     backgroundColor: colors.warmWhite,
@@ -112,9 +112,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   rail: {
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
-    gap: GAP,
   },
   unmirrored: {
     // In a right-to-left layout, 'row-reverse' lays the row out left to right again.
@@ -124,7 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
   },
   cancel: {
     width: CANCEL_SIZE,

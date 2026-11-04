@@ -7,7 +7,7 @@ import { layout, renderWithProviders } from '@/testing/render-with-providers';
 import { playCue } from '@/services/feedback';
 
 import { HomePanel } from '../home-panel';
-import { tileSize } from '../place-tile';
+import { lastTileShown, tileLayout } from '../place-tile';
 import { HomeScreen } from '../home-screen';
 import { WayCard } from '../../components/way-card';
 
@@ -245,10 +245,24 @@ describe('<HomePanel />', () => {
   });
 });
 
-describe('tileSize', () => {
-  test('the last tile always cut by the edge, between 96 and 120 dp', () => {
-    expect(tileSize(362, 12, 16)).toBe(117);
-    expect(tileSize(292, 12, 16)).toBe(96);
-    expect(tileSize(1000, 12, 16)).toBe(120);
+describe('tileLayout', () => {
+  // Visible rail width on a phone: screen width minus two gutters (14) and the rail padding (12).
+  test.each([320, 360, 390, 393, 412, 1000])(
+    'at %i dp, tiles of 56 to 64 dp and the last one cut between 40 and 65 percent (spec 012)',
+    (screen) => {
+      const visible = screen - 2 * 14 - 12;
+      const layout = tileLayout(visible);
+      expect(layout.size).toBeGreaterThanOrEqual(56);
+      expect(layout.size).toBeLessThanOrEqual(64);
+      expect(layout.gap).toBeGreaterThanOrEqual(8);
+      expect(layout.gap).toBeLessThanOrEqual(14);
+      const shown = lastTileShown(visible, layout);
+      expect(shown).toBeGreaterThanOrEqual(0.4);
+      expect(shown).toBeLessThanOrEqual(0.65);
+    },
+  );
+
+  test('64 dp tiles at the reference width of 390 dp', () => {
+    expect(tileLayout(390 - 2 * 14 - 12).size).toBe(64);
   });
 });

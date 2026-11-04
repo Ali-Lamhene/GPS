@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-11-03
+**Dernière mise à jour** : 2026-11-04
 
 ## Où on en est
 
@@ -77,11 +77,14 @@ Nettoyage du 2026-11-03 (D15) : l'utilisateur juge l'interface « clair premium 
    - [x] Code (2026-11-03, relu deux fois par `security-reviewer`) : `@maplibre/maplibre-react-native` 11.5.1 (version exacte), `expo-dev-client`, `expo-asset` (dépendance manquante d'`expo-audio`) ; `TripMap` natif (`src/ui/map/trip-map.tsx`, marqueurs `map-markers.tsx`, crédit ⓘ `map-texts.tsx`) ; réseau et logs de MapLibre coupés (`native-map-setup.ts`) ; archive lue seulement depuis un `file://` (`localTilesUrl`) ; permissions de localisation bloquées ; ESLint limite le paquet à `src/ui/map` sans ses modules à risque ; identifiant `org.gpssanstexte.app`, build de dev `org.gpssanstexte.app.dev` (schéma `gps-dev`, `app.config.ts`, `APP_VARIANT`) ; `eas.json` profil `development` (APK).
    - [ ] `eas init` (compte Expo `otakumi`, choisi par l'utilisateur), puis `npx eas-cli build --profile development --platform android`, installation de l'APK sur le téléphone, `npx expo start --dev-client --offline`.
    - [x] Build de dev Android terminée (2026-11-03, 2e essai après la correction des icônes) : APK à installer.
+   - [x] APK de dev installée sur le téléphone de l'utilisateur (2026-11-04) et app ouverte, connectée au serveur Metro par le partage de connexion du téléphone (le Wi-Fi d'entreprise isole les appareils) : `EXPO_OFFLINE=1 npx expo start --dev-client --host lan`, URL saisie à la main `http://<ip-du-pc>:8081`. Rechargement en direct confirmé. Pas d'adb : l'utilisateur regarde l'écran et répond (adb sans fil possible avec `sudo apt install adb`).
    - [ ] Vérifier sur le téléphone : tuiles affichées avec le réseau de MapLibre coupé (forme `pmtiles://file:///…` non confirmée par la doc), aucune `MapLibreConfigurationException` dans logcat, épingles touchables, recentrage, crédit ⓘ ; `aapt dump permissions` sur l'APK (rien d'autre que `INTERNET`, plus `SYSTEM_ALERT_WINDOW` en debug). Puis spec 002 au statut `livré`.
 3. [ ] Refonte visuelle selon la maquette émeraude, écran par écran.
    - [x] Accueil : spec 009 livrée dans le navigateur (2026-11-03, relue par `ux-sans-texte-reviewer`). Carte crème et point de position émeraude sur tous les écrans ; pilule épingle ····· drapeau ; épingles en goutte ; panneau de tuiles carrées ; « + » émeraude ; pictogrammes au trait ; composants `PlaceFace`, `PlaceTile`, `pin-shape.ts`, jetons `emerald`, `warmWhite`, `warmEdge`. À revoir sur le téléphone avec la build de dev.
    - [x] Autres écrans : spec 010 livrée dans le navigateur (2026-11-03, d'après le catalogue de maquettes de l'utilisateur, gardé hors du dépôt pour ses manifestes C2PA ; relue par `ux-sans-texte-reviewer`). Émeraude partout, boutons ronds blanc chaud sans zone tactile élargie (`sizes.minTarget` retiré), aide blanche à 56 dp, guidage en carte blanche à contour vert « bon chemin » (`#2FBF71`), barre de progression en points, E21 sombre aux accents émeraude, arrêts en gouttes. À revoir sur le téléphone.
    - [x] Retours sur l'accueil : spec 011 livrée dans le navigateur (2026-11-03) — pilule et pastilles agrandies (56 dp), tuiles d'environ 117 dp sans « … », toucher un bout ouvre tous les lieux pour ce bout, petit bouton de l'accompagnant (deux personnes) à côté du « + » au lieu de l'appui de 3 s, catalogue de 77 pictogrammes en 11 familles (`src/domain/pictograms.ts`), domiciles et santé sensible cachés de la carte par défaut.
+   - [x] Retours sur téléphone : spec 012 livrée (2026-11-04, validée sur le téléphone, relue par `ux-sans-texte-reviewer`) — raccourcis de l'accueil à 56-64 dp, écart 8-14 dp calculés pour que la dernière tuile soit toujours coupée (40 à 65 %), panneau d'environ 100 dp, pastille de pictogramme sur photo à 26 dp.
+   - [ ] Accueil : crédit ⓘ de la carte trop grand ; boutons « + », accompagnant et recentrer en colonne verticale (demandé le 2026-11-04, spec à écrire).
 4. [ ] App entièrement fonctionnelle : vraies données à la place de la démo (specs 001, 003, 004), retrait de `src/features/traveller/demo/` et `src/features/social-worker/demo/`.
 
 Reste aussi à coder la spec 006 « sens de lecture » : flèche « → » devant la direction d'un bus ou d'un métro, vérification en RTL forcé sur téléphone.

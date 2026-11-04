@@ -13,3 +13,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 009 | [Accueil « carte urbaine émeraude »](009-accueil-emeraude.md)                                    | livré  |
 | 010 | [Tous les autres écrans en direction émeraude](010-ecrans-emeraude.md)                           | livré  |
 | 011 | [Accueil : retours d'usage et catalogue de pictogrammes](011-accueil-retours-et-pictogrammes.md) | livré  |
+| 012 | [Accueil : raccourcis de lieux plus petits](012-accueil-raccourcis-compacts.md)                  | livré  |
