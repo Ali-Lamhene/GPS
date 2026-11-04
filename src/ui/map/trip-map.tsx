@@ -215,6 +215,9 @@ export function TripMap({
         <MapView
           style={StyleSheet.absoluteFill}
           mapStyle={mapStyle}
+          // A texture draws inside the view tree: a GL surface shows black until its first
+          // frame and while screens slide over it.
+          androidView="texture"
           // One finger moves the map, two zoom (spec 005); a double tap never zooms by
           // mistake. The map comes back to the traveller on its own after a while.
           dragPan={!still}

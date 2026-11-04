@@ -1,6 +1,15 @@
 import { useFocusEffect } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+} from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -11,7 +20,7 @@ export type SystemBarsLook = { band: string; icons: 'dark' | 'light' };
 
 const LIGHT: SystemBarsLook = { band: colors.warmWhite, icons: 'dark' };
 
-const SetLookContext = createContext<(look: SystemBarsLook) => void>(() => undefined);
+const SetLookContext = createContext<Dispatch<SetStateAction<SystemBarsLook>>>(() => undefined);
 
 /**
  * Frame of the whole app (spec 014). Android draws apps edge to edge, under its status and
