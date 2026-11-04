@@ -1,4 +1,5 @@
 import { useFocusEffect } from 'expo-router';
+import { NavigationBar } from 'expo-navigation-bar';
 import { StatusBar } from 'expo-status-bar';
 import {
   createContext,
@@ -41,6 +42,8 @@ export function SystemBarsFrame({ children }: { children: ReactNode }) {
       ]}
     >
       <StatusBar style={look.icons} />
+      {/* Buttons or gesture line of Android's bottom bar, readable on the band (spec 018). */}
+      <NavigationBar style={look.icons} />
       <SetLookContext.Provider value={setLook}>
         <SafeAreaInsetsContext.Provider value={inner}>{children}</SafeAreaInsetsContext.Provider>
       </SetLookContext.Provider>

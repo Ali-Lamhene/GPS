@@ -17,6 +17,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     android: {
       ...base.android,
       package: `${base.android?.package ?? ''}${DEV_SUFFIX}`,
+      // Never App Links in the development build: its launcher would load the JavaScript
+      // named by a forged https link (spec 018 security review).
+      intentFilters: [],
     },
   };
 };

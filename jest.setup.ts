@@ -55,3 +55,6 @@ jest.mock('expo-location', () => ({
   ),
   watchPositionAsync: jest.fn(() => Promise.resolve({ remove: jest.fn() })),
 }));
+
+// Android's navigation bar: nothing to draw in tests (spec 018).
+jest.mock('expo-navigation-bar', () => ({ NavigationBar: () => null }));
