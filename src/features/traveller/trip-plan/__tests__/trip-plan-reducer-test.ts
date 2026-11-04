@@ -1,4 +1,16 @@
-import { initialTripPlan, tripPlanReducer, type TripPlanState } from '../trip-plan-reducer';
+import {
+  initialTripPlan,
+  placeFromDraft,
+  tripPlanReducer,
+  type TripPlanState,
+} from '../trip-plan-reducer';
+
+/** What the new place screens do once the place is saved (spec 015). */
+function finish(state: TripPlanState, photo?: string): TripPlanState {
+  if (!state.draft) return state;
+  const place = placeFromDraft(state.draft, { id: 'p1', createdAt: 1000, photo });
+  return tripPlanReducer(state, { type: 'addPlace', place });
+}
 
 const withOrigin: TripPlanState = { ...initialTripPlan, originId: 'home' };
 
@@ -31,15 +43,17 @@ describe('tripPlanReducer', () => {
       source: 'position',
     });
     state = tripPlanReducer(state, { type: 'setDraftIcon', icon: 'local_hospital' });
-    state = tripPlanReducer(state, { type: 'finishPlace', photo: 'file:///photo.jpg' });
+    state = finish(state, 'file:///photo.jpg');
 
     expect(state.customPlaces).toEqual([
       {
-        id: 'custom-1',
+        id: 'p1',
         icon: 'local_hospital',
         photo: 'file:///photo.jpg',
         helpName: undefined,
+        point: undefined,
         hiddenOnMap: false,
+        createdAt: 1000,
       },
     ]);
     expect(state.originId).toBe('home');
@@ -53,7 +67,7 @@ describe('tripPlanReducer', () => {
       source: 'address',
     });
     state = tripPlanReducer(state, { type: 'setDraftName', helpName: 'Pharmacie du Port' });
-    state = tripPlanReducer(state, { type: 'finishPlace' });
+    state = finish(state);
 
     expect(state.customPlaces[0]).toMatchObject({
       icon: 'push_pin',
@@ -64,7 +78,7 @@ describe('tripPlanReducer', () => {
 
   test('draft edits without a draft change nothing', () => {
     expect(tripPlanReducer(withOrigin, { type: 'setDraftIcon', icon: 'home' })).toBe(withOrigin);
-    expect(tripPlanReducer(withOrigin, { type: 'finishPlace' })).toBe(withOrigin);
+    expect(finish(withOrigin)).toBe(withOrigin);
   });
 
   test('the arrival can be cleared, the start stays', () => {
@@ -87,9 +101,19 @@ describe('tripPlanReducer', () => {
       source: 'address',
     });
     state = tripPlanReducer(state, { type: 'setDraftIcon', icon: 'family_home' });
-    state = tripPlanReducer(state, { type: 'finishPlace' });
+    state = finish(state);
 
     expect(state.customPlaces[0]?.hiddenOnMap).toBe(true);
+  });
+
+  test('a place that cannot be saved is dropped, and the home is told (spec 015)', () => {
+    let state = tripPlanReducer(withOrigin, { type: 'startPlace', source: 'position' });
+    state = tripPlanReducer(state, { type: 'placeSaveFailed' });
+
+    expect(state.draft).toBeUndefined();
+    expect(state.customPlaces).toEqual([]);
+    expect(state.saveFailed).toBe(true);
+    expect(tripPlanReducer(state, { type: 'clearSaveFailed' }).saveFailed).toBeUndefined();
   });
 
   test('the guidance step is remembered, so help knows where the traveller is', () => {

@@ -25,6 +25,8 @@ export type TripPlanState = {
   draft?: PlaceDraft;
   /** Index of the guidance step the traveller is on, once the trip has started. */
   guidanceStep?: number;
+  /** The last new place could not be saved: the home shows the error signal (spec 015). */
+  saveFailed?: boolean;
 };
 
 export type TripPlanAction =
@@ -36,7 +38,9 @@ export type TripPlanAction =
   | { type: 'startPlace'; source: PlaceDraft['source']; point?: LngLat }
   | { type: 'setDraftIcon'; icon: PlaceIcon }
   | { type: 'setDraftName'; helpName: string }
-  | { type: 'finishPlace'; photo?: string }
+  | { type: 'addPlace'; place: Place }
+  | { type: 'placeSaveFailed' }
+  | { type: 'clearSaveFailed' }
   | { type: 'cancelPlace' }
   | { type: 'reset' };
 
@@ -78,8 +82,12 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
       return state.draft
         ? { ...state, draft: { ...state.draft, helpName: action.helpName } }
         : state;
-    case 'finishPlace':
-      return finishPlace(state, action.photo);
+    case 'addPlace':
+      return { ...state, customPlaces: [...state.customPlaces, action.place], draft: undefined };
+    case 'placeSaveFailed':
+      return { ...state, draft: undefined, saveFailed: true };
+    case 'clearSaveFailed':
+      return { ...state, saveFailed: undefined };
     case 'cancelPlace':
       return { ...state, draft: undefined };
     case 'reset':
@@ -91,18 +99,19 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
   }
 }
 
-function finishPlace(state: TripPlanState, photo?: string): TripPlanState {
-  const { draft } = state;
-  if (!draft) return state;
-
+/** The place a finished draft becomes, once saved; `id` and `createdAt` come from the caller. */
+export function placeFromDraft(
+  draft: PlaceDraft,
+  { id, createdAt, photo }: { id: string; createdAt: number; photo?: string },
+): Place {
   const icon = draft.icon ?? 'push_pin';
-  const place: Place = {
-    id: `custom-${state.customPlaces.length + 1}`,
+  return {
+    id,
     icon,
     photo,
     helpName: draft.helpName,
     point: draft.point,
     hiddenOnMap: hiddenOnMapByDefault(icon),
+    createdAt,
   };
-  return { ...state, customPlaces: [...state.customPlaces, place], draft: undefined };
 }

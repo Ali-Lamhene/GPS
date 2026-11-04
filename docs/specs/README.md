@@ -16,3 +16,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 012 | [Accueil : raccourcis de lieux plus petits](012-accueil-raccourcis-compacts.md)                   | livré  |
 | 013 | [Accueil : colonne de boutons et crédit de carte plus discret](013-accueil-colonne-de-boutons.md) | livré  |
 | 014 | [Barres système d'Android et pictogramme clavier](014-barres-systeme-et-clavier.md)               | livré  |
+| 015 | [Lieux gardés sur le téléphone](015-lieux-gardes-sur-le-telephone.md)                             | livré  |

@@ -20,7 +20,7 @@ const PHOTO_BACKGROUND = '#1B1C1A';
 
 export function PhotoScreen() {
   const insets = useSafeAreaInsets();
-  const { finish } = usePlaceDraft();
+  const { finish, busy } = usePlaceDraft();
   useDarkSystemBars(PHOTO_BACKGROUND);
 
   return (
@@ -43,24 +43,27 @@ export function PhotoScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Sans photo"
+          disabled={busy}
           onPress={() => finish()}
-          style={styles.side}
+          style={[styles.side, busy && styles.busy]}
         >
           <Icon name="no_photography" size={28} color={colors.emerald} variant="outlined" />
         </Pressable>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Prendre la photo"
+          disabled={busy}
           onPress={() => finish()}
-          style={styles.shutter}
+          style={[styles.shutter, busy && styles.busy]}
         >
           <View style={styles.shutterDisc} />
         </Pressable>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Choisir une photo"
+          disabled={busy}
           onPress={() => finish()}
-          style={styles.side}
+          style={[styles.side, busy && styles.busy]}
         >
           <Icon name="photo_library" size={28} color={colors.emerald} variant="outlined" />
         </Pressable>
@@ -70,6 +73,10 @@ export function PhotoScreen() {
 }
 
 const styles = StyleSheet.create({
+  // Saving: the buttons dim at once, a second touch does nothing (spec 015).
+  busy: {
+    opacity: 0.5,
+  },
   screen: {
     flex: 1,
     backgroundColor: PHOTO_BACKGROUND,

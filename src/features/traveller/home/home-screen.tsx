@@ -23,6 +23,7 @@ import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { ADD_BUTTON_SIZE, AddPlaceButton, COLUMN_GAP, COMPANION_SIZE } from './add-place-button';
 import { HomePanel } from './home-panel';
 import { PlaceSheet } from './place-sheet';
+import { SaveFailedSignal } from './save-failed-signal';
 import { WayCard } from '../components/way-card';
 
 /** Where a place shows on the map, unless it is kept off it (spec 005). */
@@ -151,6 +152,7 @@ export function HomeScreen() {
         choosing={calling !== undefined}
         places={choices}
         onChoose={(place) => choose(calling ?? 'destination', place.id)}
+        onAdd={() => createPlace('position')}
         onCancel={() => dispatch({ type: 'clearDestination' })}
         onContinue={() => router.push('/mode')}
         onHeight={setPanelHeight}
@@ -169,9 +171,12 @@ export function HomeScreen() {
           places={sheet === 'origin' ? plan.originChoices : plan.destinationChoices}
           excludedId={sheet === 'destination' ? origin?.id : destination?.id}
           onPick={(place) => choose(sheet, place.id)}
+          onAdd={() => createPlace('position')}
           onClose={() => setSheet(null)}
         />
       )}
+
+      {plan.saveFailed && <SaveFailedSignal onDone={() => dispatch({ type: 'clearSaveFailed' })} />}
     </View>
   );
 }

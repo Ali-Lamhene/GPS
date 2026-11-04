@@ -10,11 +10,16 @@ const metrics = {
   insets: { top: 0, right: 0, bottom: 0, left: 0 },
 };
 
-/** Renders a screen inside the app providers, optionally after some trip plan actions. */
+/**
+ * Renders a screen inside the app providers, with the demonstration places, optionally after
+ * some trip plan actions.
+ */
 export function renderWithProviders(ui: ReactElement, actions: TripPlanAction[] = []) {
   return render(
     <SafeAreaProvider initialMetrics={metrics}>
-      <TripPlanProvider initialActions={actions}>{ui}</TripPlanProvider>
+      <TripPlanProvider demo initialActions={actions}>
+        {ui}
+      </TripPlanProvider>
     </SafeAreaProvider>,
   );
 }

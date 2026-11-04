@@ -12,7 +12,7 @@ const GAP_MAX = 14;
 const CUT_MIN = 0.4;
 const CUT_MAX = 0.65;
 /** Corners of the small home tiles (spec 012). */
-const TILE_RADIUS = 16;
+export const TILE_RADIUS = 16;
 /** White disc of the pictogram over a photo: keeps a 16 dp pictogram, the second channel (spec 012). */
 const BADGE_SIZE = 26;
 

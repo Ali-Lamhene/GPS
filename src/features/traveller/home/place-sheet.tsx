@@ -15,6 +15,7 @@ import { colors, radii, shadows, spacing } from '@/ui/theme';
 
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { cutHeight } from '../add-place/pictogram-grid';
+import { AddPlaceTile } from './add-place-tile';
 import { SheetPlaceTile } from './sheet-place-tile';
 
 const COLUMNS = 3;
@@ -28,6 +29,8 @@ type PlaceSheetProps = {
   /** Place that cannot be picked here: the start, when choosing the arrival. */
   excludedId?: string;
   onPick: (place: Place) => void;
+  /** No place to offer: the only tile opens « new place here » (spec 015). */
+  onAdd: () => void;
   onClose: () => void;
 };
 
@@ -35,7 +38,7 @@ type PlaceSheetProps = {
  * Bottom sheet of saved places, to choose the start (E02) or the arrival (E04). Only to
  * choose: places are added from the home « + » (spec 007).
  */
-export function PlaceSheet({ end, places, excludedId, onPick, onClose }: PlaceSheetProps) {
+export function PlaceSheet({ end, places, excludedId, onPick, onAdd, onClose }: PlaceSheetProps) {
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const [gridWidth, setGridWidth] = useState(0);
@@ -75,6 +78,9 @@ export function PlaceSheet({ end, places, excludedId, onPick, onClose }: PlaceSh
           >
             {tile > 0 && (
               <>
+                {places.every((place) => place.id === excludedId) && (
+                  <AddPlaceTile size={tile} radius={radii.tile} onPress={onAdd} />
+                )}
                 {places.map((place) => (
                   <SheetPlaceTile
                     key={place.id}

@@ -1,6 +1,8 @@
-import { act, fireEvent, screen, within } from '@testing-library/react-native';
+import { act, fireEvent, render, screen, within } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { BackHandler } from 'react-native';
+
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { layout, renderWithProviders } from '@/testing/render-with-providers';
 
@@ -9,9 +11,14 @@ import { playCue } from '@/services/feedback';
 import { HomePanel } from '../home-panel';
 import { lastTileShown, tileLayout } from '../place-tile';
 import { HomeScreen } from '../home-screen';
+import { TripPlanProvider } from '../../trip-plan/trip-plan-context';
 import { WayCard } from '../../components/way-card';
 
-jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
+jest.mock('expo-router', () => ({
+  router: { push: jest.fn() },
+  // The home in front: its focus effect runs once mounted.
+  useFocusEffect: (effect: () => void) => jest.requireActual('react').useEffect(effect, [effect]),
+}));
 jest.mock('@/services/feedback', () => ({ playCue: jest.fn() }));
 
 async function renderHome() {
@@ -173,10 +180,10 @@ describe('« + » on the home', () => {
 describe('a place added with « + »', () => {
   test('is offered among the cards; nothing gets chosen', async () => {
     await renderWithProviders(<HomeScreen />, [
-      { type: 'startPlace', source: 'address' },
-      { type: 'setDraftIcon', icon: 'local_hospital' },
-      { type: 'setDraftName', helpName: "l'hôpital Nord" },
-      { type: 'finishPlace' },
+      {
+        type: 'addPlace',
+        place: { id: 'p1', icon: 'local_hospital', helpName: "l'hôpital Nord", createdAt: 1 },
+      },
     ]);
 
     expect(button("l'hôpital Nord")).toBeOnTheScreen();
@@ -222,6 +229,7 @@ describe('<HomePanel />', () => {
       choosing
       places={places}
       onChoose={jest.fn()}
+      onAdd={jest.fn()}
       onCancel={jest.fn()}
       onContinue={jest.fn()}
     />
@@ -274,5 +282,59 @@ describe('tileLayout', () => {
 
   test('64 dp tiles at the reference width of 390 dp', () => {
     expect(tileLayout(390 - 2 * 14 - 12).size).toBe(64);
+  });
+});
+
+describe('home on the first start, without any place (spec 015)', () => {
+  const metrics = {
+    frame: { x: 0, y: 0, width: 360, height: 800 },
+    insets: { top: 0, right: 0, bottom: 0, left: 0 },
+  };
+  const renderEmpty = (actions: Parameters<typeof TripPlanProvider>[0]['initialActions'] = []) =>
+    render(
+      <SafeAreaProvider initialMetrics={metrics}>
+        <TripPlanProvider initialActions={actions}>
+          <HomeScreen />
+        </TripPlanProvider>
+      </SafeAreaProvider>,
+    );
+
+  beforeEach(() => jest.mocked(router.push).mockClear());
+
+  test('no demonstration place: only « here » for the start', async () => {
+    await renderEmpty();
+
+    expect(button('ma position')).toBeOnTheScreen();
+    expect(screen.queryByRole('button', { name: 'la mairie' })).toBeNull();
+  });
+
+  test('the arrival offers one dashed « + » tile, which adds a place here', async () => {
+    await renderEmpty();
+    await choose('ma position');
+
+    const tiles = screen.getAllByRole('button', { name: 'Ajouter un lieu' });
+    expect(tiles).toHaveLength(2);
+    await fireEvent.press(tiles[0] as never);
+
+    expect(router.push).toHaveBeenCalledWith('/add-place/position');
+  });
+
+  test('a place that could not be saved shows the red cross', async () => {
+    await renderEmpty([{ type: 'placeSaveFailed' }]);
+
+    expect(screen.getByTestId('save-failed')).toBeOnTheScreen();
+    expect(playCue).toHaveBeenCalledWith('alert');
+  });
+
+  test('with one place chosen as the start, the arrival sheet still offers « + »', async () => {
+    await renderEmpty([
+      { type: 'addPlace', place: { id: 'p1', icon: 'school', createdAt: 1 } },
+      { type: 'chooseOrigin', placeId: 'p1' },
+    ]);
+    await fireEvent.press(button('Arrivée'));
+
+    const grid = screen.getByTestId('place-grid');
+    await fireEvent(grid, 'layout', layout(300, 0));
+    expect(within(grid).getByRole('button', { name: 'Ajouter un lieu' })).toBeOnTheScreen();
   });
 });

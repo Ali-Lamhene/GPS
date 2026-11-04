@@ -15,7 +15,8 @@ import { MainActionButton } from '@/ui/components/main-action-button';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii, shadows, spacing } from '@/ui/theme';
 
-import { PlaceTile, tileLayout } from './place-tile';
+import { AddPlaceTile } from './add-place-tile';
+import { PlaceTile, TILE_RADIUS, tileLayout } from './place-tile';
 
 const CANCEL_SIZE = 56;
 
@@ -25,6 +26,8 @@ type HomePanelProps = {
   /** Places offered for the end that calls, in the order of the place sheet. */
   places: readonly Place[];
   onChoose: (place: Place) => void;
+  /** No place to offer: the only tile opens « new place here » (spec 015). */
+  onAdd: () => void;
   onCancel: () => void;
   onContinue: () => void;
   /** Room taken at the bottom of the screen, so the map frames above it. */
@@ -40,6 +43,7 @@ export function HomePanel({
   choosing,
   places,
   onChoose,
+  onAdd,
   onCancel,
   onContinue,
   onHeight,
@@ -62,8 +66,17 @@ export function HomePanel({
             snapToInterval={tile + gap}
             snapToAlignment="start"
             decelerationRate="fast"
-            contentContainerStyle={[styles.rail, { gap }, I18nManager.isRTL && styles.unmirrored]}
+            contentContainerStyle={[
+              styles.rail,
+              { gap },
+              I18nManager.isRTL && styles.unmirrored,
+              // The lone « + » of an empty home sits in the middle of the panel (spec 015).
+              places.length === 0 && styles.centred,
+            ]}
           >
+            {places.length === 0 && (
+              <AddPlaceTile size={tile} radius={TILE_RADIUS} onPress={onAdd} />
+            )}
             {places.map((place) => (
               <PlaceTile
                 key={place.id}
@@ -114,6 +127,10 @@ const styles = StyleSheet.create({
   rail: {
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs,
+  },
+  centred: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
   unmirrored: {
     // In a right-to-left layout, 'row-reverse' lays the row out left to right again.

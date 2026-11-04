@@ -21,6 +21,8 @@ export type Place = {
    * Set by whoever creates the place; still offered in the place sheet.
    */
   hiddenOnMap?: boolean;
+  /** When the place was added on this phone (ms since 1970): newest first after home. */
+  createdAt?: number;
 };
 
 /** The traveller's current position, offered as a starting point. */
