@@ -2,12 +2,14 @@ import { act, renderHook } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import type { ReactNode } from 'react';
 
-import { decodePlaces } from '@/domain/stored-places';
+import { decodePlaces, type PhotoNames } from '@/domain/stored-places';
 import { playCue } from '@/services/feedback';
 import { writePlacesFile } from '@/services/place-storage';
 
 import { TripPlanProvider, useTripPlan } from '../../trip-plan/trip-plan-context';
 import { usePlaceDraft } from '../use-place-draft';
+
+const NO_PHOTOS: PhotoNames = { toName: () => undefined, toUri: () => undefined };
 
 jest.mock('expo-router', () => ({ router: { dismissTo: jest.fn() } }));
 jest.mock('@/services/feedback', () => ({ playCue: jest.fn() }));
@@ -42,7 +44,7 @@ describe('finishing a new place (spec 015)', () => {
 
     await act(() => result.current.draft.finish());
 
-    const decoded = decodePlaces(jest.mocked(writePlacesFile).mock.calls[0]?.[0] ?? '');
+    const decoded = decodePlaces(jest.mocked(writePlacesFile).mock.calls[0]?.[0] ?? '', NO_PHOTOS);
     const written = decoded.ok ? decoded.places : [];
     expect(written.map((place) => place.icon)).toEqual(['school', 'local_hospital']);
     expect(written[1]).toMatchObject({ helpName: "l'hôpital Nord", id: expect.any(String) });

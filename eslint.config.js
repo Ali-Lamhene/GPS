@@ -33,6 +33,14 @@ const WRAPPED_PACKAGES = [
     name: 'expo-network',
     message: 'Read the network state through src/services/network.ts (spec 017).',
   },
+  {
+    name: 'expo-image-picker',
+    message: 'Pick photos through src/services/photo.ts: metadata dropped (spec 020).',
+  },
+  {
+    name: 'expo-image-manipulator',
+    message: 'Re-encode photos through src/services/photo.ts (spec 020).',
+  },
 ];
 
 /** The no-restricted-imports rule, minus the wrapped packages a module is allowed to use. */
@@ -119,6 +127,12 @@ module.exports = defineConfig([
   {
     files: ['src/services/location.ts'],
     rules: { 'no-restricted-imports': restrictedImports(['expo-location']) },
+  },
+  {
+    files: ['src/services/photo.ts'],
+    rules: {
+      'no-restricted-imports': restrictedImports(['expo-image-picker', 'expo-image-manipulator']),
+    },
   },
   {
     files: ['src/services/network.ts'],

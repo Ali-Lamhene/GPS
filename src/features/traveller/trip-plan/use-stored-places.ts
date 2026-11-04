@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Place } from '@/domain/place';
 import { decodePlaces } from '@/domain/stored-places';
+import { deleteOrphanPhotos, PHOTO_NAMES } from '@/services/photo';
 import { keepUnreadablePlacesFile, readPlacesFiles } from '@/services/place-storage';
 
 export type StoredPlaces = { kind: 'loading' } | { kind: 'ready'; places: Place[] };
@@ -16,10 +17,15 @@ export function useStoredPlaces(): StoredPlaces {
     let active = true;
     (async () => {
       const texts = await readPlacesFiles();
-      const decoded = texts.map(decodePlaces);
+      const decoded = texts.map((text) => decodePlaces(text, PHOTO_NAMES));
       if (decoded[0]?.ok === false) await keepUnreadablePlacesFile();
       const whole = decoded.find((result) => result.ok);
-      if (active) setStored({ kind: 'ready', places: whole?.ok ? whole.places : [] });
+      const places = whole?.ok ? whole.places : [];
+      // Photos of no place (a save that failed, an app closed halfway): never left behind.
+      if (whole?.ok) {
+        deleteOrphanPhotos(places.flatMap((place) => (place.photo ? [place.photo] : [])));
+      }
+      if (active) setStored({ kind: 'ready', places });
     })();
     return () => {
       active = false;

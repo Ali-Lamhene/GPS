@@ -17,23 +17,32 @@ const MAX_ID_LENGTH = 64;
 const MAX_HELP_NAME_LENGTH = 200;
 
 /**
- * What the file keeps of a place. No photo yet (spec 015): photos come with their own
- * spec, stored as separate files.
+ * What the file keeps of a place. The photo is a separate file of the app's documents
+ * (spec 020): only its name is kept here, the address is rebuilt on the phone (it changes
+ * on an iPhone at every update).
  */
 type StoredPlace = {
   id: string;
   icon: string;
+  photo?: string;
   point?: [number, number];
   helpName?: string;
   hiddenOnMap?: boolean;
   createdAt: number;
 };
 
+/** Turns a photo's local address into the name kept in the file, and back. */
+export type PhotoNames = {
+  toName: (uri: string) => string | undefined;
+  toUri: (name: string) => string | undefined;
+};
+
 /** The file's text for these places, oldest first. */
-export function encodePlaces(places: readonly Place[]): string {
+export function encodePlaces(places: readonly Place[], photos: PhotoNames): string {
   const stored = places.map((place): StoredPlace => ({
     id: place.id,
     icon: place.icon,
+    photo: place.photo ? photos.toName(place.photo) : undefined,
     point: place.point ? [place.point[0], place.point[1]] : undefined,
     helpName: place.helpName,
     hiddenOnMap: place.hiddenOnMap,
@@ -47,7 +56,7 @@ export function encodePlaces(places: readonly Place[]): string {
  * read at all (`ok: false`): the caller tries another copy. A damaged entry is skipped and
  * the others are kept.
  */
-export function decodePlaces(text: string): DecodedPlaces {
+export function decodePlaces(text: string, photos: PhotoNames): DecodedPlaces {
   if (text.length > MAX_STORED_PLACES_CHARS) return { ok: false };
   let data: unknown;
   try {
@@ -60,7 +69,7 @@ export function decodePlaces(text: string): DecodedPlaces {
     return { ok: false };
   }
   const places = data.places.flatMap((entry: unknown): Place[] => {
-    const place = decodePlace(entry);
+    const place = decodePlace(entry, photos);
     return place ? [place] : [];
   });
   const unique = places.filter(
@@ -69,9 +78,9 @@ export function decodePlaces(text: string): DecodedPlaces {
   return { ok: true, places: unique.sort((a, b) => (a.createdAt ?? 0) - (b.createdAt ?? 0)) };
 }
 
-function decodePlace(entry: unknown): Place | undefined {
+function decodePlace(entry: unknown, photos: PhotoNames): Place | undefined {
   if (!isRecord(entry)) return undefined;
-  const { id, icon, point, helpName, hiddenOnMap, createdAt } = entry;
+  const { id, icon, photo, point, helpName, hiddenOnMap, createdAt } = entry;
   if (typeof id !== 'string' || !/^[A-Za-z0-9_-]+$/.test(id) || id.length > MAX_ID_LENGTH) {
     return undefined;
   }
@@ -87,11 +96,14 @@ function decodePlace(entry: unknown): Place | undefined {
     return undefined;
   }
   if (hiddenOnMap !== undefined && typeof hiddenOnMap !== 'boolean') return undefined;
+  // A damaged photo address drops the photo, not the place.
+  const keptPhoto = typeof photo === 'string' ? photos.toUri(photo) : undefined;
 
   return {
     id,
     // A pictogram from a newer version becomes « autre lieu » (spec 011).
     icon: isCataloguePictogram(icon) ? icon : 'push_pin',
+    photo: keptPhoto,
     point: point === undefined ? undefined : [point[0], point[1]],
     helpName,
     hiddenOnMap,

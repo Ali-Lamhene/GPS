@@ -95,7 +95,8 @@ Nettoyage du 2026-11-03 (D15) : l'utilisateur juge l'interface « clair premium 
    - [ ] Autonomie donnée par l'utilisateur le 2026-11-04 : coder toutes les fonctionnalités manquantes, commits au fil de l'eau, une seule build regroupant le natif ; l'utilisateur testera tout en réel ensuite.
    - [x] Spec 018 (2026-11-04) : tout le natif en une build (mode clair, barre du bas, `expo-camera`, `expo-image-picker`, `expo-image-manipulator`, `expo-sensors`, App Links en build publiée seulement). Build de dev lancée le 2026-11-04 : https://expo.dev/accounts/otakumi/projects/GPS/builds/ddcf9a51-39c4-42f9-814f-1017cecb09a2
    - [x] Spec 019 codée (2026-11-04, relue) : recherche d'adresse Photon (E30), garder ou envoyer par lien, réception du lien (épingle et coche, une seule lecture, retour au trajet), hôtes dans `src/services/hosts.ts`. À faire côté utilisateur : dépôt `ali-lamhene.github.io` avec `.well-known/assetlinks.json` et `.nojekyll` ; tester les liens sur une build « preview ».
-   - [ ] Photo d'un lieu (E29 réelle).
+   - [x] Spec 020 codée (2026-11-04, relue) : E29 avec l'appareil photo de l'app et le sélecteur du système, photo réencodée sans métadonnées, gardée dans `Documents/photos/` (nom seul dans le fichier), caches vidés, photos orphelines effacées. **Prochaine build** : ML Kit retiré d'`expo-camera` (`plugins/with-no-camera-scanners.js`).
+   - [ ] Calcul d'un vrai trajet (spec 003) : Transitous (`api.transitous.org`, MOTIS) envisagé ; demande une licence libre du projet (condition d'usage) et un User-Agent avec contact.
 
 Reste aussi à coder la spec 006 « sens de lecture » : flèche « → » devant la direction d'un bus ou d'un métro, vérification en RTL forcé sur téléphone.
 

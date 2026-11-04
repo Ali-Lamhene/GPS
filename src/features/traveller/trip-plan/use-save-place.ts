@@ -2,6 +2,7 @@ import { useRef } from 'react';
 
 import type { Place } from '@/domain/place';
 import { encodePlaces, MAX_STORED_PLACES_CHARS } from '@/domain/stored-places';
+import { PHOTO_NAMES } from '@/services/photo';
 import { writePlacesFile } from '@/services/place-storage';
 
 import { useTripPlan } from './trip-plan-context';
@@ -26,7 +27,7 @@ export function useSavePlace(): (
     if (saving.current) return false;
     saving.current = true;
     try {
-      const text = encodePlaces([...customPlaces, place]);
+      const text = encodePlaces([...customPlaces, place], PHOTO_NAMES);
       // A file too large would not be read back: refused like a full phone.
       const saved =
         text.length > MAX_STORED_PLACES_CHARS ? { ok: false } : await writePlacesFile(text);

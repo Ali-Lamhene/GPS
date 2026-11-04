@@ -58,3 +58,17 @@ jest.mock('expo-location', () => ({
 
 // Android's navigation bar: nothing to draw in tests (spec 018).
 jest.mock('expo-navigation-bar', () => ({ NavigationBar: () => null }));
+
+// Camera, picker and image re-encoding have no Jest implementation (spec 020).
+jest.mock('expo-camera', () => ({
+  CameraView: () => null,
+  useCameraPermissions: () => [{ granted: true, canAskAgain: true }, jest.fn()],
+}));
+jest.mock('@/services/photo', () => ({
+  PHOTO_NAMES: { toName: () => undefined, toUri: () => undefined },
+  pickPhoto: jest.fn(() => Promise.resolve(undefined)),
+  keepPhoto: jest.fn(() => Promise.resolve(undefined)),
+  deletePhoto: jest.fn(),
+  deleteOrphanPhotos: jest.fn(),
+  clearPhotoCache: jest.fn(),
+}));

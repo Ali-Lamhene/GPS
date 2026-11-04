@@ -1,13 +1,15 @@
 import { act, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
-import { decodePlaces } from '@/domain/stored-places';
+import { decodePlaces, type PhotoNames } from '@/domain/stored-places';
 import { playCue } from '@/services/feedback';
 import { writePlacesFile } from '@/services/place-storage';
 import { renderWithProviders } from '@/testing/render-with-providers';
 
 import { keepPendingLink, takePendingLink } from '../pending-link';
 import { ReceivePlaceScreen } from '../receive-place-screen';
+
+const NO_PHOTOS: PhotoNames = { toName: () => undefined, toUri: () => undefined };
 
 jest.mock('expo-router', () => ({
   router: { replace: jest.fn(), back: jest.fn(), canGoBack: jest.fn(() => false) },
@@ -30,7 +32,7 @@ describe('receiving a place by link (spec 001)', () => {
     await renderWithProviders(<ReceivePlaceScreen />);
 
     expect(await screen.findByTestId('place-received')).toBeOnTheScreen();
-    const decoded = decodePlaces(jest.mocked(writePlacesFile).mock.calls[0]?.[0] ?? '');
+    const decoded = decodePlaces(jest.mocked(writePlacesFile).mock.calls[0]?.[0] ?? '', NO_PHOTOS);
     expect(decoded.ok && decoded.places[0]).toMatchObject({
       icon: 'local_hospital',
       point: [5.37722, 43.29655],

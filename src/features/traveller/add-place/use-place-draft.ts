@@ -26,18 +26,20 @@ export function usePlaceDraft() {
      * Saves the place on the phone, then returns home; the trip does not change (spec 007).
      * A place that cannot be saved is not kept at all: the home shows the error (spec 015).
      */
-    finish: async (photo?: string) => {
-      if (!draft || saving.current) return;
+    finish: async (photo?: string): Promise<boolean> => {
+      if (!draft || saving.current) return false;
       saving.current = true;
       setBusy(true);
       const place = placeFromDraft(draft, { id: newPlaceId(), createdAt: Date.now(), photo });
-      if (await savePlace(place)) {
+      const saved = await savePlace(place);
+      if (saved) {
         playCue('saved');
       } else {
         // The home plays the alert with the red cross, once it is in front (spec 015).
         dispatch({ type: 'placeSaveFailed' });
       }
       router.dismissTo('/');
+      return saved;
     },
   };
 }

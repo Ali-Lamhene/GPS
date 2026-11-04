@@ -110,7 +110,7 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Pour ajouter la photo d'un lieu.",
+          "photosPermission": false,
           "cameraPermission": false,
           "microphonePermission": false
         }
@@ -126,10 +126,12 @@
         {
           "cameraPermission": "Pour prendre la photo d'un lieu.",
           "microphonePermission": false,
-          "recordAudioAndroid": false
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": false
         }
       ],
-      "./plugins/with-no-data-extraction"
+      "./plugins/with-no-data-extraction",
+      "./plugins/with-no-camera-scanners"
     ],
     "experiments": {
       "typedRoutes": true,

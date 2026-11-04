@@ -1,5 +1,19 @@
 import type { Place } from '../place';
-import { decodePlaces, encodePlaces, MAX_STORED_PLACES_CHARS } from '../stored-places';
+import {
+  decodePlaces as decodeWith,
+  encodePlaces as encodeWith,
+  MAX_STORED_PLACES_CHARS,
+  type PhotoNames,
+} from '../stored-places';
+
+// The phone's photos folder, as the photo service rebuilds it.
+const FOLDER = 'file:///data/user/0/org.gpssanstexte.app/files/photos/';
+const PHOTOS: PhotoNames = {
+  toName: (uri) => (uri.startsWith(FOLDER) ? uri.slice(FOLDER.length) : undefined),
+  toUri: (name) => (/^[a-z0-9]{1,16}\.jpg$/.test(name) ? FOLDER + name : undefined),
+};
+const encodePlaces = (places: Parameters<typeof encodeWith>[0]) => encodeWith(places, PHOTOS);
+const decodePlaces = (text: string) => decodeWith(text, PHOTOS);
 
 const hospital: Place = {
   id: 'p1',
@@ -28,11 +42,20 @@ describe('stored places (spec 015)', () => {
     expect(read(encodePlaces([hospital, home]))).toEqual([home, hospital]);
   });
 
-  test('never keep a photo: photos come with their own spec', () => {
-    const text = encodePlaces([{ ...hospital, photo: 'file:///photo.jpg' }]);
+  test('keep only the names of the photos of the app, rebuilt on reading (spec 020)', () => {
+    const kept = `${FOLDER}abc123.jpg`;
+    const text = encodePlaces([
+      { ...hospital, photo: kept },
+      { ...home, photo: 'https://evil.example/x.jpg' },
+    ]);
 
-    expect(text).not.toContain('photo');
-    expect(read(text)[0]?.photo).toBeUndefined();
+    expect(text).toContain('"photo":"abc123.jpg"');
+    expect(text).not.toContain('evil');
+    const [first, second] = read(text);
+    expect(second?.photo).toBe(kept);
+    expect(first?.photo).toBeUndefined();
+    const outside = file([{ ...hospital, photo: '../../sdcard/DCIM/a.jpg' }]);
+    expect(read(outside)[0]?.photo).toBeUndefined();
   });
 
   test('a damaged file, or one of another version, is reported, never trusted', () => {

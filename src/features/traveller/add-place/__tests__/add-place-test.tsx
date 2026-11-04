@@ -1,6 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
+import { keepPhoto, pickPhoto } from '@/services/photo';
 import { layout, renderWithProviders } from '@/testing/render-with-providers';
 
 import { PhotoScreen } from '../photo-screen';
@@ -47,6 +48,25 @@ describe('new place', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Sans photo' }));
 
     expect(router.dismissTo).toHaveBeenCalledWith('/');
+  });
+  test('E29: a photo chosen in the picker is re-encoded, then the place saved (spec 020)', async () => {
+    jest.mocked(pickPhoto).mockResolvedValue('file:///cache/ImagePicker/a.jpg');
+    jest.mocked(keepPhoto).mockResolvedValue('file:///files/photos/abc.jpg');
+    await renderWithProviders(<PhotoScreen />, [...drafting]);
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Choisir une photo' }));
+
+    expect(keepPhoto).toHaveBeenCalledWith('file:///cache/ImagePicker/a.jpg');
+    expect(router.dismissTo).toHaveBeenCalledWith('/');
+  });
+
+  test('E29: picker closed without a photo: stay on the screen', async () => {
+    jest.mocked(pickPhoto).mockResolvedValue(undefined);
+    await renderWithProviders(<PhotoScreen />, [...drafting]);
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Choisir une photo' }));
+
+    expect(router.dismissTo).not.toHaveBeenCalled();
   });
 });
 
