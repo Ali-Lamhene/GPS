@@ -107,7 +107,7 @@ Aujourd'hui l'accueil montre des lieux de démonstration, et un lieu créé avec
 
 ## Décidé après les relectures
 
-- Android 12 et plus : le transfert direct vers un nouveau téléphone copie aussi les lieux (`allowBackup: false` ne coupe que la sauvegarde Google). Accepté par l'utilisateur le 2026-11-04 : il aide le voyageur qui change de téléphone.
+- Android 12 et plus : le transfert direct vers un nouveau téléphone copiait aussi les lieux. D'abord accepté, puis coupé par l'utilisateur le 2026-11-04 : voir la spec 016.
 - La tuile « + » seule est centrée dans le panneau (retour sur le téléphone, 2026-11-04).
 
 ## À tester sur le terrain

@@ -1,3 +1,4 @@
+import { excludeAppDataFromBackup } from '../backup-exclusion';
 import { keepUnreadablePlacesFile, readPlacesFiles, writePlacesFile } from '../place-storage';
 
 // An in-memory documents folder, with a way to make one step fail.
@@ -38,8 +39,10 @@ jest.mock('expo-file-system', () => {
       mockDisk.delete(this.name);
     }
   }
-  return { File, Paths: { document: 'documents' } };
+  return { File, Paths: { document: { uri: 'file:///documents/' } } };
 });
+
+jest.mock('../backup-exclusion', () => ({ excludeAppDataFromBackup: jest.fn() }));
 
 describe('place storage (spec 015)', () => {
   beforeEach(() => {
@@ -86,5 +89,13 @@ describe('place storage (spec 015)', () => {
     await keepUnreadablePlacesFile();
 
     expect(mockDisk.get('places.unreadable.json')).toBe('from a newer version');
+  });
+
+  test('the documents folder is kept out of backups on every read and save (spec 016)', async () => {
+    jest.mocked(excludeAppDataFromBackup).mockClear();
+    await readPlacesFiles();
+    await writePlacesFile('new');
+
+    expect(excludeAppDataFromBackup).toHaveBeenCalledTimes(2);
   });
 });

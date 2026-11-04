@@ -1,5 +1,7 @@
 import { File, Paths } from 'expo-file-system';
 
+import { excludeAppDataFromBackup } from './backup-exclusion';
+
 // Spec 015: the traveller's places live in one file of the app's private documents folder,
 // readable by this app only and kept out of Google backups (`allowBackup: false`).
 
@@ -18,6 +20,8 @@ const file = (name: string) => new File(Paths.document, name);
  * not yet moved in place, then the previous one. A save cut halfway leaves one of them whole.
  */
 export async function readPlacesFiles(): Promise<string[]> {
+  // Spec 016: the whole documents folder stays out of backups, checked at every start.
+  excludeAppDataFromBackup();
   const texts: string[] = [];
   for (const name of [MAIN, TEMPORARY, BACKUP]) {
     try {
@@ -47,6 +51,7 @@ export async function keepUnreadablePlacesFile(): Promise<void> {
  */
 export async function writePlacesFile(text: string): Promise<SaveResult> {
   const temporary = file(TEMPORARY);
+  excludeAppDataFromBackup();
   try {
     await temporary.write(text);
     const main = file(MAIN);

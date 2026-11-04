@@ -42,7 +42,10 @@ Le lien de partage est une **entrée non fiable** : n'importe qui peut en fabriq
 - Lieux et trajets : stockage privé de l'app. Le chiffrement au repos est une question ouverte (voir plus bas).
 - Photos : copiées dans le stockage privé, métadonnées EXIF (dont la position) supprimées avant enregistrement (spec 001).
 - Pas de stockage plus long que nécessaire : une donnée temporaire (photo choisie puis abandonnée, fichier de partage) est supprimée dès qu'elle ne sert plus.
-- Sauvegarde Android : `android.allowBackup` à `false` dans `app.json`, sinon les données partent dans la sauvegarde Google du compte du téléphone.
+- Aucune sauvegarde ni aucun transfert (spec 016) :
+  - Android : `android.allowBackup` à `false` dans `app.json` (sauvegarde Google, Android 11 et moins), et règles d'extraction du plugin `plugins/with-no-data-extraction.js` qui excluent tous les domaines de la sauvegarde en ligne et du transfert direct (Android 12 et plus).
+  - iPhone : `modules/backup-exclusion` marque Documents et Application Support « exclus de la sauvegarde » (iCloud et ordinateur) à chaque lancement.
+  - Une bibliothèque qui pose ses propres règles de sauvegarde les écraserait : `expo-secure-store`, si on l'ajoute, se configure avec `configureAndroidBackup: false`.
 - Presse-papiers : ne jamais y copier un lieu ou une position sans action explicite de l'accompagnateur.
 
 ## 5. Logs

@@ -65,7 +65,8 @@
         {
           "addGeneratedScheme": false
         }
-      ]
+      ],
+      "./plugins/with-no-data-extraction"
     ],
     "experiments": {
       "typedRoutes": true,
