@@ -51,7 +51,13 @@ export function PlacePin({ icon, photo, selected }: PlacePinProps) {
         ]}
       >
         {picture ? (
-          <Image source={{ uri: picture }} contentFit="cover" style={StyleSheet.absoluteFill} />
+          <Image
+            source={{ uri: picture }}
+            contentFit="cover"
+            // Never a copy in the disk cache (spec 022).
+            cachePolicy="memory"
+            style={StyleSheet.absoluteFill}
+          />
         ) : (
           <Icon
             name={icon}

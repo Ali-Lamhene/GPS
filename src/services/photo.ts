@@ -1,5 +1,6 @@
 import { Directory, File, Paths } from 'expo-file-system';
 import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
+import { Image } from 'expo-image';
 import { launchImageLibraryAsync } from 'expo-image-picker';
 
 import type { PhotoNames } from '@/domain/stored-places';
@@ -90,7 +91,14 @@ export async function keepPhoto(source: string): Promise<string | undefined> {
 
 /** Deletes a kept photo; any address outside the app's photos folder is ignored. */
 export function deletePhoto(uri: string): void {
-  if (photoName(uri)) deleteQuietly(uri);
+  if (!photoName(uri)) return;
+  deleteQuietly(uri);
+  Image.clearMemoryCache().catch(() => false);
+}
+
+/** Copies the image library kept on disk in older versions: dropped once at start. */
+export function clearImageDiskCache(): void {
+  Image.clearDiskCache().catch(() => false);
 }
 
 /** Deletes the kept photos no place uses any more (a save that failed, a place left). */

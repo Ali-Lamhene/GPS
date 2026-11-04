@@ -14,6 +14,11 @@ export async function readPlacesFiles(): Promise<string[]> {
   }
 }
 
+export async function dropPlacesBackup(): Promise<SaveResult> {
+  // No backup copy in the browser.
+  return { ok: true };
+}
+
 export async function keepUnreadablePlacesFile(): Promise<void> {
   // The browser is for development only: an unreadable entry is simply written over.
 }

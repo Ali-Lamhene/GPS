@@ -48,7 +48,13 @@ export function PlaceFace({
   }
   return (
     <>
-      <Image source={{ uri: photo }} contentFit="cover" style={StyleSheet.absoluteFill} />
+      <Image
+        source={{ uri: photo }}
+        contentFit="cover"
+        // Never a copy in the disk cache: a deleted place leaves no picture behind (spec 022).
+        cachePolicy="memory"
+        style={StyleSheet.absoluteFill}
+      />
       {badgeSize !== undefined && (
         <View
           style={[

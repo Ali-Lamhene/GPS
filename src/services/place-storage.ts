@@ -34,6 +34,20 @@ export async function readPlacesFiles(): Promise<string[]> {
   return texts;
 }
 
+/**
+ * Deletes the backup copy, once the places file is in place and whole (spec 022): after a
+ * deletion, the backup still held the deleted place.
+ */
+export async function dropPlacesBackup(): Promise<SaveResult> {
+  try {
+    const backup = file(BACKUP);
+    if (backup.exists) backup.delete();
+    return { ok: !file(BACKUP).exists };
+  } catch {
+    return { ok: false };
+  }
+}
+
 /** Keeps a copy of a places file this version cannot read, before anything writes over it. */
 export async function keepUnreadablePlacesFile(): Promise<void> {
   try {

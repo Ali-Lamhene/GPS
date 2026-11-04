@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Place } from '@/domain/place';
 import { decodePlaces } from '@/domain/stored-places';
-import { deleteOrphanPhotos, PHOTO_NAMES } from '@/services/photo';
+import { clearImageDiskCache, deleteOrphanPhotos, PHOTO_NAMES } from '@/services/photo';
 import { keepUnreadablePlacesFile, readPlacesFiles } from '@/services/place-storage';
 
 export type StoredPlaces = { kind: 'loading' } | { kind: 'ready'; places: Place[] };
@@ -16,6 +16,8 @@ export function useStoredPlaces(): StoredPlaces {
   useEffect(() => {
     let active = true;
     (async () => {
+      // Pictures an older version left in the image disk cache (spec 022).
+      clearImageDiskCache();
       const texts = await readPlacesFiles();
       const decoded = texts.map((text) => decodePlaces(text, PHOTO_NAMES));
       if (decoded[0]?.ok === false) await keepUnreadablePlacesFile();

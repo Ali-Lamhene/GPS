@@ -45,6 +45,10 @@ export function AddressScreen() {
       <View style={styles.header}>
         <IconButton icon="close" label="Fermer" onPress={close} />
         <Text style={styles.title}>Ajouter un lieu</Text>
+        <View style={styles.spacer} />
+        <Pressable accessibilityRole="button" onPress={() => router.push('/places')}>
+          <Text style={styles.link}>Lieux enregistrés</Text>
+        </Pressable>
       </View>
       <View style={styles.chip}>
         <Icon name="keyboard" size={18} color={colors.onSecondaryContainer} variant="outlined" />
@@ -193,6 +197,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  link: {
+    fontSize: 15,
+    fontFamily: fontFamilies.semiBold,
+    color: colors.emerald,
+    textDecorationLine: 'underline',
   },
   title: {
     fontSize: 22,

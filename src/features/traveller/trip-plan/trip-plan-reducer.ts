@@ -46,6 +46,7 @@ export type TripPlanAction =
   | { type: 'setDraftAddress'; helpName: string; point: LngLat; send: boolean }
   /** `keepDraft`: a place received by link while a new place is being made (spec 019). */
   | { type: 'addPlace'; place: Place; keepDraft?: boolean }
+  | { type: 'removePlace'; placeId: string }
   | { type: 'placeSaveFailed' }
   | { type: 'clearSaveFailed' }
   | { type: 'cancelPlace' }
@@ -107,6 +108,13 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
         ...state,
         customPlaces: [...state.customPlaces, action.place],
         draft: action.keepDraft ? state.draft : undefined,
+      };
+    case 'removePlace':
+      return {
+        ...state,
+        customPlaces: state.customPlaces.filter((place) => place.id !== action.placeId),
+        originId: state.originId === action.placeId ? undefined : state.originId,
+        destinationId: state.destinationId === action.placeId ? undefined : state.destinationId,
       };
     case 'placeSaveFailed':
       return { ...state, draft: undefined, saveFailed: true };

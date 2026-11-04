@@ -97,7 +97,7 @@ Nettoyage du 2026-11-03 (D15) : l'utilisateur juge l'interface « clair premium 
    - [x] Spec 019 codée (2026-11-04, relue) : recherche d'adresse Photon (E30), garder ou envoyer par lien, réception du lien (épingle et coche, une seule lecture, retour au trajet), hôtes dans `src/services/hosts.ts`. À faire côté utilisateur : dépôt `ali-lamhene.github.io` avec `.well-known/assetlinks.json` et `.nojekyll` ; tester les liens sur une build « preview ».
    - [x] Spec 020 codée (2026-11-04, relue) : E29 avec l'appareil photo de l'app et le sélecteur du système, photo réencodée sans métadonnées, gardée dans `Documents/photos/` (nom seul dans le fichier), caches vidés, photos orphelines effacées. **Prochaine build** : ML Kit retiré d'`expo-camera` (`plugins/with-no-camera-scanners.js`).
    - [x] Spec 021 codée (2026-11-04, relue) : trajets réels par Transitous (D17), calculés à l'entrée sur E06, lus strictement ; guidage construit depuis les vraies étapes et avancé par la position ; arrivée à 25 m. À faire côté utilisateur : licence libre, dépôt public.
-   - [ ] Liste de l'accompagnant : modifier, supprimer un lieu (avec sa photo).
+   - [x] Spec 022 (2026-11-04, relue) : liste des lieux côté accompagnant (envoyer, supprimer avec la photo et la copie de secours), écritures en file unique, pas de cache disque des images. **Prochaine build** : `plugins/with-no-link-from-history.js` (un vieux lien n'est jamais relu).
    - [ ] Trajets gardés sur le téléphone, hors connexion (D5).
    - [ ] Métro sans GPS : compter les arrêts (capteurs posés dans la build).
    - [ ] Spec 006 : sens de lecture, vérification en RTL.

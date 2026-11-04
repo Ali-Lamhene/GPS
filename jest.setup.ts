@@ -71,4 +71,5 @@ jest.mock('@/services/photo', () => ({
   deletePhoto: jest.fn(),
   deleteOrphanPhotos: jest.fn(),
   clearPhotoCache: jest.fn(),
+  clearImageDiskCache: jest.fn(),
 }));
