@@ -57,7 +57,7 @@
 ## Hors périmètre
 
 - Ajuster le point sur une carte après la recherche (spec 001 B.3) : le point de la suggestion est pris tel quel.
-- La page web du lien quand l'app n'est pas installée, et le fichier `assetlinks.json` : à publier sur le dépôt `ali-lamhene.github.io` (action de l'utilisateur).
+- ~~La page web du lien quand l'app n'est pas installée, et le fichier `assetlinks.json`~~ : publiés le 2026-11-05 sur le dépôt `ali-lamhene.github.io` (épingle seule, sans texte ; empreinte de la clé EAS).
 - Mise en évidence du lieu reçu sur l'accueil (pulsation).
 
 ## Critères d'acceptation

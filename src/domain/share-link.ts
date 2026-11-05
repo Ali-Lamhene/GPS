@@ -7,7 +7,9 @@ import type { Place } from './place';
 // included. No name, no photo, no address. The link is untrusted input (securite.md §3):
 // anyone can forge one, so everything else is refused.
 
-export const SHARE_LINK_BASE = 'https://ali-lamhene.github.io/gps/lieu';
+const SHARE_LINK_PAGE = 'https://ali-lamhene.github.io/gps/lieu';
+/** With its final slash: GitHub Pages answers the page without it by a redirect. */
+export const SHARE_LINK_BASE = `${SHARE_LINK_PAGE}/`;
 const VERSION = '1';
 /** About 1 m: enough for a building entrance, no more. */
 const DECIMALS = 5;
@@ -28,9 +30,10 @@ export function encodeShareLink({ point, icon }: SharedPlace): string {
 /** Whether a URL is a place link at all, before reading what it carries. */
 export function isShareLink(url: string): boolean {
   return (
+    url === SHARE_LINK_PAGE ||
     url === SHARE_LINK_BASE ||
-    url.startsWith(`${SHARE_LINK_BASE}#`) ||
-    url.startsWith(`${SHARE_LINK_BASE}/#`)
+    url.startsWith(`${SHARE_LINK_PAGE}#`) ||
+    url.startsWith(`${SHARE_LINK_BASE}#`)
   );
 }
 

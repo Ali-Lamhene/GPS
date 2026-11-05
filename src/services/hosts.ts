@@ -20,6 +20,8 @@ export const ROUTING_HOST = 'api.transitous.org';
 
 /**
  * Share links (spec 019): never called by the app. The page receives a visit only when the
- * app is not installed, never the place, which stays after `#`.
+ * app is not installed, never the place, which stays after `#`. Android itself (Google Play
+ * services) fetches `/.well-known/assetlinks.json` at install and update: Google, and the
+ * host, learn that this device or IP installed an app tied to this domain.
  */
 export const SHARE_LINK_HOST = new URL(SHARE_LINK_BASE).host;

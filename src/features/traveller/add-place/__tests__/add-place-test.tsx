@@ -92,7 +92,7 @@ describe('a place sent by the companion (spec 019)', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Envoyer' }));
 
     expect(share).toHaveBeenCalledWith({
-      message: 'https://ali-lamhene.github.io/gps/lieu#1/43.29655/5.37722/local_pharmacy',
+      message: 'https://ali-lamhene.github.io/gps/lieu/#1/43.29655/5.37722/local_pharmacy',
     });
     expect(router.dismissTo).toHaveBeenCalledWith('/');
     expect(router.push).not.toHaveBeenCalledWith('/add-place/photo');

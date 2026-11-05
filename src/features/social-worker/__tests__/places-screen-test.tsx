@@ -38,7 +38,7 @@ describe('<PlacesScreen /> (spec 022)', () => {
     await fireEvent.press(screen.getByText('Envoyer'));
 
     expect(share).toHaveBeenCalledWith({
-      message: 'https://ali-lamhene.github.io/gps/lieu#1/43.29655/5.37722/local_hospital',
+      message: 'https://ali-lamhene.github.io/gps/lieu/#1/43.29655/5.37722/local_hospital',
     });
   });
 

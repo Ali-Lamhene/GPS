@@ -168,11 +168,17 @@ Points laissés ouverts par les relectures de la spec 002 :
 **Décisions et actions de l'utilisateur, à traiter en premier :**
 
 1. ~~Licence libre et dépôt public~~ : fait le 2026-11-05 (D18). GPL-3.0-or-later ; historique réécrit avec l'adresse anonyme GitHub, dépôt GitHub recréé, privé le temps d'ajouter la licence. Dépôt public depuis le 2026-11-05 : seul l'utilisateur peut pousser ; push forcé et suppression de `main` interdits (ruleset `protect-main`) ; CI des contributeurs extérieurs soumise à approbation ; détection de secrets avec blocage au push ; signalement privé des failles ; alertes Dependabot. Le choix de Transitous (D17) reste à confirmer.
-2. Créer le dépôt **GitHub Pages `ali-lamhene.github.io`** pour les liens de partage (`.well-known/assetlinks.json`, `.nojekyll`, page de repli sans texte). Claude guide pas à pas.
+2. ~~Dépôt GitHub Pages~~ : fait le 2026-11-05. Dépôt public `Ali-Lamhene/ali-lamhene.github.io` (copie locale `../ali-lamhene.github.io`), mêmes protections que GPS. Page de repli `gps/lieu/` : épingle émeraude seule, sans texte, sans script, CSP stricte (pas l'icône de l'app : `assets/images/icon.png` est encore celle du modèle Expo). `robots.txt` sans indexation. `.well-known/assetlinks.json` avec l'empreinte de la clé de signature gérée par EAS (choix de l'utilisateur), créée sans build pour le profil `preview` (APK au vrai nom de paquet, nouveau dans `eas.json`). Relu par `security-reviewer` : liens envoyés avec la barre finale (`…/gps/lieu/#…`, évite la redirection de GitHub Pages ; les deux formes sont lues et déclarées en App Links), `SYSTEM_ALERT_WINDOW` bloquée hors build de dev (`app.config.ts`), lecture d'`assetlinks.json` par Android documentée (`hosts.ts`, `securite.md`). Reste :
+   - Confirmer que l'empreinte vient bien du keystore d'`org.gpssanstexte.app` (et non `.dev`) : `npx eas-cli credentials -p android`.
+   - Toujours lancer la build avec `--platform android` : le profil `preview` n'a pas de configuration iOS relue.
+   - Contrôles sur la première APK `preview` avant de la distribuer : `aapt dump permissions` (INTERNET, VIBRATE, localisation au premier plan, CAMERA et ce que les specs justifient, rien d'autre) ; `dataExtractionRules`, `allowBackup="false"` et `autoVerify` dans le manifeste ; pas d'activité du dev launcher ; App Link « vérifié » sur le téléphone (Réglages > Apps > Ouvrir par défaut). La spec 016 attend aussi cette build.
+   - À trancher avec la question 7 (distribution) : si la diffusion passe par Play App Signing, Google signe avec une autre clé, à ajouter dans `assetlinks.json` ; une APK installée à la main ne se mettra pas à jour depuis le Play Store.
+   - Lien ouvert sans l'app : l'URL complète (lieu compris) reste dans l'historique du navigateur, synchronisé vers Google si Chrome synchronise. L'effacer demanderait un petit script dans la page (fin du principe « aucun script »). À trancher.
+   - Compte GitHub : point unique de confiance des liens (page et `assetlinks.json`). Double authentification active.
 3. **Arbitrages de sécurité** (détail dans les specs 019 à 022) :
    - Transitous exige que les requêtes nomment l'app (en-tête) : accepter, ou lui demander un en-tête neutre ?
    - N'importe qui peut fabriquer un lien qui ajoute un lieu sans question : marquer les lieux reçus, ou une validation ?
-   - Le domaine des liens (`ali-lamhene.github.io/gps/lieu`) contient le nom du développeur et dit la fonction de l'app : domaine neutre ?
+   - ~~Domaine des liens~~ : `ali-lamhene.github.io` gardé pour l'instant (décidé le 2026-11-05) ; un vrai domaine neutre après les premiers retours des bêta-testeurs.
    - Faut-il déconseiller, ou ne pas proposer, les photos des lieux cachés de la carte (domicile, famille) ?
 
 **Puis tester toute l'app en réel** avec la build complète (dernière build de dev dans EAS) : l'installer à la place de l'ancienne (les lieux de test seront effacés). Les liens de partage ne s'ouvrent pas dans la build de dev (voulu) : il faudra une build « preview ».
@@ -188,5 +194,5 @@ Points laissés ouverts par les relectures de la spec 002 :
 
 - Vérifications sur appareil : le téléphone se connecte au serveur Metro par le Wi-Fi ou le partage de connexion (`EXPO_OFFLINE=1 REACT_NATIVE_PACKAGER_HOSTNAME=<ip> npx expo start --dev-client --host lan`, puis QR code `gps-dev://expo-development-client/?url=…`). Pas d'adb sur la machine (`sudo apt install adb` pour l'adb sans fil).
 - Sauvegardes de l'ancien historique hors dépôt, à garder ou effacer : `../GPS-backup-20261105.git` et `../GPS-backup-20261105.tar.gz` (elles contiennent l'ancienne adresse).
-- Créer le dépôt GitHub Pages `ali-lamhene.github.io` (page du lien de partage, fichiers App Links / Universal Links).
+- Icône de l'app : `assets/images/icon.png` est encore celle du modèle Expo, à créer avant la première build distribuée.
 - Compte Apple développeur, quand on attaquera l'iPhone.

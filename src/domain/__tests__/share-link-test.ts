@@ -10,6 +10,18 @@ describe('share link (spec 001)', () => {
     expect(decodeShareLink(link)).toEqual({ ok: true, place: hospital });
   });
 
+  test('reads the page with or without its final slash, nothing close to it', () => {
+    const hash = '#1/43.29655/5.37722/local_hospital';
+    const page = 'https://ali-lamhene.github.io/gps/lieu';
+
+    expect(SHARE_LINK_BASE).toBe(`${page}/`);
+    expect(decodeShareLink(`${page}${hash}`)).toEqual({ ok: true, place: hospital });
+    expect(decodeShareLink(`${page}/${hash}`)).toEqual({ ok: true, place: hospital });
+    for (const lookalike of [`${page}x${hash}`, `${page}//${hash}`, `${page}/x${hash}`]) {
+      expect(decodeShareLink(lookalike)).toEqual({ ok: false, reason: 'not-a-place-link' });
+    }
+  });
+
   test('rounds to about a metre', () => {
     const link = encodeShareLink({ point: [5.377221234, 43.296551234], icon: 'school' });
 

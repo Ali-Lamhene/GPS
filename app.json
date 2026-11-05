@@ -44,6 +44,11 @@
               "scheme": "https",
               "host": "ali-lamhene.github.io",
               "path": "/gps/lieu"
+            },
+            {
+              "scheme": "https",
+              "host": "ali-lamhene.github.io",
+              "path": "/gps/lieu/"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
