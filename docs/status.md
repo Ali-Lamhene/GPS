@@ -111,7 +111,7 @@ Reste aussi à coder la spec 006 « sens de lecture » : flèche « → » devan
 - « + » flottant (spec 008) : peut se lire comme une croix de pharmacie ; un voyageur en détresse peut le garder enfoncé 3 s (formulaire en texte). À observer lors des tests avec des voyageurs.
 - Halo de la pastille à remplir sans son ni vibration (choix de l'utilisateur, dérogation à la règle des deux canaux) : à observer en test.
 - Bouton d'attribution « i » de la carte : une lettre qui ouvre du texte (ancien).
-- Sécurité (relecture MapLibre natif, 2026-11-03) : clé de signature de production gérée par EAS (dépend de la sécurité du compte Expo) ou keystore local / Play App Signing, à décider avant le premier build publié ; activer la double authentification sur le compte Expo ; profil EAS de production sans `developmentClient` ni `expo-updates` ; source de la position pour les specs 003/004 (le fournisseur « network » d'Android envoie les Wi-Fi vus à Google : imposer le GPS seul ?) ; avant le premier build iOS, vérifier qu'aucune requête ne part au montage de la carte et ajouter un suffixe au `bundleIdentifier` de dev.
+- Sécurité (relecture MapLibre natif, 2026-11-03) : clé de signature de production gérée par EAS (dépend de la sécurité du compte Expo) ou keystore local / Play App Signing, à décider avant le premier build publié ; double authentification active sur les comptes Expo et GitHub (2026-11-05) ; profil EAS de production sans `developmentClient` ni `expo-updates` ; source de la position pour les specs 003/004 (le fournisseur « network » d'Android envoie les Wi-Fi vus à Google : imposer le GPS seul ?) ; avant le premier build iOS, vérifier qu'aucune requête ne part au montage de la carte et ajouter un suffixe au `bundleIdentifier` de dev.
 - Sécurité : le schéma `gps://` reste déclaré dans `app.json` ; `securite.md` §3 le réserve au développement. Le retirer des builds publiés ? (Les écrans d'ajout renvoient déjà à l'accueil sans brouillon, `RequireDraft`.)
 - À tester sur le terrain : le voyageur retrouve-t-il son nouveau lieu dans le carrousel ? Le bord coupé donne-t-il l'idée de glisser jusqu'à « … » ?
 - À tester sur le terrain (relecture UX de la spec 008) : l'anneau vert qui se vide est-il lu comme « le virage approche » (et pas « échec ») ? Le halo suffit-il pour qu'on touche d'abord le départ ? La carte « ici » et le « + » bleus se distinguent-ils ? La maison orange visible dès l'ouverture gêne-t-elle devant un tiers ?
@@ -166,7 +166,7 @@ Points laissés ouverts par les relectures de la spec 002 :
 
 **Décisions et actions de l'utilisateur, à traiter en premier :**
 
-1. ~~Licence libre et dépôt public~~ : fait le 2026-11-05 (D18). GPL-3.0-or-later ; historique réécrit avec l'adresse anonyme GitHub, dépôt GitHub recréé, privé le temps d'ajouter la licence. **Reste à faire (utilisateur) : repasser `Ali-Lamhene/GPS` en public.** Le choix de Transitous (D17) reste à confirmer.
+1. ~~Licence libre et dépôt public~~ : fait le 2026-11-05 (D18). GPL-3.0-or-later ; historique réécrit avec l'adresse anonyme GitHub, dépôt GitHub recréé, privé le temps d'ajouter la licence. Dépôt public depuis le 2026-11-05 : seul l'utilisateur peut pousser ; push forcé et suppression de `main` interdits (ruleset `protect-main`) ; CI des contributeurs extérieurs soumise à approbation ; détection de secrets avec blocage au push ; signalement privé des failles ; alertes Dependabot. Le choix de Transitous (D17) reste à confirmer.
 2. Créer le dépôt **GitHub Pages `ali-lamhene.github.io`** pour les liens de partage (`.well-known/assetlinks.json`, `.nojekyll`, page de repli sans texte). Claude guide pas à pas.
 3. **Arbitrages de sécurité** (détail dans les specs 019 à 022) :
    - Transitous exige que les requêtes nomment l'app (en-tête) : accepter, ou lui demander un en-tête neutre ?
@@ -186,6 +186,6 @@ Points laissés ouverts par les relectures de la spec 002 :
 ## En attente côté humain
 
 - Vérifications sur appareil : le téléphone se connecte au serveur Metro par le Wi-Fi ou le partage de connexion (`EXPO_OFFLINE=1 REACT_NATIVE_PACKAGER_HOSTNAME=<ip> npx expo start --dev-client --host lan`, puis QR code `gps-dev://expo-development-client/?url=…`). Pas d'adb sur la machine (`sudo apt install adb` pour l'adb sans fil).
-- Repasser le dépôt `Ali-Lamhene/GPS` en public (licence ajoutée, D18). Sauvegardes de l'ancien historique hors dépôt, à garder ou effacer : `../GPS-backup-20261105.git` et `../GPS-backup-20261105.tar.gz` (elles contiennent l'ancienne adresse).
+- Sauvegardes de l'ancien historique hors dépôt, à garder ou effacer : `../GPS-backup-20261105.git` et `../GPS-backup-20261105.tar.gz` (elles contiennent l'ancienne adresse).
 - Créer le dépôt GitHub Pages `ali-lamhene.github.io` (page du lien de partage, fichiers App Links / Universal Links).
 - Compte Apple développeur, quand on attaquera l'iPhone.
