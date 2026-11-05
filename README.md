@@ -1,56 +1,31 @@
-# Welcome to your Expo app 👋
+# GPS sans texte
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Application de navigation pour les personnes qui ne savent pas lire. L'interface du voyageur ne contient ni texte ni chiffres : pictogrammes, photos, couleurs, sons et vibrations. Une personne qui sait lire (accompagnant, travailleur social) prépare les lieux dans la même application.
 
-## Get started
+Aucun compte, aucune donnée d'identité, aucun serveur à nous. Les lieux et les trajets restent sur le téléphone. Quelques services publics tiers reçoivent malgré tout des données, listées plus bas. Détail : `docs/product/decisions.md` (D1) et `docs/engineering/securite.md`.
 
-1. Install dependencies
+Projet en développement, Expo / React Native, Android d'abord.
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Développer
 
 ```bash
-npm run reset-project
+npm install
+npm run check        # lint, types, format, tests
+npx expo start --web # interface dans le navigateur
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+Documentation produit et technique dans `docs/` (personas, principes, décisions, specs, règles de code).
 
-### Other setup steps
+## Services tiers et ce qu'ils reçoivent
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+Liste tenue à jour dans `src/services/hosts.ts`.
 
-## Learn more
+- [Transitous](https://transitous.org), calcul des trajets à partir de données ouvertes de transport ([sources](https://github.com/public-transport/transitous)) : le point de départ, le point d'arrivée, l'heure, le nom de l'app avec l'adresse de ce dépôt (condition d'usage), l'adresse IP.
+- [OpenFreeMap](https://openfreemap.org), carte (données © les contributeurs [OpenStreetMap](https://www.openstreetmap.org/copyright)) : l'adresse IP et les zones affichées.
+- [Photon](https://photon.komoot.io), recherche d'adresse, partie accompagnant seulement : le texte tapé, la position arrondie à environ 1 km, l'adresse IP.
+- Services Google Play (Android) : la position passe par le système, et Android vérifie les liens de partage auprès de leur domaine.
+- GitHub Pages : héberge la page des liens de partage. Elle n'est visitée que si l'app n'est pas installée, et ne reçoit jamais le lieu, qui reste après `#`.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Licence
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+GPL-3.0-or-later, voir `LICENSE`. Toute version modifiée et distribuée doit publier son code sous la même licence.

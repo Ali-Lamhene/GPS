@@ -1,6 +1,7 @@
 {
   "name": "gps",
   "version": "1.0.0",
+  "license": "GPL-3.0-or-later",
   "main": "expo-router/entry",
   "dependencies": {
     "@expo-google-fonts/material-symbols-rounded": "^0.4.64",

@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-11-04
+**Dernière mise à jour** : 2026-11-05
 
 ## Où on en est
 
@@ -77,7 +77,7 @@ Nettoyage du 2026-11-03 (D15) : l'utilisateur juge l'interface « clair premium 
    - [x] Code (2026-11-03, relu deux fois par `security-reviewer`) : `@maplibre/maplibre-react-native` 11.5.1 (version exacte), `expo-dev-client`, `expo-asset` (dépendance manquante d'`expo-audio`) ; `TripMap` natif (`src/ui/map/trip-map.tsx`, marqueurs `map-markers.tsx`, crédit ⓘ `map-texts.tsx`) ; réseau et logs de MapLibre coupés (`native-map-setup.ts`) ; archive lue seulement depuis un `file://` (`localTilesUrl`) ; permissions de localisation bloquées ; ESLint limite le paquet à `src/ui/map` sans ses modules à risque ; identifiant `org.gpssanstexte.app`, build de dev `org.gpssanstexte.app.dev` (schéma `gps-dev`, `app.config.ts`, `APP_VARIANT`) ; `eas.json` profil `development` (APK).
    - [ ] `eas init` (compte Expo `otakumi`, choisi par l'utilisateur), puis `npx eas-cli build --profile development --platform android`, installation de l'APK sur le téléphone, `npx expo start --dev-client --offline`.
    - [x] Build de dev Android terminée (2026-11-03, 2e essai après la correction des icônes) : APK à installer.
-   - [x] APK de dev installée sur le téléphone de l'utilisateur (2026-11-04) et app ouverte, connectée au serveur Metro par le partage de connexion du téléphone (le Wi-Fi d'entreprise isole les appareils) : `EXPO_OFFLINE=1 npx expo start --dev-client --host lan`, URL saisie à la main `http://<ip-du-pc>:8081`. Rechargement en direct confirmé. Pas d'adb : l'utilisateur regarde l'écran et répond (adb sans fil possible avec `sudo apt install adb`).
+   - [x] APK de dev installée sur le téléphone de l'utilisateur (2026-11-04) et app ouverte, connectée au serveur Metro par le partage de connexion du téléphone : `EXPO_OFFLINE=1 npx expo start --dev-client --host lan`, URL saisie à la main `http://<ip-du-pc>:8081`. Rechargement en direct confirmé. Pas d'adb : l'utilisateur regarde l'écran et répond (adb sans fil possible avec `sudo apt install adb`).
    - [ ] Vérifier sur le téléphone : tuiles affichées avec le réseau de MapLibre coupé (forme `pmtiles://file:///…` non confirmée par la doc), aucune `MapLibreConfigurationException` dans logcat, épingles touchables, recentrage, crédit ⓘ ; `aapt dump permissions` sur l'APK (rien d'autre que `INTERNET`, plus `SYSTEM_ALERT_WINDOW` en debug). Puis spec 002 au statut `livré`.
 3. [ ] Refonte visuelle selon la maquette émeraude, écran par écran.
    - [x] Accueil : spec 009 livrée dans le navigateur (2026-11-03, relue par `ux-sans-texte-reviewer`). Carte crème et point de position émeraude sur tous les écrans ; pilule épingle ····· drapeau ; épingles en goutte ; panneau de tuiles carrées ; « + » émeraude ; pictogrammes au trait ; composants `PlaceFace`, `PlaceTile`, `pin-shape.ts`, jetons `emerald`, `warmWhite`, `warmEdge`. À revoir sur le téléphone avec la build de dev.
@@ -148,7 +148,7 @@ Points laissés ouverts par les relectures de la spec 002 :
 3. Recalcul quand le voyageur se perd : en ligne via un service public (envoie la position), ou seulement le ramener vers le tracé prévu, sans réseau ?
 4. Voix : audios préenregistrés dans les langues des voyageurs, ou seulement sons et vibrations ?
 5. Heure du rendez-vous : rappel « pars maintenant » ? Comment montrer une heure sans chiffres ?
-6. Licence du projet : la maquette v7 utilise Material Symbols (Apache 2.0) ; si des pictogrammes ARASAAC reviennent, licence compatible CC BY-NC-SA.
+6. ~~Licence du projet~~ : GPL-3.0-or-later (D18). ARASAAC (CC BY-NC-SA) incompatible : ne pas le réintroduire.
 7. Distribution : Play Store et App Store, ou aussi APK installé par les associations ?
 8. Tests : travailleurs sociaux / voyageurs prêts à tester des maquettes tôt ?
 9. Création d'un lieu par le voyageur lui-même (« je suis ici » + photo) : spec ultérieure.
@@ -166,7 +166,7 @@ Points laissés ouverts par les relectures de la spec 002 :
 
 **Décisions et actions de l'utilisateur, à traiter en premier :**
 
-1. Choisir une **licence libre** pour le projet et **rendre le dépôt public** : condition d'usage de Transitous, le service qui calcule les trajets (D17, choisi par Claude en autonomie : seul service sans compte qui couvre les transports en commun français ; à confirmer).
+1. ~~Licence libre et dépôt public~~ : fait le 2026-11-05 (D18). GPL-3.0-or-later ; historique réécrit avec l'adresse anonyme GitHub, dépôt GitHub recréé, privé le temps d'ajouter la licence. **Reste à faire (utilisateur) : repasser `Ali-Lamhene/GPS` en public.** Le choix de Transitous (D17) reste à confirmer.
 2. Créer le dépôt **GitHub Pages `ali-lamhene.github.io`** pour les liens de partage (`.well-known/assetlinks.json`, `.nojekyll`, page de repli sans texte). Claude guide pas à pas.
 3. **Arbitrages de sécurité** (détail dans les specs 019 à 022) :
    - Transitous exige que les requêtes nomment l'app (en-tête) : accepter, ou lui demander un en-tête neutre ?
@@ -174,7 +174,7 @@ Points laissés ouverts par les relectures de la spec 002 :
    - Le domaine des liens (`ali-lamhene.github.io/gps/lieu`) contient le nom du développeur et dit la fonction de l'app : domaine neutre ?
    - Faut-il déconseiller, ou ne pas proposer, les photos des lieux cachés de la carte (domicile, famille) ?
 
-**Puis tester toute l'app en réel** avec la build complète (https://expo.dev/accounts/otakumi/projects/GPS/builds/ef0b3be7-85ee-492e-9a0f-c19c4af368d4) : l'installer à la place de l'ancienne (les lieux de test seront effacés). Les liens de partage ne s'ouvrent pas dans la build de dev (voulu) : il faudra une build « preview ».
+**Puis tester toute l'app en réel** avec la build complète (dernière build de dev dans EAS) : l'installer à la place de l'ancienne (les lieux de test seront effacés). Les liens de partage ne s'ouvrent pas dans la build de dev (voulu) : il faudra une build « preview ».
 
 **Ce qui reste pour une app complète (Claude, en autonomie) :**
 
@@ -185,8 +185,7 @@ Points laissés ouverts par les relectures de la spec 002 :
 
 ## En attente côté humain
 
-- Pousser les commits : le shell de Claude n'a pas d'identifiants GitHub. Installer `gh` puis `gh auth login`, ou ajouter la clé SSH à GitHub.
 - Vérifications sur appareil : le téléphone se connecte au serveur Metro par le Wi-Fi ou le partage de connexion (`EXPO_OFFLINE=1 REACT_NATIVE_PACKAGER_HOSTNAME=<ip> npx expo start --dev-client --host lan`, puis QR code `gps-dev://expo-development-client/?url=…`). Pas d'adb sur la machine (`sudo apt install adb` pour l'adb sans fil).
-- Choisir une licence pour le projet (le fichier `LICENSE` du template Expo a été supprimé) : libre, condition de Transitous (voir « Reprise du 2026-11-05 »).
+- Repasser le dépôt `Ali-Lamhene/GPS` en public (licence ajoutée, D18). Sauvegardes de l'ancien historique hors dépôt, à garder ou effacer : `../GPS-backup-20261105.git` et `../GPS-backup-20261105.tar.gz` (elles contiennent l'ancienne adresse).
 - Créer le dépôt GitHub Pages `ali-lamhene.github.io` (page du lien de partage, fichiers App Links / Universal Links).
 - Compte Apple développeur, quand on attaquera l'iPhone.

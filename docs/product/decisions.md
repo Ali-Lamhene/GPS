@@ -121,3 +121,12 @@ Pour la première version, l'app copie et simplifie le comportement des applis d
 ## D17. Calcul des trajets par Transitous (2026-11-04, spec 021)
 
 Les trajets (à pied, transports, voiture) sont calculés par **Transitous** (`api.transitous.org`), service communautaire gratuit et libre, depuis le téléphone du voyageur (D4). Il reçoit le départ, l'arrivée, l'heure et l'adresse IP, et l'en-tête nomme l'app (condition d'usage). Choisi par Claude en autonomie (2026-11-04) : seul service sans clé ni compte qui couvre les transports en commun français ; à confirmer par l'utilisateur. Conditions : projet sous licence libre et non commercial, lien vers ses sources de données.
+
+## D18. Licence GPL-3.0 et dépôt public (2026-11-05)
+
+Le projet est sous licence **GPL-3.0-or-later** (fichier `LICENSE`, champ `license` de `package.json`), choisie par l'utilisateur, seul auteur et détenteur des droits. Toute version modifiée et distribuée doit publier son code sous la même licence : personne ne peut fermer une copie. Le dépôt `Ali-Lamhene/GPS` devient public, ce qui remplit la condition de Transitous (D17). Aucune licence libre n'interdit l'usage commercial : la condition « non commercial » de Transitous porte sur le projet, qui reste gratuit (D7).
+
+- Sécurité : le code public ne fragilise pas D1, qui ne repose sur aucun secret ; il permet aux associations de vérifier que l'app n'envoie rien. Avant publication, l'historique a été réécrit pour que les commits portent l'adresse anonyme GitHub (`78800250+Ali-Lamhene@users.noreply.github.com`, réglée pour ce dépôt seulement) et non l'adresse personnelle de l'auteur ; le dépôt GitHub a été recréé pour qu'aucune ancienne référence ne la garde. Aucun secret trouvé dans l'historique.
+- Copies piégées : la licence permet à n'importe qui de publier une version modifiée. La parade est une source officielle unique (stores, APK signée par la clé du projet) connue des associations, à fixer avant la première diffusion.
+- Contributions : tant que l'utilisateur est le seul auteur, il peut publier sur l'App Store. Si des contributeurs extérieurs arrivent, leur faire accepter un accord de contribution avant de fusionner leur code.
+- Compatibilité : Material Symbols (Apache 2.0), MapLibre (BSD) et les photos CC BY / CC BY-SA sont compatibles. Les pictogrammes ARASAAC (CC BY-NC-SA) ne le sont pas : ne pas les réintroduire.
