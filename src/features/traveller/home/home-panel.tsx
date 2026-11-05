@@ -1,6 +1,5 @@
 import {
   I18nManager,
-  Pressable,
   ScrollView,
   StyleSheet,
   useWindowDimensions,
@@ -11,15 +10,12 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CURRENT_POSITION, type Place } from '@/domain/place';
-import { MainActionButton } from '@/ui/components/main-action-button';
-import { Icon } from '@/ui/icon/icon';
+import { CancelConfirm } from '@/ui/components/cancel-confirm';
 import { colors, radii, shadows, spacing } from '@/ui/theme';
 
 import { AddPlaceTile } from './add-place-tile';
 import type { HereUnavailable } from './here-state';
 import { PlaceTile, TILE_RADIUS, tileLayout } from './place-tile';
-
-const CANCEL_SIZE = 56;
 
 type HomePanelProps = {
   /** True while an end of the way waits for a place: the tiles show; else cancel and go. */
@@ -104,17 +100,12 @@ export function HomePanel({
           entering={FadeInDown.springify().damping(18)}
           style={styles.actions}
         >
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Annuler"
-            onPress={onCancel}
-            style={({ pressed }) => [styles.cancel, pressed && styles.pressed]}
-          >
-            <Icon name="close" size={28} color={colors.ink} />
-          </Pressable>
-          <View style={styles.continue}>
-            <MainActionButton icon="check" label="Continuer" tone="emerald" onPress={onContinue} />
-          </View>
+          <CancelConfirm
+            onCancel={onCancel}
+            onConfirm={onContinue}
+            cancelLabel="Annuler"
+            confirmLabel="Continuer"
+          />
         </Animated.View>
       )}
     </View>
@@ -147,26 +138,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
   },
   actions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
     paddingHorizontal: spacing.md,
-  },
-  cancel: {
-    width: CANCEL_SIZE,
-    height: CANCEL_SIZE,
-    borderRadius: CANCEL_SIZE / 2,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.warmEdge,
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxShadow: shadows.warm,
-  },
-  continue: {
-    flex: 1,
-  },
-  pressed: {
-    transform: [{ scale: 0.96 }],
   },
 });

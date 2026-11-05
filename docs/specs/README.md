@@ -24,3 +24,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 020 | [Photo d'un lieu](020-photo-d-un-lieu.md)                                                         | validé (à vérifier sur téléphone)                      |
 | 021 | [Vrai trajet et guidage par la position](021-vrai-trajet-et-guidage.md)                           | validé (à vérifier sur téléphone)                      |
 | 022 | [Liste des lieux de l'accompagnant](022-liste-des-lieux.md)                                       | validé (à vérifier sur téléphone)                      |
+| 023 | [Accepter ou refuser un lieu reçu par lien](023-accepter-un-lieu-recu.md)                         | validé                                                 |

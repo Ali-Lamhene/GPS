@@ -23,7 +23,7 @@
 
 ### Recevoir (voyageur)
 
-6. Le voyageur touche le lien. L'app s'ouvre sur un écran blanc chaud : le lieu est ajouté aussitôt, sans question ; coche verte qui grandit, son et vibration « enregistré » ; puis l'accueil.
+6. ~~Le lieu est ajouté aussitôt, sans question.~~ Révisé par la spec 023 : le voyageur voit le lieu sur la carte et l'accepte (✓) ou le refuse (✕). Après ✓ : coche verte qui grandit, son et vibration « enregistré » ; puis l'écran d'avant.
 7. Le même lien deux fois : aucun doublon (même pictogramme à moins de 15 m) ; même confirmation.
 8. Lien abîmé, d'une version future ou forgé : rien n'est ajouté ; croix rouge, son et vibration d'alerte ; puis l'accueil.
 

@@ -1,16 +1,25 @@
-import { router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { BackHandler, StyleSheet, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import type { LngLat } from '@/domain/geo';
 import { pictogramName } from '@/domain/pictograms';
 import { hiddenOnMapByDefault } from '@/domain/place';
+import { receivedPlaceCamera } from '@/domain/received-place';
 import { decodeShareLink, findSamePlace } from '@/domain/share-link';
 import { playCue } from '@/services/feedback';
+import { useIsOffline } from '@/services/network';
+import { CancelConfirm } from '@/ui/components/cancel-confirm';
+import { HelpButton } from '@/ui/components/help-button';
+import { MapHeader } from '@/ui/components/map-header';
 import { PlacePin } from '@/ui/components/place-pin';
 import { Icon } from '@/ui/icon/icon';
-import { colors, shadows } from '@/ui/theme';
+import { TripMap } from '@/ui/map/trip-map';
+import { colors, shadows, spacing } from '@/ui/theme';
 
+import { positionPoint, useTravellerPosition } from '../location/location-context';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { newPlaceId, useSavePlace } from '../trip-plan/use-save-place';
 import { takePendingLink } from './pending-link';
@@ -21,23 +30,48 @@ const SHOWN_MS = 1800;
 const GIVE_UP_MS = 4000;
 const DISC_SIZE = 120;
 const CHECK_SIZE = 64;
+const RECEIVED_PIN_ID = 'received';
+/** Height of the ✕ and ✓ row, kept clear of the map's own buttons. */
+const ANSWER_HEIGHT = 56;
 
-type Outcome = { kind: 'saving' } | { kind: 'added' } | { kind: 'failed' };
+type Outcome =
+  | { kind: 'asking' }
+  | { kind: 'saving' }
+  | { kind: 'added' }
+  | { kind: 'refused' }
+  | { kind: 'failed' };
+
+/** Back to the screen the link came over (a trip in progress), else the home. */
+function leave() {
+  if (router.canGoBack()) router.back();
+  else router.replace('/');
+}
 
 /**
- * A share link touched in WhatsApp or a text message (specs 001 D, 019): the place is added
- * at once, without a question; its pin and a green check, with the « saved » sound and
- * vibration; then back to where the traveller was. A damaged or forged link adds nothing:
- * red cross and the alert. The same place twice gives no duplicate. The link is read once,
- * from the system's hand-over only (securite.md §3).
+ * A share link touched in WhatsApp or a text message (specs 019, 023). Anyone can forge a
+ * link, so a new place only comes in after the traveller's ✓: first the place on the map,
+ * then ✕ or ✓. Nothing is kept before ✓, nor after ✕ or Android's back. A place already
+ * kept shows its check at once; a damaged link, the red cross. The link is read once, from
+ * the system's hand-over only (securite.md §3).
  */
 export function ReceivePlaceScreen() {
+  const insets = useSafeAreaInsets();
   const [url] = useState(takePendingLink);
   const { customPlaces } = useTripPlan();
+  const { position } = useTravellerPosition();
+  const offline = useIsOffline();
   const savePlace = useSavePlace();
+  // One answer, and the first one wins: a ✓ landing just after ✕ or back never saves.
+  const [answer, setAnswer] = useState<'yes' | 'no' | null>(null);
+  const accepted = answer === 'yes';
   const [saveFailed, setSaveFailed] = useState(false);
   const [gaveUp, setGaveUp] = useState(false);
   const started = useRef(false);
+  const traveller = positionPoint(position);
+  // The frame takes the traveller where they stood when the question came: it does not
+  // jump with every new GPS point while they look.
+  const [frameFrom, setFrameFrom] = useState<LngLat | undefined>(traveller);
+  if (!frameFrom && traveller) setFrameFrom(traveller);
 
   const decoded = url === null ? null : decodeShareLink(url);
   const shared = decoded?.ok ? decoded.place : undefined;
@@ -47,13 +81,24 @@ export function ReceivePlaceScreen() {
       ? { kind: 'failed' }
       : known
         ? { kind: 'added' }
-        : gaveUp
-          ? { kind: 'failed' }
-          : { kind: 'saving' };
+        : answer === 'no'
+          ? { kind: 'refused' }
+          : !accepted
+            ? { kind: 'asking' }
+            : gaveUp
+              ? { kind: 'failed' }
+              : { kind: 'saving' };
 
-  // A new place: saved once; it then shows as known, that is added.
+  const refuse = useCallback(() => setAnswer((before) => before ?? 'no'), []);
+  const accept = useCallback(() => setAnswer((before) => before ?? 'yes'), []);
+  const asking = outcome.kind === 'asking';
+
+  // A link handed over while this screen was open is never read later (securite.md §3).
+  useEffect(() => () => void takePendingLink(), []);
+
+  // The place is saved once, only after ✓; it then shows as known, that is added.
   useEffect(() => {
-    if (started.current || !shared || known) return;
+    if (answer !== 'yes' || started.current || !shared || known) return;
     started.current = true;
     savePlace(
       {
@@ -69,23 +114,88 @@ export function ReceivePlaceScreen() {
     ).then((saved) => {
       if (!saved) setSaveFailed(true);
     });
-  }, [shared, known, savePlace]);
+  }, [answer, shared, known, savePlace]);
 
   useEffect(() => {
+    if (!accepted) return;
     const timer = setTimeout(() => setGaveUp(true), GIVE_UP_MS);
     return () => clearTimeout(timer);
-  }, []);
+  }, [accepted]);
+
+  // A question waits: the sound and vibration the traveller knows from choosing.
+  useEffect(() => {
+    if (asking) playCue('select');
+  }, [asking]);
+
+  // Android's back answers ✕, only while this screen is in front: back from the help card
+  // over it closes the help, never the question.
+  useFocusEffect(
+    useCallback(() => {
+      if (!asking) return undefined;
+      const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+        refuse();
+        return true;
+      });
+      return () => subscription.remove();
+    }, [asking, refuse]),
+  );
 
   useEffect(() => {
-    if (outcome.kind === 'saving') return;
+    if (outcome.kind === 'refused') {
+      // Refusing is no mistake: no cross, no alarm, the screen just closes.
+      playCue('select');
+      leave();
+      return;
+    }
+    if (outcome.kind !== 'added' && outcome.kind !== 'failed') return;
     playCue(outcome.kind === 'added' ? 'saved' : 'alert');
-    // Back to the screen the link came over (a trip in progress), else the home.
-    const timer = setTimeout(
-      () => (router.canGoBack() ? router.back() : router.replace('/')),
-      SHOWN_MS,
-    );
+    const timer = setTimeout(leave, SHOWN_MS);
     return () => clearTimeout(timer);
   }, [outcome.kind]);
+
+  if (outcome.kind === 'asking' && shared) {
+    const answerBottom = insets.bottom + spacing.lg;
+    return (
+      <View testID="place-question" style={styles.question}>
+        {offline ? (
+          // No tiles without network: the pin alone, on the map's ground (warm white is
+          // kept for the result, so the question never looks done).
+          <View style={styles.pinAlone}>
+            <PlacePin icon={shared.icon} photo={undefined} selected />
+          </View>
+        ) : (
+          <TripMap
+            camera={{
+              ...receivedPlaceCamera(shared.point, frameFrom),
+              padding: { top: insets.top + 96, bottom: answerBottom + ANSWER_HEIGHT + spacing.lg },
+            }}
+            controlsBottom={answerBottom + ANSWER_HEIGHT + 8}
+            // The recenter button brings the received place back, not the traveller.
+            recenterIcon={shared.icon}
+            traveller={traveller ? { point: traveller } : undefined}
+            pins={[
+              {
+                id: RECEIVED_PIN_ID,
+                point: shared.point,
+                icon: shared.icon,
+                label: pictogramName(shared.icon),
+                selected: true,
+              },
+            ]}
+          />
+        )}
+        <MapHeader right={<HelpButton onPress={() => router.push('/help')} />} />
+        <View style={[styles.answer, { bottom: answerBottom }]}>
+          <CancelConfirm
+            onCancel={refuse}
+            onConfirm={accept}
+            cancelLabel="Refuser ce lieu"
+            confirmLabel="Ajouter ce lieu"
+          />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.screen}>
@@ -116,6 +226,20 @@ export function ReceivePlaceScreen() {
 }
 
 const styles = StyleSheet.create({
+  question: {
+    flex: 1,
+    backgroundColor: colors.mapGround,
+  },
+  pinAlone: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  answer: {
+    position: 'absolute',
+    left: spacing.gutter,
+    right: spacing.gutter,
+  },
   screen: {
     flex: 1,
     backgroundColor: colors.warmWhite,
