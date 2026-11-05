@@ -12,7 +12,7 @@ type RequireDraftProps = {
 
 /**
  * The new place screens (E27-E30) only open from the home « + » (spec 007). A link such as
- * `gps://add-place/address` would otherwise skip the 3 second hold and show the companion's
+ * `yalla-dev://add-place/address` (development build) would otherwise skip the 3 second hold and show the companion's
  * text to the traveller (D8, docs/engineering/securite.md): without a draft, back home.
  */
 export function RequireDraft({ source, children }: RequireDraftProps) {

@@ -13,8 +13,8 @@ export const ADDRESS_SEARCH_HOST = 'photon.komoot.io';
 
 /**
  * Trip computation (D4, spec 021): Transitous, a free community service (MOTIS). Receives
- * the start and the arrival points, the time, the app's name with its project address (its
- * terms ask for them), and the IP address.
+ * the start and the arrival points, the time, the app's commercial name with a contact
+ * mailbox (its terms ask for them, D19), and the IP address.
  */
 export const ROUTING_HOST = 'api.transitous.org';
 

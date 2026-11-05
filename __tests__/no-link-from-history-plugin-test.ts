@@ -4,7 +4,7 @@ import withNoLinkFromHistory from '../plugins/with-no-link-from-history';
 type Activity = { language: string; contents: string };
 type ActivityMod = (config: { modResults: Activity }) => Promise<{ modResults: Activity }>;
 
-const MAIN_ACTIVITY = `package org.gpssanstexte.app
+const MAIN_ACTIVITY = `package io.github.alilamhene.yalla
 class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     setTheme(R.style.AppTheme);

@@ -25,8 +25,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...base,
     name: `${base.name} dev`,
-    // Its own link scheme too: a gps:// link never opens the development build.
-    scheme: 'gps-dev',
+    // Only the development build has a link scheme, for the development client and Metro.
+    // Published builds have none (D19): Expo Router falls back to « / » without one, and
+    // only verified https links open them.
+    scheme: 'yalla-dev',
     android: {
       ...base.android,
       package: `${base.android?.package ?? ''}${DEV_SUFFIX}`,

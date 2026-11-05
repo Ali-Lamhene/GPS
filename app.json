@@ -1,17 +1,16 @@
 {
   "expo": {
-    "name": "GPS",
+    "name": "Yalla",
     "slug": "GPS",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "gps",
     "userInterfaceStyle": "light",
     "ios": {
       "icon": "./assets/expo.icon"
     },
     "android": {
-      "package": "org.gpssanstexte.app",
+      "package": "io.github.alilamhene.yalla",
       "allowBackup": false,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",

@@ -7,7 +7,7 @@ import {
 } from '../stored-places';
 
 // The phone's photos folder, as the photo service rebuilds it.
-const FOLDER = 'file:///data/user/0/org.gpssanstexte.app/files/photos/';
+const FOLDER = 'file:///data/user/0/io.github.alilamhene.yalla/files/photos/';
 const PHOTOS: PhotoNames = {
   toName: (uri) => (uri.startsWith(FOLDER) ? uri.slice(FOLDER.length) : undefined),
   toUri: (name) => (/^[a-z0-9]{1,16}\.jpg$/.test(name) ? FOLDER + name : undefined),

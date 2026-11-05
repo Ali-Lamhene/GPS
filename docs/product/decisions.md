@@ -130,3 +130,13 @@ Le projet est sous licence **GPL-3.0-or-later** (fichier `LICENSE`, champ `licen
 - Copies piégées : la licence permet à n'importe qui de publier une version modifiée. La parade est une source officielle unique (stores, APK signée par la clé du projet) connue des associations, à fixer avant la première diffusion.
 - Contributions : tant que l'utilisateur est le seul auteur, il peut publier sur l'App Store. Si des contributeurs extérieurs arrivent, leur faire accepter un accord de contribution avant de fusionner leur code.
 - Compatibilité : Material Symbols (Apache 2.0), MapLibre (BSD) et les photos CC BY / CC BY-SA sont compatibles. Les pictogrammes ARASAAC (CC BY-NC-SA) ne le sont pas : ne pas les réintroduire.
+
+## D19. Nom commercial « Yalla » (2026-11-05)
+
+L'app s'appelle **Yalla** (nom sous l'icône ; « Yalla dev » pour la build de développement), choisi par l'utilisateur. Le dépôt `Ali-Lamhene/GPS`, le dossier de travail et le projet EAS (`slug` « GPS ») gardent leur nom.
+
+- Identifiant Android : `io.github.alilamhene.yalla` (`.dev` pour la build de développement), au lieu de `org.gpssanstexte.app` qui disait la fonction de l'app à qui regarde les réglages d'un téléphone fouillé. Fondé sur le domaine `ali-lamhene.github.io`, déjà au projet. Changé avant toute build distribuée : nouvelle clé de signature EAS et nouvelle empreinte dans `assetlinks.json`.
+- Schéma de lien : aucun dans la build publiée, qui ne s'ouvre que par les liens `https://` vérifiés ; `yalla-dev://` dans la build de développement. Expo Router 58 démarre sans schéma (repli sur « / »), à confirmer au premier lancement de la build `preview` (démarrage, lien https à froid et à chaud).
+- En-tête envoyé à Transitous (D17) : `Yalla/1.0 (otakumi.factory@gmail.com)`. Ses conditions demandent le nom, la version et un contact (e-mail ou site) ; ni le nom ni l'adresse ne disent à quoi sert l'app. Un test le vérifie.
+- Limite assumée : l'identifiant `io.github.alilamhene.yalla` mène au compte GitHub, dont le dépôt public `GPS` décrit le but de l'app. Le nom et l'identifiant trompent un regard rapide, pas une recherche de deux clics. Un identifiant fondé sur un domaine neutre ne peut venir qu'avant la première diffusion : l'identifiant ne change plus ensuite.
+- Homonymes : « Yalla » est aussi le nom d'apps grand public (chat vocal Yalla, Yalla Ludo). Possible confusion dans un magasin d'apps ; aucun effet sur les liens, qui sont en https.

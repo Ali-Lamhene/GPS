@@ -14,7 +14,7 @@ You receive some of: a spec path in `docs/specs/`, changed files or a diff comma
 
 1. **Data leaving the phone**: every network call, its host, what it sends (body, query, headers, IP). Is it listed in the spec's « Données et confidentialité » section? HTTPS only? Hosts centralised in `src/services/`?
 2. **Dependencies**: new or upgraded packages in `package.json`. Do they phone home, add telemetry, ads, push, remote config, crash reporting? Add native code or permissions? Are they in `eslint/forbidden-packages.js` and should they be? Use `npm view <pkg>` to check what they are.
-3. **Share link and deep links**: decoding treats input as untrusted, schema-validated, size-limited, unknown versions rejected, no eval or URL built from content. No route that acts on open from its params. No preparation route reachable from an external link. No place carried over the `gps://` scheme.
+3. **Share link and deep links**: decoding treats input as untrusted, schema-validated, size-limited, unknown versions rejected, no eval or URL built from content. No route that acts on open from its params. No preparation route reachable from an external link. Published builds declare no link scheme (D19); no place carried over the development `yalla-dev://` scheme.
 4. **Storage**: private app storage only, secure store for secrets, EXIF stripped from photos, temporary files deleted, nothing in shared storage or clipboard without explicit action. `android.allowBackup` false.
 5. **Logs and errors**: no `console.*`, no coordinates, links or phone numbers in error messages or thrown errors.
 6. **Permissions**: requested when needed, foreground location only unless a spec says otherwise, unused permissions blocked in `app.json`.

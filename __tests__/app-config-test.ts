@@ -66,8 +66,10 @@ describe('app config', () => {
   });
 
   test('gives the development build its own package, apart from the published app', () => {
-    expect(resolve().android?.package).toBe('org.gpssanstexte.app');
-    expect(resolve('development').android?.package).toBe('org.gpssanstexte.app.dev');
-    expect(resolve('development').scheme).toBe('gps-dev');
+    expect(resolve().android?.package).toBe('io.github.alilamhene.yalla');
+    expect(resolve('development').android?.package).toBe('io.github.alilamhene.yalla.dev');
+    expect(resolve('development').scheme).toBe('yalla-dev');
+    // Published builds open verified https links only, through no scheme (D19).
+    expect(resolve().scheme).toBeUndefined();
   });
 });
