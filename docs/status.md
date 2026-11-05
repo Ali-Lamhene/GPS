@@ -165,6 +165,10 @@ Points laissés ouverts par les relectures de la spec 002 :
     - sans voix locale, quel signal sans texte montre que « écouter » ne marche pas ? La partie préparation doit-elle vérifier la voix et aider à l'installer ?
 14. Avant le premier build natif : bloquer `SYSTEM_ALERT_WINDOW` en version publiée, vérifier `NSAllowsArbitraryLoads` (HTTPS seulement) sur iOS après prebuild, contrôler l'APK avec `aapt dump permissions`.
 
+## Prochaine étape (fin du 2026-11-05)
+
+Tout ce qui devait précéder la build `preview` est fait : licence et dépôt public, site des liens et `assetlinks.json`, nom Yalla (D19), confirmation d'un lieu reçu (spec 023), crédits (spec 024), icône et démarrage (spec 025). Prochaine action : lancer `npx eas-cli build --profile preview --platform android` (accord de l'utilisateur), faire les contrôles de l'APK listés au point 2 ci-dessous, puis tester toute l'app sur le téléphone. Ensuite, en autonomie : trajets hors connexion (D5), métro sans GPS, spec 006 (droite à gauche), effacement rapide.
+
 ## Reprise du 2026-11-05 (décidé le 2026-11-04 au soir)
 
 **Décisions et actions de l'utilisateur, à traiter en premier :**
