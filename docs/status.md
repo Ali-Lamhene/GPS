@@ -167,7 +167,20 @@ Points laissés ouverts par les relectures de la spec 002 :
 
 ## Prochaine étape (fin du 2026-11-05)
 
-Tout ce qui devait précéder la build `preview` est fait : licence et dépôt public, site des liens et `assetlinks.json`, nom Yalla map (D19), confirmation d'un lieu reçu (spec 023), crédits (spec 024), icône et démarrage (spec 025). Prochaine action : lancer `npx eas-cli build --profile preview --platform android` (accord de l'utilisateur), faire les contrôles de l'APK listés au point 2 ci-dessous, puis tester toute l'app sur le téléphone. Ensuite, en autonomie : trajets hors connexion (D5), métro sans GPS, spec 006 (droite à gauche), effacement rapide.
+L'utilisateur lance lui-même la build `preview` (`npx eas-cli build --profile preview --platform android`) et teste l'app en conditions réelles pendant quelques jours. **À la reprise** : recueillir ses retours de terrain, contrôler l'APK `preview` (lien de la build à fournir : permissions avec `aapt dump permissions`, `allowBackup="false"` et `dataExtractionRules`, `autoVerify` des liens, aucune activité du client de dev), puis préparer la bêta sur les stores.
+
+Préparation de la bêta sur les stores (liste à compléter avec l'utilisateur) :
+
+- Explications des permissions : textes iOS (`NSLocationWhenInUseUsageDescription`, `NSCameraUsageDescription`, `NSPhotoLibraryUsageDescription`) ; côté Android, déclarations de la Play Console (localisation au premier plan, appareil photo) ; écran d'explication avant la demande système, en pictogrammes pour le voyageur (spec à faire).
+- Play Console : formulaire « Sécurité des données » (position traitée sur le téléphone, envoyée à Transitous et OpenFreeMap ; texte tapé à Photon), politique de confidentialité publiée (page sur `ali-lamhene.github.io`), classification du contenu, public cible, accès à l'app, pas de publicité.
+- Test fermé Google Play : un compte développeur personnel récent doit faire tester l'app par au moins 12 personnes pendant 14 jours avant la production (règle à revérifier).
+- Clé de signature : Play App Signing ou clé EAS seule ; si Google signe, ajouter sa 2e empreinte dans `assetlinks.json`.
+- Fiche du store : description, captures d'écran, icône 512 px, image de présentation 1024 × 500.
+- iPhone : compte Apple développeur, `bundleIdentifier`, TestFlight, étiquettes de confidentialité d'Apple, Universal Links (`apple-app-site-association` sur le site des liens).
+- Revérifier la marque « Yalla map » sur TMview (FR, EM, WO ; classes 9, 39, 42).
+- Ménage : retirer `expo-web-browser` (inutilisé), traiter les 4 alertes Dependabot (`zod`, `glob`, `minimatch`, `deepmerge`), trancher la source de la position (fournisseur « network » d'Android).
+
+Ensuite, en autonomie : trajets hors connexion (D5), métro sans GPS, spec 006 (droite à gauche), effacement rapide des lieux.
 
 ## Reprise du 2026-11-05 (décidé le 2026-11-04 au soir)
 
