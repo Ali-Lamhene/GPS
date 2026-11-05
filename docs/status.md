@@ -180,8 +180,9 @@ L'utilisateur lance lui-même la build `preview` (`npx eas-cli build --profile p
 5. On ne peut pas toucher les épingles de la carte pour choisir un lieu (sur téléphone).
 6. Le bouton de géolocalisation (recentrer) est une cible ; il devrait être une épingle.
 7. Recherche d'adresse (E30) : après le choix d'une suggestion, « Garder sur ce téléphone » est visible mais « Envoyer par lien au voyageur », en dessous, est caché par le clavier ; on ne comprend pas tout de suite qu'il existe.
+8. Retirer le choix « voiture » des modes de transport (E06) : décision de l'utilisateur, révise D2. À spécifier (spec du choix du transport, calcul des trajets de la spec 021, D2).
 
-À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6).
+À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6, 8).
 
 Préparation de la bêta sur les stores (liste à compléter avec l'utilisateur) :
 
