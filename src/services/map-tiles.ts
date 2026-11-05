@@ -10,5 +10,8 @@ export { MAP_TILES_HOST };
 /** TileJSON of the OpenStreetMap vector tiles (OpenMapTiles schema). */
 export const MAP_TILES_URL = `https://${MAP_TILES_HOST}/planet/latest`;
 
-/** Credit required by the tiles' licences, folded behind ⓘ (D9). */
-export const MAP_CREDIT = '© OpenFreeMap © OpenMapTiles © OpenStreetMap';
+/**
+ * Credit required by the tiles' licences, and by Transitous for the trips (spec 024), folded
+ * behind ⓘ (D9). Plain text: nothing in it opens a website.
+ */
+export const MAP_CREDIT = '© OpenFreeMap © OpenMapTiles © OpenStreetMap · Trajets : Transitous';

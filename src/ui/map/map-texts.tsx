@@ -77,8 +77,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   creditText: {
+    flexShrink: 1,
     color: colors.ink,
     fontSize: 12,
     paddingRight: 10,
+    paddingVertical: 4,
   },
 });

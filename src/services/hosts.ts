@@ -25,3 +25,15 @@ export const ROUTING_HOST = 'api.transitous.org';
  * host, learn that this device or IP installed an app tied to this domain.
  */
 export const SHARE_LINK_HOST = new URL(SHARE_LINK_BASE).host;
+
+/**
+ * Credit pages (spec 024): never called by the app. Opened in the phone's browser only when
+ * the companion touches a credit link (E30); the site then gets the phone's IP address, as
+ * any visit. Fixed addresses: nothing in them comes from a place or a search.
+ */
+export const CREDIT_PAGES = {
+  /** Transitous asks for a visible link to the sources of its data (D17). */
+  routingSources: 'https://transitous.org/sources/',
+  /** OpenStreetMap's attribution guidelines, for the map and the address search. */
+  openStreetMap: 'https://www.openstreetmap.org/copyright',
+} as const;

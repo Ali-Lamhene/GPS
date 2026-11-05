@@ -74,6 +74,8 @@ describe('<TripMap /> on the phone', () => {
 
     await fireEvent.press(credit);
 
-    expect(screen.getByText('© OpenFreeMap © OpenMapTiles © OpenStreetMap')).toBeOnTheScreen();
+    expect(
+      screen.getByText('© OpenFreeMap © OpenMapTiles © OpenStreetMap · Trajets : Transitous'),
+    ).toBeOnTheScreen();
   });
 });

@@ -179,7 +179,7 @@ Points laissés ouverts par les relectures de la spec 002 :
    - Compte GitHub : point unique de confiance des liens (page et `assetlinks.json`). Double authentification active.
 3. **Arbitrages de sécurité** (détail dans les specs 019 à 022) :
    - ~~En-tête Transitous~~ : `Yalla/1.0 (otakumi.factory@gmail.com)` (D19, 2026-11-05).
-   - **Conditions de Transitous non remplies dans l'app** : un lien vers https://transitous.org/sources/ « à un endroit visible » (et l'attribution OpenStreetMap). Aujourd'hui seul le README le cite. À spécifier (partie accompagnant, ou crédit ⓘ de la carte) avant de distribuer une build.
+   - ~~Crédit Transitous~~ : spec 024 livrée (2026-11-05) : « Trajets : Transitous » dans le ⓘ de la carte, liens vers les sources de Transitous et le copyright OpenStreetMap sur E30 (accompagnant). `expo-web-browser`, inutilisé, reste dans `package.json` (modèle Expo) : à retirer avec une relecture sécurité.
    - ~~Lien forgé~~ (décidé le 2026-11-05) : à la réception, le voyageur voit le lieu et choisit en pictogrammes d'accepter ou de refuser l'ajout ; les accompagnants briefent les voyageurs (ne pas ouvrir un lien d'un inconnu). Spec 023 livrée dans le navigateur (2026-11-05, relue par `ux-sans-texte-reviewer` et `security-reviewer`), à vérifier sur téléphone avec la build `preview`.
    - ~~Domaine des liens~~ : `ali-lamhene.github.io` gardé pour l'instant (décidé le 2026-11-05) ; un vrai domaine neutre après les premiers retours des bêta-testeurs.
    - ~~Photos des lieux cachés~~ (décidé le 2026-11-05) : autorisées comme aujourd'hui, sans avertissement. La photo aide le voyageur à reconnaître sa porte ; risque accepté si le téléphone est fouillé.

@@ -41,6 +41,16 @@ const WRAPPED_PACKAGES = [
     name: 'expo-image-manipulator',
     message: 'Re-encode photos through src/services/photo.ts (spec 020).',
   },
+  // Opening a URL can send a place to a third party (geo:, tel:, a maps site): never with
+  // these; react-native's Linking is limited below (spec 024).
+  {
+    name: 'expo-linking',
+    message: 'Open URLs through src/services/credits.ts, fixed pages only (spec 024, securite.md).',
+  },
+  {
+    name: 'expo-web-browser',
+    message: 'Open URLs through src/services/credits.ts, fixed pages only (spec 024, securite.md).',
+  },
 ];
 
 /** The no-restricted-imports rule, minus the wrapped packages a module is allowed to use. */
@@ -51,6 +61,16 @@ function restrictedImports(allow = [], allowedMapNames = [], allowTesting = fals
     {
       paths: [
         ...wrapped,
+        ...(allow.includes('Linking')
+          ? []
+          : [
+              {
+                name: 'react-native',
+                importNames: ['Linking'],
+                message:
+                  'Open URLs through src/services/credits.ts (fixed pages, spec 024) or location.ts (settings), securite.md.',
+              },
+            ]),
         {
           name: 'react-native-svg',
           importNames: ['SvgUri', 'SvgCssUri', 'SvgFromUri', 'UriProps'],
@@ -168,7 +188,12 @@ module.exports = defineConfig([
   },
   {
     files: ['src/services/location.ts'],
-    rules: { 'no-restricted-imports': restrictedImports(['expo-location']) },
+    // Linking opens the phone's location settings, nothing else.
+    rules: { 'no-restricted-imports': restrictedImports(['expo-location', 'Linking']) },
+  },
+  {
+    files: ['src/services/credits.ts'],
+    rules: { 'no-restricted-imports': restrictedImports(['Linking']) },
   },
   {
     files: ['src/services/photo.ts'],
@@ -211,6 +236,7 @@ module.exports = defineConfig([
           'expo-location',
           'expo-network',
           '@maplibre/maplibre-react-native',
+          'Linking',
         ],
         ['TransformRequestManager', 'OfflineManager'],
         true,

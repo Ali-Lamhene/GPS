@@ -9,6 +9,7 @@ import {
   useTravellerPosition,
 } from '@/features/traveller/location/location-context';
 import { useTripPlan } from '@/features/traveller/trip-plan/trip-plan-context';
+import { openCreditPage } from '@/services/credits';
 import { IconButton } from '@/ui/components/icon-button';
 import { Icon } from '@/ui/icon/icon';
 import { colors, fontFamilies, radii } from '@/ui/theme';
@@ -100,6 +101,25 @@ export function AddressScreen() {
         La recherche passe par Photon (OpenStreetMap), qui reçoit le texte tapé, la position
         approximative du téléphone et son adresse IP. Le lien contient le lieu exact : préférez une
         messagerie chiffrée (Signal, WhatsApp) au SMS.
+      </Text>
+      {/* Spec 024: Transitous asks for a visible link to its sources; OpenStreetMap, its credit. */}
+      <Text style={styles.note}>
+        Crédits : itinéraires par Transitous (
+        <Text
+          accessibilityRole="link"
+          style={styles.noteLink}
+          onPress={() => openCreditPage('routingSources')}
+        >
+          sources des données
+        </Text>
+        ) · carte et adresses ©{' '}
+        <Text
+          accessibilityRole="link"
+          style={styles.noteLink}
+          onPress={() => openCreditPage('openStreetMap')}
+        >
+          les contributeurs d’OpenStreetMap
+        </Text>
       </Text>
     </View>
   );
@@ -281,5 +301,10 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     fontFamily: fontFamilies.regular,
     color: colors.inkMuted,
+  },
+  noteLink: {
+    color: colors.emerald,
+    fontFamily: fontFamilies.semiBold,
+    textDecorationLine: 'underline',
   },
 });

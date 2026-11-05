@@ -1,6 +1,8 @@
 import { fireEvent, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
+import { openCreditPage } from '@/services/credits';
+
 import { searchAddresses } from '@/services/address-search';
 import { renderWithProviders } from '@/testing/render-with-providers';
 
@@ -8,6 +10,7 @@ import { AddressScreen } from '../address-screen';
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), dismissTo: jest.fn() } }));
 jest.mock('@/services/address-search', () => ({ searchAddresses: jest.fn() }));
+jest.mock('@/services/credits', () => ({ openCreditPage: jest.fn() }));
 
 const PORT = {
   name: 'Pharmacie du Port',
@@ -35,6 +38,15 @@ describe('<AddressScreen /> (spec 001, 019)', () => {
       expect.anything(),
     );
     expect(router.push).toHaveBeenCalledWith('/add-place/pictogram');
+  });
+
+  test('credits Transitous and OpenStreetMap, each link opening its fixed page (spec 024)', async () => {
+    await renderWithProviders(<AddressScreen />, [{ type: 'startPlace', source: 'address' }]);
+
+    await fireEvent.press(screen.getByText('sources des données'));
+    await fireEvent.press(screen.getByText('les contributeurs d’OpenStreetMap'));
+
+    expect(jest.mocked(openCreditPage).mock.calls).toEqual([['routingSources'], ['openStreetMap']]);
   });
 
   test('no network: says so in French', async () => {

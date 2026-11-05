@@ -322,9 +322,12 @@ const styles = StyleSheet.create({
   veil: {
     backgroundColor: 'rgba(244,241,234,.6)',
   },
+  // Unfolded, the credit wraps before the column of round buttons on the right (spec 024).
   credit: {
     position: 'absolute',
     left: 12,
+    right: 112,
+    alignItems: 'flex-start',
   },
   recenter: {
     position: 'absolute',

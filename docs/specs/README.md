@@ -25,3 +25,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 021 | [Vrai trajet et guidage par la position](021-vrai-trajet-et-guidage.md)                           | validé (à vérifier sur téléphone)                      |
 | 022 | [Liste des lieux de l'accompagnant](022-liste-des-lieux.md)                                       | validé (à vérifier sur téléphone)                      |
 | 023 | [Accepter ou refuser un lieu reçu par lien](023-accepter-un-lieu-recu.md)                         | validé                                                 |
+| 024 | [Crédits des sources de données](024-credits-des-sources.md)                                      | livré (ⓘ natif à vérifier sur téléphone)               |
