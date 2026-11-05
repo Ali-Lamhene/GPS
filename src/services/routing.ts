@@ -9,7 +9,7 @@ import { ROUTING_HOST } from './hosts';
 // ask for the app's name, its version and a contact (e-mail or website) in the User-Agent:
 // the commercial name only, and a mailbox that says nothing of what the app is for (D19).
 
-const USER_AGENT = 'Yalla/1.0 (otakumi.factory@gmail.com)';
+const USER_AGENT = 'YallaMap/1.0 (otakumi.factory@gmail.com)';
 /** Walking or driving longer than two hours is no trip for this app. */
 const MAX_DIRECT_SECONDS = 7200;
 /** No answer after this: treated as no network, never an endless wait. */

@@ -1,6 +1,6 @@
-# Yalla
+# Yalla map
 
-Yalla est une application de navigation pour les personnes qui ne savent pas lire. L'interface du voyageur ne contient ni texte ni chiffres : pictogrammes, photos, couleurs, sons et vibrations. Une personne qui sait lire (accompagnant, travailleur social) prépare les lieux dans la même application.
+Yalla map est une application de navigation pour les personnes qui ne savent pas lire. L'interface du voyageur ne contient ni texte ni chiffres : pictogrammes, photos, couleurs, sons et vibrations. Une personne qui sait lire (accompagnant, travailleur social) prépare les lieux dans la même application.
 
 Aucun compte, aucune donnée d'identité, aucun serveur à nous. Les lieux et les trajets restent sur le téléphone. Quelques services publics tiers reçoivent malgré tout des données, listées plus bas. Détail : `docs/product/decisions.md` (D1) et `docs/engineering/securite.md`.
 

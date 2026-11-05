@@ -143,7 +143,7 @@ Points laissés ouverts par les relectures de la spec 002 :
 
 ## Questions produit ouvertes
 
-- **Nom définitif avant le Play Store** (D19) : « Yalla » est une marque de Yalla Group (apps), et d'autres apps portent ce nom ; « Yallaa » ou « Yalla app » restent trop proches. Garder « Yalla » pour la bêta (APK privée), choisir un nom distinct et vérifié (TMview, Play Store) avant toute publication en magasin.
+- ~~Nom définitif~~ : « Yalla map » (D19, 2026-11-05) ; aucune marque « Yalla » active en France pour les classes 9, 39, 42 (vérifié par l'utilisateur sur TMview). Refaire la vérification avant le Play Store.
 
 0. Refonte émeraude (D15), à trancher dans sa spec : que montre la pilule du haut de l'accueil (épingle de départ, pointillés, drapeau) quand aucun trajet n'est choisi ? Comment se traduisent les autres écrans (guidage, récapitulatif, métro sombre, aide) qui n'apparaissent pas sur la maquette ?
 1. Zone : France au lancement (D14). Reste à choisir la ou les villes pilotes (conditionne les données de transports en commun et la taille des cartes hors connexion).
@@ -167,7 +167,7 @@ Points laissés ouverts par les relectures de la spec 002 :
 
 ## Prochaine étape (fin du 2026-11-05)
 
-Tout ce qui devait précéder la build `preview` est fait : licence et dépôt public, site des liens et `assetlinks.json`, nom Yalla (D19), confirmation d'un lieu reçu (spec 023), crédits (spec 024), icône et démarrage (spec 025). Prochaine action : lancer `npx eas-cli build --profile preview --platform android` (accord de l'utilisateur), faire les contrôles de l'APK listés au point 2 ci-dessous, puis tester toute l'app sur le téléphone. Ensuite, en autonomie : trajets hors connexion (D5), métro sans GPS, spec 006 (droite à gauche), effacement rapide.
+Tout ce qui devait précéder la build `preview` est fait : licence et dépôt public, site des liens et `assetlinks.json`, nom Yalla map (D19), confirmation d'un lieu reçu (spec 023), crédits (spec 024), icône et démarrage (spec 025). Prochaine action : lancer `npx eas-cli build --profile preview --platform android` (accord de l'utilisateur), faire les contrôles de l'APK listés au point 2 ci-dessous, puis tester toute l'app sur le téléphone. Ensuite, en autonomie : trajets hors connexion (D5), métro sans GPS, spec 006 (droite à gauche), effacement rapide.
 
 ## Reprise du 2026-11-05 (décidé le 2026-11-04 au soir)
 
@@ -182,7 +182,7 @@ Tout ce qui devait précéder la build `preview` est fait : licence et dépôt p
    - Lien ouvert sans l'app : l'URL complète (lieu compris) reste dans l'historique du navigateur, synchronisé vers Google si Chrome synchronise. L'effacer demanderait un petit script dans la page (fin du principe « aucun script »). À trancher.
    - Compte GitHub : point unique de confiance des liens (page et `assetlinks.json`). Double authentification active.
 3. **Arbitrages de sécurité** (détail dans les specs 019 à 022) :
-   - ~~En-tête Transitous~~ : `Yalla/1.0 (otakumi.factory@gmail.com)` (D19, 2026-11-05).
+   - ~~En-tête Transitous~~ : `YallaMap/1.0 (otakumi.factory@gmail.com)` (D19, 2026-11-05).
    - ~~Crédit Transitous~~ : spec 024 livrée (2026-11-05) : « Trajets : Transitous » dans le ⓘ de la carte, liens vers les sources de Transitous et le copyright OpenStreetMap sur E30 (accompagnant). `expo-web-browser`, inutilisé, reste dans `package.json` (modèle Expo) : à retirer avec une relecture sécurité.
    - ~~Lien forgé~~ (décidé le 2026-11-05) : à la réception, le voyageur voit le lieu et choisit en pictogrammes d'accepter ou de refuser l'ajout ; les accompagnants briefent les voyageurs (ne pas ouvrir un lien d'un inconnu). Spec 023 livrée dans le navigateur (2026-11-05, relue par `ux-sans-texte-reviewer` et `security-reviewer`), à vérifier sur téléphone avec la build `preview`.
    - ~~Domaine des liens~~ : `ali-lamhene.github.io` gardé pour l'instant (décidé le 2026-11-05) ; un vrai domaine neutre après les premiers retours des bêta-testeurs.
@@ -199,7 +199,7 @@ Tout ce qui devait précéder la build `preview` est fait : licence et dépôt p
 
 ## En attente côté humain
 
-- Nom « Yalla » (D19) : nouvel identifiant Android, donc **nouvelle build de dev nécessaire** (`npx eas-cli build --profile development --platform android`) ; l'ancienne app de dev (`org.gpssanstexte.app.dev`) reste installée à côté, à désinstaller. Le serveur Metro se joint maintenant par le schéma `yalla-dev://`.
+- Nom « Yalla map » (D19) : nouvel identifiant Android, donc **nouvelle build de dev nécessaire** (`npx eas-cli build --profile development --platform android`) ; l'ancienne app de dev (`org.gpssanstexte.app.dev`) reste installée à côté, à désinstaller. Le serveur Metro se joint maintenant par le schéma `yalla-dev://`.
 
 - Vérifications sur appareil : le téléphone se connecte au serveur Metro par le Wi-Fi ou le partage de connexion (`EXPO_OFFLINE=1 REACT_NATIVE_PACKAGER_HOSTNAME=<ip> npx expo start --dev-client --host lan`, puis QR code `yalla-dev://expo-development-client/?url=…`). Pas d'adb sur la machine (`sudo apt install adb` pour l'adb sans fil).
 - Sauvegardes de l'ancien historique hors dépôt, à garder ou effacer : `../GPS-backup-20261105.git` et `../GPS-backup-20261105.tar.gz` (elles contiennent l'ancienne adresse).

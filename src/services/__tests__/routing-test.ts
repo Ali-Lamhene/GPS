@@ -14,7 +14,7 @@ describe('findRoute (spec 021, D19)', () => {
     const [url, init] = fetchMock.mock.calls[0] ?? [];
     expect(String(url)).toMatch(/^https:\/\/api\.transitous\.org\//);
     const agent = (init as RequestInit).headers as Record<string, string>;
-    expect(agent['User-Agent']).toBe('Yalla/1.0 (otakumi.factory@gmail.com)');
+    expect(agent['User-Agent']).toBe('YallaMap/1.0 (otakumi.factory@gmail.com)');
     // Nothing that leads to what the app is for (D19).
     expect(agent['User-Agent']).not.toMatch(/github|gps|texte/i);
   });

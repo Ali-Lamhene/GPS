@@ -29,7 +29,7 @@ Aucune donnée, aucun appel. Les images sont dans l'app.
 
 ## Hors périmètre
 
-- Pas d'icône distincte pour la build de développement (« Yalla dev » garde la même icône ; son nom la distingue).
+- Pas d'icône distincte pour la build de développement (« Yalla map dev » garde la même icône ; son nom la distingue).
 - Pas d'écran de démarrage sombre : l’app reste en mode clair (`userInterfaceStyle: "light"`, spec 018).
 - Pas d'animation de démarrage.
 
