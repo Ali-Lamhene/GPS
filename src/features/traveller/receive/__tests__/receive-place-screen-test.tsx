@@ -17,7 +17,7 @@ jest.mock('expo-router', () => ({
 jest.mock('@/services/feedback', () => ({ playCue: jest.fn() }));
 jest.mock('@/services/place-storage', () => ({ writePlacesFile: jest.fn() }));
 
-const LINK = 'https://ali-lamhene.github.io/gps/lieu#1/43.29655/5.37722/local_hospital';
+const LINK = 'https://ali-lamhene.github.io/l#1/43.29655/5.37722/local_hospital';
 
 describe('receiving a place by link (spec 001)', () => {
   beforeEach(() => {

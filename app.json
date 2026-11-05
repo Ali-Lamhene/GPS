@@ -42,12 +42,12 @@
             {
               "scheme": "https",
               "host": "ali-lamhene.github.io",
-              "path": "/gps/lieu"
+              "path": "/l"
             },
             {
               "scheme": "https",
               "host": "ali-lamhene.github.io",
-              "path": "/gps/lieu/"
+              "path": "/l/"
             }
           ],
           "category": ["BROWSABLE", "DEFAULT"]

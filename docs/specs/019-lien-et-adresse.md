@@ -29,7 +29,7 @@
 
 ## Format du lien
 
-`https://ali-lamhene.github.io/gps/lieu#1/<latitude>/<longitude>/<pictogramme>` : version, point à 5 décimales (environ 1 m), nom du pictogramme du catalogue. Rien d'autre : ni nom, ni adresse, ni photo. La partie après `#` n'est envoyée à aucun serveur. Décodage strict (`src/domain/share-link.ts`) : longueur maximale, version, bornes, nombres, pictogramme connu ; tout le reste est refusé.
+`https://ali-lamhene.github.io/l/#1/<latitude>/<longitude>/<pictogramme>` (chemin neutre depuis D19, ancien `/gps/lieu`) : version, point à 5 décimales (environ 1 m), nom du pictogramme du catalogue. Rien d'autre : ni nom, ni adresse, ni photo. La partie après `#` n'est envoyée à aucun serveur. Décodage strict (`src/domain/share-link.ts`) : longueur maximale, version, bornes, nombres, pictogramme connu ; tout le reste est refusé.
 
 ## Données et confidentialité
 
@@ -50,7 +50,7 @@
 
 - Lien forgé : n'importe qui peut envoyer un lien qui ajoute un lieu sans question (spec 001 D.3). Faut-il marquer les lieux reçus dans la partie préparation, ou une validation ?
 - Lien lisible en clair dans la messagerie : brouiller le contenu, ou réduire la précision pour « maison » ?
-- Domaine neutre plutôt que `ali-lamhene.github.io/gps/lieu`, qui nomme le développeur et la fonction de l'app.
+- Domaine neutre plutôt que `ali-lamhene.github.io`, qui nomme le développeur. Le chemin est neutre depuis D19 (`/l/`) ; le domaine reste pour la bêta.
 - Une app relancée depuis les apps récentes peut relire le lien d'origine (Android) : sans effet aujourd'hui (pas de doublon), **bloquant dès que la suppression de lieux existe** (petit plugin natif à écrire avec cette spec).
 - Le schéma `gps://` reste déclaré dans la build publiée.
 

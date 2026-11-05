@@ -132,7 +132,7 @@ Conforme à D1. Aucune donnée d'identité, aucun compte, aucun serveur à nous.
 
 1. **Pictogrammes** : sélection ARASAAC d'une vingtaine de lieux : maison, chez un ami, hôpital, médecin, pharmacie, préfecture / administration, OFPRA / tribunal, association, banque alimentaire, école, travail, magasin, gare, arrêt de bus, parc, laverie, poste, banque. Crédit ARASAAC affiché dans la partie préparation (licence CC BY-NC-SA).
 2. **Couleurs** : palette de 8 couleurs distinguables par les daltoniens et au soleil ; la couleur n'est jamais le seul moyen de distinguer (pictogramme et photo aussi).
-3. **Lien** : `https://ali-lamhene.github.io/gps/lieu#…`, page statique sur GitHub Pages. Les liens qui ouvrent l'app (Android App Links, iOS Universal Links) exigent un fichier à la racine du domaine, donc un dépôt `ali-lamhene.github.io`.
+3. **Lien** : `https://ali-lamhene.github.io/l/#…` (chemin neutre depuis D19, ancien `/gps/lieu`), page statique sur GitHub Pages. Les liens qui ouvrent l'app (Android App Links, iOS Universal Links) exigent un fichier à la racine du domaine, donc un dépôt `ali-lamhene.github.io`.
 4. **Plateformes** : Android et iPhone. iPhone exige le compte Apple développeur payant (exception à D7 acceptée). Vérifications d'abord sur Android.
 5. **Carte de préparation** : MapLibre, qui demande une version de développement de l'app (pas Expo Go).
 6. **Stockage** : base locale sur le téléphone (SQLite) et fichiers photo dans le stockage privé de l'app.

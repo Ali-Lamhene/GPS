@@ -7,7 +7,8 @@ import type { Place } from './place';
 // included. No name, no photo, no address. The link is untrusted input (securite.md §3):
 // anyone can forge one, so everything else is refused.
 
-const SHARE_LINK_PAGE = 'https://ali-lamhene.github.io/gps/lieu';
+// A short neutral path (D19): nothing in a sent link says what the app is for.
+const SHARE_LINK_PAGE = 'https://ali-lamhene.github.io/l';
 /** With its final slash: GitHub Pages answers the page without it by a redirect. */
 export const SHARE_LINK_BASE = `${SHARE_LINK_PAGE}/`;
 const VERSION = '1';
