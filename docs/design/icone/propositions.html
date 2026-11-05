@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Icône Yalla</title>
+    <style>
+      :root {
+        --emerald: #037c6d;
+        --emerald-dark: #024c43;
+        --warm: #fbf8f6;
+        --edge: #ebe3df;
+        --ink: #111827;
+        --muted: #6b7280;
+      }
+      body {
+        margin: 0;
+        padding: 24px 16px 48px;
+        background: var(--warm);
+        color: var(--ink);
+        font:
+          15px/1.5 system-ui,
+          sans-serif;
+      }
+      h1 {
+        margin: 0 0 4px;
+        color: var(--emerald);
+      }
+      p.lead {
+        margin: 0 0 24px;
+        color: var(--muted);
+        max-width: 60ch;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--edge);
+        border-radius: 16px;
+        padding: 16px;
+      }
+      .card h2 {
+        margin: 0 0 4px;
+        font-size: 18px;
+      }
+      .card p {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .row {
+        display: flex;
+        align-items: flex-end;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .big svg {
+        width: 144px;
+        height: 144px;
+        border-radius: 32px;
+      }
+      /* Launcher: Android masks the icon as a circle; shown at real size on two wallpapers. */
+      .home {
+        display: flex;
+        gap: 10px;
+        padding: 12px;
+        border-radius: 12px;
+      }
+      .home.light {
+        background: linear-gradient(135deg, #dfe7f1, #f3e9df);
+      }
+      .home.dark {
+        background: linear-gradient(135deg, #1b1f27, #2c2a33);
+      }
+      .home svg {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+      }
+      .home svg.small {
+        width: 32px;
+        height: 32px;
+      }
+      .mono svg {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #dbe5e2;
+      }
+      .label {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Icône de Yalla : 4 propositions</h1>
+    <p class="lead">
+      Couleurs de l'app : émeraude #037C6D et blanc chaud #FBF8F6. Aucune lettre, aucun mot :
+      l'icône doit se reconnaître sans lire, et ne rien dire de plus qu'« une app de trajets » à qui
+      regarde le téléphone. Chaque proposition est montrée en grand, puis à la taille réelle de
+      l'écran d'accueil d'Android (rond, fonds clair et sombre), et en version monochrome (icônes à
+      thème d'Android 13 et plus).
+    </p>
+
+    <div class="grid">
+      <!-- A -->
+      <section class="card">
+        <h2>A. Épingle émeraude sur blanc</h2>
+        <p>La même épingle que dans l'app et sur la page des liens. Sobre, calme, très lisible.</p>
+        <div class="row">
+          <div class="big">
+            <svg viewBox="0 0 108 108">
+              <rect width="108" height="108" fill="#FBF8F6" />
+              <g transform="translate(31 22) scale(1.15)">
+                <path
+                  d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                  fill="#037C6D"
+                />
+                <circle cx="20" cy="20" r="7" fill="#FBF8F6" />
+              </g>
+            </svg>
+          </div>
+          <div>
+            <div class="home light">
+              <svg viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#FBF8F6" />
+                <g transform="translate(31 22) scale(1.15)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#037C6D"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#FBF8F6" />
+                </g>
+              </svg>
+              <svg class="small" viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#FBF8F6" />
+                <g transform="translate(31 22) scale(1.15)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#037C6D"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#FBF8F6" />
+                </g>
+              </svg>
+            </div>
+            <div class="home dark">
+              <svg viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#FBF8F6" />
+                <g transform="translate(31 22) scale(1.15)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#037C6D"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#FBF8F6" />
+                </g>
+              </svg>
+              <svg class="small" viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#FBF8F6" />
+                <g transform="translate(31 22) scale(1.15)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#037C6D"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#FBF8F6" />
+                </g>
+              </svg>
+            </div>
+          </div>
+          <div class="mono">
+            <svg viewBox="0 0 108 108">
+              <g transform="translate(31 22) scale(1.15)">
+                <path
+                  d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z M20 13 A7 7 0 1 0 20 27 A7 7 0 1 0 20 13 Z"
+                  fill="#024C43"
+                  fill-rule="evenodd"
+                />
+              </g>
+            </svg>
+            <div class="label">monochrome</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- B -->
+      <section class="card">
+        <h2>B. Départ ···· arrivée</h2>
+        <p>
+          Le chemin de l'accueil : un point de départ, des pointillés, le drapeau d'arrivée. Raconte
+          « aller d'ici à là », plus chargé en petit.
+        </p>
+        <div class="row">
+          <div class="big">
+            <svg viewBox="0 0 108 108">
+              <rect width="108" height="108" fill="#FBF8F6" />
+              <circle cx="33" cy="74" r="9" fill="#037C6D" />
+              <circle cx="33" cy="74" r="3.5" fill="#FBF8F6" />
+              <g fill="#037C6D">
+                <circle cx="44" cy="66" r="2.6" />
+                <circle cx="52" cy="59" r="2.6" />
+                <circle cx="58" cy="51" r="2.6" />
+                <circle cx="64" cy="43" r="2.6" />
+              </g>
+              <path d="M69 22 V44" stroke="#037C6D" stroke-width="4" stroke-linecap="round" />
+              <path d="M71 23 H85 L80.5 29 L85 35 H71 Z" fill="#037C6D" />
+            </svg>
+          </div>
+          <div>
+            <div class="home light">
+              <svg viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#FBF8F6" />
+                <circle cx="33" cy="74" r="9" fill="#037C6D" />
+                <circle cx="33" cy="74" r="3.5" fill="#FBF8F6" />
+                <g fill="#037C6D">
+                  <circle cx="44" cy="66" r="2.6" />
+                  <circle cx="52" cy="59" r="2.6" />
+                  <circle cx="58" cy="51" r="2.6" />
+                  <circle cx="64" cy="43" r="2.6" />
+                </g>
+                <path d="M69 22 V44" stroke="#037C6D" stroke-width="4" stroke-linecap="round" />
+                <path d="M71 23 H85 L80.5 29 L85 35 H71 Z" fill="#037C6D" />
+              </svg>
+              <svg class="small" viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#FBF8F6" />
+                <circle cx="33" cy="74" r="9" fill="#037C6D" />
+                <circle cx="33" cy="74" r="3.5" fill="#FBF8F6" />
+                <g fill="#037C6D">
+                  <circle cx="44" cy="66" r="2.6" />
+                  <circle cx="52" cy="59" r="2.6" />
+                  <circle cx="58" cy="51" r="2.6" />
+                  <circle cx="64" cy="43" r="2.6" />
+                </g>
+                <path d="M69 22 V44" stroke="#037C6D" stroke-width="4" stroke-linecap="round" />
+                <path d="M71 23 H85 L80.5 29 L85 35 H71 Z" fill="#037C6D" />
+              </svg>
+            </div>
+            <div class="home dark">
+              <svg viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#FBF8F6" />
+                <circle cx="33" cy="74" r="9" fill="#037C6D" />
+                <circle cx="33" cy="74" r="3.5" fill="#FBF8F6" />
+                <g fill="#037C6D">
+                  <circle cx="44" cy="66" r="2.6" />
+                  <circle cx="52" cy="59" r="2.6" />
+                  <circle cx="58" cy="51" r="2.6" />
+                  <circle cx="64" cy="43" r="2.6" />
+                </g>
+                <path d="M69 22 V44" stroke="#037C6D" stroke-width="4" stroke-linecap="round" />
+                <path d="M71 23 H85 L80.5 29 L85 35 H71 Z" fill="#037C6D" />
+              </svg>
+              <svg class="small" viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#FBF8F6" />
+                <circle cx="33" cy="74" r="9" fill="#037C6D" />
+                <circle cx="33" cy="74" r="3.5" fill="#FBF8F6" />
+                <g fill="#037C6D">
+                  <circle cx="44" cy="66" r="2.6" />
+                  <circle cx="52" cy="59" r="2.6" />
+                  <circle cx="58" cy="51" r="2.6" />
+                  <circle cx="64" cy="43" r="2.6" />
+                </g>
+                <path d="M69 22 V44" stroke="#037C6D" stroke-width="4" stroke-linecap="round" />
+                <path d="M71 23 H85 L80.5 29 L85 35 H71 Z" fill="#037C6D" />
+              </svg>
+            </div>
+          </div>
+          <div class="mono">
+            <svg viewBox="0 0 108 108">
+              <g fill="#024C43">
+                <circle cx="33" cy="74" r="9" />
+                <circle cx="44" cy="66" r="2.6" />
+                <circle cx="52" cy="59" r="2.6" />
+                <circle cx="58" cy="51" r="2.6" />
+                <circle cx="64" cy="43" r="2.6" />
+                <path d="M71 23 H85 L80.5 29 L85 35 H71 Z" />
+              </g>
+              <circle cx="33" cy="74" r="3.5" fill="#dbe5e2" />
+              <path d="M69 22 V44" stroke="#024C43" stroke-width="4" stroke-linecap="round" />
+            </svg>
+            <div class="label">monochrome</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- C -->
+      <section class="card">
+        <h2>C. Épingle blanche sur émeraude</h2>
+        <p>
+          L'inverse de A : fond émeraude plein, épingle blanc chaud. Se repère le mieux parmi les
+          autres icônes.
+        </p>
+        <div class="row">
+          <div class="big">
+            <svg viewBox="0 0 108 108">
+              <rect width="108" height="108" fill="#037C6D" />
+              <g transform="translate(31 22) scale(1.15)">
+                <path
+                  d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                  fill="#FBF8F6"
+                />
+                <circle cx="20" cy="20" r="7" fill="#037C6D" />
+              </g>
+            </svg>
+          </div>
+          <div>
+            <div class="home light">
+              <svg viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#037C6D" />
+                <g transform="translate(31 22) scale(1.15)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#FBF8F6"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#037C6D" />
+                </g>
+              </svg>
+              <svg class="small" viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#037C6D" />
+                <g transform="translate(31 22) scale(1.15)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#FBF8F6"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#037C6D" />
+                </g>
+              </svg>
+            </div>
+            <div class="home dark">
+              <svg viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#037C6D" />
+                <g transform="translate(31 22) scale(1.15)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#FBF8F6"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#037C6D" />
+                </g>
+              </svg>
+              <svg class="small" viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#037C6D" />
+                <g transform="translate(31 22) scale(1.15)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#FBF8F6"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#037C6D" />
+                </g>
+              </svg>
+            </div>
+          </div>
+          <div class="mono">
+            <svg viewBox="0 0 108 108">
+              <g transform="translate(31 22) scale(1.15)">
+                <path
+                  d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z M20 13 A7 7 0 1 0 20 27 A7 7 0 1 0 20 13 Z"
+                  fill="#024C43"
+                  fill-rule="evenodd"
+                />
+              </g>
+            </svg>
+            <div class="label">monochrome</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- D -->
+      <section class="card">
+        <h2>D. Chemin vers l'épingle, sur émeraude</h2>
+        <p>
+          Des pas en pointillés qui montent vers l'épingle : « on y va » (Yalla). Plus vivant que C,
+          toujours lisible en petit.
+        </p>
+        <div class="row">
+          <div class="big">
+            <svg viewBox="0 0 108 108">
+              <rect width="108" height="108" fill="#037C6D" />
+              <g fill="#FBF8F6" opacity="0.85">
+                <circle cx="34" cy="77" r="3.2" />
+                <circle cx="41" cy="71" r="3.2" />
+                <circle cx="47" cy="64" r="3.2" />
+                <circle cx="51" cy="56" r="3.2" />
+              </g>
+              <g transform="translate(46 20) scale(0.95)">
+                <path
+                  d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                  fill="#FBF8F6"
+                />
+                <circle cx="20" cy="20" r="7" fill="#037C6D" />
+              </g>
+            </svg>
+          </div>
+          <div>
+            <div class="home light">
+              <svg viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#037C6D" />
+                <g fill="#FBF8F6" opacity="0.85">
+                  <circle cx="34" cy="77" r="3.2" />
+                  <circle cx="41" cy="71" r="3.2" />
+                  <circle cx="47" cy="64" r="3.2" />
+                  <circle cx="51" cy="56" r="3.2" />
+                </g>
+                <g transform="translate(46 20) scale(0.95)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#FBF8F6"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#037C6D" />
+                </g>
+              </svg>
+              <svg class="small" viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#037C6D" />
+                <g fill="#FBF8F6" opacity="0.85">
+                  <circle cx="34" cy="77" r="3.2" />
+                  <circle cx="41" cy="71" r="3.2" />
+                  <circle cx="47" cy="64" r="3.2" />
+                  <circle cx="51" cy="56" r="3.2" />
+                </g>
+                <g transform="translate(46 20) scale(0.95)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#FBF8F6"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#037C6D" />
+                </g>
+              </svg>
+            </div>
+            <div class="home dark">
+              <svg viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#037C6D" />
+                <g fill="#FBF8F6" opacity="0.85">
+                  <circle cx="34" cy="77" r="3.2" />
+                  <circle cx="41" cy="71" r="3.2" />
+                  <circle cx="47" cy="64" r="3.2" />
+                  <circle cx="51" cy="56" r="3.2" />
+                </g>
+                <g transform="translate(46 20) scale(0.95)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#FBF8F6"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#037C6D" />
+                </g>
+              </svg>
+              <svg class="small" viewBox="0 0 108 108">
+                <rect width="108" height="108" fill="#037C6D" />
+                <g fill="#FBF8F6" opacity="0.85">
+                  <circle cx="34" cy="77" r="3.2" />
+                  <circle cx="41" cy="71" r="3.2" />
+                  <circle cx="47" cy="64" r="3.2" />
+                  <circle cx="51" cy="56" r="3.2" />
+                </g>
+                <g transform="translate(46 20) scale(0.95)">
+                  <path
+                    d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z"
+                    fill="#FBF8F6"
+                  />
+                  <circle cx="20" cy="20" r="7" fill="#037C6D" />
+                </g>
+              </svg>
+            </div>
+          </div>
+          <div class="mono">
+            <svg viewBox="0 0 108 108">
+              <g fill="#024C43">
+                <circle cx="34" cy="77" r="3.2" />
+                <circle cx="41" cy="71" r="3.2" />
+                <circle cx="47" cy="64" r="3.2" />
+                <circle cx="51" cy="56" r="3.2" />
+              </g>
+              <g transform="translate(46 20) scale(0.95)">
+                <path
+                  d="M20 51 C15.5 43 2 33.5 2 20 A18 18 0 0 1 38 20 C38 33.5 24.5 43 20 51 Z M20 13 A7 7 0 1 0 20 27 A7 7 0 1 0 20 13 Z"
+                  fill="#024C43"
+                  fill-rule="evenodd"
+                />
+              </g>
+            </svg>
+            <div class="label">monochrome</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

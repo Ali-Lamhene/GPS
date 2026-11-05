@@ -26,3 +26,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 022 | [Liste des lieux de l'accompagnant](022-liste-des-lieux.md)                                       | validé (à vérifier sur téléphone)                      |
 | 023 | [Accepter ou refuser un lieu reçu par lien](023-accepter-un-lieu-recu.md)                         | validé                                                 |
 | 024 | [Crédits des sources de données](024-credits-des-sources.md)                                      | livré (ⓘ natif à vérifier sur téléphone)               |
+| 025 | [Icône et écran de démarrage](025-icone-et-demarrage.md)                                          | livré (à voir sur téléphone)                           |
