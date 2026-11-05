@@ -1,4 +1,4 @@
-import { DEMO_BUS_LEG } from '@/features/traveller/demo/trips';
+import { DEMO_BUS_LEG } from '@/testing/fixtures/trips';
 
 import { approachLeft, isAlert, spokenName } from '../guidance';
 

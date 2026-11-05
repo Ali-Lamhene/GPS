@@ -6,8 +6,6 @@ import { CURRENT_POSITION } from '@/domain/place';
 import type { Leg, TravelMode } from '@/domain/trip';
 import { findRoute } from '@/services/routing';
 
-import { DEMO_GUIDANCE } from '../demo/guidance';
-import { DEMO_LEGS } from '../demo/trips';
 import { useTripPlan } from './trip-plan-context';
 
 /** A mode's trip, as far as the routing service has answered (spec 021). */
@@ -41,17 +39,24 @@ type RoutesValue = {
 
 const RoutesContext = createContext<RoutesValue | null>(null);
 
+/** Fixed trips for tests: the legs and the guidance steps of each mode. */
+export type RoutesFixture = {
+  legs: Record<TravelMode, readonly Leg[]>;
+  steps: Record<TravelMode, readonly GuidanceStep[]>;
+};
+
 /**
  * Computes the trip by each mode once both ends are chosen (D4, spec 021), from the phone.
  * The start « here » is the position when it was chosen: the trip does not change while the
- * traveller walks. Demonstration (tests, development): the Marseille demo trip.
+ * traveller walks. Tests pass a fixture instead: the app never shows a demonstration trip.
  */
 export function RoutesProvider({
   children,
-  demo = false,
+  fixture,
 }: {
   children: ReactNode;
-  demo?: boolean;
+  /** Tests only: fixed trips, the routing service is never asked. */
+  fixture?: RoutesFixture;
 }) {
   const { origin, destination, mode, hereAtStart } = useTripPlan();
   const start = origin?.id === CURRENT_POSITION.id ? hereAtStart : origin?.point;
@@ -70,7 +75,7 @@ export function RoutesProvider({
     }));
 
   useEffect(() => {
-    if (demo || !start || !end || !key) return;
+    if (fixture || !start || !end || !key) return;
     const controller = new AbortController();
     Promise.all(MODES.map((each) => findRoute(start, end, each, controller.signal))).then(
       (answers) => {
@@ -93,20 +98,20 @@ export function RoutesProvider({
     return () => controller.abort();
     // `start` and `end` are in `key`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [demo, key]);
+  }, [fixture, key]);
 
-  const routes: Routes = demo
+  const routes: Routes = fixture
     ? {
-        walk: { kind: 'ready', legs: DEMO_LEGS.walk },
-        transit: { kind: 'ready', legs: DEMO_LEGS.transit },
-        car: { kind: 'ready', legs: DEMO_LEGS.car },
+        walk: { kind: 'ready', legs: fixture.legs.walk },
+        transit: { kind: 'ready', legs: fixture.legs.transit },
+        car: { kind: 'ready', legs: fixture.legs.car },
       }
     : key && answer?.key === key
       ? answer.routes
       : LOADING;
   const chosen = routes[mode];
   const legs = chosen.kind === 'ready' ? chosen.legs : [];
-  const steps = demo ? DEMO_GUIDANCE[mode] : buildGuidance(legs, destination?.helpName);
+  const steps = fixture ? fixture.steps[mode] : buildGuidance(legs, destination?.helpName);
 
   return (
     <RoutesContext.Provider value={{ routes, legs, steps, request }}>

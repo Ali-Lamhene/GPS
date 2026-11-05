@@ -14,7 +14,7 @@ import { HomeScreen } from '../home-screen';
 import { LocationProvider } from '../../location/location-context';
 import { TripPlanProvider } from '../../trip-plan/trip-plan-context';
 import { WayCard } from '../../components/way-card';
-import { DEMO_CURRENT_POSITION } from '../../demo/trips';
+import { DEMO_CURRENT_POSITION } from '@/testing/fixtures/trips';
 import { useNetworkState } from 'expo-network';
 
 jest.mock('expo-router', () => ({

@@ -11,8 +11,6 @@ import { SystemBarsFrame } from '@/ui/system-bars/system-bars-frame';
 import { colors, useAppFonts } from '@/ui/theme';
 
 SplashScreen.preventAutoHideAsync();
-// Demonstration places, for development only (spec 015): never in a published build.
-const DEMO_PLACES = __DEV__ && process.env.EXPO_PUBLIC_DEMO_PLACES === '1';
 // The window behind the screens: warm white, never the black of a phone in dark mode, seen
 // while a screen slides in or the keyboard opens.
 SystemUI.setBackgroundColorAsync(colors.warmWhite).catch(() => undefined);
@@ -31,8 +29,8 @@ export default function RootLayout() {
 
   return (
     <LocationProvider>
-      <TripPlanProvider places={stored.places} demo={DEMO_PLACES}>
-        <RoutesProvider demo={DEMO_PLACES}>
+      <TripPlanProvider places={stored.places}>
+        <RoutesProvider>
           <SystemBarsFrame>
             <Stack
               screenOptions={{

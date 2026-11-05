@@ -1,5 +1,5 @@
-import { DEMO_GUIDANCE } from '../../demo/guidance';
-import { DEMO_BUS_LEG, DEMO_METRO_LEG } from '../../demo/trips';
+import { DEMO_GUIDANCE } from '@/testing/fixtures/guidance';
+import { DEMO_BUS_LEG, DEMO_METRO_LEG } from '@/testing/fixtures/trips';
 import { mainSymbol, nextSymbol, stepCue } from '../instruction-look';
 
 describe('instruction look', () => {

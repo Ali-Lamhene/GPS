@@ -1,4 +1,4 @@
-import { DEMO_LEGS } from '../../demo/trips';
+import { DEMO_LEGS } from '@/testing/fixtures/trips';
 import { situationLayers } from '../help-situation-map';
 
 const legs = DEMO_LEGS.transit;

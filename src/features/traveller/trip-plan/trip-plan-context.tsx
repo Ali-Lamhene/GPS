@@ -2,7 +2,6 @@ import { createContext, useContext, useReducer, type Dispatch, type ReactNode } 
 
 import { CURRENT_POSITION, placeOrder, type Place } from '@/domain/place';
 
-import { DEMO_DESTINATION_IDS, DEMO_ORIGIN_IDS, DEMO_PLACES } from '../demo/places';
 import {
   initialTripPlan,
   tripPlanReducer,
@@ -21,35 +20,41 @@ type TripPlan = TripPlanState & {
 
 const TripPlanContext = createContext<TripPlan | null>(null);
 
+/** Fixed places for tests, with the ones offered as a start and as an arrival. */
+export type PlacesFixture = {
+  places: readonly Place[];
+  originIds: readonly string[];
+  destinationIds: readonly string[];
+};
+
 /**
  * The trip the traveller is composing, in memory, and their places, read from the phone at
- * start (spec 015). The demonstration places only show when asked for: in tests, and in
- * development with `EXPO_PUBLIC_DEMO_PLACES=1`.
+ * start (spec 015). The app has no demonstration places, even in development: only tests
+ * pass a fixture.
  */
 export function TripPlanProvider({
   children,
   places: storedPlaces = [],
-  demo = false,
+  fixture,
   initialActions = [],
 }: {
   children: ReactNode;
   /** The places saved on the phone, oldest first. */
   places?: readonly Place[];
-  /** Adds the demonstration places of the static mockup (D11). */
-  demo?: boolean;
-  /** Replayed once at start: lets tests and the dev screen gallery open any screen. */
+  /** Tests only: fixed places in place of the start choices. */
+  fixture?: PlacesFixture;
+  /** Replayed once at start: lets tests open any screen. */
   initialActions?: TripPlanAction[];
 }) {
   const [state, dispatch] = useReducer(tripPlanReducer, initialActions, (actions) =>
     actions.reduce(tripPlanReducer, { ...initialTripPlan, customPlaces: [...storedPlaces] }),
   );
 
-  const demoPlaces = demo ? DEMO_PLACES : [];
-  const places = [CURRENT_POSITION, ...demoPlaces, ...state.customPlaces];
-  const choices = (demoIds: string[], withHere: boolean) =>
+  const places = [CURRENT_POSITION, ...(fixture?.places ?? []), ...state.customPlaces];
+  const choices = (fixtureIds: readonly string[] | undefined, withHere: boolean) =>
     placeOrder(
-      demo
-        ? DEMO_PLACES.filter((place) => demoIds.includes(place.id))
+      fixture && fixtureIds
+        ? fixture.places.filter((place) => fixtureIds.includes(place.id))
         : withHere
           ? [CURRENT_POSITION]
           : [],
@@ -61,8 +66,8 @@ export function TripPlanProvider({
     dispatch,
     origin: places.find((place) => place.id === state.originId),
     destination: places.find((place) => place.id === state.destinationId),
-    originChoices: choices(DEMO_ORIGIN_IDS, true),
-    destinationChoices: choices(DEMO_DESTINATION_IDS, false),
+    originChoices: choices(fixture?.originIds, true),
+    destinationChoices: choices(fixture?.destinationIds, false),
   };
 
   return <TripPlanContext.Provider value={value}>{children}</TripPlanContext.Provider>;

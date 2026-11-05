@@ -5,7 +5,7 @@ import { Vibration } from 'react-native';
 import { renderWithProviders } from '@/testing/render-with-providers';
 import type { TripPlanAction } from '@/features/traveller/trip-plan/trip-plan-reducer';
 
-import { DEMO_GUIDANCE } from '../../demo/guidance';
+import { DEMO_GUIDANCE } from '@/testing/fixtures/guidance';
 import { GuidanceScreen } from '../guidance-screen';
 
 jest.mock('expo-router', () => ({

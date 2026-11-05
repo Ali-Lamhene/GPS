@@ -1,6 +1,6 @@
-# Crédits des photos de démonstration
+# Crédits des photos de test
 
-Les lieux de démonstration (`src/features/traveller/demo/photos.ts`) utilisent des photos libres de Wikimedia Commons. Chaque photo a été recadrée en carré, réduite à 256 × 256 px et débarrassée de ses métadonnées. Les photos sous licence CC BY-SA restent sous la même licence après ces modifications.
+Les lieux de test (`src/testing/fixtures/photos.ts`, jamais embarqués dans l'app) utilisent des photos libres de Wikimedia Commons. Chaque photo a été recadrée en carré, réduite à 256 × 256 px et débarrassée de ses métadonnées. Les photos sous licence CC BY-SA restent sous la même licence après ces modifications.
 
 | Lieu de démo   | Fichier Commons                                                                                                                                                                                                                                                                                            | Auteur      | Licence      |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------ |

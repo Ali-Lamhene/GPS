@@ -2,10 +2,11 @@ import { CURRENT_POSITION, type Place } from '@/domain/place';
 
 import { DEMO_PHOTOS } from './photos';
 
-// Fake places of the static mockup implementation (D11). Real places come with spec 001.
-// Points are real spots in central Marseille (spec 005); the beach lies outside the bundled
-// map and more than 2 km away. Whatever the place chosen, the demo trip stays the same.
-// Public places carry a free photo; work, the beach and the market keep their pictogram.
+// Test places, never shipped in the app (not even in development). Every point is a public
+// spot in central Marseille, never anyone's real home or workplace: « home » is the Cours
+// Julien, « work » the Saint-Charles station. The beach lies more than 2 km away. Whatever
+// the place chosen, the test trip stays the same. Public places carry a free photo; work,
+// the beach and the market keep their pictogram.
 
 export const DEMO_PLACES: readonly Place[] = [
   CURRENT_POSITION,
@@ -13,10 +14,10 @@ export const DEMO_PLACES: readonly Place[] = [
     id: 'home',
     icon: 'home',
     helpName: 'mon domicile',
-    point: [5.3795, 43.2855],
+    point: [5.3834, 43.2944],
     hiddenOnMap: true,
   },
-  { id: 'work', icon: 'work', helpName: 'mon lieu de travail', point: [5.3868, 43.2992] },
+  { id: 'work', icon: 'work', helpName: 'mon lieu de travail', point: [5.3806, 43.3027] },
   {
     id: 'city',
     icon: 'location_city',

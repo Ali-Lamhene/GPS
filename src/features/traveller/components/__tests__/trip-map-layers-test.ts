@@ -1,4 +1,4 @@
-import { DEMO_LEGS } from '../../demo/trips';
+import { DEMO_LEGS } from '@/testing/fixtures/trips';
 import { tripLines, tripStops } from '../trip-map-layers';
 
 const legs = DEMO_LEGS.transit;

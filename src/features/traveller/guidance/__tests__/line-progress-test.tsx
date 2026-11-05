@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react-native';
 
-import { DEMO_BUS_LEG, DEMO_METRO_LEG } from '../../demo/trips';
+import { DEMO_BUS_LEG, DEMO_METRO_LEG } from '@/testing/fixtures/trips';
 import { LineProgress } from '../line-progress';
 
 describe('<LineProgress />', () => {

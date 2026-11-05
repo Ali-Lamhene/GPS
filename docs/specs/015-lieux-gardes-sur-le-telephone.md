@@ -83,7 +83,7 @@ Aujourd'hui l'accueil montre des lieux de démonstration, et un lieu créé avec
 
 - Les lieux tiennent dans un seul fichier JSON (quelques dizaines de lieux) : plus simple qu'une base SQLite, qui reste possible plus tard sans changer l'écran.
 - Dans le navigateur (développement), le même code garde les lieux dans le stockage du navigateur.
-- La démonstration reste disponible en développement par une variable au démarrage du serveur (`EXPO_PUBLIC_DEMO_PLACES=1`), jamais dans une build publiée.
+- ~~La démonstration reste disponible en développement (`EXPO_PUBLIC_DEMO_PLACES=1`).~~ Révisé le 2026-11-05 à la demande de l'utilisateur : l'app démarre vide même en développement. Les lieux et le trajet de démonstration ne servent plus qu'aux tests (`src/testing/fixtures/`), et une règle ESLint interdit à l'app de les importer.
 - `expo-file-system` est déjà dans la build de dev installée ; si ce n'est pas le cas, les lieux ne seront gardés sur le téléphone qu'après la prochaine build.
 
 ## Ajustements après les relectures (2026-11-04)

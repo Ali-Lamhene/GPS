@@ -44,7 +44,7 @@ const WRAPPED_PACKAGES = [
 ];
 
 /** The no-restricted-imports rule, minus the wrapped packages a module is allowed to use. */
-function restrictedImports(allow = [], allowedMapNames = []) {
+function restrictedImports(allow = [], allowedMapNames = [], allowTesting = false) {
   const wrapped = WRAPPED_PACKAGES.filter(({ name }) => !allow.includes(name));
   return [
     'error',
@@ -94,6 +94,24 @@ function restrictedImports(allow = [], allowedMapNames = []) {
           group: ['@maplibre/maplibre-react-native/*'],
           message: 'Import the reviewed entry point only (securite.md).',
         },
+        // Test fixtures (fake places, a Marseille trip) never reach the app, not even in
+        // development: the app starts empty.
+        ...(allowTesting
+          ? []
+          : [
+              {
+                group: [
+                  '@/testing',
+                  '@/testing/**',
+                  '**/testing',
+                  '**/testing/**',
+                  // Test files may import the fixtures, so the app may not import them either.
+                  '**/__tests__',
+                  '**/__tests__/**',
+                ],
+                message: 'Test fixtures and helpers stay out of the app (src/testing/).',
+              },
+            ]),
       ],
     },
   ];
@@ -112,6 +130,30 @@ module.exports = defineConfig([
       'no-implied-eval': 'error',
       'no-new-func': 'error',
       'no-restricted-imports': restrictedImports(),
+    },
+  },
+  {
+    // The app starts empty, even in development: no fixture reaches it through a dynamic
+    // import or require, nor through a `fixture` prop written inline (skips the routing).
+    files: ['src/**/*.{ts,tsx,js,jsx}'],
+    ignores: ['src/**/__tests__/**', 'src/testing/**'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'ImportExpression[source.value=/(^|\\/)(testing|__tests__)(\\/|$)/]',
+          message: 'Test fixtures and helpers stay out of the app (src/testing/).',
+        },
+        {
+          selector:
+            "CallExpression[callee.name='require'][arguments.0.value=/(^|\\/)(testing|__tests__)(\\/|$)/]",
+          message: 'Test fixtures and helpers stay out of the app (src/testing/).',
+        },
+        {
+          selector: "JSXAttribute[name.name='fixture']",
+          message: 'Fixed places and trips are for tests only: the app never fakes a trip.',
+        },
+      ],
     },
   },
   // Each module that wraps a restricted package may import that package only; every other
@@ -158,8 +200,8 @@ module.exports = defineConfig([
     },
   },
   {
-    // Tests mock the wrapped packages.
-    files: ['src/**/__tests__/**'],
+    // Tests mock the wrapped packages and use the fixtures of src/testing/.
+    files: ['src/**/__tests__/**', 'src/testing/**'],
     rules: {
       'no-restricted-imports': restrictedImports(
         [
@@ -171,6 +213,7 @@ module.exports = defineConfig([
           '@maplibre/maplibre-react-native',
         ],
         ['TransformRequestManager', 'OfflineManager'],
+        true,
       ),
     },
   },

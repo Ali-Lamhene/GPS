@@ -1,4 +1,4 @@
-import { DEMO_BUS_LEG, DEMO_METRO_LEG } from '../../demo/trips';
+import { DEMO_BUS_LEG, DEMO_METRO_LEG } from '@/testing/fixtures/trips';
 import { helpCard } from '../help-card';
 
 describe('helpCard', () => {
