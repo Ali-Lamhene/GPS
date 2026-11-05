@@ -181,8 +181,11 @@ L'utilisateur lance lui-même la build `preview` (`npx eas-cli build --profile p
 6. Le bouton de géolocalisation (recentrer) est une cible ; il devrait être une épingle.
 7. Recherche d'adresse (E30) : après le choix d'une suggestion, « Garder sur ce téléphone » est visible mais « Envoyer par lien au voyageur », en dessous, est caché par le clavier ; on ne comprend pas tout de suite qu'il existe.
 8. Retirer le choix « voiture » des modes de transport (E06) : décision de l'utilisateur, révise D2. À spécifier (spec du choix du transport, calcul des trajets de la spec 021, D2).
+9. Guidage : toucher la consigne la change (une flèche « tout droit » devient « à gauche »). Probable reste du guidage simulé de la maquette statique (« toucher la carte de consigne fait avancer ») dans le guidage réel de la spec 021.
+10. Guidage, chemin du bas (départ ···· arrivée) : utiliser les pictogrammes génériques « cible » pour le départ et « drapeau » pour l'arrivée, au lieu des pictogrammes des lieux. À rapprocher du point 6 (bouton de géolocalisation en épingle, pas en cible) pour que chaque symbole ait un seul sens.
+11. Guidage : les points du chemin du bas se remplissent au fur et à mesure du déplacement, pour donner une idée de la distance restante.
 
-À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6, 8).
+À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, 9, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6, 8, 10, 11).
 
 Préparation de la bêta sur les stores (liste à compléter avec l'utilisateur) :
 
