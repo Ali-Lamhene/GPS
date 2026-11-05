@@ -169,6 +169,20 @@ Points laissés ouverts par les relectures de la spec 002 :
 
 L'utilisateur lance lui-même la build `preview` (`npx eas-cli build --profile preview --platform android`) et teste l'app en conditions réelles pendant quelques jours. **À la reprise** : recueillir ses retours de terrain, contrôler l'APK `preview` (lien de la build à fournir : permissions avec `aapt dump permissions`, `allowBackup="false"` et `dataExtractionRules`, `autoVerify` des liens, aucune activité du client de dev), puis préparer la bêta sur les stores.
 
+**Build `preview` (2026-11-05)** : https://expo.dev/accounts/otakumi/projects/GPS/builds/a77565f8-2c19-4bbe-8cf2-7c342ad43ec3 (APK à contrôler à la reprise).
+
+**Premiers retours de terrain de l'utilisateur (2026-11-05), à traiter à la reprise, rien de codé :**
+
+1. On ne peut pas tourner la carte (rotation à deux doigts).
+2. Souci graphique sur les icônes quand on ajoute un lieu (à faire préciser : quel écran, capture).
+3. L'appareil photo ne se déclenche pas (E29, spec 020).
+4. Pas assez clair qu'on peut toucher les pastilles de départ et d'arrivée (accueil).
+5. On ne peut pas toucher les épingles de la carte pour choisir un lieu (sur téléphone).
+6. Le bouton de géolocalisation (recentrer) est une cible ; il devrait être une épingle.
+7. Recherche d'adresse (E30) : après le choix d'une suggestion, « Garder sur ce téléphone » est visible mais « Envoyer par lien au voyageur », en dessous, est caché par le clavier ; on ne comprend pas tout de suite qu'il existe.
+
+À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6).
+
 Préparation de la bêta sur les stores (liste à compléter avec l'utilisateur) :
 
 - Explications des permissions : textes iOS (`NSLocationWhenInUseUsageDescription`, `NSCameraUsageDescription`, `NSPhotoLibraryUsageDescription`) ; côté Android, déclarations de la Play Console (localisation au premier plan, appareil photo) ; écran d'explication avant la demande système, en pictogrammes pour le voyageur (spec à faire).
