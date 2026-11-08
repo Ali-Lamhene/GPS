@@ -197,6 +197,12 @@ L'utilisateur lance lui-même la build `preview` (`npx eas-cli build --profile p
 Fait le 2026-11-08 :
 
 - Point 9 corrigé : la consigne ne se touche plus avec une position récente ; sans nouveau point depuis 30 s (métro, tunnel), le toucher fait de nouveau avancer (spec 021 précisée). Relu par `ux-sans-texte-reviewer`. Restent, à traiter avec le point 13 : rien ne montre que la position est perdue ni que la consigne devient touchable ; un GPS présent mais faux (dérive de plus de 60 m) bloque la consigne, l'aide est la seule sortie ; aucune étape réelle n'est marquée `offline` (l'écran métro « Je suis descendu » n'apparaît qu'en démo).
+- Point 3 corrigé, **cause trouvée** : l'option `cameraPermission: false` du plugin `expo-image-picker` retirait la permission `CAMERA` du manifeste Android (`tools:node="remove"`), donc l'appareil photo de l'app ne pouvait jamais être autorisé. Relu par `security-reviewer`. **Demande une nouvelle build `preview`** (changement natif).
+- Point 5 corrigé : sur Android, un marqueur MapLibre est une vue native posée sur la carte, le toucher n'atteignait pas le `Pressable` à l'intérieur ; c'est maintenant le `onPress` du marqueur, plus l'action `activate` pour TalkBack. À vérifier sur le téléphone : deux épingles proches, réactivité.
+- Point 12 corrigé (hypothèse, à vérifier sur le téléphone) : le disque vide et le disque avec lieu ont des clés distinctes, pour qu'Android monte une vue neuve au lieu de dessiner la nouvelle bordure carrée.
+- Point 7 corrigé : le clavier se ferme au choix d'une suggestion, les deux boutons sont visibles.
+- Point 16 : Photon répond en 0,2 à 0,3 s depuis un ordinateur (mesuré le 2026-11-08). La lenteur vient sans doute du téléphone ou du réseau mobile ; à préciser avec l'utilisateur (combien de secondes, « Recherche… » qui ne finit pas ?). Aucune limite de temps sur la requête aujourd'hui.
+- Point 2 : attend une capture.
 
 Plan validé le 2026-11-08 (autonomie) : corriger les bugs 3, 5, 7, 9, 12 (un commit chacun ; 2 attend une capture), puis une spec par groupe pour 1, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, avec hypothèses écrites.
 
