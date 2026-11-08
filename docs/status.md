@@ -204,7 +204,22 @@ Fait le 2026-11-08 :
 - Point 16 : Photon répond en 0,2 à 0,3 s depuis un ordinateur (mesuré le 2026-11-08). La lenteur vient sans doute du téléphone ou du réseau mobile ; à préciser avec l'utilisateur (combien de secondes, « Recherche… » qui ne finit pas ?). Aucune limite de temps sur la requête aujourd'hui.
 - Point 2 : attend une capture.
 
-Plan validé le 2026-11-08 (autonomie) : corriger les bugs 3, 5, 7, 9, 12 (un commit chacun ; 2 attend une capture), puis une spec par groupe pour 1, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, avec hypothèses écrites.
+Specs livrées le 2026-11-08 (autonomie, relues par `ux-sans-texte-reviewer` et `security-reviewer`, rien de vu sur téléphone) :
+
+- 026 retrait de la voiture (point 8, D2 révisée).
+- 027 plus aucune cible : épingle à personnage pour « moi ici » et le recentrage, personnage barré quand la position manque ; vrais lieux aux bouts du chemin du guidage ; points faits plus gros (points 6, 10, 11 ; le remplissage des points existait déjà depuis la spec 021).
+- 028 rotation de la carte à deux doigts ; main qui tape sur la pastille à remplir (points 1, 4).
+- 029 adresse du lieu sur la carte d'aide, demandée une fois à Photon pour un lieu sans adresse, jamais pour un lieu caché (point 14).
+- 030 photo de rue Panoramax de l'arrivée : dernière marche et écran d'arrivée, téléchargée une fois, gardée en mémoire seulement (point 17).
+- 031 hors du chemin : cadre orange, épingle barrée, alerte, puis nouveau trajet depuis la position (6 au plus par trajet) ; main sur la consigne quand elle se touche (points 13, 15).
+
+**À trancher par l'utilisateur (sécurité, notés dans les specs) :**
+
+- 031 : le recalcul envoie à Transitous des positions prises en cours de route, reliables en une trace datée. Accepter (ajout à D17) ou protéger (position arrondie à environ 100 m) ? Recalculer vers un lieu caché ?
+- 030 : le stockage OVH de l'IGN voit l'IP et l'image de l'arrivée ; accepter ou ne garder que les photos d'OpenStreetMap France ? Crédit par photo (CC-BY-SA) ; photos anciennes.
+- 029 : pour un lieu créé « ici », Photon apprend où est le téléphone à ce moment ; domicile enregistré avec un pictogramme neutre (pas de moyen de le cacher à la création).
+
+**Prochaine étape** : l'utilisateur lance une build `preview` (correctif de l'appareil photo, seul changement natif) et teste les points 1 à 17 sur le terrain ; retours attendus aussi sur le point 2 (capture) et le point 16 (durée de la recherche).
 
 À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, 9, 12, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6, 8, 10, 11).
 
