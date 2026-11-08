@@ -35,7 +35,13 @@ export function AddressScreen() {
   };
   const go = (send: boolean) => {
     if (!picked) return;
-    dispatch({ type: 'setDraftAddress', helpName: picked.name, point: picked.point, send });
+    dispatch({
+      type: 'setDraftAddress',
+      helpName: picked.name,
+      address: picked.detail || undefined,
+      point: picked.point,
+      send,
+    });
     router.push('/add-place/pictogram');
   };
 

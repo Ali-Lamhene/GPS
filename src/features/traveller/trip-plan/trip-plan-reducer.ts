@@ -15,6 +15,8 @@ export type PlaceDraft = {
   point?: LngLat;
   icon?: PlaceIcon;
   helpName?: string;
+  /** Street address from the address search (spec 029). */
+  address?: string;
   /** Companion only (spec 019): the place is sent by link, never kept on this phone. */
   send?: boolean;
 };
@@ -43,7 +45,7 @@ export type TripPlanAction =
   | { type: 'startPlace'; source: PlaceDraft['source']; point?: LngLat }
   | { type: 'setDraftIcon'; icon: PlaceIcon }
   | { type: 'setDraftName'; helpName: string }
-  | { type: 'setDraftAddress'; helpName: string; point: LngLat; send: boolean }
+  | { type: 'setDraftAddress'; helpName: string; address?: string; point: LngLat; send: boolean }
   /** `keepDraft`: a place received by link while a new place is being made (spec 019). */
   | { type: 'addPlace'; place: Place; keepDraft?: boolean }
   | { type: 'removePlace'; placeId: string }
@@ -98,6 +100,7 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
             draft: {
               ...state.draft,
               helpName: action.helpName,
+              address: action.address,
               point: action.point,
               send: action.send,
             },
@@ -134,16 +137,24 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
 /** The place a finished draft becomes, once saved; `id` and `createdAt` come from the caller. */
 export function placeFromDraft(
   draft: PlaceDraft,
-  { id, createdAt, photo }: { id: string; createdAt: number; photo?: string },
+  {
+    id,
+    createdAt,
+    photo,
+    address = draft.address,
+  }: { id: string; createdAt: number; photo?: string; address?: string },
 ): Place {
   const icon = draft.icon ?? 'push_pin';
+  const hiddenOnMap = hiddenOnMapByDefault(icon);
   return {
     id,
     icon,
     photo,
     helpName: draft.helpName,
+    // Never for a home or a sensitive place: a readable address on a seized phone (spec 029).
+    address: hiddenOnMap ? undefined : address,
     point: draft.point,
-    hiddenOnMap: hiddenOnMapByDefault(icon),
+    hiddenOnMap,
     createdAt,
   };
 }

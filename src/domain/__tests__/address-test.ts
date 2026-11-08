@@ -1,4 +1,4 @@
-import { readPhotonResults } from '../address';
+import { readPhotonAddress, readPhotonResults } from '../address';
 
 const feature = (properties: object, coordinates: unknown = [5.37, 43.29]) => ({
   type: 'Feature',
@@ -6,7 +6,50 @@ const feature = (properties: object, coordinates: unknown = [5.37, 43.29]) => ({
   properties,
 });
 
+describe('readPhotonAddress (spec 029)', () => {
+  test('reads the street address with its town', () => {
+    const answer = {
+      features: [
+        feature({
+          housenumber: '14',
+          street: 'Quai du Port',
+          postcode: '13002',
+          city: 'Marseille',
+        }),
+      ],
+    };
+    expect(readPhotonAddress(answer)).toBe('14 Quai du Port, 13002 Marseille');
+  });
+
+  test('falls back on the name, drops control and direction characters', () => {
+    const answer = {
+      features: [feature({ name: 'Gare\u202e Saint-Charles\u0007', city: 'Marseille' })],
+    };
+    expect(readPhotonAddress(answer)).toBe('Gare Saint-Charles, Marseille');
+  });
+
+  test('nothing usable: no address', () => {
+    expect(readPhotonAddress({ features: [] })).toBeUndefined();
+    expect(readPhotonAddress({ features: [feature({ postcode: '13002' })] })).toBeUndefined();
+    expect(readPhotonAddress('<html>')).toBeUndefined();
+  });
+});
+
 describe('readPhotonResults (spec 001)', () => {
+  test('drops control and direction characters from names and details (spec 029)', () => {
+    const [result] = readPhotonResults({
+      features: [
+        feature({
+          name: 'Pharmacie\u202e du Port',
+          street: 'Quai\u0000 du Port',
+          city: 'Marseille',
+        }),
+      ],
+    });
+    expect(result?.name).toBe('Pharmacie du Port');
+    expect(result?.detail).toBe('Quai du Port, Marseille');
+  });
+
   test('reads name, detail and point', () => {
     const results = readPhotonResults({
       features: [

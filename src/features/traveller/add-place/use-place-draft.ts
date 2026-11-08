@@ -1,6 +1,8 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 
+import { hiddenOnMapByDefault } from '@/domain/place';
+import { reverseAddress } from '@/services/address-search';
 import { playCue } from '@/services/feedback';
 
 import { useTripPlan } from '../trip-plan/trip-plan-context';
@@ -13,12 +15,15 @@ export function usePlaceDraft() {
   const savePlace = useSavePlace();
   // One save at a time: a second touch while the file is written does nothing (spec 015).
   const saving = useRef(false);
+  // Cancelled while the address was asked: nothing is saved (spec 029).
+  const cancelled = useRef(false);
   const [busy, setBusy] = useState(false);
   return {
     draft,
     /** True while the place is being saved: the buttons that finish it stay inactive. */
     busy,
     cancel: () => {
+      cancelled.current = true;
       dispatch({ type: 'cancelPlace' });
       router.dismissTo('/');
     },
@@ -30,7 +35,25 @@ export function usePlaceDraft() {
       if (!draft || saving.current) return false;
       saving.current = true;
       setBusy(true);
-      const place = placeFromDraft(draft, { id: newPlaceId(), createdAt: Date.now(), photo });
+      // No address yet (a pin or a photo here): asked once, for the help card (spec 029).
+      // Never for a home or a sensitive place, nor for a place sent by link.
+      const ask =
+        !draft.address &&
+        draft.point &&
+        !draft.send &&
+        !hiddenOnMapByDefault(draft.icon ?? 'push_pin');
+      const address = ask && draft.point ? await reverseAddress(draft.point) : draft.address;
+      if (cancelled.current) {
+        saving.current = false;
+        setBusy(false);
+        return false;
+      }
+      const place = placeFromDraft(draft, {
+        id: newPlaceId(),
+        createdAt: Date.now(),
+        photo,
+        address,
+      });
       const saved = await savePlace(place);
       if (saved) {
         playCue('saved');

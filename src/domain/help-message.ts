@@ -7,7 +7,7 @@ export type HelpRequest =
   | { kind: 'getOffBus'; leg: TransitLeg }
   | { kind: 'findMetro'; leg: TransitLeg }
   | { kind: 'getOffMetro'; leg: TransitLeg }
-  | { kind: 'findPlace'; placeName?: string };
+  | { kind: 'findPlace'; placeName?: string; address?: string };
 
 /** The French message shown to a passer-by, and read aloud on request. */
 export function helpMessage(request: HelpRequest): string {
@@ -22,8 +22,17 @@ export function helpMessage(request: HelpRequest): string {
       return `Bonjour, où puis-je prendre le métro ${request.leg.line.id} en direction de ${request.leg.direction} ?`;
     case 'getOffMetro':
       return `Bonjour, je dois descendre à la station ${request.leg.to}. Pouvez-vous m'indiquer quand nous y arrivons ?`;
-    case 'findPlace':
-      return `Bonjour, je cherche ${request.placeName ?? 'ce lieu'}. Pouvez-vous m'aider à trouver ce lieu, s'il vous plaît ?`;
+    case 'findPlace': {
+      // The address first helps a passer-by most (field feedback, spec 029).
+      const { placeName, address } = request;
+      const sought =
+        placeName && address
+          ? `${placeName}, ${address}`
+          : address
+            ? `l'adresse ${address}`
+            : (placeName ?? 'ce lieu');
+      return `Bonjour, je cherche ${sought}. Pouvez-vous m'aider à trouver ce lieu, s'il vous plaît ?`;
+    }
     default: {
       const unknown: never = request;
       return unknown;

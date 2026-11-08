@@ -22,6 +22,32 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
+const MAX_ADDRESS = 200;
+
+/**
+ * The street address of a Photon reverse answer (spec 029): « 14 quai du Port, 13002
+ * Marseille », or the place's name with its town when there is no street.
+ */
+export function readPhotonAddress(data: unknown): string | undefined {
+  if (!isRecord(data) || !Array.isArray(data.features)) return undefined;
+  const feature: unknown = data.features[0];
+  if (!isRecord(feature) || !isRecord(feature.properties)) return undefined;
+  const p = feature.properties;
+  const street = [text(p.housenumber), text(p.street)].filter(Boolean).join(' ');
+  const town = [text(p.postcode), text(p.city)].filter(Boolean).join(' ');
+  const first = street || text(p.name);
+  if (!first) return undefined;
+  const address = clean([first, town].filter(Boolean).join(', '));
+  return address ? address.slice(0, MAX_ADDRESS) : undefined;
+}
+
+/** No control or direction characters: the text is shown to a passer-by as it is. */
+export function clean(value: string): string {
+  return value
+    .replace(/[\u0000-\u001f\u007f-\u009f\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, '')
+    .trim();
+}
+
 /** The addresses of a Photon GeoJSON answer, at most six. */
 export function readPhotonResults(data: unknown): AddressResult[] {
   if (!isRecord(data) || !Array.isArray(data.features)) return [];
@@ -43,12 +69,15 @@ export function readPhotonResults(data: unknown): AddressResult[] {
         return [];
       }
       const p = feature.properties;
-      const street = [text(p.housenumber), text(p.street)].filter(Boolean).join(' ');
-      const name = text(p.name) ?? (street || undefined);
+      const street = clean([text(p.housenumber), text(p.street)].filter(Boolean).join(' '));
+      const named = text(p.name);
+      const name = (named && clean(named)) || street || undefined;
       if (!name) return [];
-      const detail = [name === street ? undefined : street, text(p.postcode), text(p.city)]
-        .filter(Boolean)
-        .join(', ');
+      const detail = clean(
+        [name === street ? undefined : street, text(p.postcode), text(p.city)]
+          .filter(Boolean)
+          .join(', '),
+      );
       return [{ name, detail, point: [lng, lat] }];
     })
     .slice(0, MAX_RESULTS);

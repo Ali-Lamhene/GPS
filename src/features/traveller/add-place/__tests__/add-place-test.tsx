@@ -1,6 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
+import { reverseAddress } from '@/services/address-search';
 import { keepPhoto, pickPhoto } from '@/services/photo';
 import { layout, renderWithProviders } from '@/testing/render-with-providers';
 
@@ -14,6 +15,8 @@ jest.mock('expo-router', () => ({
   // The screen in front: its focus effect runs once mounted.
   useFocusEffect: (effect: () => void) => jest.requireActual('react').useEffect(effect, [effect]),
 }));
+
+jest.mock('@/services/address-search', () => ({ reverseAddress: jest.fn(async () => undefined) }));
 
 const drafting = [{ type: 'startPlace', source: 'position' }] as const;
 
@@ -49,6 +52,28 @@ describe('new place', () => {
 
     expect(router.dismissTo).toHaveBeenCalledWith('/');
   });
+  test('E29: a place here asks its address once, for the help card (spec 029)', async () => {
+    await renderWithProviders(<PhotoScreen />, [
+      { type: 'startPlace', source: 'position', point: [5.38, 43.3] },
+      { type: 'setDraftIcon', icon: 'local_pharmacy' },
+    ]);
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Sans photo' }));
+
+    expect(reverseAddress).toHaveBeenCalledWith([5.38, 43.3]);
+  });
+
+  test('E29: a home never asks its address (spec 029)', async () => {
+    await renderWithProviders(<PhotoScreen />, [
+      { type: 'startPlace', source: 'position', point: [5.38, 43.3] },
+      { type: 'setDraftIcon', icon: 'home' },
+    ]);
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Sans photo' }));
+
+    expect(reverseAddress).not.toHaveBeenCalled();
+  });
+
   test('E29: a photo chosen in the picker is re-encoded, then the place saved (spec 020)', async () => {
     jest.mocked(pickPhoto).mockResolvedValue('file:///cache/ImagePicker/a.jpg');
     jest.mocked(keepPhoto).mockResolvedValue('file:///files/photos/abc.jpg');

@@ -42,6 +42,23 @@ describe('stored places (spec 015)', () => {
     expect(read(encodePlaces([hospital, home]))).toEqual([home, hospital]);
   });
 
+  test('keep the address of a place on the map, never of a hidden one (spec 029)', () => {
+    const address = '1 chemin des Bourrely, 13015 Marseille';
+    const [readHome, readHospital] = read(
+      encodePlaces([
+        { ...hospital, address },
+        { ...home, address },
+      ]),
+    );
+    expect(readHospital?.address).toBe(address);
+    expect(readHome?.address).toBeUndefined();
+  });
+
+  test('an old entry without the hidden flag still drops a home address', () => {
+    const entry = { id: 'p3', icon: 'home', createdAt: 1, address: '1 rue X, 13001 Marseille' };
+    expect(read(file([entry]))[0]?.address).toBeUndefined();
+  });
+
   test('keep only the names of the photos of the app, rebuilt on reading (spec 020)', () => {
     const kept = `${FOLDER}abc123.jpg`;
     const text = encodePlaces([

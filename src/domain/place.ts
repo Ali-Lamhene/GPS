@@ -15,6 +15,12 @@ export type Place = {
    * traveller as a label.
    */
   helpName?: string;
+  /**
+   * French street address, only read by a passer-by on the help card (spec 029): from the
+   * address search, or asked to Photon once when the place is made. Never kept for a place
+   * hidden from the map (home, family): it would read too easily on a seized phone.
+   */
+  address?: string;
   /** Where the place is; a place without one has no pin on the map (spec 005). */
   point?: LngLat;
   /**

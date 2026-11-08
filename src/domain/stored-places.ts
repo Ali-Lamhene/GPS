@@ -1,5 +1,6 @@
 import { isCataloguePictogram } from './pictograms';
-import type { Place } from './place';
+import { clean } from './address';
+import { isHiddenOnMap, type Place } from './place';
 
 // Spec 015: the traveller's places, kept in one file in the app's private storage. The
 // file is read back as untrusted input (docs/engineering/securite.md): a damaged entry is
@@ -27,6 +28,7 @@ type StoredPlace = {
   photo?: string;
   point?: [number, number];
   helpName?: string;
+  address?: string;
   hiddenOnMap?: boolean;
   createdAt: number;
 };
@@ -45,6 +47,8 @@ export function encodePlaces(places: readonly Place[], photos: PhotoNames): stri
     photo: place.photo ? photos.toName(place.photo) : undefined,
     point: place.point ? [place.point[0], place.point[1]] : undefined,
     helpName: place.helpName,
+    // Never written for a hidden place, whatever the place in memory carries (spec 029).
+    address: isHiddenOnMap(place) ? undefined : place.address,
     hiddenOnMap: place.hiddenOnMap,
     createdAt: place.createdAt ?? 0,
   }));
@@ -80,7 +84,7 @@ export function decodePlaces(text: string, photos: PhotoNames): DecodedPlaces {
 
 function decodePlace(entry: unknown, photos: PhotoNames): Place | undefined {
   if (!isRecord(entry)) return undefined;
-  const { id, icon, photo, point, helpName, hiddenOnMap, createdAt } = entry;
+  const { id, icon, photo, point, helpName, address, hiddenOnMap, createdAt } = entry;
   if (typeof id !== 'string' || !/^[A-Za-z0-9_-]+$/.test(id) || id.length > MAX_ID_LENGTH) {
     return undefined;
   }
@@ -95,6 +99,11 @@ function decodePlace(entry: unknown, photos: PhotoNames): Place | undefined {
   ) {
     return undefined;
   }
+  // A damaged address drops the address, not the place (spec 029).
+  const keptAddress =
+    typeof address === 'string' && address.length <= MAX_HELP_NAME_LENGTH
+      ? clean(address) || undefined
+      : undefined;
   if (hiddenOnMap !== undefined && typeof hiddenOnMap !== 'boolean') return undefined;
   // A damaged photo address drops the photo, not the place.
   const keptPhoto = typeof photo === 'string' ? photos.toUri(photo) : undefined;
@@ -106,6 +115,13 @@ function decodePlace(entry: unknown, photos: PhotoNames): Place | undefined {
     photo: keptPhoto,
     point: point === undefined ? undefined : [point[0], point[1]],
     helpName,
+    address: isHiddenOnMap({
+      id,
+      icon: isCataloguePictogram(icon) ? icon : 'push_pin',
+      hiddenOnMap,
+    })
+      ? undefined
+      : keptAddress,
     hiddenOnMap,
     createdAt,
   };

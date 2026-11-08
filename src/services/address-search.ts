@@ -1,4 +1,4 @@
-import { readPhotonResults, type AddressResult } from '@/domain/address';
+import { readPhotonAddress, readPhotonResults, type AddressResult } from '@/domain/address';
 
 // Spec 001: address search for the companion only (never the traveller's screens), through
 // Photon (komoot, OpenStreetMap data). Photon receives the typed text, the phone's position
@@ -7,6 +7,39 @@ import { readPhotonResults, type AddressResult } from '@/domain/address';
 
 import { ADDRESS_SEARCH_HOST } from './hosts';
 const MIN_LENGTH = 3;
+/** A reverse lookup never holds a new place for long: without an answer, no address. */
+const REVERSE_TIMEOUT_MS = 5000;
+
+/**
+ * The street address of a place (spec 029), asked once when the place is made, for the
+ * help card. Photon receives the place's point to about 10 m and the IP address.
+ */
+export async function reverseAddress(
+  point: readonly [number, number],
+): Promise<string | undefined> {
+  const params = new URLSearchParams({
+    lon: point[0].toFixed(4),
+    lat: point[1].toFixed(4),
+    lang: 'fr',
+    limit: '1',
+  });
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REVERSE_TIMEOUT_MS);
+  try {
+    const response = await fetch(`https://${ADDRESS_SEARCH_HOST}/reverse?${params.toString()}`, {
+      signal: controller.signal,
+    });
+    if (!response.ok) return undefined;
+    const body = await response.text();
+    if (body.length > 100_000) return undefined;
+    return readPhotonAddress(JSON.parse(body));
+  } catch {
+    // No network, too slow or a damaged answer: the help card reads the name only.
+    return undefined;
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 export type AddressSearch =
   { ok: true; results: AddressResult[] } | { ok: false; reason: 'offline' };

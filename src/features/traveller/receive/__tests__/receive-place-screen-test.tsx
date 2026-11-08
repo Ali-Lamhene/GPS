@@ -18,6 +18,9 @@ jest.mock('expo-router', () => ({
   useFocusEffect: (effect: () => void) => jest.requireActual('react').useEffect(effect, [effect]),
 }));
 jest.mock('@/services/feedback', () => ({ playCue: jest.fn() }));
+jest.mock('@/services/address-search', () => ({
+  reverseAddress: jest.fn(async () => '1 chemin des Bourrely, 13015 Marseille'),
+}));
 jest.mock('@/services/place-storage', () => ({ writePlacesFile: jest.fn() }));
 
 const LINK = 'https://ali-lamhene.github.io/l#1/43.29655/5.37722/local_hospital';
@@ -57,6 +60,8 @@ describe('receiving a place by link (specs 019, 023)', () => {
     expect(decoded.ok && decoded.places[0]).toMatchObject({
       icon: 'local_hospital',
       point: [5.37722, 43.29655],
+      // Asked once to Photon, for the help card (spec 029).
+      address: '1 chemin des Bourrely, 13015 Marseille',
     });
     expect(playCue).toHaveBeenCalledWith('saved');
     await act(() => jest.advanceTimersByTime(2000));

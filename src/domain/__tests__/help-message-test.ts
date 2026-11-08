@@ -32,4 +32,17 @@ describe('helpMessage', () => {
     );
     expect(helpMessage({ kind: 'findPlace' })).toContain('je cherche ce lieu.');
   });
+
+  test('gives the address when known, with the name or alone (spec 029)', () => {
+    expect(
+      helpMessage({
+        kind: 'findPlace',
+        placeName: 'une pharmacie',
+        address: '14 quai du Port, 13002 Marseille',
+      }),
+    ).toContain('je cherche une pharmacie, 14 quai du Port, 13002 Marseille.');
+    expect(
+      helpMessage({ kind: 'findPlace', address: '14 quai du Port, 13002 Marseille' }),
+    ).toContain("je cherche l'adresse 14 quai du Port, 13002 Marseille.");
+  });
 });

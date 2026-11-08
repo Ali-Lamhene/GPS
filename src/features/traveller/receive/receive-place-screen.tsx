@@ -9,6 +9,7 @@ import { pictogramName } from '@/domain/pictograms';
 import { hiddenOnMapByDefault } from '@/domain/place';
 import { receivedPlaceCamera } from '@/domain/received-place';
 import { decodeShareLink, findSamePlace } from '@/domain/share-link';
+import { reverseAddress } from '@/services/address-search';
 import { playCue } from '@/services/feedback';
 import { useIsOffline } from '@/services/network';
 import { CancelConfirm } from '@/ui/components/cancel-confirm';
@@ -27,7 +28,9 @@ import { takePendingLink } from './pending-link';
 /** How long the check or the cross stays before going back. */
 const SHOWN_MS = 1800;
 /** No save after this: the cross, never a blank screen without a way out. */
-const GIVE_UP_MS = 4000;
+// Longer than the address lookup (5 s, spec 029) plus the write: never « failed » before
+// the place is actually saved.
+const GIVE_UP_MS = 8000;
 const DISC_SIZE = 120;
 const CHECK_SIZE = 64;
 const RECEIVED_PIN_ID = 'received';
@@ -100,20 +103,28 @@ export function ReceivePlaceScreen() {
   useEffect(() => {
     if (answer !== 'yes' || started.current || !shared || known) return;
     started.current = true;
-    savePlace(
-      {
-        id: newPlaceId(),
-        icon: shared.icon,
-        point: shared.point,
-        // The link carries no name: the help card reads the pictogram's (spec 019).
-        helpName: pictogramName(shared.icon),
-        hiddenOnMap: hiddenOnMapByDefault(shared.icon),
-        createdAt: Date.now(),
-      },
-      { keepDraft: true },
-    ).then((saved) => {
-      if (!saved) setSaveFailed(true);
-    });
+    const hiddenOnMap = hiddenOnMapByDefault(shared.icon);
+    // The link carries no address: asked once to Photon, for the help card (spec 029).
+    const address = hiddenOnMap ? Promise.resolve(undefined) : reverseAddress(shared.point);
+    void address
+      .then((found) =>
+        savePlace(
+          {
+            id: newPlaceId(),
+            icon: shared.icon,
+            point: shared.point,
+            // The link carries no name: the help card reads the pictogram's (spec 019).
+            helpName: pictogramName(shared.icon),
+            address: found,
+            hiddenOnMap,
+            createdAt: Date.now(),
+          },
+          { keepDraft: true },
+        ),
+      )
+      .then((saved) => {
+        if (!saved) setSaveFailed(true);
+      });
   }, [answer, shared, known, savePlace]);
 
   useEffect(() => {

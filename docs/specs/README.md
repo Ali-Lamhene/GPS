@@ -30,3 +30,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 026 | [Retrait du mode voiture](026-sans-voiture.md)                                                            | livré (à voir sur téléphone)                           |
 | 027 | [Plus aucune cible : « moi ici » et les vrais lieux sur le chemin du guidage](027-symboles-sans-cible.md) | livré (à voir sur téléphone)                           |
 | 028 | [Carte qui tourne à deux doigts, pastilles qui invitent au toucher](028-carte-tournante-et-pastilles.md)  | livré (à voir sur téléphone)                           |
+| 029 | [L'adresse du lieu sur la carte d'aide](029-adresse-sur-la-carte-d-aide.md)                               | livré (à voir sur téléphone)                           |

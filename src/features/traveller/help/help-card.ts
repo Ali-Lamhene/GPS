@@ -30,7 +30,11 @@ export function helpCard(request: HelpRequest, destination?: Place): HelpCard {
       return {
         icons: ['directions_walk', destination?.icon ?? 'flag'],
         photo: destination?.photo,
-        message: helpMessage({ kind: 'findPlace', placeName: destination?.helpName }),
+        message: helpMessage({
+          kind: 'findPlace',
+          placeName: destination?.helpName,
+          address: destination?.address,
+        }),
       };
     default: {
       const unknown: never = request;
