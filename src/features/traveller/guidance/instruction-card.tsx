@@ -18,8 +18,11 @@ type InstructionCardProps = {
   destination?: Place;
   /** For a turn: share of the approach left before the corner, from 1 to 0. */
   approach?: number;
-  /** Static mockup: touching the card simulates reaching the next step (D11). */
-  onPress: () => void;
+  /**
+   * Without a position (metro, signal lost) touching the card moves on to the next step
+   * (spec 021). With a position it is left out: only walking moves the guidance on.
+   */
+  onPress?: () => void;
 };
 
 /**
@@ -41,8 +44,9 @@ export function InstructionCard({
 
   return (
     <Pressable
-      accessibilityRole="button"
-      accessibilityLabel="Étape suivante"
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={onPress ? 'Étape suivante' : undefined}
+      disabled={!onPress}
       onPress={onPress}
       style={[styles.card, alert ? styles.alert : styles.onTrack]}
     >

@@ -12,7 +12,7 @@
 3. Pas de réseau : l'écran de connexion (E25), qui revient ici quand on réessaie.
 4. Le récapitulatif (E07-E08), le guidage (E09-E23), l'aide et l'arrivée montrent ce vrai trajet : vraies rues, vraies lignes (numéro et couleur du réseau), vrais arrêts et vraies directions (D9).
 5. Le départ « ici » est la position au moment où « ici » est choisi : le trajet ne change pas pendant la marche.
-6. Guidage : le point suit la vraie position ; l'étape avance seule quand le voyageur arrive à l'endroit de l'étape suivante (sur le chemin, à moins de 60 m), jamais en arrière. À 25 m de l'arrivée, à la dernière étape, l'écran d'arrivée s'ouvre. Toucher la consigne fait encore avancer (métro sans position, position perdue).
+6. Guidage : le point suit la vraie position ; l'étape avance seule quand le voyageur arrive à l'endroit de l'étape suivante (sur le chemin, à moins de 60 m), jamais en arrière. À 25 m de l'arrivée, à la dernière étape, l'écran d'arrivée s'ouvre. Toucher la consigne fait avancer **seulement sans position récente** (aucun point, ou aucun nouveau point depuis 30 s : métro, tunnel, couloir) ; avec une position récente, la consigne ne se touche pas (retour de terrain du 2026-11-05 : un toucher changeait la consigne pendant la marche).
 
 ## Signaux
 

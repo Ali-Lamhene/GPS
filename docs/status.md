@@ -194,6 +194,10 @@ L'utilisateur lance lui-même la build `preview` (`npx eas-cli build --profile p
 16. La recherche d'adresse (Photon, E30) est très longue.
 17. Arrivée : un voyageur qui ne lit pas ne reconnaît pas le bâtiment. **Décidé** : montrer une photo de rue du lieu d'arrivée. Google écarté (payant, interdit de garder les photos, envoie la destination à Google, contraire à D1). Source retenue : **Panoramax** (API testée le 2026-11-08 : `api.panoramax.xyz/api/search?place_position=lon,lat` renvoie des photos tournées vers le point ; Marseille, Paris, Lyon couverts ; licences etalab-2.0 et CC-BY-SA 4.0, à créditer, spec 024). Reçoit la zone de l'arrivée et l'IP, à écrire dans la spec. Sans photo Panoramax : photo de l'accompagnant ou pictogramme.
 
+Fait le 2026-11-08 :
+
+- Point 9 corrigé : la consigne ne se touche plus avec une position récente ; sans nouveau point depuis 30 s (métro, tunnel), le toucher fait de nouveau avancer (spec 021 précisée). Relu par `ux-sans-texte-reviewer`. Restent, à traiter avec le point 13 : rien ne montre que la position est perdue ni que la consigne devient touchable ; un GPS présent mais faux (dérive de plus de 60 m) bloque la consigne, l'aide est la seule sortie ; aucune étape réelle n'est marquée `offline` (l'écran métro « Je suis descendu » n'apparaît qu'en démo).
+
 Plan validé le 2026-11-08 (autonomie) : corriger les bugs 3, 5, 7, 9, 12 (un commit chacun ; 2 attend une capture), puis une spec par groupe pour 1, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, avec hypothèses écrites.
 
 À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, 9, 12, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6, 8, 10, 11).

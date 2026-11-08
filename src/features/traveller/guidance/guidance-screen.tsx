@@ -20,6 +20,7 @@ import { InstructionCard } from './instruction-card';
 import { stepCue } from './instruction-look';
 import { OfflineMetroView } from './offline-metro-view';
 import { ProgressPanel } from './progress-panel';
+import { useFreshPoint } from './use-fresh-point';
 
 /** For a turn, the corner ahead on the current leg. */
 function nextCorner(legs: readonly Leg[], step: GuidanceStep) {
@@ -39,8 +40,8 @@ function nextManeuver(legs: readonly Leg[], step: GuidanceStep) {
 /**
  * E09-E23 (specs 002, 021): the map fills the screen and follows the traveller; the
  * instruction floats on top beside help, time left at the bottom. The phone's position moves
- * the guidance on, and ends it near the arrival; touching the instruction still moves on
- * (underground, or when the position is lost).
+ * the guidance on, and ends it near the arrival; touching the instruction moves on only
+ * without a recent position (underground, or when the position is lost).
  */
 /** Within this distance of the arrival point, the trip is over. */
 const ARRIVED_METERS = 25;
@@ -54,6 +55,7 @@ export function GuidanceScreen() {
   const step = steps[guidanceStep];
   const here = positionPoint(useTravellerPosition().position);
   const end = legs.at(-1)?.path.at(-1);
+  const fresh = useFreshPoint(here);
 
   // The real position moves the guidance on, never back (spec 021).
   useEffect(() => {
@@ -95,9 +97,9 @@ export function GuidanceScreen() {
 
   // Where the traveller is along the trip: from the phone's position when it lies on the
   // trip, else where the step stands. Heading, approach and progress follow it (spec 021).
-  const located = here ? locateOnTrip(legs, step.legIndex, here) : undefined;
-  const legIndex = located?.legIndex ?? step.legIndex;
-  const fraction = located?.fraction ?? step.legFraction;
+  const onTrip = here ? locateOnTrip(legs, step.legIndex, here) : undefined;
+  const legIndex = onTrip?.legIndex ?? step.legIndex;
+  const fraction = onTrip?.fraction ?? step.legFraction;
   const planned = tripPosition(legs, legIndex, fraction);
   const position = here && planned ? { point: here, heading: planned.heading } : planned;
   const destinationIcon = destination?.icon ?? 'flag';
@@ -137,7 +139,7 @@ export function GuidanceScreen() {
               nextCorner(legs, step)?.fraction,
               pathLength(legs[step.legIndex]?.path ?? []),
             )}
-            onPress={advance}
+            onPress={fresh ? undefined : advance}
           />
         </View>
         {/* Same place as on every other screen: top right. */}
