@@ -8,7 +8,7 @@ A GPS navigation app for people who cannot read: refugees accompanied by social 
 
 Read `docs/product/personas.md`, `docs/product/principes.md` and `docs/product/decisions.md` before any product or UI work. The principles in short: zero text, one screen one decision, every instruction on at least two channels, large targets and high contrast, reassurance and help always one gesture away, culturally neutral pictograms, location stays on the device.
 
-**Security is non-negotiable.** Some travellers are watched by their home governments and the associations helping them are frequent hacking targets. No account, no identity data, no server of ours storing routes, addresses or positions, no analytics or crash reporting that sends device data. Routes travel inside the shared link itself. Any third-party call must be justified in the spec with the data it receives. See `docs/product/decisions.md` (D1).
+**Security is non-negotiable, against the right threat.** Travellers are refugees already in France, supported by associations, not wanted people; they already use Google Maps. What must never exist is a link between an identity and movements stored by us: the project and associations can be hacking targets (a foreign government among others). No account, no identity data, no server of ours storing routes, addresses or positions, no analytics or crash reporting that sends device data. Routes travel inside the shared link itself. Keyless third-party calls that receive positions and the IP address are acceptable when a feature needs them, provided the spec declares the data they receive. See `docs/product/decisions.md` (D1).
 
 ## Session continuity
 

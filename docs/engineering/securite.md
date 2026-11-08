@@ -4,15 +4,18 @@
 
 ## 1. Menaces
 
-Ce qu'on protège : où va le voyageur et où il vit (lieux, trajets, positions).
+Public : des personnes réfugiées **déjà en France**, accompagnées par des associations, qui ne savent pas lire. Ce ne sont pas des personnes recherchées, et elles utilisent déjà Google Maps et des services du même genre. Le but n'est pas de ne laisser aucune trace nulle part : c'est de leur simplifier la vie avec au moins autant de confidentialité qu'une app grand public (précision de l'utilisateur dans D1, 2026-11-08).
 
-Contre qui :
+Ce qu'on protège avant tout : **un lien entre une identité (nom, prénom, adresse…) et des déplacements**, que quelqu'un pourrait voler chez nous ou chez une association.
 
-- **Un État qui surveille** : interception réseau, demandes aux services tiers, logiciels espions.
-- **Une association piratée** : rien chez nous à voler, c'est le but de D1.
-- **Un téléphone pris ou fouillé** (police, passeur, entourage) : téléphone déverrouillé, l'app ouverte montre les lieux.
+Contre qui, par ordre d'importance :
+
+- **Un piratage visant le projet ou une association** (un gouvernement étranger, par exemple) : il ne doit rien y avoir chez nous à voler. Pas de compte, pas de donnée d'identité, pas de serveur à nous, aucun traceur. C'est le cœur de D1.
 - **Un lien piégé** : quelqu'un fabrique un lien de partage malveillant et l'envoie au voyageur.
 - **Une autre app sur le téléphone** : interception des liens, lecture des fichiers partagés, du presse-papiers ou des logs.
+- **Un téléphone pris ou fouillé** (entourage, vol) : téléphone déverrouillé, l'app ouverte montre les lieux. Précautions raisonnables seulement (lieux cachés de la carte, rien hors du stockage privé).
+
+Ce qui n'est **pas** une menace visée : qu'un service tiers sans compte (Transitous, Photon, Panoramax, tuiles de carte) reçoive une position et une adresse IP quand une fonctionnalité en a besoin. Un État étranger ne peut pas obtenir d'un opérateur français l'identité derrière une adresse IP. Ces appels sont acceptés **à condition d'être déclarés** dans la spec (ce qu'ils reçoivent) et ci-dessous.
 
 ## 2. Ce qui quitte le téléphone
 

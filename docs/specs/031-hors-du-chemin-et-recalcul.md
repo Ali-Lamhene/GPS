@@ -54,8 +54,8 @@ Retours de terrain de l'utilisateur :
 
 ## À trancher (utilisateur)
 
-- **D1** dit que la position reste sur le téléphone. Le recalcul « comme Google » envoie des positions prises en cours de route : un début de suivi par Transitous. À accepter explicitement (ajout à D17), ou protéger davantage : position arrondie à environ 100 m pour le recalcul, ou trajet d'abord vers le point le plus proche de l'ancien chemin, calculé sur le téléphone (moins « comme Google »).
-- Ne jamais recalculer quand l'arrivée est un lieu caché (domicile) ?
+- ~~Positions envoyées en cours de route~~ : **accepté tel quel** par l'utilisateur le 2026-11-08 (aucun compte, pas de lien direct vers une personne ; noté dans D17).
+- ~~Recalcul vers un lieu caché~~ : **on recalcule quand même** (utilisateur, 2026-11-08 ; menace précisée dans D1).
 
 ## Hors périmètre
 

@@ -64,12 +64,11 @@ Retour de terrain de l'utilisateur (2026-11-08, point 17) : un voyageur qui ne l
 
 `ux-sans-texte-reviewer` : badge au pictogramme du lieu (le drapeau n'est plus le signe de l'arrivée depuis la spec 027) ; carte au-dessus du bout « arrivée », à droite, sans changer de côté en lecture de droite à gauche, sans masquer le ⓘ de la carte ; apparition en fondu ; étiquette pour lecteur d'écran ; pictogramme plus grand sur E26.
 
-## À trancher (utilisateur)
+## Décidé par l'utilisateur (2026-11-08)
 
-- Accepter que le stockage OVH de l'IGN voie l'IP et l'image de l'arrivée, ou ne garder que les photos servies en direct par OpenStreetMap France (moins de photos) ?
-
-- Crédit : la licence CC-BY-SA demande de citer l'auteur de chaque photo. Le crédit général de l'espace accompagnant suffit-il, ou faut-il un ⓘ replié sur la photo (comme pour la carte) ? Autre option : ne garder que les photos etalab-2.0.
-- Photo de rue ancienne (jusqu'à plusieurs années) : la façade a pu changer. Accepter, ou ne garder que les photos de moins de N ans ?
+- Stockage OVH de l'IGN accepté (menace précisée dans D1) : photos IGN et OpenStreetMap France gardées.
+- Crédit général dans l'espace accompagnant pour l'instant ; crédit par photo (CC-BY-SA) à revoir avant la publication sur les stores.
+- Photos anciennes gardées ; à observer sur le terrain.
 
 ## Hypothèses
 

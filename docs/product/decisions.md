@@ -4,7 +4,9 @@ Décisions prises avec le porteur du projet. Elles conditionnent l'architecture.
 
 ## D1. Sécurité et confidentialité : aucune donnée d'identité (2026-10-29)
 
-**Contexte.** Certains réfugiés accompagnés sont surveillés par les gouvernements de leur pays d'origine. Les associations qui les accompagnent sont souvent la cible d'attaques informatiques.
+**Contexte.** Les voyageurs sont des réfugiés déjà en France, accompagnés par des associations. Les associations et le projet peuvent être la cible d'attaques informatiques, y compris de gouvernements étrangers qui chercheraient à relier une personne à ses déplacements.
+
+**Précision de l'utilisateur (2026-11-08) sur la menace visée.** Les précautions servent d'abord à ce qu'aucun serveur à nous ne garde de données qui relient une personne (nom, prénom, adresse…) à ses déplacements : rien à pirater chez nous, donc rien qui intéresse un gouvernement étranger. Le public visé est d'abord des personnes illettrées, pas des personnes recherchées. Un État étranger ne peut pas obtenir d'un opérateur français l'identité derrière une adresse IP. En conséquence, les services tiers sans compte (Transitous, Photon, Panoramax, tuiles) peuvent recevoir des positions et des adresses IP quand une fonctionnalité le demande, en le déclarant dans la spec.
 
 **Décision.** Ne prendre aucun risque et aucune responsabilité sur les données :
 
@@ -121,6 +123,8 @@ Pour la première version, l'app copie et simplifie le comportement des applis d
 ## D17. Calcul des trajets par Transitous (2026-11-04, spec 021)
 
 Les trajets (à pied, transports) sont calculés par **Transitous** (`api.transitous.org`), service communautaire gratuit et libre, depuis le téléphone du voyageur (D4). Il reçoit le départ, l'arrivée, l'heure et l'adresse IP, et l'en-tête nomme l'app (condition d'usage). Choisi par Claude en autonomie (2026-11-04) : seul service sans clé ni compte qui couvre les transports en commun français ; à confirmer par l'utilisateur. Conditions : projet sous licence libre et non commercial, lien vers ses sources de données.
+
+**Recalcul en cours de route (2026-11-08, spec 031)** : accepté tel quel par l'utilisateur. Quand le voyageur se perd, sa position du moment (environ 10 m) part à Transitous, 6 fois au plus par trajet ; ces requêtes sont reliables entre elles en une trace partielle et datée. Raison donnée : aucun compte ni identité dans l'app, donc pas de lien direct vers une personne. Limite connue : l'adresse IP reste reliable à un abonné par son opérateur.
 
 ## D18. Licence GPL-3.0 et dépôt public (2026-11-05)
 
