@@ -1,6 +1,6 @@
 import { isCataloguePictogram } from './pictograms';
 import { clean } from './address';
-import { isHiddenOnMap, type Place } from './place';
+import type { Place } from './place';
 
 // Spec 015: the traveller's places, kept in one file in the app's private storage. The
 // file is read back as untrusted input (docs/engineering/securite.md): a damaged entry is
@@ -47,8 +47,7 @@ export function encodePlaces(places: readonly Place[], photos: PhotoNames): stri
     photo: place.photo ? photos.toName(place.photo) : undefined,
     point: place.point ? [place.point[0], place.point[1]] : undefined,
     helpName: place.helpName,
-    // Never written for a hidden place, whatever the place in memory carries (spec 029).
-    address: isHiddenOnMap(place) ? undefined : place.address,
+    address: place.address,
     hiddenOnMap: place.hiddenOnMap,
     createdAt: place.createdAt ?? 0,
   }));
@@ -115,13 +114,7 @@ function decodePlace(entry: unknown, photos: PhotoNames): Place | undefined {
     photo: keptPhoto,
     point: point === undefined ? undefined : [point[0], point[1]],
     helpName,
-    address: isHiddenOnMap({
-      id,
-      icon: isCataloguePictogram(icon) ? icon : 'push_pin',
-      hiddenOnMap,
-    })
-      ? undefined
-      : keptAddress,
+    address: keptAddress,
     hiddenOnMap,
     createdAt,
   };

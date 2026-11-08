@@ -1,7 +1,6 @@
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 
-import { hiddenOnMapByDefault } from '@/domain/place';
 import { reverseAddress } from '@/services/address-search';
 import { playCue } from '@/services/feedback';
 
@@ -35,13 +34,9 @@ export function usePlaceDraft() {
       if (!draft || saving.current) return false;
       saving.current = true;
       setBusy(true);
-      // No address yet (a pin or a photo here): asked once, for the help card (spec 029).
-      // Never for a home or a sensitive place, nor for a place sent by link.
-      const ask =
-        !draft.address &&
-        draft.point &&
-        !draft.send &&
-        !hiddenOnMapByDefault(draft.icon ?? 'push_pin');
+      // No address yet (a pin or a photo here): asked once, for the help card (spec 029),
+      // home included; not for a place sent by link (the traveller's phone asks it).
+      const ask = !draft.address && draft.point && !draft.send;
       const address = ask && draft.point ? await reverseAddress(draft.point) : draft.address;
       if (cancelled.current) {
         saving.current = false;

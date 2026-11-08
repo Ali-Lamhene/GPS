@@ -105,7 +105,7 @@ export function ReceivePlaceScreen() {
     started.current = true;
     const hiddenOnMap = hiddenOnMapByDefault(shared.icon);
     // The link carries no address: asked once to Photon, for the help card (spec 029).
-    const address = hiddenOnMap ? Promise.resolve(undefined) : reverseAddress(shared.point);
+    const address = reverseAddress(shared.point);
     void address
       .then((found) =>
         savePlace(

@@ -151,8 +151,7 @@ export function placeFromDraft(
     icon,
     photo,
     helpName: draft.helpName,
-    // Never for a home or a sensitive place: a readable address on a seized phone (spec 029).
-    address: hiddenOnMap ? undefined : address,
+    address,
     point: draft.point,
     hiddenOnMap,
     createdAt,

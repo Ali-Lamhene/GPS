@@ -63,7 +63,7 @@ describe('new place', () => {
     expect(reverseAddress).toHaveBeenCalledWith([5.38, 43.3]);
   });
 
-  test('E29: a home never asks its address (spec 029)', async () => {
+  test('E29: a home asks its address too, for the way back (spec 029)', async () => {
     await renderWithProviders(<PhotoScreen />, [
       { type: 'startPlace', source: 'position', point: [5.38, 43.3] },
       { type: 'setDraftIcon', icon: 'home' },
@@ -71,7 +71,7 @@ describe('new place', () => {
 
     await fireEvent.press(screen.getByRole('button', { name: 'Sans photo' }));
 
-    expect(reverseAddress).not.toHaveBeenCalled();
+    expect(reverseAddress).toHaveBeenCalledWith([5.38, 43.3]);
   });
 
   test('E29: a photo chosen in the picker is re-encoded, then the place saved (spec 020)', async () => {

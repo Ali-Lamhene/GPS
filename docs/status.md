@@ -213,13 +213,9 @@ Specs livrées le 2026-11-08 (autonomie, relues par `ux-sans-texte-reviewer` et 
 - 030 photo de rue Panoramax de l'arrivée : dernière marche et écran d'arrivée, téléchargée une fois, gardée en mémoire seulement (point 17).
 - 031 hors du chemin : cadre orange, épingle barrée, alerte, puis nouveau trajet depuis la position (6 au plus par trajet) ; main sur la consigne quand elle se touche (points 13, 15).
 
-**À trancher par l'utilisateur (sécurité, notés dans les specs) :**
+**Décisions de sécurité prises par l'utilisateur (2026-11-08)** : menace précisée dans D1 et `securite.md` (réfugiés déjà en France, pas recherchés ; rien chez nous qui relie une identité à des déplacements ; appels déclarés à des services tiers sans compte acceptés). Recalcul en cours de route accepté, y compris vers un domicile (031) ; stockage OVH de l'IGN accepté, crédit par photo à revoir avant les stores, photos anciennes gardées (030) ; adresse demandée et gardée pour tous les lieux, domicile compris (029).
 
-- 031 : le recalcul envoie à Transitous des positions prises en cours de route, reliables en une trace datée. Accepter (ajout à D17) ou protéger (position arrondie à environ 100 m) ? Recalculer vers un lieu caché ?
-- 030 : le stockage OVH de l'IGN voit l'IP et l'image de l'arrivée ; accepter ou ne garder que les photos d'OpenStreetMap France ? Crédit par photo (CC-BY-SA) ; photos anciennes.
-- 029 : pour un lieu créé « ici », Photon apprend où est le téléphone à ce moment ; domicile enregistré avec un pictogramme neutre (pas de moyen de le cacher à la création).
-
-**Prochaine étape** : l'utilisateur lance une build `preview` (correctif de l'appareil photo, seul changement natif) et teste les points 1 à 17 sur le terrain ; retours attendus aussi sur le point 2 (capture) et le point 16 (durée de la recherche).
+**Prochaine étape** : revoir avec l'utilisateur les 6 points à vérifier sur le terrain, puis il lance une build `preview` (correctif de l'appareil photo, seul changement natif) et teste. Points 2 (icônes) et 16 (recherche lente) repris après la build.
 
 À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, 9, 12, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6, 8, 10, 11).
 
