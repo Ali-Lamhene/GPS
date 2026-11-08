@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -21,6 +21,7 @@ import { stepCue } from './instruction-look';
 import { OfflineMetroView } from './offline-metro-view';
 import { ARRIVAL_PHOTO_HEIGHT, ProgressPanel } from './progress-panel';
 import { useFreshPoint } from './use-fresh-point';
+import { useOffRoute } from './use-off-route';
 
 /** For a turn, the corner ahead on the current leg. */
 function nextCorner(legs: readonly Leg[], step: GuidanceStep) {
@@ -51,7 +52,7 @@ export function GuidanceScreen() {
   const { origin, destination, guidanceStep = 0, dispatch } = useTripPlan();
   const [bannerHeight, setBannerHeight] = useState(0);
   const [panelHeight, setPanelHeight] = useState(0);
-  const { steps, legs, streetPhoto } = useRoutes();
+  const { steps, legs, streetPhoto, reroute } = useRoutes();
   const step = steps[guidanceStep];
   const here = positionPoint(useTravellerPosition().position);
   const end = legs.at(-1)?.path.at(-1);
@@ -73,6 +74,16 @@ export function GuidanceScreen() {
     const cue = step && stepCue(step);
     if (cue) playCue(cue);
   }, [step]);
+
+  // Off the way for a while: orange, the alert, then a new trip from here (spec 031).
+  const restart = useCallback(() => dispatch({ type: 'goToStep', index: 0 }), [dispatch]);
+  const offRoute = useOffRoute({
+    point: fresh ? here : undefined,
+    legs,
+    legIndex: step?.legIndex ?? 0,
+    reroute,
+    onRerouted: restart,
+  });
 
   if (!step) return null;
 
@@ -145,6 +156,7 @@ export function GuidanceScreen() {
               pathLength(legs[step.legIndex]?.path ?? []),
             )}
             onPress={fresh ? undefined : advance}
+            offRoute={offRoute.lost ? (offRoute.computing ? 'computing' : 'lost') : undefined}
           />
         </View>
         {/* Same place as on every other screen: top right. */}

@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 
 import type { LngLat } from '@/domain/geo';
 
@@ -22,6 +30,10 @@ export type RouteState =
 type Routes = Record<TravelMode, RouteState>;
 
 const MODES: readonly TravelMode[] = ['walk', 'transit'];
+/** New trips when lost (spec 031): at most one every this long, and this many per trip. */
+const REROUTE_EVERY_MS = 30_000;
+const MAX_REROUTES = 6;
+
 const LOADING: Routes = {
   walk: { kind: 'loading' },
   transit: { kind: 'loading' },
@@ -47,7 +59,7 @@ type RoutesValue = {
    * The traveller is lost (spec 031): a new trip by the same mode from where they stand to
    * the same arrival, the shortest the service finds. True once the guidance follows it.
    */
-  reroute: (from: LngLat) => Promise<boolean>;
+  reroute: (from: LngLat, signal: AbortSignal) => Promise<boolean>;
 };
 
 const RoutesContext = createContext<RoutesValue | null>(null);
@@ -151,14 +163,24 @@ export function RoutesProvider({
   const steps =
     fixture && !current ? fixture.steps[mode] : buildGuidance(legs, destination?.helpName);
 
-  const reroute = async (from: LngLat): Promise<boolean> => {
-    if (!end) return false;
-    const controller = new AbortController();
-    const result = await (fixture?.reroute ?? findRoute)(from, end, mode, controller.signal);
-    if (!result.ok) return false;
-    setRerouted({ key: rerouteKey, legs: result.legs });
-    return true;
-  };
+  // The limit lives here, per trip and mode, whoever asks and however often the guidance
+  // screen comes back: at most one new trip every 30 s, six per trip (spec 031).
+  const tries = useRef(new Map<string, { count: number; last: number }>());
+  const rerouteWith = fixture?.reroute ?? findRoute;
+  const reroute = useCallback(
+    async (from: LngLat, signal: AbortSignal): Promise<boolean> => {
+      if (!end) return false;
+      const now = Date.now();
+      const before = tries.current.get(rerouteKey) ?? { count: 0, last: -Infinity };
+      if (before.count >= MAX_REROUTES || now - before.last < REROUTE_EVERY_MS) return false;
+      tries.current.set(rerouteKey, { count: before.count + 1, last: now });
+      const result = await rerouteWith(from, end, mode, signal);
+      if (!result.ok || signal.aborted) return false;
+      setRerouted({ key: rerouteKey, legs: result.legs });
+      return true;
+    },
+    [end, mode, rerouteKey, rerouteWith],
+  );
 
   return (
     <RoutesContext.Provider

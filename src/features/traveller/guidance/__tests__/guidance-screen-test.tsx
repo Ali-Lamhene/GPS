@@ -43,6 +43,13 @@ describe('<GuidanceScreen />', () => {
     await renderWithProviders(<GuidanceScreen />, startedAt(0));
 
     expect(screen.queryByRole('button', next)).toBeNull();
+    expect(screen.queryByTestId('instruction-touch-hint')).toBeNull();
+  });
+
+  test('without a recent position, the hand shows the card can be touched (spec 031)', async () => {
+    await renderWithProviders(<GuidanceScreen />, startedAt(0), noPosition);
+
+    expect(screen.getByTestId('instruction-touch-hint')).toBeOnTheScreen();
   });
 
   test('a point that stops coming counts as lost: the card moves on again', async () => {

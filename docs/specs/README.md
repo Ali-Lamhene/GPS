@@ -32,3 +32,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 028 | [Carte qui tourne à deux doigts, pastilles qui invitent au toucher](028-carte-tournante-et-pastilles.md)  | livré (à voir sur téléphone)                           |
 | 029 | [L'adresse du lieu sur la carte d'aide](029-adresse-sur-la-carte-d-aide.md)                               | livré (à voir sur téléphone)                           |
 | 030 | [Photo de rue du lieu d'arrivée (Panoramax)](030-photo-de-rue-a-l-arrivee.md)                             | livré (à voir sur téléphone)                           |
+| 031 | [Hors du chemin : le signaler, puis recalculer le trajet](031-hors-du-chemin-et-recalcul.md)              | livré (à voir sur le terrain)                          |

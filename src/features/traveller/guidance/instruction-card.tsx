@@ -23,6 +23,11 @@ type InstructionCardProps = {
    * (spec 021). With a position it is left out: only walking moves the guidance on.
    */
   onPress?: () => void;
+  /**
+   * The traveller left the way (spec 031): orange frame and the crossed pin, the old
+   * instruction kept inside; turning arrows while a new trip is asked.
+   */
+  offRoute?: 'lost' | 'computing';
 };
 
 /**
@@ -35,10 +40,11 @@ export function InstructionCard({
   destination,
   approach,
   onPress,
+  offRoute,
 }: InstructionCardProps) {
-  const alert = isAlert(instruction);
+  const alert = offRoute !== undefined || isAlert(instruction);
   const symbol = mainSymbol(instruction);
-  const next = nextSymbol(instruction, destination);
+  const next = offRoute ? undefined : nextSymbol(instruction, destination);
   const leg = 'leg' in instruction ? instruction.leg : undefined;
   const turn = instruction.kind === 'walk' && instruction.turn !== 'straight';
 
@@ -76,12 +82,29 @@ export function InstructionCard({
         {/* The line id on every step of a ride, not only while waiting (spec 010). */}
         {leg && <LineBadge line={leg.line} size="lg" />}
         <View style={styles.spacer} />
+        {offRoute && (
+          <View style={styles.offRoute} testID={`off-route-${offRoute}`}>
+            <PulseRing borderRadius={28} color={colors.alert} />
+            <Icon
+              name={offRoute === 'computing' ? 'autorenew' : 'wrong_location'}
+              size={34}
+              color={colors.alert}
+              variant="outlined"
+            />
+          </View>
+        )}
         {next && (
           <View style={styles.next}>
             <Icon name={next} size={30} color={colors.emerald} variant="outlined" />
           </View>
         )}
       </View>
+      {/* Touching moves on now (no recent position): the hand that means « touch » (spec 031). */}
+      {onPress && (
+        <View style={styles.touchHint} testID="instruction-touch-hint">
+          <Icon name="touch_app" size={30} color={colors.ink} />
+        </View>
+      )}
       {/* Names take the whole width, so they break like the sign they are compared with. */}
       {instruction.kind === 'waitVehicle' && (
         <View style={styles.direction}>
@@ -151,6 +174,24 @@ const styles = StyleSheet.create({
   },
   spacer: {
     flex: 1,
+  },
+  offRoute: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  // Inside the card, so a touch on the hand itself is a touch on the card.
+  touchHint: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    padding: 4,
+    borderRadius: 999,
+    backgroundColor: colors.white,
+    boxShadow: shadows.warm,
   },
   direction: {
     flexDirection: 'row',

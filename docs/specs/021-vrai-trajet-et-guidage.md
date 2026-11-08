@@ -53,7 +53,7 @@ Inchangés (consignes, sons, vibrations des specs 002 à 010). Calcul en cours :
 
 ## Hors périmètre
 
-- Recalcul quand le voyageur se perd, état « mauvais sens », cône de la boussole.
+- Recalcul quand le voyageur se perd (fait par la spec 031), état « mauvais sens », cône de la boussole.
 - Comptage des arrêts dans le métro (capteurs posés dans la build, code à venir).
 - Heure de départ ou d'arrivée choisie (rendez-vous).
 - Trajets gardés pour le hors connexion.

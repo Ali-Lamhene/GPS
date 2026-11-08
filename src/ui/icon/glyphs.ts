@@ -9,6 +9,7 @@ export const GLYPHS = {
   arrow_back: 0xe5c4,
   arrow_forward: 0xe5c8,
   arrow_upward: 0xe5d8,
+  autorenew: 0xe863,
   badge: 0xea67,
   balance: 0xeaf6,
   beach_access: 0xeb3e,

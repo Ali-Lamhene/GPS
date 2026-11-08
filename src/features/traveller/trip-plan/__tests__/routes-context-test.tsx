@@ -86,6 +86,29 @@ describe('RoutesProvider (spec 021)', () => {
     expect(findStreetPhoto).toHaveBeenCalledTimes(1);
   });
 
+  test('a new trip when lost: at most one every 30 s, six per trip (spec 031)', async () => {
+    jest.useFakeTimers();
+    try {
+      jest.mocked(findRoute).mockResolvedValue({ ok: true, legs: [WALK] });
+      const { result } = await renderHook(() => useRoutes(), { wrapper });
+      await act(() => result.current.request());
+      jest.mocked(findRoute).mockClear();
+      const signal = new AbortController().signal;
+
+      expect(await result.current.reroute([5.375, 43.295], signal)).toBe(true);
+      // Too soon: refused without asking.
+      expect(await result.current.reroute([5.375, 43.295], signal)).toBe(false);
+      for (let i = 0; i < 7; i++) {
+        await act(() => jest.advanceTimersByTime(30_000));
+        await act(() => result.current.reroute([5.375, 43.295], signal));
+      }
+      expect(findRoute).toHaveBeenCalledTimes(6);
+      expect(findRoute).toHaveBeenCalledWith([5.375, 43.295], [5.38, 43.3], 'transit', signal);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
   test('no network: every mode says so', async () => {
     jest.mocked(findRoute).mockResolvedValue({ ok: false, reason: 'offline' });
 
