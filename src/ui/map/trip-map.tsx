@@ -9,7 +9,7 @@ import {
 } from '@maplibre/maplibre-react-native';
 import type { FeatureCollection } from 'geojson';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { MAP_CREDIT, MAP_TILES_URL } from '@/services/map-tiles';
 import { IconButton } from '@/ui/components/icon-button';
@@ -261,14 +261,25 @@ export function TripMap({
           </Marker>
         )}
         {pins.map((pin) => (
-          <Marker key={pin.id} lngLat={[pin.point[0], pin.point[1]]} anchor="bottom">
-            <Pressable
+          // On Android a marker is a native view laid over the map: touches never reach a
+          // Pressable inside it, so the marker itself takes the press (field feedback).
+          <Marker
+            key={pin.id}
+            id={pin.id}
+            lngLat={[pin.point[0], pin.point[1]]}
+            anchor="bottom"
+            onPress={() => onPinPress?.(pin.id)}
+          >
+            {/* A screen reader's double tap reaches this view, not the map: same choice. */}
+            <View
+              accessible
               accessibilityRole="button"
               accessibilityLabel={pin.label}
-              onPress={() => onPinPress?.(pin.id)}
+              accessibilityActions={[{ name: 'activate' }]}
+              onAccessibilityAction={() => onPinPress?.(pin.id)}
             >
               <PlacePin icon={pin.icon} photo={pin.photo} selected={pin.selected ?? false} />
-            </Pressable>
+            </View>
           </Marker>
         ))}
         {maneuver && (

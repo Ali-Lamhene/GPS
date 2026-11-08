@@ -10,7 +10,7 @@ import { TripMap } from '../trip-map';
 // The phone's map, with MapLibre Native replaced by views that draw their children.
 jest.mock('@maplibre/maplibre-react-native', () => {
   const React = jest.requireActual<typeof import('react')>('react');
-  const { View } = jest.requireActual<typeof import('react-native')>('react-native');
+  const { Pressable, View } = jest.requireActual<typeof import('react-native')>('react-native');
   const container = ({ children }: { children?: React.ReactNode }) =>
     React.createElement(View, null, children);
   const Camera = React.forwardRef((_props: object, ref: React.Ref<unknown>) => {
@@ -18,12 +18,15 @@ jest.mock('@maplibre/maplibre-react-native', () => {
     return null;
   });
   Camera.displayName = 'Camera';
+  // Like the native marker: the marker itself takes the press, not its content.
+  const Marker = ({ children, onPress }: { children?: React.ReactNode; onPress?: () => void }) =>
+    React.createElement(Pressable, { onPress, disabled: !onPress }, children);
   return {
     Map: container,
     Camera,
     GeoJSONSource: container,
     Layer: () => null,
-    Marker: container,
+    Marker,
     NetworkManager: { setConnected: jest.fn() },
     LogManager: { setLogLevel: jest.fn(), onLog: jest.fn() },
     TransformRequestManager: { addUrlTransform: jest.fn(), addHeader: jest.fn() },
@@ -63,6 +66,22 @@ describe('<TripMap /> on the phone', () => {
     );
 
     await fireEvent.press(await screen.findByRole('button', { name: 'mon lieu de travail' }));
+
+    expect(onPinPress).toHaveBeenCalledWith('work');
+  });
+
+  test('a screen reader activating a pin gives its place', async () => {
+    const onPinPress = jest.fn();
+    await render(
+      <TripMap
+        camera={camera}
+        pins={[{ id: 'work', point: [5.38, 43.3], icon: 'work', label: 'mon lieu de travail' }]}
+        onPinPress={onPinPress}
+      />,
+    );
+
+    const pin = await screen.findByRole('button', { name: 'mon lieu de travail' });
+    await fireEvent(pin, 'accessibilityAction', { nativeEvent: { actionName: 'activate' } });
 
     expect(onPinPress).toHaveBeenCalledWith('work');
   });
