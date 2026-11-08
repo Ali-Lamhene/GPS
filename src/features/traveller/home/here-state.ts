@@ -1,8 +1,8 @@
 import type { IconName } from '@/ui/icon/glyphs';
 
 /**
- * « Here » while the position is not usable (spec 017): still searching (the target, greyed),
- * or unavailable (the target crossed out). Undefined: ready. Either way a touch asks again.
+ * « Here » while the position is not usable (spec 017): still searching (the pin with a person, greyed),
+ * or unavailable (the person crossed out: « me » not found, spec 027). Undefined: ready. Either way a touch asks again.
  */
 export type HereUnavailable = 'searching' | 'off';
 
@@ -10,8 +10,8 @@ export type HereUnavailable = 'searching' | 'off';
 export function hereIcon<Ready extends IconName>(
   state: HereUnavailable | undefined,
   ready: Ready,
-): Ready | 'location_disabled' | 'my_location' {
-  if (state === 'off') return 'location_disabled';
-  if (state === 'searching') return 'my_location';
+): Ready | 'person_off' | 'person_pin_circle' {
+  if (state === 'off') return 'person_off';
+  if (state === 'searching') return 'person_pin_circle';
   return ready;
 }

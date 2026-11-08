@@ -116,7 +116,7 @@ export function TripMap({
   controlsBottom = 16,
   recenterBottom,
   recenterRight,
-  recenterIcon = 'my_location',
+  recenterIcon = 'person_pin_circle',
   pins = [],
   onPinPress,
 }: TripMapProps) {
@@ -310,7 +310,7 @@ export function TripMap({
             recenterRight !== undefined && { right: recenterRight },
           ]}
         >
-          {/* Round warm-white target of the emerald mockup (spec 009). */}
+          {/* Round warm-white button of the emerald mockup (spec 009), with the pin of « me » (spec 027). */}
           <IconButton
             icon={recenterIcon}
             label="Recentrer"

@@ -1,15 +1,18 @@
 import { I18nManager, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { CURRENT_POSITION, type Place } from '@/domain/place';
 import { speak } from '@/services/speech';
 import { IconButton } from '@/ui/components/icon-button';
 import { TimeDials } from '@/ui/components/time-dials';
-import { Icon } from '@/ui/icon/icon';
 import { colors, shadows, spacing } from '@/ui/theme';
 
+import { END_SIZES, EndDisc } from '../components/way-card';
 import { ProgressStrip } from './progress-strip';
 
 type ProgressPanelProps = {
+  origin?: Place;
+  destination?: Place;
   progress: number;
   remainingMinutes: number;
   /** Stop or station name the traveller can listen to at this step (D9). */
@@ -18,11 +21,14 @@ type ProgressPanelProps = {
 };
 
 /**
- * Bottom of the guidance (spec 010): a warm-white pill with the start pin and the time
- * left at one end, the flag at the other, the way done in emerald dots between them; the
- * round « listen » button stands above it when the step has a station name.
+ * Bottom of the guidance (specs 010, 027): a warm-white pill with the start place and the
+ * time left at one end, the arrival place at the other, as on the home pill (pin and flag
+ * badges), the way done in emerald dots between them; the round « listen » button stands
+ * above it when the step has a station name.
  */
 export function ProgressPanel({
+  origin,
+  destination,
   progress,
   remainingMinutes,
   spokenName,
@@ -48,11 +54,18 @@ export function ProgressPanel({
       {/* Never mirrored, like the map: the ends are known by their symbol (spec 006). */}
       <View style={[styles.pill, I18nManager.isRTL && styles.unmirrored]}>
         <View style={styles.start}>
-          <Icon name="location_on" size={24} color={colors.emerald} variant="outlined" />
+          {/* « Here » was where the traveller stood at the start, not where they are now: a
+              plain start disc, never the pin of « me » (spec 027). */}
+          <EndDisc
+            end="origin"
+            place={origin?.id === CURRENT_POSITION.id ? undefined : origin}
+            calling={false}
+            size={END_SIZES.compact}
+          />
           <TimeDials minutes={remainingMinutes} size={34} crossColor={colors.white} gap={3} />
         </View>
         <ProgressStrip progress={progress} />
-        <Icon name="flag" size={24} color={colors.emerald} variant="outlined" />
+        <EndDisc end="destination" place={destination} calling={false} size={END_SIZES.compact} />
       </View>
     </View>
   );

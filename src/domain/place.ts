@@ -3,7 +3,7 @@ import { PICTOGRAM_CATALOGUE, type CataloguePictogram } from './pictograms';
 
 /** Pictograms a place can wear: the catalogue (spec 011), plus « here » for the start. */
 /** A saved place's pictogram, « here », or « here » while the position is unknown (spec 017). */
-export type PlaceIcon = CataloguePictogram | 'my_location' | 'location_disabled';
+export type PlaceIcon = CataloguePictogram | 'person_pin_circle' | 'person_off';
 
 export type Place = {
   id: string;
@@ -27,7 +27,11 @@ export type Place = {
 };
 
 /** The traveller's current position, offered as a starting point. */
-export const CURRENT_POSITION: Place = { id: 'here', icon: 'my_location', helpName: 'ma position' };
+export const CURRENT_POSITION: Place = {
+  id: 'here',
+  icon: 'person_pin_circle',
+  helpName: 'ma position',
+};
 
 /** Pictograms offered when a place is created (E28), in the order of the catalogue. */
 export const PICTOGRAM_CHOICES: readonly PlaceIcon[] = PICTOGRAM_CATALOGUE.flatMap(

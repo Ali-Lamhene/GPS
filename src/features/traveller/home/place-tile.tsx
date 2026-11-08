@@ -67,7 +67,9 @@ type PlaceTileProps = {
  */
 export function PlaceTile({ place, size, selected, unavailable, onPress }: PlaceTileProps) {
   const here = place.id === CURRENT_POSITION.id;
-  const shown: Place = here ? { ...place, icon: hereIcon(unavailable, 'my_location') } : place;
+  const shown: Place = here
+    ? { ...place, icon: hereIcon(unavailable, 'person_pin_circle') }
+    : place;
   return (
     <Pressable
       accessibilityRole="button"

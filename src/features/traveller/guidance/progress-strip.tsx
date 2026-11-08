@@ -51,7 +51,11 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
   },
+  // Larger as well as darker: the way done reads at a glance, even in the sun (spec 027).
   done: {
+    width: 9,
+    height: 9,
+    borderRadius: 4.5,
     backgroundColor: colors.emerald,
   },
   left: {

@@ -18,12 +18,12 @@ import { colors, shadows, spacing } from '@/ui/theme';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 
 /** The round ends: large on the home (spec 011), compact in the headers of E06 to E08. */
-const END_SIZES = { large: 56, compact: 42 } as const;
+export const END_SIZES = { large: 56, compact: 42 } as const;
 const DOT_COUNT = 12;
 
-/** The place shown in a disc of the way: « here » wears the target. */
+/** The place shown in a disc of the way: « here » wears the pin with a person (spec 027). */
 function endPlace(place: Place): Place {
-  return place.id === CURRENT_POSITION.id ? { ...place, icon: 'my_location' } : place;
+  return place.id === CURRENT_POSITION.id ? { ...place, icon: 'person_pin_circle' } : place;
 }
 
 /** Halo that grows and fades around the end to fill; still and pale when motion is reduced. */
@@ -56,7 +56,8 @@ type EndDiscProps = {
   size: number;
 };
 
-function EndDisc({ end, place, calling, onPress, size }: EndDiscProps) {
+/** One end of the way: the place in a round disc with its start pin or flag badge. */
+export function EndDisc({ end, place, calling, onPress, size }: EndDiscProps) {
   const round = { width: size, height: size, borderRadius: size / 2 };
   const iconSize = Math.round(size * 0.57);
   const haloStyle = useCall(calling);

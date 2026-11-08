@@ -177,7 +177,7 @@ export function TripMap({
   controlsBottom = 16,
   recenterBottom,
   recenterRight,
-  recenterIcon = 'my_location',
+  recenterIcon = 'person_pin_circle',
   pins = [],
   onPinPress,
 }: TripMapProps) {

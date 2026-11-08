@@ -48,7 +48,7 @@ const ARRIVED_METERS = 25;
 
 export function GuidanceScreen() {
   const insets = useSafeAreaInsets();
-  const { destination, guidanceStep = 0, dispatch } = useTripPlan();
+  const { origin, destination, guidanceStep = 0, dispatch } = useTripPlan();
   const [bannerHeight, setBannerHeight] = useState(0);
   const [panelHeight, setPanelHeight] = useState(0);
   const { steps, legs } = useRoutes();
@@ -146,6 +146,8 @@ export function GuidanceScreen() {
         <HelpButton onPress={openHelp} />
       </View>
       <ProgressPanel
+        origin={origin}
+        destination={destination}
         progress={tripProgress(legs, legIndex, fraction)}
         remainingMinutes={remainingMinutes(legs, legIndex, fraction)}
         spokenName={spokenName(step.instruction)}

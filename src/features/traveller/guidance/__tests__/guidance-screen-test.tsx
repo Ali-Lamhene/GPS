@@ -88,6 +88,13 @@ describe('<GuidanceScreen />', () => {
     expect(router.replace).toHaveBeenCalledWith('/arrived');
   });
 
+  test('the bottom way shows the start and arrival places, not generic marks (spec 027)', async () => {
+    await renderWithProviders(<GuidanceScreen />, startedAt(0));
+
+    expect(screen.getByLabelText('Départ')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Arrivée')).toBeOnTheScreen();
+  });
+
   test('help is in the bottom panel', async () => {
     await renderWithProviders(<GuidanceScreen />, startedAt(0));
 
