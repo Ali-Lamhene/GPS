@@ -51,7 +51,8 @@ Rien de nouveau : aucun appel, aucun stockage. Le pictogramme « ici » n'est ja
 - [x] Guidage : les disques « Départ » et « Arrivée » sont dans le chemin du bas (test).
 - [x] Les points faits suivent la progression (test : à mi-chemin, la moitié des points).
 - [ ] Sur le téléphone : l'épingle à personnage est-elle comprise comme « moi » ? Se distingue-t-elle de l'épingle simple du départ ?
-- [ ] Sur le terrain : le remplissage des points se voit-il en marchant ?
+- [x] Sur le terrain : les points se remplissent en marchant (confirmé par l’utilisateur le 2026-11-08 ; le point 11 était déjà réglé).
+- [ ] Sur le téléphone : les points faits de 9 dp ne sont-ils pas trop gros ?
 
 ## Ajustements après la relecture `ux-sans-texte-reviewer` (2026-11-08)
 
