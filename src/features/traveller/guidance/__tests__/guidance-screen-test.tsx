@@ -2,7 +2,7 @@ import { act, fireEvent, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { Vibration } from 'react-native';
 
-import { renderWithProviders } from '@/testing/render-with-providers';
+import { renderWithProviders, ROUTES } from '@/testing/render-with-providers';
 import type { TripPlanAction } from '@/features/traveller/trip-plan/trip-plan-reducer';
 
 import { DEMO_GUIDANCE } from '@/testing/fixtures/guidance';
@@ -93,6 +93,33 @@ describe('<GuidanceScreen />', () => {
 
     expect(screen.getByLabelText('Départ')).toBeOnTheScreen();
     expect(screen.getByLabelText('Arrivée')).toBeOnTheScreen();
+  });
+
+  test('on the last walk, the street photo of the arrival shows (spec 030)', async () => {
+    const photo = {
+      url: 'https://panoramax.ign.fr/api/pictures/a/sd.jpg',
+      panorama: false,
+      centre: 0.5,
+    };
+    const last = DEMO_GUIDANCE.walk.length - 1;
+    await renderWithProviders(<GuidanceScreen />, startedAt(last, 'walk'), noPosition, {
+      ...ROUTES,
+      streetPhoto: photo,
+    });
+    expect(screen.getByTestId('arrival-street-photo')).toBeOnTheScreen();
+  });
+
+  test('before the last walk, no street photo', async () => {
+    const photo = {
+      url: 'https://panoramax.ign.fr/api/pictures/a/sd.jpg',
+      panorama: false,
+      centre: 0.5,
+    };
+    await renderWithProviders(<GuidanceScreen />, startedAt(0, 'walk'), noPosition, {
+      ...ROUTES,
+      streetPhoto: photo,
+    });
+    expect(screen.queryByTestId('arrival-street-photo')).toBeNull();
   });
 
   test('help is in the bottom panel', async () => {

@@ -3,13 +3,14 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
-import { isHiddenOnMap } from '@/domain/place';
+import { isHiddenOnMap, isLocalPicture } from '@/domain/place';
 
 import { FloatingSheet } from '@/ui/components/floating-sheet';
 import { HelpButton } from '@/ui/components/help-button';
 import { MainActionButton } from '@/ui/components/main-action-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { PlaceFace } from '@/ui/components/place-face';
+import { StreetPhotoView } from '@/ui/components/street-photo-view';
 import { Icon } from '@/ui/icon/icon';
 import { TripMap } from '@/ui/map/trip-map';
 import { colors } from '@/ui/theme';
@@ -32,7 +33,10 @@ export function ArrivedScreen() {
   const { destination } = useTripPlan();
   const goHome = useGoHome();
   useCueOnEnter('arrival');
-  const { legs } = useRoutes();
+  const { legs, streetPhoto } = useRoutes();
+  // The traveller's own photo first; else the street photo, never for a hidden place.
+  const ownPhoto = !!destination?.photo && isLocalPicture(destination.photo);
+  const street = destination && !ownPhoto && !isHiddenOnMap(destination) ? streetPhoto : undefined;
   const end = legs.at(-1)?.path.at(-1);
   const icon = destination?.icon ?? 'flag';
   const [sheetHeight, setSheetHeight] = useState(280);
@@ -54,7 +58,19 @@ export function ArrivedScreen() {
         <View style={styles.hero}>
           <View style={styles.halo}>
             <View style={styles.disc}>
-              {destination ? (
+              {street && destination ? (
+                <>
+                  <StreetPhotoView photo={street} />
+                  <View style={styles.streetBadge}>
+                    <Icon
+                      name={destination.icon}
+                      size={36}
+                      color={colors.emerald}
+                      variant="outlined"
+                    />
+                  </View>
+                </>
+              ) : destination ? (
                 <PlaceFace
                   place={destination}
                   iconSize={72}
@@ -102,6 +118,19 @@ const styles = StyleSheet.create({
     borderColor: colors.emerald,
     backgroundColor: colors.warmWhite,
     overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  // The place's pictogram on the street photo, inside the disc, at the bottom (spec 030).
+  streetBadge: {
+    position: 'absolute',
+    bottom: 8,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 2,
+    borderColor: colors.emerald,
+    backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
   },

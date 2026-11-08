@@ -132,7 +132,9 @@ export function AddressScreen() {
           onPress={() => openCreditPage('openStreetMap')}
         >
           les contributeurs d’OpenStreetMap
-        </Text>
+        </Text>{' '}
+        · photos de rue de l’arrivée : contributeurs de Panoramax (licences ouvertes etalab-2.0,
+        CC-BY-SA 4.0)
       </Text>
     </View>
   );

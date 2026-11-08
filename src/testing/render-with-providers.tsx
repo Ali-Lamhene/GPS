@@ -6,7 +6,7 @@ import {
   LocationProvider,
   type TravellerPosition,
 } from '@/features/traveller/location/location-context';
-import { RoutesProvider } from '@/features/traveller/trip-plan/routes-context';
+import { RoutesProvider, type RoutesFixture } from '@/features/traveller/trip-plan/routes-context';
 import { TripPlanProvider } from '@/features/traveller/trip-plan/trip-plan-context';
 import type { TripPlanAction } from '@/features/traveller/trip-plan/trip-plan-reducer';
 
@@ -19,7 +19,8 @@ const PLACES = {
   originIds: DEMO_ORIGIN_IDS,
   destinationIds: DEMO_DESTINATION_IDS,
 };
-const ROUTES = { legs: DEMO_LEGS, steps: DEMO_GUIDANCE };
+/** The demo trips, exported so a test can add to them (a street photo, spec 030). */
+export const ROUTES: RoutesFixture = { legs: DEMO_LEGS, steps: DEMO_GUIDANCE };
 
 const metrics = {
   frame: { x: 0, y: 0, width: 360, height: 800 },
@@ -34,12 +35,13 @@ export function renderWithProviders(
   ui: ReactElement,
   actions: TripPlanAction[] = [],
   position: TravellerPosition = { kind: 'located', point: DEMO_CURRENT_POSITION },
+  routes: RoutesFixture = ROUTES,
 ) {
   return render(
     <SafeAreaProvider initialMetrics={metrics}>
       <LocationProvider fixed={position}>
         <TripPlanProvider fixture={PLACES} initialActions={actions}>
-          <RoutesProvider fixture={ROUTES}>{ui}</RoutesProvider>
+          <RoutesProvider fixture={routes}>{ui}</RoutesProvider>
         </TripPlanProvider>
       </LocationProvider>
     </SafeAreaProvider>,

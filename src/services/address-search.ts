@@ -28,6 +28,7 @@ export async function reverseAddress(
   try {
     const response = await fetch(`https://${ADDRESS_SEARCH_HOST}/reverse?${params.toString()}`, {
       signal: controller.signal,
+      headers: { 'Cache-Control': 'no-store' },
     });
     if (!response.ok) return undefined;
     const body = await response.text();
@@ -60,6 +61,8 @@ export async function searchAddresses(
   try {
     const response = await fetch(`https://${ADDRESS_SEARCH_HOST}/api/?${params.toString()}`, {
       signal,
+      // No HTTP cache: the address holds the typed text.
+      headers: { 'Cache-Control': 'no-store' },
     });
     if (!response.ok) return { ok: false, reason: 'offline' };
     const data: unknown = await response.json();

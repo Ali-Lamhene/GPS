@@ -1,10 +1,14 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
+import type { LngLat } from '@/domain/geo';
+
 import { buildGuidance } from '@/domain/guidance-plan';
 import type { GuidanceStep } from '@/domain/guidance';
-import { CURRENT_POSITION } from '@/domain/place';
+import { CURRENT_POSITION, isHiddenOnMap, isLocalPicture } from '@/domain/place';
+import type { StreetPhoto } from '@/domain/street-photo';
 import type { Leg, TravelMode } from '@/domain/trip';
 import { findRoute } from '@/services/routing';
+import { findStreetPhoto } from '@/services/street-photo';
 
 import { useTripPlan } from './trip-plan-context';
 
@@ -34,6 +38,16 @@ type RoutesValue = {
    * never for every end tried there (spec 021). Asking again retries (back from E25).
    */
   request: () => void;
+  /**
+   * A street photo of the arrival (spec 030), asked with the trips when the place has no
+   * photo of its own and is not hidden from the map.
+   */
+  streetPhoto?: StreetPhoto;
+  /**
+   * The traveller is lost (spec 031): a new trip by the same mode from where they stand to
+   * the same arrival, the shortest the service finds. True once the guidance follows it.
+   */
+  reroute: (from: LngLat) => Promise<boolean>;
 };
 
 const RoutesContext = createContext<RoutesValue | null>(null);
@@ -42,6 +56,9 @@ const RoutesContext = createContext<RoutesValue | null>(null);
 export type RoutesFixture = {
   legs: Record<TravelMode, readonly Leg[]>;
   steps: Record<TravelMode, readonly GuidanceStep[]>;
+  streetPhoto?: StreetPhoto;
+  /** Tests only: what the routing service answers when the traveller is lost. */
+  reroute?: typeof findRoute;
 };
 
 /**
@@ -65,6 +82,9 @@ export function RoutesProvider({
       ? `${origin?.id ?? ''}>${destination?.id ?? ''}|${start.join(',')}|${end.join(',')}`
       : '';
   const [answer, setAnswer] = useState<{ key: string; routes: Routes } | null>(null);
+  const [photo, setPhoto] = useState<{ ends: string; photo: StreetPhoto } | null>(null);
+  // A trip computed again on the way (spec 031), for these ends and this mode only.
+  const [rerouted, setRerouted] = useState<{ key: string; legs: readonly Leg[] } | null>(null);
   const [asked, setAsked] = useState<{ ends: string; attempt: number } | null>(null);
   const key = ends && asked?.ends === ends ? `${ends}#${asked.attempt}` : '';
   const request = () =>
@@ -99,6 +119,23 @@ export function RoutesProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fixture, key]);
 
+  // Once per pair of ends, with the first trip request: never for every end tried on the
+  // home, never for a home or a place the traveller photographed (spec 030).
+  const wantsPhoto =
+    !!destination &&
+    !isHiddenOnMap(destination) &&
+    !(destination.photo && isLocalPicture(destination.photo));
+  useEffect(() => {
+    if (fixture || !end || !key || !wantsPhoto || photo?.ends === ends) return;
+    const controller = new AbortController();
+    findStreetPhoto(end, controller.signal).then((found) => {
+      if (!controller.signal.aborted && found) setPhoto({ ends, photo: found });
+    });
+    return () => controller.abort();
+    // `end` is in `ends`, itself in `key`.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fixture, key, wantsPhoto]);
+
   const routes: Routes = fixture
     ? {
         walk: { kind: 'ready', legs: fixture.legs.walk },
@@ -108,11 +145,39 @@ export function RoutesProvider({
       ? answer.routes
       : LOADING;
   const chosen = routes[mode];
-  const legs = chosen.kind === 'ready' ? chosen.legs : [];
-  const steps = fixture ? fixture.steps[mode] : buildGuidance(legs, destination?.helpName);
+  const rerouteKey = `${key}|${mode}`;
+  const current = rerouted?.key === rerouteKey ? rerouted.legs : undefined;
+  const legs = current ?? (chosen.kind === 'ready' ? chosen.legs : []);
+  const steps =
+    fixture && !current ? fixture.steps[mode] : buildGuidance(legs, destination?.helpName);
+
+  const reroute = async (from: LngLat): Promise<boolean> => {
+    if (!end) return false;
+    const controller = new AbortController();
+    const result = await (fixture?.reroute ?? findRoute)(from, end, mode, controller.signal);
+    if (!result.ok) return false;
+    setRerouted({ key: rerouteKey, legs: result.legs });
+    return true;
+  };
 
   return (
-    <RoutesContext.Provider value={{ routes, legs, steps, request }}>
+    <RoutesContext.Provider
+      value={{
+        routes,
+        legs,
+        steps,
+        request,
+        reroute,
+        // Checked again here: a place hidden since the photo came never shows it.
+        streetPhoto: !wantsPhoto
+          ? undefined
+          : fixture
+            ? fixture.streetPhoto
+            : photo?.ends === ends
+              ? photo.photo
+              : undefined,
+      }}
+    >
       {children}
     </RoutesContext.Provider>
   );

@@ -50,7 +50,8 @@ export async function findRoute(
   const timer = setTimeout(stop, TIMEOUT_MS);
   try {
     const response = await fetch(`https://${ROUTING_HOST}/api/v6/plan?${params.toString()}`, {
-      headers: { 'User-Agent': USER_AGENT },
+      // No HTTP cache: the address holds the start and the arrival.
+      headers: { 'User-Agent': USER_AGENT, 'Cache-Control': 'no-store' },
       signal: controller.signal,
     });
     if (!response.ok) return { ok: false, reason: 'service' };

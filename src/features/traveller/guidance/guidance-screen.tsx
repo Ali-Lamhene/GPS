@@ -19,7 +19,7 @@ import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { InstructionCard } from './instruction-card';
 import { stepCue } from './instruction-look';
 import { OfflineMetroView } from './offline-metro-view';
-import { ProgressPanel } from './progress-panel';
+import { ARRIVAL_PHOTO_HEIGHT, ProgressPanel } from './progress-panel';
 import { useFreshPoint } from './use-fresh-point';
 
 /** For a turn, the corner ahead on the current leg. */
@@ -51,7 +51,7 @@ export function GuidanceScreen() {
   const { origin, destination, guidanceStep = 0, dispatch } = useTripPlan();
   const [bannerHeight, setBannerHeight] = useState(0);
   const [panelHeight, setPanelHeight] = useState(0);
-  const { steps, legs } = useRoutes();
+  const { steps, legs, streetPhoto } = useRoutes();
   const step = steps[guidanceStep];
   const here = positionPoint(useTravellerPosition().position);
   const end = legs.at(-1)?.path.at(-1);
@@ -103,6 +103,7 @@ export function GuidanceScreen() {
   const planned = tripPosition(legs, legIndex, fraction);
   const position = here && planned ? { point: here, heading: planned.heading } : planned;
   const destinationIcon = destination?.icon ?? 'flag';
+  const arrivalPhoto = step.instruction.kind === 'walkToDestination' ? streetPhoto : undefined;
 
   return (
     <View style={styles.screen}>
@@ -122,6 +123,10 @@ export function GuidanceScreen() {
           traveller={{ point: position.point, heading: position.heading }}
           destination={end && { point: end, icon: destinationIcon }}
           controlsBottom={panelHeight + 8}
+          // The street photo stands on the right above the pill: « recenter » goes above it.
+          recenterBottom={
+            arrivalPhoto ? panelHeight + ARRIVAL_PHOTO_HEIGHT + spacing.md + 16 : undefined
+          }
         />
       )}
       <View
@@ -148,6 +153,7 @@ export function GuidanceScreen() {
       <ProgressPanel
         origin={origin}
         destination={destination}
+        arrivalPhoto={arrivalPhoto}
         progress={tripProgress(legs, legIndex, fraction)}
         remainingMinutes={remainingMinutes(legs, legIndex, fraction)}
         spokenName={spokenName(step.instruction)}

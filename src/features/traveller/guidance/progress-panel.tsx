@@ -1,20 +1,29 @@
 import { I18nManager, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CURRENT_POSITION, type Place } from '@/domain/place';
+import type { StreetPhoto } from '@/domain/street-photo';
 import { speak } from '@/services/speech';
 import { IconButton } from '@/ui/components/icon-button';
+import { StreetPhotoView } from '@/ui/components/street-photo-view';
+import { Icon } from '@/ui/icon/icon';
 import { TimeDials } from '@/ui/components/time-dials';
 import { colors, shadows, spacing } from '@/ui/theme';
 
 import { END_SIZES, EndDisc } from '../components/way-card';
 import { ProgressStrip } from './progress-strip';
 
+/** Height of the street photo card above the pill (spec 030). */
+export const ARRIVAL_PHOTO_HEIGHT = 124;
+
 type ProgressPanelProps = {
   origin?: Place;
   destination?: Place;
   progress: number;
   remainingMinutes: number;
+  /** On the last walk: what the arrival looks like from the street (spec 030). */
+  arrivalPhoto?: StreetPhoto;
   /** Stop or station name the traveller can listen to at this step (D9). */
   spokenName?: string;
   onLayout?: (event: LayoutChangeEvent) => void;
@@ -31,6 +40,7 @@ export function ProgressPanel({
   destination,
   progress,
   remainingMinutes,
+  arrivalPhoto,
   spokenName,
   onLayout,
 }: ProgressPanelProps) {
@@ -41,6 +51,30 @@ export function ProgressPanel({
       onLayout={onLayout}
       pointerEvents="box-none"
     >
+      {arrivalPhoto && (
+        // Above the arrival end of the pill, on its right in every reading direction (the
+        // pill never mirrors, spec 006): `left` is swapped in right-to-left.
+        <Animated.View
+          entering={FadeIn.duration(400)}
+          accessible
+          accessibilityLabel="Photo de l'arrivée"
+          style={[styles.photo, I18nManager.isRTL ? { left: 0 } : { right: 0 }]}
+          testID="arrival-street-photo"
+        >
+          <View style={styles.photoClip}>
+            <StreetPhotoView photo={arrivalPhoto} />
+          </View>
+          {/* The arrival's own pictogram, as on its disc below and its pin on the map. */}
+          <View style={styles.photoBadge}>
+            <Icon
+              name={destination?.icon ?? 'flag'}
+              size={18}
+              color={colors.white}
+              variant="outlined"
+            />
+          </View>
+        </Animated.View>
+      )}
       {spokenName && (
         <View style={styles.listen}>
           <IconButton
@@ -85,6 +119,37 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: '100%',
     marginBottom: spacing.md,
+  },
+  // Above the arrival end; « listen » never shows on the last walk. Outside the measured
+  // panel too.
+  photo: {
+    position: 'absolute',
+    bottom: '100%',
+    marginBottom: spacing.md,
+    width: 168,
+    height: ARRIVAL_PHOTO_HEIGHT,
+  },
+  photoClip: {
+    ...StyleSheet.absoluteFill,
+    borderRadius: 20,
+    borderWidth: 3,
+    borderColor: colors.emerald,
+    overflow: 'hidden',
+    backgroundColor: colors.surfaceLow,
+    boxShadow: shadows.warm,
+  },
+  photoBadge: {
+    position: 'absolute',
+    top: -6,
+    left: -6,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 1.5,
+    borderColor: colors.white,
+    backgroundColor: colors.emerald,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   pill: {
     flexDirection: 'row',

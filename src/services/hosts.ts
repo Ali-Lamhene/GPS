@@ -19,6 +19,25 @@ export const ADDRESS_SEARCH_HOST = 'photon.komoot.io';
 export const ROUTING_HOST = 'api.transitous.org';
 
 /**
+ * Street photos of the arrival (spec 030): Panoramax, a free and open street-level photo
+ * commons (IGN, OpenStreetMap France). The search receives the arrival point to about 10 m
+ * and the IP address; the picture host then receives the IP and the picture asked for.
+ */
+export const STREET_PHOTO_SEARCH_HOST = 'api.panoramax.xyz';
+/** Panoramax instances whose pictures may be asked for; a picture elsewhere is skipped. */
+export const STREET_PHOTO_IMAGE_HOSTS = ['panoramax.ign.fr', 'panoramax.openstreetmap.fr'] as const;
+/**
+ * Where those pictures may finally come from, redirects followed: OpenStreetMap France serves
+ * its own; the IGN redirects to its storage at OVH, which then receives the IP address and
+ * the picture asked for. A picture served from anywhere else is thrown away. This list only
+ * checks the answer: the request has already reached that host.
+ */
+export const STREET_PHOTO_FINAL_HOSTS = [
+  'panoramax.openstreetmap.fr',
+  'panoramax-storage-public-fast.s3.gra.perf.cloud.ovh.net',
+] as const;
+
+/**
  * Share links (spec 019): never called by the app. The page receives a visit only when the
  * app is not installed, never the place, which stays after `#`. Android itself (Google Play
  * services) fetches `/.well-known/assetlinks.json` at install and update: Google, and the
