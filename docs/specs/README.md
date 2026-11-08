@@ -29,3 +29,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 025 | [Icône et écran de démarrage](025-icone-et-demarrage.md)                                                  | livré (à voir sur téléphone)                           |
 | 026 | [Retrait du mode voiture](026-sans-voiture.md)                                                            | livré (à voir sur téléphone)                           |
 | 027 | [Plus aucune cible : « moi ici » et les vrais lieux sur le chemin du guidage](027-symboles-sans-cible.md) | livré (à voir sur téléphone)                           |
+| 028 | [Carte qui tourne à deux doigts, pastilles qui invitent au toucher](028-carte-tournante-et-pastilles.md)  | livré (à voir sur téléphone)                           |

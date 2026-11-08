@@ -38,12 +38,20 @@ function useCall(active: boolean) {
     }
     halo.value = withRepeat(withTiming(1, { duration: 1400, easing: Easing.out(Easing.quad) }), -1);
   }, [active, reduced, halo]);
-  return useAnimatedStyle(() => {
+  const haloStyle = useAnimatedStyle(() => {
     if (!active) return { opacity: 0, transform: [{ scale: 1 }] };
     // Reduced motion: a still, pale halo, so the end to fill still stands out in the sun.
     if (reduced) return { opacity: 0.25, transform: [{ scale: 1.22 }] };
     return { opacity: 0.55 * (1 - halo.value), transform: [{ scale: 1 + 0.45 * halo.value }] };
   });
+  // The hand taps the disc at the start of each halo: « touch here » (spec 028).
+  const handStyle = useAnimatedStyle(() => {
+    if (!active) return { opacity: 0, transform: [{ scale: 1 }] };
+    if (reduced) return { opacity: 1, transform: [{ scale: 1 }] };
+    const press = halo.value < 0.25 ? 1 - halo.value * 0.6 : 0.85 + (halo.value - 0.25) * 0.2;
+    return { opacity: 1, transform: [{ scale: press }] };
+  });
+  return { haloStyle, handStyle };
 }
 
 type EndDiscProps = {
@@ -60,7 +68,7 @@ type EndDiscProps = {
 export function EndDisc({ end, place, calling, onPress, size }: EndDiscProps) {
   const round = { width: size, height: size, borderRadius: size / 2 };
   const iconSize = Math.round(size * 0.57);
-  const haloStyle = useCall(calling);
+  const { haloStyle, handStyle } = useCall(calling);
   const symbol: IconName = end === 'origin' ? 'location_on' : 'flag';
   const label = end === 'origin' ? 'Départ' : 'Arrivée';
   const content = (
@@ -104,6 +112,22 @@ export function EndDisc({ end, place, calling, onPress, size }: EndDiscProps) {
       )}
     </>
   );
+  // Only where a touch does something: the home (spec 028).
+  const hand = onPress && calling && (
+    <Animated.View
+      pointerEvents="none"
+      style={[
+        styles.hand,
+        // Mostly on the disc, where a touch works; on its right in every reading direction
+        // (`left` is swapped in right-to-left, like the pill that never mirrors, spec 006).
+        I18nManager.isRTL ? { left: -size * 0.1 } : { right: -size * 0.1 },
+        { bottom: -size * 0.1 },
+        handStyle,
+      ]}
+    >
+      <Icon name="touch_app" size={Math.round(size * 0.5)} color={colors.ink} />
+    </Animated.View>
+  );
   if (!onPress) {
     return (
       <View accessibilityLabel={label} style={[styles.slot, round]}>
@@ -120,6 +144,7 @@ export function EndDisc({ end, place, calling, onPress, size }: EndDiscProps) {
       style={[styles.slot, round]}
     >
       {content}
+      {hand}
     </Pressable>
   );
 }
@@ -228,6 +253,14 @@ const styles = StyleSheet.create({
   emptyCalling: {
     borderWidth: 3,
     borderColor: colors.emerald,
+  },
+  // A dark hand on a small white disc: seen over the map as over the pill.
+  hand: {
+    position: 'absolute',
+    padding: 3,
+    borderRadius: 999,
+    backgroundColor: colors.white,
+    boxShadow: shadows.warm,
   },
   badge: {
     position: 'absolute',

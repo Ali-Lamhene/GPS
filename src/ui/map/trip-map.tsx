@@ -146,6 +146,8 @@ export function TripMap({
 
   const [centerLon, centerLat] = camera.center;
   const { zoom, heading: bearing = 0, pitch = 0 } = camera;
+  // The map's real bearing: the traveller may turn it with two fingers (spec 028).
+  const [shownBearing, setShownBearing] = useState(initial.heading ?? 0);
   const paddingTop = camera.padding?.top ?? 0;
   const paddingBottom = camera.padding?.bottom ?? 0;
   const paddingLeft = camera.padding?.left ?? 0;
@@ -193,7 +195,11 @@ export function TripMap({
   ]);
 
   // Markers stand up on the screen: turn them by their heading on the map, less the map's.
-  const turn = (heading: number) => heading - bearing;
+  const turn = (heading: number) => heading - shownBearing;
+  const trackBearing = (next: number) => {
+    // Small steps are not worth a new render of every marker while the map turns.
+    if (Math.abs(next - shownBearing) >= 5) setShownBearing(next);
+  };
 
   return (
     <View style={[StyleSheet.absoluteFill, styles.ground]}>
@@ -203,13 +209,13 @@ export function TripMap({
         // A texture draws inside the view tree: a GL surface shows black until its first
         // frame and while screens slide over it.
         androidView="texture"
-        // One finger moves the map, two zoom (spec 005); a double tap never zooms by
-        // mistake. The map comes back to the traveller on its own after a while.
+        // One finger moves the map, two zoom and turn it (specs 005, 028); a double tap never
+        // zooms by mistake. The map comes back to the traveller on its own after a while.
         dragPan={!still}
         touchZoom={!still}
         doubleTapZoom={false}
         doubleTapHoldZoom={false}
-        touchRotate={false}
+        touchRotate={!still}
         touchPitch={false}
         // MapLibre's own credit opens websites, and its logo, compass and scale are text
         // or figures: the credit is the folded ⓘ below (D9).
@@ -222,6 +228,8 @@ export function TripMap({
           setMovedFrom(framing.current);
           setLastMove(Date.now());
         }}
+        onRegionIsChanging={(event) => trackBearing(event.nativeEvent.bearing)}
+        onRegionDidChange={(event) => setShownBearing(event.nativeEvent.bearing)}
       >
         <Camera
           ref={cameraRef}

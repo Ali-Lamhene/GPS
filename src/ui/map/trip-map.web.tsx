@@ -216,8 +216,8 @@ export function TripMap({
         pitch,
         maxZoom: 19,
         interactive: !initial.current.still,
-        // One finger moves the map, two zoom (spec 005); a double tap never zooms by mistake.
-        // The map comes back to the traveller on its own after a while.
+        // One finger moves the map, two zoom and turn it (specs 005, 028); a double tap never
+        // zooms by mistake. The map comes back to the traveller on its own after a while.
         dragRotate: false,
         doubleClickZoom: false,
         touchPitch: false,
@@ -230,7 +230,6 @@ export function TripMap({
         }),
       });
       instance.addControl(new AttributionControl({ compact: true }), 'bottom-left');
-      instance.touchZoomRotate.disableRotation();
       instance.on('movestart', (event) => {
         if (!event.originalEvent) return;
         setMovedFrom(framing.current);
