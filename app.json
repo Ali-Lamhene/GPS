@@ -111,7 +111,7 @@
         "expo-image-picker",
         {
           "photosPermission": false,
-          "cameraPermission": false,
+          "cameraPermission": "Pour prendre la photo d'un lieu.",
           "microphonePermission": false
         }
       ],
