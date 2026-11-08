@@ -65,8 +65,10 @@ function EndDisc({ end, place, calling, onPress, size }: EndDiscProps) {
   const content = (
     <>
       <Animated.View pointerEvents="none" style={[styles.halo, round, haloStyle]} />
+      {/* Distinct keys: Android kept the old native view and drew the new border square
+          after « cancel » (field feedback, 2026-11-05). A fresh view takes the radius. */}
       {place ? (
-        <View style={[styles.disc, round]}>
+        <View key="place" style={[styles.disc, round]}>
           <View style={[styles.clip, { borderRadius: size / 2 }]}>
             {/* Seen as soon as the app opens: a hidden place shows no facade (spec 005). */}
             <PlaceFace
@@ -87,7 +89,10 @@ function EndDisc({ end, place, calling, onPress, size }: EndDiscProps) {
         </View>
       ) : (
         // The end to fill also differs at rest: thick emerald ring, the other one muted.
-        <View style={[styles.disc, round, styles.empty, calling && styles.emptyCalling]}>
+        <View
+          key="empty"
+          style={[styles.disc, round, styles.empty, calling && styles.emptyCalling]}
+        >
           <Icon
             name={symbol}
             size={iconSize}
