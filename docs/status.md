@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-11-05
+**Dernière mise à jour** : 2026-11-08
 
 ## Où on en est
 
@@ -185,6 +185,16 @@ L'utilisateur lance lui-même la build `preview` (`npx eas-cli build --profile p
 10. Guidage, chemin du bas (départ ···· arrivée) : des pictogrammes génériques au lieu de ceux des lieux, « drapeau » pour l'arrivée. **Plus aucune cible dans l'app** (précisé par l'utilisateur le 2026-11-05). Pour le départ, proposer à la spec l'épingle de la pilule de l'accueil (épingle ····· drapeau), à confirmer, en tenant compte du point 6 (bouton de géolocalisation en épingle) pour que chaque symbole garde un seul sens.
 11. Guidage : les points du chemin du bas se remplissent au fur et à mesure du déplacement, pour donner une idée de la distance restante.
 12. Accueil : après avoir choisi départ et arrivée puis touché ✕, la pastille de départ qui attend un choix montre un contour **carré** au lieu du halo rond.
+
+**Retours complémentaires (2026-11-08), réponses de l'utilisateur incluses :**
+
+13. Guidage : quand le voyageur se trompe de chemin, rien ne l'indique (état « mauvais sens » reporté par la spec 021). À spécifier, sur au moins deux canaux.
+14. Carte d'aide : elle dit « je cherche <nom du pictogramme> » au lieu de l'adresse. **Décidé** : afficher l'adresse ; pour un lieu sans adresse (épingle posée, photo), la demander à Photon (géocodage inverse, envoie la position du lieu ; accepté par l'utilisateur, à justifier dans la spec).
+15. Au-delà d'un certain écart, **recalculer un nouveau trajet, le plus court, comme Google** (décidé par l'utilisateur).
+16. La recherche d'adresse (Photon, E30) est très longue.
+17. Arrivée : un voyageur qui ne lit pas ne reconnaît pas le bâtiment. **Décidé** : montrer une photo de rue du lieu d'arrivée. Google écarté (payant, interdit de garder les photos, envoie la destination à Google, contraire à D1). Source retenue : **Panoramax** (API testée le 2026-11-08 : `api.panoramax.xyz/api/search?place_position=lon,lat` renvoie des photos tournées vers le point ; Marseille, Paris, Lyon couverts ; licences etalab-2.0 et CC-BY-SA 4.0, à créditer, spec 024). Reçoit la zone de l'arrivée et l'IP, à écrire dans la spec. Sans photo Panoramax : photo de l'accompagnant ou pictogramme.
+
+Plan validé le 2026-11-08 (autonomie) : corriger les bugs 3, 5, 7, 9, 12 (un commit chacun ; 2 attend une capture), puis une spec par groupe pour 1, 4, 6, 8, 10, 11, 13, 14, 15, 16, 17, avec hypothèses écrites.
 
 À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, 9, 12, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6, 8, 10, 11).
 
