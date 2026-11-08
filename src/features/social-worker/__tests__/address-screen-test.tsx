@@ -1,5 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
+import { Keyboard } from 'react-native';
 
 import { openCreditPage } from '@/services/credits';
 
@@ -38,6 +39,18 @@ describe('<AddressScreen /> (spec 001, 019)', () => {
       expect.anything(),
     );
     expect(router.push).toHaveBeenCalledWith('/add-place/pictogram');
+  });
+
+  test('picking a suggestion closes the keyboard, so both choices show', async () => {
+    const dismiss = jest.spyOn(Keyboard, 'dismiss');
+    jest.mocked(searchAddresses).mockResolvedValue({ ok: true, results: [PORT] as never });
+    await renderWithProviders(<AddressScreen />, [{ type: 'startPlace', source: 'address' }]);
+
+    await type('pharmacie port');
+    await fireEvent.press(await screen.findByText('Pharmacie du Port'));
+
+    expect(dismiss).toHaveBeenCalled();
+    expect(screen.getByText('Envoyer par lien au voyageur')).toBeOnTheScreen();
   });
 
   test('credits Transitous and OpenStreetMap, each link opening its fixed page (spec 024)', async () => {

@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Keyboard, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { AddressResult } from '@/domain/address';
@@ -94,7 +94,14 @@ export function AddressScreen() {
           </Pressable>
         </View>
       ) : (
-        <SearchList search={search} onPick={setPicked} />
+        <SearchList
+          search={search}
+          onPick={(result) => {
+            // The keyboard hid « send by link », below « keep » (field feedback, 2026-11-05).
+            Keyboard.dismiss();
+            setPicked(result);
+          }}
+        />
       )}
       <View style={styles.spacer} />
       <Text style={styles.note}>
