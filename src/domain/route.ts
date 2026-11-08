@@ -68,7 +68,6 @@ function readLeg(value: unknown): Leg | undefined {
   if (duration === undefined || !shape) return undefined;
   const { mode } = value;
   if (mode === 'WALK') return { kind: 'walk', minutes: duration, path: shape };
-  if (mode === 'CAR') return { kind: 'car', minutes: duration, path: shape };
   const bus = BUS_MODES.includes(mode);
   if (!bus && !RAIL_MODES.includes(mode)) return undefined;
   const from = isRecord(value.from) ? name(value.from.name) : undefined;

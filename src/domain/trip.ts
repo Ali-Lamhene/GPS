@@ -1,6 +1,6 @@
 import { bearingAlong, pointAlong, type LngLat } from './geo';
 
-export type TravelMode = 'walk' | 'transit' | 'car';
+export type TravelMode = 'walk' | 'transit';
 
 export type TransitLine = {
   /** Official line id shown on the network signs (D9), e.g. "C3", "M1". */
@@ -25,10 +25,7 @@ export type TransitLeg = {
   path: readonly LngLat[];
 };
 
-export type Leg =
-  | { kind: 'walk'; minutes: number; path: readonly LngLat[] }
-  | { kind: 'car'; minutes: number; path: readonly LngLat[] }
-  | TransitLeg;
+export type Leg = { kind: 'walk'; minutes: number; path: readonly LngLat[] } | TransitLeg;
 
 export function isTransitLeg(leg: Leg): leg is TransitLeg {
   return leg.kind === 'bus' || leg.kind === 'metro';

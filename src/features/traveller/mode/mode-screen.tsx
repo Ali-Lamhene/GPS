@@ -20,7 +20,7 @@ import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { LegList } from './leg-list';
 import { ModeSelector } from './mode-selector';
 
-const MODES: readonly TravelMode[] = ['walk', 'transit', 'car'];
+const MODES: readonly TravelMode[] = ['walk', 'transit'];
 
 /**
  * E06 (specs 002, 021): the trip drawn on the map; choosing how to travel redraws it. The

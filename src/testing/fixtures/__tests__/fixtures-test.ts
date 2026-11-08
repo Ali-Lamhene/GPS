@@ -7,7 +7,7 @@ import { DEMO_LEGS } from '../trips';
 
 describe('demo data', () => {
   test('guidance steps sit on the real paths, with time running down', () => {
-    for (const mode of ['walk', 'transit', 'car'] as const) {
+    for (const mode of ['walk', 'transit'] as const) {
       const legs = DEMO_LEGS[mode];
       const steps = DEMO_GUIDANCE[mode];
       for (const step of steps) {

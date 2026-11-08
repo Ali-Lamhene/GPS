@@ -21,6 +21,13 @@ describe('<ModeScreen />', () => {
     expect(screen.getByText('M1')).toBeOnTheScreen();
   });
 
+  test('offers on foot and public transport only, no car (spec 026)', async () => {
+    await renderWithProviders(<ModeScreen />, [...ready]);
+
+    expect(screen.getAllByRole('radio')).toHaveLength(2);
+    expect(screen.queryByRole('radio', { name: 'Voiture' })).toBeNull();
+  });
+
   test('choosing another mode updates the legs', async () => {
     await renderWithProviders(<ModeScreen />, [...ready]);
 

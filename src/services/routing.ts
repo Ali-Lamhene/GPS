@@ -40,7 +40,7 @@ export async function findRoute(
     language: 'fr',
   });
   if (mode !== 'transit') {
-    params.set('directModes', mode === 'car' ? 'CAR' : 'WALK');
+    params.set('directModes', 'WALK');
     params.set('transitModes', '');
     params.set('maxDirectTime', String(MAX_DIRECT_SECONDS));
   }

@@ -57,7 +57,6 @@ export const colors = {
   mapGround: '#F8F1EE',
   accuracy: 'rgba(3,124,109,.16)',
   accuracyEdge: 'rgba(3,124,109,.4)',
-  car: '#5E6670',
   walkRail: '#A8A8A1',
 
   /** Pale emerald behind what is open or waits to be chosen (spec 010). */

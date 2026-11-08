@@ -2,8 +2,6 @@ import type { Leg, TransitLeg, TransitLine, TravelMode } from '@/domain/trip';
 
 import {
   BUS_41,
-  CAR,
-  CAR_TO_DESTINATION,
   METRO_M1,
   TO_BUS_STOP,
   TO_DESTINATION,
@@ -56,9 +54,5 @@ export const DEMO_LEGS: Record<TravelMode, readonly Leg[]> = {
     { kind: 'walk', minutes: 4, path: TO_METRO },
     DEMO_METRO_LEG,
     { kind: 'walk', minutes: 5, path: TO_DESTINATION },
-  ],
-  car: [
-    { kind: 'car', minutes: 12, path: CAR },
-    { kind: 'walk', minutes: 2, path: CAR_TO_DESTINATION },
   ],
 };

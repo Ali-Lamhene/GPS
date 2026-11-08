@@ -42,11 +42,7 @@ describe('RoutesProvider (spec 021)', () => {
   beforeEach(() => jest.clearAllMocks());
 
   test('computes the trip by each mode from the two places, then builds its guidance', async () => {
-    jest
-      .mocked(findRoute)
-      .mockImplementation(async (_from, _to, mode) =>
-        mode === 'car' ? { ok: false, reason: 'none' } : { ok: true, legs: [WALK] },
-      );
+    jest.mocked(findRoute).mockResolvedValue({ ok: true, legs: [WALK] });
 
     const { result } = await renderHook(() => ({ routes: useRoutes(), plan: useTripPlan() }), {
       wrapper,
@@ -62,7 +58,8 @@ describe('RoutesProvider (spec 021)', () => {
       'transit',
       expect.anything(),
     );
-    expect(result.current.routes.routes.car).toEqual({ kind: 'none' });
+    // No car (spec 026): only on foot and public transport are asked.
+    expect(findRoute).toHaveBeenCalledTimes(2);
     expect(result.current.routes.legs).toEqual([WALK]);
     expect(result.current.routes.steps.at(-1)?.instruction.kind).toBe('walkToDestination');
   });

@@ -3,7 +3,7 @@ import type { GuidanceStep } from '@/domain/guidance';
 import type { TravelMode } from '@/domain/trip';
 
 import { DEMO_BUS_LEG as bus, DEMO_METRO_LEG as metro } from './trips';
-import { CAR, TO_BUS_STOP, WALK_ONLY } from './marseille-paths';
+import { TO_BUS_STOP, WALK_ONLY } from './marseille-paths';
 
 // Simulated guidance of the static mockup implementation (D11): the traveller moves
 // to the next step by touching the instruction card. Real tracking comes with spec 003.
@@ -55,7 +55,6 @@ const findStop = { kind: 'findStop', leg: bus } as const;
 
 export const DEMO_GUIDANCE: Record<TravelMode, readonly GuidanceStep[]> = {
   walk: [...walkSteps(0, WALK_ONLY, findPlace), finalWalk(0, 0.9)],
-  car: [...walkSteps(0, CAR, findPlace), finalWalk(1, 0.5)],
   transit: [
     ...walkSteps(0, TO_BUS_STOP, findStop),
     {

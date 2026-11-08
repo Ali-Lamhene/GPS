@@ -17,11 +17,10 @@ export type RouteState =
 
 type Routes = Record<TravelMode, RouteState>;
 
-const MODES: readonly TravelMode[] = ['walk', 'transit', 'car'];
+const MODES: readonly TravelMode[] = ['walk', 'transit'];
 const LOADING: Routes = {
   walk: { kind: 'loading' },
   transit: { kind: 'loading' },
-  car: { kind: 'loading' },
 };
 
 type RoutesValue = {
@@ -104,7 +103,6 @@ export function RoutesProvider({
     ? {
         walk: { kind: 'ready', legs: fixture.legs.walk },
         transit: { kind: 'ready', legs: fixture.legs.transit },
-        car: { kind: 'ready', legs: fixture.legs.car },
       }
     : key && answer?.key === key
       ? answer.routes

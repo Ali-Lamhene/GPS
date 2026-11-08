@@ -31,7 +31,6 @@ export const GLYPHS = {
   description: 0xe873,
   directions_boat: 0xeff5,
   directions_bus: 0xe530,
-  directions_car: 0xe531,
   directions_railway: 0xeff8,
   directions_walk: 0xe536,
   diversity_3: 0xf8d9,

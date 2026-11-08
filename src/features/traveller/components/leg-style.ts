@@ -6,7 +6,6 @@ const LEG_ICONS: Record<Leg['kind'], IconName> = {
   walk: 'directions_walk',
   bus: 'directions_bus',
   metro: 'subway',
-  car: 'directions_car',
 };
 
 export function legIcon(leg: Leg): IconName {
@@ -16,5 +15,5 @@ export function legIcon(leg: Leg): IconName {
 /** Colour of a leg on rails and progress strips: the line colour, grey on foot. */
 export function legColor(leg: Leg): string {
   if (leg.kind === 'bus' || leg.kind === 'metro') return leg.line.color;
-  return leg.kind === 'car' ? colors.car : colors.walkRail;
+  return colors.walkRail;
 }

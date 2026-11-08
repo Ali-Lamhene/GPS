@@ -8,7 +8,6 @@ import { colors, shadows } from '@/ui/theme';
 const MODES: { mode: TravelMode; icon: IconName; label: string }[] = [
   { mode: 'walk', icon: 'directions_walk', label: 'À pied' },
   { mode: 'transit', icon: 'directions_bus', label: 'Transports en commun' },
-  { mode: 'car', icon: 'directions_car', label: 'Voiture' },
 ];
 
 const SIZE = 64;
@@ -21,7 +20,7 @@ type ModeSelectorProps = {
 };
 
 /**
- * Three unambiguous choices: on foot, public transport, car (docs/screens.md, rule 6), as
+ * Two unambiguous choices: on foot, public transport (spec 026, no car), as
  * round buttons (spec 010): the chosen one solid emerald, the others pale.
  */
 export function ModeSelector({ selected, onSelect, unavailable = [] }: ModeSelectorProps) {

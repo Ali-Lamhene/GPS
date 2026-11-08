@@ -16,9 +16,9 @@ Décisions prises avec le porteur du projet. Elles conditionnent l'architecture.
 
 **Conséquence.** Tout service tiers appelé par l'app doit être justifié dans la spec, avec les données qu'il reçoit.
 
-## D2. Modes de déplacement (2026-10-29)
+## D2. Modes de déplacement (2026-10-29, révisée le 2026-11-05)
 
-À pied, en transports en commun et en voiture.
+À pied et en transports en commun. La voiture a été retirée par l'utilisateur après les premiers essais (spec 026) : le public ne conduit pas, et un conducteur ne doit pas regarder un écran.
 
 ## D3. Le lieu est l'objet central (2026-10-29)
 
@@ -86,7 +86,7 @@ Une vraie carte, sans aucune étiquette, sert de fond aux écrans du trajet ; l'
 
 - Le bouton d'aide est **toujours en haut à droite**, au même endroit et à la même taille sur tous les écrans du voyageur, guidage et métro hors connexion compris : le voyageur le retrouve sans chercher.
 - Révision du 2026-11-02 (spec 007) : **sauf sur l'accueil**, où il n'y a pas encore de trajet et où le bouton « + » (ajouter un lieu) prend sa place. L'aide revient en haut à droite dès le choix du transport (E06).
-- Avant le départ, le message d'aide est celui de la première étape : l'arrêt à prendre en transport, le lieu d'arrivée à pied ou en voiture. Une fois parti, il suit l'étape en cours.
+- Avant le départ, le message d'aide est celui de la première étape : l'arrêt à prendre en transport, le lieu d'arrivée à pied. Une fois parti, il suit l'étape en cours.
 - La petite carte de la carte d'aide (E24) ne montre au passant que **l'étape en cours** : la position du voyageur, le tronçon en cours et l'arrêt ou le lieu à trouver. Jamais le reste du trajet ni le lieu d'arrivée, sauf sur le dernier tronçon. Un inconnu ne voit donc pas où se trouve un lieu privé (maison, famille).
 
 ## D14. France d'abord, vue aérienne IGN (2026-11-01)
@@ -120,7 +120,7 @@ Pour la première version, l'app copie et simplifie le comportement des applis d
 
 ## D17. Calcul des trajets par Transitous (2026-11-04, spec 021)
 
-Les trajets (à pied, transports, voiture) sont calculés par **Transitous** (`api.transitous.org`), service communautaire gratuit et libre, depuis le téléphone du voyageur (D4). Il reçoit le départ, l'arrivée, l'heure et l'adresse IP, et l'en-tête nomme l'app (condition d'usage). Choisi par Claude en autonomie (2026-11-04) : seul service sans clé ni compte qui couvre les transports en commun français ; à confirmer par l'utilisateur. Conditions : projet sous licence libre et non commercial, lien vers ses sources de données.
+Les trajets (à pied, transports) sont calculés par **Transitous** (`api.transitous.org`), service communautaire gratuit et libre, depuis le téléphone du voyageur (D4). Il reçoit le départ, l'arrivée, l'heure et l'adresse IP, et l'en-tête nomme l'app (condition d'usage). Choisi par Claude en autonomie (2026-11-04) : seul service sans clé ni compte qui couvre les transports en commun français ; à confirmer par l'utilisateur. Conditions : projet sous licence libre et non commercial, lien vers ses sources de données.
 
 ## D18. Licence GPL-3.0 et dépôt public (2026-11-05)
 
