@@ -215,7 +215,20 @@ Specs livrées le 2026-11-08 (autonomie, relues par `ux-sans-texte-reviewer` et 
 
 **Décisions de sécurité prises par l'utilisateur (2026-11-08)** : menace précisée dans D1 et `securite.md` (réfugiés déjà en France, pas recherchés ; rien chez nous qui relie une identité à des déplacements ; appels déclarés à des services tiers sans compte acceptés). Recalcul en cours de route accepté, y compris vers un domicile (031) ; stockage OVH de l'IGN accepté, crédit par photo à revoir avant les stores, photos anciennes gardées (030) ; adresse demandée et gardée pour tous les lieux, domicile compris (029).
 
-**Prochaine étape** : revoir avec l'utilisateur les 6 points à vérifier sur le terrain, puis il lance une build `preview` (correctif de l'appareil photo, seul changement natif) et teste. Points 2 (icônes) et 16 (recherche lente) repris après la build.
+**Prochaine étape (session suivante) : vérifier que la V1 fonctionne.** Build `preview` lancée par l'utilisateur le 2026-11-08 (correctif de l'appareil photo). À la reprise, recueillir ses retours **un point à la fois** (consigne globale de l'utilisateur) :
+
+Vérifications sur le téléphone :
+
+1. Épingle à personnage (027) : comprise comme « moi », distincte de l'épingle simple du départ, lisible avec le badge dans la pastille de départ, bouton de recentrage trouvé.
+2. Main sur la pastille à remplir (028) : fait-elle comprendre qu'on peut toucher ? touche-t-on la main au lieu de la pastille ? visible au soleil ? quel chemin est pris (pastille ou tuiles) ?
+3. Rotation de la carte (028) : deux doigts, cône juste, rotation involontaire pendant un zoom, recentrage remet l'axe.
+4. Photo de rue (030) : apparaît-elle (lieu en ville créé sans photo) ? bon bâtiment ? reconnaissable à 168 × 124 au soleil ? comprise comme l'arrivée ? essaie-t-on de la toucher ?
+5. Seuils hors du chemin (031, 40 m / 10 s / retour à 25 m) : alerte assez tôt, fausses alertes (rues étroites, places, gares), nouveau trajet rapide et depuis la position, l'orange part en revenant.
+6. Signal « tu t'es trompé » (031) : orange et épingle barrée compris, alerte sentie en poche, nouveau trajet compris, que faire sans réseau, main sur la consigne sans position.
+
+Aussi à vérifier : appareil photo (bug 3), épingles de la carte touchables, y compris deux proches (bug 5), clavier fermé à la recherche d'adresse (bug 7), consigne non touchable avec position (bug 9), pastille de départ ronde après ✕ (bug 12), voiture absente (026), adresse sur la carte d'aide (029), points du chemin pas trop gros (027).
+
+Points en suspens après la build : point 2 (icônes à l'ajout d'un lieu) et contour carré (12), captures promises par l'utilisateur, petits soucis non gênants ; point 16 (recherche d'adresse lente) : combien de secondes, « Recherche… » qui ne finit pas ?
 
 À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, 9, 12, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6, 8, 10, 11).
 
