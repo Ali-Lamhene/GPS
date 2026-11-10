@@ -59,7 +59,7 @@ type RoutesValue = {
    * The traveller is lost (spec 031): a new trip by the same mode from where they stand to
    * the same arrival, the shortest the service finds. True once the guidance follows it.
    */
-  reroute: (from: LngLat, signal: AbortSignal) => Promise<boolean>;
+  reroute: (from: LngLat, signal: AbortSignal, onStart?: () => void) => Promise<boolean>;
 };
 
 const RoutesContext = createContext<RoutesValue | null>(null);
@@ -168,12 +168,14 @@ export function RoutesProvider({
   const tries = useRef(new Map<string, { count: number; last: number }>());
   const rerouteWith = fixture?.reroute ?? findRoute;
   const reroute = useCallback(
-    async (from: LngLat, signal: AbortSignal): Promise<boolean> => {
+    async (from: LngLat, signal: AbortSignal, onStart?: () => void): Promise<boolean> => {
       if (!end) return false;
       const now = Date.now();
       const before = tries.current.get(rerouteKey) ?? { count: 0, last: -Infinity };
       if (before.count >= MAX_REROUTES || now - before.last < REROUTE_EVERY_MS) return false;
       tries.current.set(rerouteKey, { count: before.count + 1, last: now });
+      // Only a request that really leaves shows the turning arrows (spec 031).
+      onStart?.();
       const result = await rerouteWith(from, end, mode, signal);
       if (!result.ok || signal.aborted) return false;
       setRerouted({ key: rerouteKey, legs: result.legs });

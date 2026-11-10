@@ -1,4 +1,11 @@
-import { isLost, isOffRoute, ON_ROUTE, trackOffRoute } from '../off-route';
+import {
+  farFromAlert,
+  isBackOnRoute,
+  isLost,
+  isOffRoute,
+  ON_ROUTE,
+  trackOffRoute,
+} from '../off-route';
 import { DEMO_BUS_LEG } from '@/testing/fixtures/trips';
 
 import type { Leg } from '../trip';
@@ -21,7 +28,7 @@ const BUS: Leg = {
 
 describe('off the way (spec 031)', () => {
   test('a point beside the walk is on it, one 100 m away is off', () => {
-    expect(isOffRoute([WALK], 0, [5.375, 43.2902])).toBe(false);
+    expect(isOffRoute([WALK], 0, [5.375, 43.29005])).toBe(false);
     expect(isOffRoute([WALK], 0, [5.375, 43.2909])).toBe(true);
   });
 
@@ -33,20 +40,30 @@ describe('off the way (spec 031)', () => {
     expect(isOffRoute([WALK, BUS], 0, [5.39, 43.295])).toBe(false);
   });
 
-  test('lost only after 10 s and three points off in a row', () => {
-    let track = trackOffRoute(ON_ROUTE, true, 0);
-    track = trackOffRoute(track, true, 4000);
-    expect(isLost(track, 12_000)).toBe(false);
-    track = trackOffRoute(track, true, 9000);
-    expect(isLost(track, 9000)).toBe(false);
-    expect(isLost(track, 10_000)).toBe(true);
+  test('off the way beyond 15 m, back on it within 10 m (spec 032)', () => {
+    // 0.0001° of latitude is about 11 m.
+    expect(isOffRoute([WALK], 0, [5.375, 43.29012])).toBe(false);
+    expect(isOffRoute([WALK], 0, [5.375, 43.29015])).toBe(true);
+    expect(isBackOnRoute([WALK], 0, [5.375, 43.2901])).toBe(false);
+    expect(isBackOnRoute([WALK], 0, [5.375, 43.29008])).toBe(true);
+  });
+
+  test('lost at once on the second point off in a row, with no wait', () => {
+    const one = trackOffRoute(ON_ROUTE, true);
+    expect(isLost(one)).toBe(false);
+    expect(isLost(trackOffRoute(one, true))).toBe(true);
   });
 
   test('one point back on the way starts again', () => {
-    let track = trackOffRoute(ON_ROUTE, true, 0);
-    track = trackOffRoute(track, true, 5000);
-    track = trackOffRoute(track, false, 6000);
-    track = trackOffRoute(track, true, 11_000);
-    expect(isLost(track, 12_000)).toBe(false);
+    let track = trackOffRoute(ON_ROUTE, true);
+    track = trackOffRoute(track, false);
+    track = trackOffRoute(track, true);
+    expect(isLost(track)).toBe(false);
+  });
+
+  test('a new trip only beyond 30 m as the crow flies from the alert', () => {
+    const alertAt: [number, number] = [5.375, 43.291];
+    expect(farFromAlert(alertAt, [5.375, 43.29125])).toBe(false);
+    expect(farFromAlert(alertAt, [5.375, 43.2913])).toBe(true);
   });
 });

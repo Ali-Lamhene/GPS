@@ -234,7 +234,7 @@ Points en suspens après la build : point 2 (icônes à l'ajout d'un lieu) et co
 
 **Retours terrain du 2026-11-10** (6 points, autonomie donnée par l'utilisateur ; bugs d'abord, specs ensuite) :
 
-1. Erreur de trajet : annoncer tout de suite (20 m du chemin, 2 positions de suite, sans attente), recalculer après 30 m parcourus hors du chemin. Spec à écrire (révise 031).
+1. [x] Erreur de trajet : spec 032 validée et livrée (alerte à 15 m sur 2 positions, sans attente ; recalcul à plus de 30 m à vol d'oiseau de l'endroit de l'alerte ; retour à 10 m). À vérifier sur le terrain : fausses alertes à 15 m (sinon repasser à 20 m, une constante) ; nouveau trajet qui arrive en marchant sur réseau lent (requête plus coupée à chaque position). Suggestion UX ouverte : faire pulser l'aide au 2e ou 3e rappel d'alerte, pour un voyageur arrêté.
 2. Arrivée au 24 au lieu du 26, photo de l'entrée à 30 m.
    - [x] Photo : Panoramax ne trie pas sa réponse par distance (vérifié sur des points publics : 6, 10, 8 m…), l'app prenait la première photo tournée vers le lieu. Elle prend maintenant la plus proche, parmi 20 candidates au lieu de 10.
    - Arrivée : conforme à la spec 021 (écran d'arrivée à 25 m du bout du trajet ; deux numéros voisins sont à 10-20 m). Le bout du trajet est le point sur la rue, pas la porte, et le GPS en ville dérive de 10-20 m. Question ouverte : réduire ce seuil (révision de spec, à poser à l'utilisateur).

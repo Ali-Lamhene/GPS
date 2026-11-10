@@ -1,18 +1,21 @@
-import { locateOnPath, type LngLat } from './geo';
+import { distanceMeters, locateOnPath, type LngLat } from './geo';
 import type { Leg } from './trip';
 
-// Spec 031: the traveller walks away from the trip. Seen when every new point for a while
-// lies far from the walk being followed; GPS noise in a narrow street never triggers it.
+// Specs 031 and 032: the traveller walks away from the trip. Seen at once when two points in
+// a row lie off the walk being followed; a single GPS jump in a narrow street never triggers
+// it. A new trip waits until they have gone on 30 m from where the alert came.
 
-/** Farther than this from the walk, a point counts as off the way. */
-export const OFF_ROUTE_METERS = 40;
-/** Off the way for this long, on several points in a row: the traveller is lost. */
-export const OFF_ROUTE_MS = 10_000;
-const OFF_ROUTE_POINTS = 3;
+/** Farther than this from the walk, a point counts as off the way (spec 032). */
+export const OFF_ROUTE_METERS = 15;
+/** Off the way on this many points in a row, with no wait: the traveller is lost. */
+const OFF_ROUTE_POINTS = 2;
 
-/** Back on the way only this close, on two points in a row: no orange flicker at 40 m. */
-export const BACK_ON_ROUTE_METERS = 25;
+/** Back on the way only this close, on two points in a row: no orange flicker at 15 m. */
+export const BACK_ON_ROUTE_METERS = 10;
 const BACK_POINTS = 2;
+
+/** A new trip only once this far, as the crow flies, from where the alert came (spec 032). */
+export const REROUTE_AFTER_METERS = 30;
 
 /**
  * How far `point` lies from the walk of `legIndex` or the next leg, in metres. Undefined
@@ -49,22 +52,22 @@ export function backOnRoute(count: number): boolean {
   return count >= BACK_POINTS;
 }
 
-/** Points off the way in a row: when the first came, how many. */
-export type OffRouteTrack = { since?: number; count: number };
+/** Points off the way in a row. */
+export type OffRouteTrack = { count: number };
 
 export const ON_ROUTE: OffRouteTrack = { count: 0 };
 
-/** The track after a new point, off the way or not, at `at` (ms). */
-export function trackOffRoute(track: OffRouteTrack, off: boolean, at: number): OffRouteTrack {
-  if (!off) return ON_ROUTE;
-  return { since: track.since ?? at, count: track.count + 1 };
+/** The track after a new point, off the way or not. */
+export function trackOffRoute(track: OffRouteTrack, off: boolean): OffRouteTrack {
+  return off ? { count: track.count + 1 } : ON_ROUTE;
 }
 
-/** True once the traveller has been off the way long enough, on enough points. */
-export function isLost(track: OffRouteTrack, now: number): boolean {
-  return (
-    track.since !== undefined &&
-    track.count >= OFF_ROUTE_POINTS &&
-    now - track.since >= OFF_ROUTE_MS
-  );
+/** True once enough points in a row lie off the way: the alert comes at once. */
+export function isLost(track: OffRouteTrack): boolean {
+  return track.count >= OFF_ROUTE_POINTS;
+}
+
+/** Whether `point` lies far enough from where the alert came to ask for a new trip. */
+export function farFromAlert(alertAt: LngLat, point: LngLat): boolean {
+  return distanceMeters(alertAt, point) > REROUTE_AFTER_METERS;
 }

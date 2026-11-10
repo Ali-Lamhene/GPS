@@ -1,6 +1,6 @@
 # 031 — Hors du chemin : le signaler, puis recalculer le trajet
 
-- **Statut** : livré
+- **Statut** : livré ; seuils et moment du recalcul révisés par la spec 032 (2026-11-10)
 - **Date** : 2026-11-08
 - **Persona** : voyageur
 
