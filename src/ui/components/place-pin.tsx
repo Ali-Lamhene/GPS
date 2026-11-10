@@ -1,5 +1,4 @@
-import { Image } from 'expo-image';
-import { StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import { isLocalPicture } from '@/domain/place';
@@ -51,11 +50,14 @@ export function PlacePin({ icon, photo, selected }: PlacePinProps) {
         ]}
       >
         {picture ? (
+          // React Native's image, not expo-image: on Android a map marker is laid out off
+          // screen, then moved onto the map, and expo-image's load got lost in the move (field
+          // feedback, the pin showed its pictogram only). Fresco loads again on each attach.
+          // A local file never goes to its disk cache (spec 022).
           <Image
+            testID="place-pin-photo"
             source={{ uri: picture }}
-            contentFit="cover"
-            // Never a copy in the disk cache (spec 022).
-            cachePolicy="memory"
+            resizeMode="cover"
             style={StyleSheet.absoluteFill}
           />
         ) : (

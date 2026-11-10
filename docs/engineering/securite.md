@@ -45,6 +45,7 @@ Le lien de partage est une **entrée non fiable** : n'importe qui peut en fabriq
 - Secret éventuel (aucun aujourd'hui, D10 exclut tout numéro de téléphone) : `expo-secure-store` (Keystore / Keychain).
 - Lieux et trajets : stockage privé de l'app. Le chiffrement au repos est une question ouverte (voir plus bas).
 - Photos : copiées dans le stockage privé, métadonnées EXIF (dont la position) supprimées avant enregistrement (spec 001).
+- Photos des lieux : jamais dans un cache disque. `expo-image` en `cachePolicy="memory"` ; les épingles de la carte utilisent l'image de React Native, qui lit un fichier local sans en écrire de copie. Jamais d'adresse web dans ces composants (`isLocalPicture`).
 - Pas de stockage plus long que nécessaire : une donnée temporaire (photo choisie puis abandonnée, fichier de partage) est supprimée dès qu'elle ne sert plus.
 - Aucune sauvegarde ni aucun transfert (spec 016) :
   - Android : `android.allowBackup` à `false` dans `app.json` (sauvegarde Google, Android 11 et moins), et règles d'extraction du plugin `plugins/with-no-data-extraction.js` qui excluent tous les domaines de la sauvegarde en ligne et du transfert direct (Android 12 et plus).

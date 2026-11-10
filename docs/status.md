@@ -236,7 +236,7 @@ Points en suspens après la build : point 2 (icônes à l'ajout d'un lieu) et co
 
 1. Erreur de trajet : annoncer tout de suite (20 m du chemin, 2 positions de suite, sans attente), recalculer après 30 m parcourus hors du chemin. Spec à écrire (révise 031).
 2. Arrivée annoncée au 24 au lieu du 26, photo de l'entrée à 30 m : bug, à corriger.
-3. Lieu enregistré avec photo : l'épingle de la carte montre seulement le pictogramme. Bug, à corriger.
+3. [x] Lieu enregistré avec photo, épingle sans photo : sur Android, MapLibre pose la vue de l'épingle hors écran puis la déplace sur la carte, et le chargement d'`expo-image` s'y perdait. L'épingle utilise l'image de React Native (Fresco relance le chargement à chaque rattachement). **Non vérifié sur téléphone** (aucun appareil branché) : à contrôler à la prochaine build.
 4. Lieu dont le service fournit une photo : choisir cette photo ou en prendre une. Spec à écrire.
 5. Lieux hors de la vue par défaut absents au dézoom : bug, à corriger.
 6. [x] Grille des pictogrammes qui débordait au-dessus de la carte blanche (marge négative fixe de l'aperçu, plus grande que l'épingle) : corrigé, vérifié dans le navigateur.

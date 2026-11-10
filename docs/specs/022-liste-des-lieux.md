@@ -15,7 +15,7 @@
 ## Données et confidentialité
 
 - La suppression réécrit le fichier des lieux (écriture sûre de la spec 015) et efface la photo du dossier de l'app.
-- La copie de secours (`places.json.bak`) est effacée après une suppression ; les images ne sont jamais gardées dans le cache disque d'`expo-image` (vidé une fois au lancement pour les anciennes copies).
+- La copie de secours (`places.json.bak`) est effacée après une suppression ; les images ne sont jamais gardées dans le cache disque d'`expo-image` (vidé une fois au lancement pour les anciennes copies). Les épingles de la carte utilisent l'image de React Native (retour terrain du 2026-11-10) : une image locale n'y est jamais écrite dans un cache disque, et ce composant n'affiche jamais une adresse web.
 - Enregistrements et suppressions passent un par un, chacun depuis la liste la plus récente.
 - `/places` ne s'ouvre que depuis E30 (brouillon d'adresse), jamais par un lien.
 - Un lien de lieu resté dans la messagerie du voyageur rajoute le lieu s'il est touché : pour faire disparaître un lieu, effacer aussi le message.
