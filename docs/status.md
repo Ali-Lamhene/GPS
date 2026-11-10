@@ -239,8 +239,13 @@ Points en suspens après la build : point 2 (icônes à l'ajout d'un lieu) et co
    - [x] Photo : Panoramax ne trie pas sa réponse par distance (vérifié sur des points publics : 6, 10, 8 m…), l'app prenait la première photo tournée vers le lieu. Elle prend maintenant la plus proche, parmi 20 candidates au lieu de 10.
    - Arrivée : conforme à la spec 021 (écran d'arrivée à 25 m du bout du trajet ; deux numéros voisins sont à 10-20 m). Le bout du trajet est le point sur la rue, pas la porte, et le GPS en ville dérive de 10-20 m. Question ouverte : réduire ce seuil (révision de spec, à poser à l'utilisateur).
 3. [x] Lieu enregistré avec photo, épingle sans photo : sur Android, MapLibre pose la vue de l'épingle hors écran puis la déplace sur la carte, et le chargement d'`expo-image` s'y perdait. L'épingle utilise l'image de React Native (Fresco relance le chargement à chaque rattachement). **Non vérifié sur téléphone** (aucun appareil branché) : à contrôler à la prochaine build.
-4. Lieu dont le service fournit une photo : choisir cette photo ou en prendre une. Spec à écrire.
-5. Lieux hors de la vue par défaut absents au dézoom : bug, à corriger.
+4. Lieu dont le service fournit une photo : choisir cette photo ou en prendre une. **Entretien de spec en cours (skill `feature`), spec 033 pas encore écrite.** Réponses de l'utilisateur (2026-11-10) :
+   - moment : à la création du lieu seulement (écran photo E29, que les deux parcours « ici » et adresse E30 traversent) ; pas de remplacement plus tard ;
+   - lieux cachés de la carte (domicile, famille, santé) : **proposer quand même** (Panoramax reçoit une fois le point du lieu à environ 10 m et l'IP ; à écrire dans la spec et dans `securite.md`, révise la règle de la spec 030 pour ce seul moment) ;
+   - affichage : vignette à toucher en bas de E29, à côté du déclencheur et de la galerie ; roue pendant la recherche ; rien trouvé, pas de vignette ;
+   - nombre : la meilleure seule (la plus proche tournée vers le lieu, comme à l'arrivée).
+     Reste à écrire la spec puis la faire valider. Points à y traiter sans redemander : photo choisie gardée comme une photo prise (réencodée, sans métadonnées, documents privés) ; panorama gardé recadré sur le lieu ; crédit de la licence (spec 024) pour une photo Panoramax gardée ; lieu envoyé à distance (lien) : la photo ne voyage pas.
+5. Lieux hors de la vue par défaut absents au dézoom : bug **en attente d'un téléphone branché en USB** (débogage USB). Le JS envoie tous les lieux à la carte et MapLibre ne filtre pas par position : cause dans le natif Android (vues des marqueurs), à observer sur l'appareil.
 6. [x] Grille des pictogrammes qui débordait au-dessus de la carte blanche (marge négative fixe de l'aperçu, plus grande que l'épingle) : corrigé, vérifié dans le navigateur.
 
 Préparation de la bêta sur les stores (liste à compléter avec l'utilisateur) :
