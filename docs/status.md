@@ -4,6 +4,16 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 
 **Dernière mise à jour** : 2026-11-10
 
+## Reprise (à lire en premier)
+
+**Dernière session : 2026-11-10, retours terrain en 6 points.** Le détail est dans la section « Retours terrain du 2026-11-10 », plus bas, sous « Prochaine étape (session suivante) ».
+
+- Faits : 6 (icônes), 3 (photo sur les épingles, à vérifier sur téléphone), 2 (photo de rue la plus proche), 1 (spec 032 livrée : alerte à 15 m, nouveau trajet après 30 m).
+- **Prochaine étape : point 4**, la photo Panoramax proposée à la création d'un lieu. Les 4 réponses de l'utilisateur sont notées dans la section du 2026-11-10 : il reste à écrire la spec 033 (skill `feature`) et à la faire valider, puis à coder.
+- Ensuite : point 5 (lieux absents au dézoom), qui demande le téléphone branché en USB.
+- Question ouverte : réduire le seuil d'arrivée de 25 m (point 2) ?
+- Un build `preview` est nécessaire pour tester ces correctifs sur le téléphone.
+
 ## Où on en est
 
 - Projet Expo SDK 58 initialisé (Expo Router, `src/app/`), repo `Ali-Lamhene/GPS`, travail direct sur `main`, une fonctionnalité = un commit.
