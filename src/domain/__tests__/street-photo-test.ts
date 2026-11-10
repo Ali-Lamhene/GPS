@@ -30,6 +30,16 @@ describe('readStreetPhoto (spec 030)', () => {
     expect(photo?.centre).toBeGreaterThan(0.5);
   });
 
+  test('the nearest picture wins, whatever the order of the answer (field feedback)', () => {
+    const far = {
+      ...picture(90, {}, 'https://panoramax.ign.fr/api/pictures/far/sd.jpg'),
+      geometry: { type: 'Point', coordinates: [5.3696, 43.296] },
+    };
+    const near = picture(90, {}, 'https://panoramax.ign.fr/api/pictures/near/sd.jpg');
+    const photo = readStreetPhoto({ features: [far, near] }, PLACE, HOSTS);
+    expect(photo?.url).toBe('https://panoramax.ign.fr/api/pictures/near/sd.jpg');
+  });
+
   test('a panorama shows the slice facing the place', () => {
     const photo = readStreetPhoto(
       { features: [picture(0, { 'pers:interior_orientation': { field_of_view: 360 } })] },

@@ -10,7 +10,7 @@ Retour de terrain de l'utilisateur (2026-11-08, point 17) : un voyageur qui ne l
 
 ## Parcours
 
-1. Quand le voyageur quitte l'accueil vers le choix du transport (E06), en même temps que le calcul du trajet, l'app cherche sur Panoramax une photo prise à moins de 50 m **tournée vers le lieu d'arrivée**. Une fois par couple départ-arrivée.
+1. Quand le voyageur quitte l'accueil vers le choix du transport (E06), en même temps que le calcul du trajet, l'app cherche sur Panoramax une photo prise à moins de 50 m **tournée vers le lieu d'arrivée**, la plus proche parmi 20 (retour terrain du 2026-11-10 : Panoramax ne trie pas par distance). Une fois par couple départ-arrivée.
 2. Trouvée : l'image est **téléchargée une seule fois**, tout de suite (pendant qu'il y a du réseau), et gardée **en mémoire seulement** (adresse `data:`), sans cache disque. Aucune requête réseau n'est faite en approche de l'arrivée.
 3. Guidage, dernière marche vers le lieu (« aller au lieu ») : une carte photo (environ 168 × 124 dp, bord émeraude, badge avec le pictogramme du lieu) apparaît en fondu au-dessus du bout « arrivée » de la pilule, à droite dans tous les sens de lecture. Le bouton de recentrage remonte au-dessus d'elle.
 4. Écran d'arrivée (E26) : le grand disque du lieu montre la photo de rue, avec le pictogramme du lieu dans un disque blanc cerclé d'émeraude (56 dp) en bas.

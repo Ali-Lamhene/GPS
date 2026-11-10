@@ -1,5 +1,5 @@
 import type { LngLat } from '@/domain/geo';
-import { readStreetPhoto, type StreetPhoto } from '@/domain/street-photo';
+import { readStreetPhoto, STREET_PHOTO_CANDIDATES, type StreetPhoto } from '@/domain/street-photo';
 
 import {
   STREET_PHOTO_FINAL_HOSTS,
@@ -37,7 +37,7 @@ async function download(url: string, signal: AbortSignal): Promise<string | unde
   return `data:image/jpeg;base64,${btoa(binary)}`;
 }
 
-/** A picture taken within 50 m that looks at the arrival, ready to show, or nothing. */
+/** The nearest picture within 50 m that looks at the arrival, ready to show, or nothing. */
 export async function findStreetPhoto(
   place: LngLat,
   signal: AbortSignal,
@@ -45,7 +45,7 @@ export async function findStreetPhoto(
   const params = new URLSearchParams({
     place_position: `${place[0].toFixed(4)},${place[1].toFixed(4)}`,
     place_distance: '2-50',
-    limit: '10',
+    limit: String(STREET_PHOTO_CANDIDATES),
   });
   const controller = new AbortController();
   const stop = () => controller.abort();

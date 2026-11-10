@@ -1,4 +1,4 @@
-import { bearing, type LngLat } from './geo';
+import { bearing, distanceMeters, type LngLat } from './geo';
 
 // Spec 030: a street-level photo of the arrival, from Panoramax, so a traveller who cannot
 // read recognises the building. The answer is untrusted input: anything odd is dropped.
@@ -57,20 +57,32 @@ function relative(angle: number): number {
   return ((((angle + 180) % 360) + 360) % 360) - 180;
 }
 
-/** The first usable picture of a Panoramax search answer that shows `place`. */
+/** How many pictures of a search answer are looked at, at most. */
+export const STREET_PHOTO_CANDIDATES = 20;
+
+/**
+ * The nearest usable picture of a Panoramax search answer that shows `place`. Panoramax
+ * does not sort its answer by distance: taking the first one showed a building 30 m away
+ * while a nearer picture existed (field feedback, 2026-11-10).
+ */
 export function readStreetPhoto(
   data: unknown,
   place: LngLat,
   hosts: readonly string[],
 ): StreetPhoto | undefined {
   if (!isRecord(data) || !Array.isArray(data.features)) return undefined;
-  for (const feature of data.features.slice(0, 10)) {
-    if (!isRecord(feature) || !isRecord(feature.properties)) continue;
-    const p = feature.properties;
+  const located = data.features.slice(0, STREET_PHOTO_CANDIDATES).flatMap((feature: unknown) => {
+    if (!isRecord(feature) || !isRecord(feature.properties)) return [];
     const where = point(feature.geometry);
+    return where ? [{ feature, where, meters: distanceMeters(where, place) }] : [];
+  });
+  located.sort((a, b) => a.meters - b.meters);
+  for (const { feature, where } of located) {
+    if (!isRecord(feature.properties)) continue;
+    const p = feature.properties;
     const url = pictureUrl(feature.assets, hosts);
     const azimuth = p['view:azimuth'];
-    if (!where || !url || typeof azimuth !== 'number' || !Number.isFinite(azimuth)) continue;
+    if (!url || typeof azimuth !== 'number' || !Number.isFinite(azimuth)) continue;
     if (typeof p.license !== 'string' || !LICENCES.includes(p.license)) continue;
     const orientation = p['pers:interior_orientation'];
     const fov =
