@@ -2,7 +2,7 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-11-08
+**Dernière mise à jour** : 2026-11-10
 
 ## Où on en est
 
@@ -231,6 +231,15 @@ Aussi à vérifier : appareil photo (bug 3), épingles de la carte touchables, y
 Points en suspens après la build : point 2 (icônes à l'ajout d'un lieu) et contour carré (12), captures promises par l'utilisateur, petits soucis non gênants ; point 16 (recherche d'adresse lente) : combien de secondes, « Recherche… » qui ne finit pas ?
 
 À trier à la reprise : bugs qui rétablissent un comportement déjà spécifié (3, 5, 9, 12, sans doute 2 et 7) ; changements visibles qui passent par une spec (1, 4, 6, 8, 10, 11).
+
+**Retours terrain du 2026-11-10** (6 points, autonomie donnée par l'utilisateur ; bugs d'abord, specs ensuite) :
+
+1. Erreur de trajet : annoncer tout de suite (20 m du chemin, 2 positions de suite, sans attente), recalculer après 30 m parcourus hors du chemin. Spec à écrire (révise 031).
+2. Arrivée annoncée au 24 au lieu du 26, photo de l'entrée à 30 m : bug, à corriger.
+3. Lieu enregistré avec photo : l'épingle de la carte montre seulement le pictogramme. Bug, à corriger.
+4. Lieu dont le service fournit une photo : choisir cette photo ou en prendre une. Spec à écrire.
+5. Lieux hors de la vue par défaut absents au dézoom : bug, à corriger.
+6. [x] Grille des pictogrammes qui débordait au-dessus de la carte blanche (marge négative fixe de l'aperçu, plus grande que l'épingle) : corrigé, vérifié dans le navigateur.
 
 Préparation de la bêta sur les stores (liste à compléter avec l'utilisateur) :
 

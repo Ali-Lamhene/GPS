@@ -10,7 +10,7 @@ import { MainActionButton } from '@/ui/components/main-action-button';
 import { MapHeader } from '@/ui/components/map-header';
 import { PlacePin } from '@/ui/components/place-pin';
 import { TripMap } from '@/ui/map/trip-map';
-import { colors } from '@/ui/theme';
+import { colors, spacing } from '@/ui/theme';
 
 import { positionPoint, useTravellerPosition } from '../location/location-context';
 import { sendPlace } from './send-place';
@@ -92,8 +92,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.mapGround,
   },
+  // Out of the sheet's flow, standing just above its top edge: a negative margin pulled
+  // the grid out of the card whenever the pin was shorter than the margin.
   preview: {
-    alignSelf: 'center',
-    marginTop: -96,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: '100%',
+    marginBottom: spacing.sm,
+    alignItems: 'center',
   },
 });
