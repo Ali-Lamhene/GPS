@@ -9,7 +9,7 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 **Dernière session : 2026-11-10, retours terrain en 6 points.** Le détail est dans la section « Retours terrain du 2026-11-10 », plus bas, sous « Prochaine étape (session suivante) ».
 
 - Faits : 6 (icônes), 3 (photo sur les épingles, à vérifier sur téléphone), 2 (photo de rue la plus proche, arrivée à 15 m), 1 (spec 032 livrée : alerte à 15 m, nouveau trajet après 30 m), 4 (spec 033 livrée : photo Panoramax proposée sur E29, aperçu puis « ✓ »).
-- **Décision de l'utilisateur (2026-11-12) : une seule build `preview`, après avoir traité tous les retours.** Spec 034 livrée (aide qui pulse quand le voyageur reste perdu, rappels en pause pendant l'aide). Reste avant la build : ménage natif (`expo-web-browser`, mises à jour Expo, alertes Dependabot, source de la position).
+- **Décision de l'utilisateur (2026-11-12) : une seule build `preview`, après avoir traité tous les retours.** Spec 034 livrée (aide qui pulse quand le voyageur reste perdu, rappels en pause pendant l'aide). Ménage fait : `expo-web-browser` retiré, correctifs Expo SDK 58 appliqués (`expo` 58.0.24, `expo-router` 58.0.31, `react-native-safe-area-context` 5.11.1…), source de la position tranchée (fournisseur standard gardé, voir `securite.md`). Alertes Dependabot : aucune correction possible sans changer de version majeure ; toutes viennent d'outils de build ou de test (`@expo/cli`, `@expo/config`, Jest, ESLint), rien dans l'APK. **Tout est prêt pour la build `preview` unique.**
 - Ensuite : point 5 (lieux absents au dézoom), qui demande le téléphone branché en USB.
 - Seuil d'arrivée passé de 25 m à 15 m (point 2, décision de l'utilisateur le 2026-11-12, spec 021 révisée). À vérifier sur le terrain : l'écran d'arrivée s'ouvre bien devant la bonne porte.
 - Un build `preview` est nécessaire pour tester ces correctifs sur le téléphone (dont le point 6, vu sur la photo `defauts_icons.jpg` d'une build antérieure au correctif).
@@ -267,7 +267,7 @@ Préparation de la bêta sur les stores (liste à compléter avec l'utilisateur)
 - Fiche du store : description, captures d'écran, icône 512 px, image de présentation 1024 × 500.
 - iPhone : compte Apple développeur, `bundleIdentifier`, TestFlight, étiquettes de confidentialité d'Apple, Universal Links (`apple-app-site-association` sur le site des liens).
 - Revérifier la marque « Yalla map » sur TMview (FR, EM, WO ; classes 9, 39, 42).
-- Ménage : retirer `expo-web-browser` (inutilisé), traiter les 4 alertes Dependabot (`zod`, `glob`, `minimatch`, `deepmerge`), trancher la source de la position (fournisseur « network » d'Android).
+- [x] Ménage (2026-11-12) : `expo-web-browser` retiré ; source de la position tranchée (fournisseur standard gardé) ; alertes Dependabot laissées ouvertes (outils de build et de test seulement, pas de correctif sans version majeure) : à fermer sur GitHub comme « risque toléré » si l'utilisateur le souhaite.
 
 Ensuite, en autonomie : trajets hors connexion (D5), métro sans GPS, spec 006 (droite à gauche), effacement rapide des lieux.
 

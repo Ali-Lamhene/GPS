@@ -62,7 +62,7 @@ Le lien de partage est une **entrée non fiable** : n'importe qui peut en fabriq
 ## 6. Permissions
 
 - Demander une permission au moment où elle sert, pas au lancement. Exception : la localisation est demandée au premier lancement, en général en présence de l'accompagnant (D16, spec 017).
-- Localisation : au premier plan seulement, tant qu'aucune spec n'exige l'arrière-plan. `expo-location` passe par les services Google Play (fournisseur « fused ») ; l'app n'ouvre jamais la fenêtre Google « activer la précision », qui enverrait les Wi-Fi alentour à Google.
+- Localisation : au premier plan seulement, tant qu'aucune spec n'exige l'arrière-plan. `expo-location` passe par les services Google Play (fournisseur « fused ») ; l'app n'ouvre jamais la fenêtre Google « activer la précision », qui enverrait les Wi-Fi alentour à Google. Décision du 2026-11-12 : on garde ce fournisseur plutôt que le GPS seul. En ville, le GPS seul dérive davantage et met plus longtemps à trouver la position (arrivée à 15 m, alerte à 15 m) ; ce que Google reçoit dépend du réglage « Précision de la localisation Google » du téléphone, que les voyageurs ont déjà pour Google Maps (menace visée : aucune donnée chez nous, D1).
 - Les permissions inutiles ajoutées par des bibliothèques sont retirées avec `android.blockedPermissions` dans `app.json`.
 - Chaque permission demandée figure dans la spec, avec le parcours sans texte qui permet au voyageur de passer la fenêtre système (qui, elle, contient du texte).
 
