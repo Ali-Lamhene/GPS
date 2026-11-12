@@ -1,4 +1,4 @@
-import { readStreetPhoto } from '../street-photo';
+import { readStreetPhoto, streetPhotoCrop } from '../street-photo';
 
 const HOSTS = ['panoramax.ign.fr'];
 const PLACE = [5.37, 43.296] as const;
@@ -65,5 +65,40 @@ describe('readStreetPhoto (spec 030)', () => {
       expect(readStreetPhoto({ features: [answer] }, PLACE, HOSTS)).toBeUndefined();
     }
     expect(readStreetPhoto('<html>', PLACE, HOSTS)).toBeUndefined();
+  });
+});
+
+describe('streetPhotoCrop (spec 033)', () => {
+  test('a panorama keeps the quarter facing the place, horizon in the middle', () => {
+    expect(streetPhotoCrop({ panorama: true, centre: 0.5 }, 2048, 1024)).toEqual({
+      originX: 768,
+      originY: 256,
+      width: 512,
+      height: 512,
+    });
+  });
+
+  test('near the seam, the square is pushed inside the picture', () => {
+    expect(streetPhotoCrop({ panorama: true, centre: 0.02 }, 2048, 1024).originX).toBe(0);
+    expect(streetPhotoCrop({ panorama: true, centre: 0.99 }, 2048, 1024).originX).toBe(1536);
+  });
+
+  test('a flat picture keeps the largest square around the place', () => {
+    expect(streetPhotoCrop({ panorama: false, centre: 0.7 }, 2000, 1500)).toEqual({
+      originX: 500,
+      originY: 0,
+      width: 1500,
+      height: 1500,
+    });
+    expect(streetPhotoCrop({ panorama: false, centre: 0.1 }, 2000, 1500).originX).toBe(0);
+  });
+
+  test('a portrait picture keeps a centred square', () => {
+    expect(streetPhotoCrop({ panorama: false, centre: 0.5 }, 1000, 1600)).toEqual({
+      originX: 0,
+      originY: 300,
+      width: 1000,
+      height: 1000,
+    });
   });
 });

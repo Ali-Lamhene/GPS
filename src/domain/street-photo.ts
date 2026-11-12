@@ -97,3 +97,27 @@ export function readStreetPhoto(
   }
   return undefined;
 }
+
+export type CropRect = { originX: number; originY: number; width: number; height: number };
+
+/** Width of the slice of a 360° panorama kept for a place, in degrees (spec 033). */
+const KEPT_SLICE_DEGREES = 90;
+
+/**
+ * The square of a street photo kept as a place's photo (spec 033), centred on the place and
+ * held inside the picture: a quarter of a panorama, horizon in the middle; for a flat
+ * picture, the largest square around the place. Near a panorama's seam the square is pushed
+ * inwards rather than stitched (45° off at most).
+ */
+export function streetPhotoCrop(
+  photo: Pick<StreetPhoto, 'panorama' | 'centre'>,
+  width: number,
+  height: number,
+): CropRect {
+  const wanted = photo.panorama ? (width * KEPT_SLICE_DEGREES) / 360 : width;
+  const side = Math.max(1, Math.floor(Math.min(wanted, width, height)));
+  const centre = Math.min(1, Math.max(0, photo.centre));
+  const originX = Math.round(Math.min(width - side, Math.max(0, centre * width - side / 2)));
+  const originY = Math.round((height - side) / 2);
+  return { originX, originY, width: side, height: side };
+}

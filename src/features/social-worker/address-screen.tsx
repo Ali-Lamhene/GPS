@@ -133,8 +133,8 @@ export function AddressScreen() {
         >
           les contributeurs d’OpenStreetMap
         </Text>{' '}
-        · photos de rue de l’arrivée : contributeurs de Panoramax (licences ouvertes etalab-2.0,
-        CC-BY-SA 4.0)
+        · photos de rue de l’arrivée et des lieux : contributeurs de Panoramax (licences ouvertes
+        etalab-2.0, CC-BY-SA 4.0)
       </Text>
     </View>
   );

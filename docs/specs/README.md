@@ -34,3 +34,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 030 | [Photo de rue du lieu d'arrivée (Panoramax)](030-photo-de-rue-a-l-arrivee.md)                             | livré (à voir sur téléphone)                           |
 | 031 | [Hors du chemin : le signaler, puis recalculer le trajet](031-hors-du-chemin-et-recalcul.md)              | livré, seuils révisés par 032                          |
 | 032 | [Hors du chemin : alerter tout de suite, recalculer après 30 m](032-alerte-immediate-recalcul-differe.md) | livré (à voir sur le terrain)                          |
+| 033 | [Photo Panoramax proposée à la création d'un lieu](033-photo-panoramax-a-la-creation.md)                  | livré (à voir sur le téléphone)                        |

@@ -27,7 +27,7 @@ Retour de terrain de l'utilisateur (2026-11-08, point 17) : un voyageur qui ne l
 | Situation                                                                                       | Comportement attendu                                                              |
 | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | Le lieu a sa propre photo (prise par l'accompagnant)                                            | Elle reste ; aucune demande à Panoramax                                           |
-| Lieu caché de la carte (domicile, famille, santé sensible)                                      | Aucune demande, aucune photo (D1)                                                 |
+| Lieu caché de la carte (domicile, famille, santé sensible)                                      | Aucune demande, aucune photo (D1) ; sauf à la création du lieu, voir spec 033     |
 | Aucune photo à moins de 50 m, ou photo qui regarde ailleurs                                     | Rien ne s'affiche ; écrans comme avant                                            |
 | Pas de réseau, Panoramax lent (plus de 8 s)                                                     | Rien ne s'affiche                                                                 |
 | Image hébergée ailleurs que sur les serveurs Panoramax connus, licence inconnue, réponse abîmée | Ignorée                                                                           |

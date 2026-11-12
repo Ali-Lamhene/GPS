@@ -56,6 +56,7 @@ export const GLYPHS = {
   home: 0xe88a,
   hotel: 0xe549,
   keyboard: 0xe312,
+  landscape: 0xe3f7,
   local_airport: 0xe53d,
   local_atm: 0xe53e,
   local_cafe: 0xeb44,

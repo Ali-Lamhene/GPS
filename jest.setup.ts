@@ -68,6 +68,7 @@ jest.mock('@/services/photo', () => ({
   PHOTO_NAMES: { toName: () => undefined, toUri: () => undefined },
   pickPhoto: jest.fn(() => Promise.resolve(undefined)),
   keepPhoto: jest.fn(() => Promise.resolve(undefined)),
+  keepStreetPhoto: jest.fn(() => Promise.resolve(undefined)),
   deletePhoto: jest.fn(),
   deleteOrphanPhotos: jest.fn(),
   clearPhotoCache: jest.fn(),

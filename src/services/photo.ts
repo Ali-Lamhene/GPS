@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { launchImageLibraryAsync } from 'expo-image-picker';
 
 import type { PhotoNames } from '@/domain/stored-places';
+import { streetPhotoCrop, type StreetPhoto } from '@/domain/street-photo';
 
 // Spec 020: the photo of a place, kept in the app's private documents (out of every backup,
 // spec 016). Re-encoded before it is kept, which drops its metadata, the position included.
@@ -13,8 +14,11 @@ const PHOTOS = 'photos';
 /** Wide enough for a tile and a full screen, light on a small phone. */
 const WIDTH = 1080;
 const QUALITY = 0.8;
-/** Where the camera, the picker and the re-encoding leave their copies. */
-const CACHE_FOLDERS = ['Camera', 'ImagePicker', 'ImageManipulator'];
+/** Where a street photo chosen for a place is written before it is re-encoded (spec 033). */
+const STREET_PHOTO_CACHE = 'StreetPhoto';
+/** Where the camera, the picker, the re-encoding and a chosen street photo leave copies. */
+const CACHE_FOLDERS = ['Camera', 'ImagePicker', 'ImageManipulator', STREET_PHOTO_CACHE];
+const DATA_JPEG = 'data:image/jpeg;base64,';
 /** The name of a kept photo; the file keeps the name only (spec 020). */
 const NAME = /^[a-z0-9]{1,16}\.jpg$/;
 
@@ -65,20 +69,36 @@ export async function pickPhoto(): Promise<string | undefined> {
   }
 }
 
+/** A fresh random name for a kept photo. */
+const newName = () => `${Math.random().toString(36).slice(2, 12)}.jpg`;
+
 /**
  * Keeps a photo for a place: re-encoded as a JPEG without metadata, in the app's private
  * documents. Only ever given a local file (camera or picker), never an address from a link.
+ * `crop` reads the picture's size and returns the part to keep (spec 033).
  */
-export async function keepPhoto(source: string): Promise<string | undefined> {
+export async function keepPhoto(
+  source: string,
+  crop?: (width: number, height: number) => ReturnType<typeof streetPhotoCrop>,
+): Promise<string | undefined> {
   if (!source.startsWith('file://')) return undefined;
   let encoded: string | undefined;
   try {
-    const image = await ImageManipulator.manipulate(source).resize({ width: WIDTH }).renderAsync();
+    let context = ImageManipulator.manipulate(source);
+    if (crop) {
+      const whole = await ImageManipulator.manipulate(source).renderAsync();
+      const rect = crop(whole.width, whole.height);
+      whole.release();
+      context = context.crop(rect);
+      if (rect.width > WIDTH) context = context.resize({ width: WIDTH });
+    } else {
+      context = context.resize({ width: WIDTH });
+    }
+    const image = await context.renderAsync();
     encoded = (await image.saveAsync({ format: SaveFormat.JPEG, compress: QUALITY })).uri;
     const folder = photosFolder();
     if (!folder.exists) folder.create({ intermediates: true });
-    const name = `${Math.random().toString(36).slice(2, 12)}.jpg`;
-    const kept = new File(folder, name);
+    const kept = new File(folder, newName());
     new File(encoded).moveSync(kept);
     return kept.uri;
   } catch {
@@ -87,6 +107,30 @@ export async function keepPhoto(source: string): Promise<string | undefined> {
   } finally {
     deleteQuietly(source);
   }
+}
+
+/**
+ * Keeps a Panoramax street photo, held in memory as a `data:` JPEG, as a place's photo
+ * (spec 033): written to the cache, cropped around the place, then kept like a photo taken.
+ */
+export async function keepStreetPhoto(photo: StreetPhoto): Promise<string | undefined> {
+  if (!photo.url.startsWith(DATA_JPEG)) return undefined;
+  let written: string | undefined;
+  try {
+    const binary = atob(photo.url.slice(DATA_JPEG.length));
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    const folder = new Directory(Paths.cache, STREET_PHOTO_CACHE);
+    if (!folder.exists) folder.create({ intermediates: true });
+    const file = new File(folder, newName());
+    file.create();
+    written = file.uri;
+    await file.write(bytes);
+  } catch {
+    if (written) deleteQuietly(written);
+    return undefined;
+  }
+  return keepPhoto(written, (width, height) => streetPhotoCrop(photo, width, height));
 }
 
 /** Deletes a kept photo; any address outside the app's photos folder is ignored. */
