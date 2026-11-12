@@ -45,7 +45,7 @@ function nextManeuver(legs: readonly Leg[], step: GuidanceStep) {
  * without a recent position (underground, or when the position is lost).
  */
 /** Within this distance of the arrival point, the trip is over. */
-const ARRIVED_METERS = 25;
+const ARRIVED_METERS = 15;
 
 export function GuidanceScreen() {
   const insets = useSafeAreaInsets();
