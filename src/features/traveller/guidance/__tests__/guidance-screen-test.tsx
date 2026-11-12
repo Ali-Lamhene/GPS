@@ -13,6 +13,7 @@ jest.mock('expo-router', () => ({
   router: { push: jest.fn(), replace: jest.fn() },
   // The screen in front: its focus effect runs once mounted.
   useFocusEffect: (effect: () => void) => jest.requireActual('react').useEffect(effect, [effect]),
+  useIsFocused: () => true,
 }));
 
 function startedAt(index: number, mode: 'walk' | 'transit' = 'transit'): TripPlanAction[] {

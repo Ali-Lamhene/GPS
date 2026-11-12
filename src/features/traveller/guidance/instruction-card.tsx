@@ -28,6 +28,8 @@ type InstructionCardProps = {
    * instruction kept inside; turning arrows while a new trip is asked.
    */
   offRoute?: 'lost' | 'computing';
+  /** Lost for a while (spec 034): only help pulses, the card stays orange but still. */
+  still?: boolean;
 };
 
 /**
@@ -41,6 +43,7 @@ export function InstructionCard({
   approach,
   onPress,
   offRoute,
+  still = false,
 }: InstructionCardProps) {
   const alert = offRoute !== undefined || isAlert(instruction);
   const symbol = mainSymbol(instruction);
@@ -66,7 +69,7 @@ export function InstructionCard({
               symbol === 'metro' ? styles.bareTile : alert ? styles.alertTile : styles.plainTile,
             ]}
           >
-            {alert && <PulseRing borderRadius={TILE_RADIUS} color={colors.alert} />}
+            {alert && !still && <PulseRing borderRadius={TILE_RADIUS} color={colors.alert} />}
             {symbol === 'metro' && leg ? (
               <MetroSign color={leg.line.color} size={60} />
             ) : symbol !== 'metro' ? (
@@ -84,7 +87,7 @@ export function InstructionCard({
         <View style={styles.spacer} />
         {offRoute && (
           <View style={styles.offRoute} testID={`off-route-${offRoute}`}>
-            <PulseRing borderRadius={28} color={colors.alert} />
+            {!still && <PulseRing borderRadius={28} color={colors.alert} />}
             <Icon
               name={offRoute === 'computing' ? 'autorenew' : 'wrong_location'}
               size={34}

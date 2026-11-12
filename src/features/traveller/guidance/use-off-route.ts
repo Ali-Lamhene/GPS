@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 
 import type { LngLat } from '@/domain/geo';
 import {
@@ -16,6 +16,8 @@ import { playCue } from '@/services/feedback';
 
 /** While still lost with no new trip, the alert comes again this often (phone in a pocket). */
 const ALERT_AGAIN_MS = 30_000;
+/** From this reminder on, the help button pulses (spec 034): the traveller seems stuck. */
+const HELP_PULSE_REMINDER = 2;
 
 type State = {
   track: OffRouteTrack;
@@ -62,7 +64,8 @@ function reducer(state: State, action: Action): State {
  * Specs 031 and 032: follows each new point on a walk; off the way on two points, the
  * traveller is lost: the alert cue at once (again every 30 s); once 30 m on from where the
  * alert came, a new trip from where they stand (`reroute`). No recent point, or a step that
- * is not a walk: nothing to follow.
+ * is not a walk: nothing to follow. Still lost at the 2nd reminder (60 s), `stuck`: the help
+ * button pulses (spec 034).
  */
 export function useOffRoute({
   point,
@@ -70,6 +73,7 @@ export function useOffRoute({
   legIndex,
   reroute,
   onRerouted,
+  paused = false,
 }: {
   /** The latest point, recent only. */
   point: LngLat | undefined;
@@ -78,7 +82,9 @@ export function useOffRoute({
   /** Refuses on its own past its limit (spec 031); cut when no longer needed. */
   reroute: (from: LngLat, signal: AbortSignal, onStart?: () => void) => Promise<boolean>;
   onRerouted: () => void;
-}): { lost: boolean; computing: boolean } {
+  /** The screen is behind another (help): the reminders wait. */
+  paused?: boolean;
+}): { lost: boolean; computing: boolean; stuck: boolean } {
   const [state, dispatch] = useReducer(reducer, INITIAL);
   const walking = legs[legIndex]?.kind === 'walk';
 
@@ -101,11 +107,29 @@ export function useOffRoute({
   const lost = alertAt !== undefined;
   // Still near where the alert came: the traveller may turn back; no new trip yet.
   const goneOn = alertAt !== undefined && point !== undefined && farFromAlert(alertAt, point);
+  // Reminders of the alert since the traveller got lost; reset when the way is found again.
+  // Paused while help is open: no alert while a passer-by reads the card (spec 034).
+  const [reminders, setReminders] = useState(0);
+  const alerted = useRef(false);
+  useEffect(() => {
+    if (!lost) {
+      alerted.current = false;
+      return;
+    }
+    if (paused) return;
+    if (!alerted.current) {
+      alerted.current = true;
+      playCue('alert');
+    }
+    const timer = setInterval(() => {
+      playCue('alert');
+      setReminders((count) => count + 1);
+    }, ALERT_AGAIN_MS);
+    return () => clearInterval(timer);
+  }, [lost, paused]);
   useEffect(() => {
     if (!lost) return;
-    playCue('alert');
-    const timer = setInterval(() => playCue('alert'), ALERT_AGAIN_MS);
-    return () => clearInterval(timer);
+    return () => setReminders(0);
   }, [lost]);
 
   // The request under way: a new point never cuts it (the traveller walks on while it
@@ -137,5 +161,5 @@ export function useOffRoute({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goneOn, point]);
 
-  return { lost, computing };
+  return { lost, computing, stuck: lost && reminders >= HELP_PULSE_REMINDER };
 }

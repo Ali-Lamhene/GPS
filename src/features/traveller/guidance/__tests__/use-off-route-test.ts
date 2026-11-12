@@ -45,8 +45,43 @@ describe('useOffRoute (specs 031, 032)', () => {
     const { result } = await walkAway(reroute, 1);
 
     expect(playCue).toHaveBeenCalledWith('alert');
-    expect(result.current).toEqual({ lost: true, computing: false });
+    expect(result.current).toEqual({ lost: true, computing: false, stuck: false });
     expect(reroute).not.toHaveBeenCalled();
+  });
+
+  test('still lost at the 2nd reminder: the help pulses, until the way is found (spec 034)', async () => {
+    const reroute = jest.fn(async () => false);
+    const hook = await walkAway(reroute, 1);
+
+    await act(() => jest.advanceTimersByTime(30_000));
+    expect(hook.result.current.stuck).toBe(false);
+    await act(() => jest.advanceTimersByTime(30_000));
+    expect(hook.result.current.stuck).toBe(true);
+    expect(playCue).toHaveBeenCalledTimes(3);
+
+    await hook.rerender({ point: undefined });
+    expect(hook.result.current.stuck).toBe(false);
+  });
+
+  test('help open: the reminders wait, and resume without an alert at once (spec 034)', async () => {
+    const reroute = jest.fn(async () => false);
+    const hook = await renderHook(
+      ({ point, paused }: { point: LngLat | undefined; paused: boolean }) =>
+        useOffRoute({ point, legs: [WALK], legIndex: 0, reroute, onRerouted: jest.fn(), paused }),
+      { initialProps: { point: away(0), paused: false } },
+    );
+    await act(() => jest.advanceTimersByTime(1000));
+    await hook.rerender({ point: away(1), paused: false });
+    expect(playCue).toHaveBeenCalledTimes(1);
+
+    await hook.rerender({ point: away(1), paused: true });
+    await act(() => jest.advanceTimersByTime(90_000));
+    expect(playCue).toHaveBeenCalledTimes(1);
+
+    await hook.rerender({ point: away(1), paused: false });
+    expect(playCue).toHaveBeenCalledTimes(1);
+    await act(() => jest.advanceTimersByTime(30_000));
+    expect(playCue).toHaveBeenCalledTimes(2);
   });
 
   test('still within 30 m of the alert: no new trip', async () => {
@@ -76,7 +111,7 @@ describe('useOffRoute (specs 031, 032)', () => {
     const hook = await walkAway(reroute, 5);
 
     expect(reroute).toHaveBeenCalledTimes(1);
-    expect(hook.result.current).toEqual({ lost: true, computing: false });
+    expect(hook.result.current).toEqual({ lost: true, computing: false, stuck: false });
     await hook.rerender({ point: away(6) });
     expect(reroute).toHaveBeenCalledTimes(2);
   });

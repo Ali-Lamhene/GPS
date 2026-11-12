@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { router, useIsFocused } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -77,7 +77,9 @@ export function GuidanceScreen() {
 
   // Off the way for a while: orange, the alert, then a new trip from here (spec 031).
   const restart = useCallback(() => dispatch({ type: 'goToStep', index: 0 }), [dispatch]);
+  const focused = useIsFocused();
   const offRoute = useOffRoute({
+    paused: !focused,
     point: fresh ? here : undefined,
     legs,
     legIndex: step?.legIndex ?? 0,
@@ -157,10 +159,11 @@ export function GuidanceScreen() {
             )}
             onPress={fresh ? undefined : advance}
             offRoute={offRoute.lost ? (offRoute.computing ? 'computing' : 'lost') : undefined}
+            still={offRoute.stuck}
           />
         </View>
         {/* Same place as on every other screen: top right. */}
-        <HelpButton onPress={openHelp} />
+        <HelpButton onPress={openHelp} pulse={offRoute.stuck} />
       </View>
       <ProgressPanel
         origin={origin}

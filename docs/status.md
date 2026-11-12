@@ -9,7 +9,7 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 **Dernière session : 2026-11-10, retours terrain en 6 points.** Le détail est dans la section « Retours terrain du 2026-11-10 », plus bas, sous « Prochaine étape (session suivante) ».
 
 - Faits : 6 (icônes), 3 (photo sur les épingles, à vérifier sur téléphone), 2 (photo de rue la plus proche, arrivée à 15 m), 1 (spec 032 livrée : alerte à 15 m, nouveau trajet après 30 m), 4 (spec 033 livrée : photo Panoramax proposée sur E29, aperçu puis « ✓ »).
-- **Décision de l'utilisateur (2026-11-12) : une seule build `preview`, après avoir traité tous les retours.** Reste avant la build : spec 034 (aide qui pulse quand le voyageur reste perdu), ménage natif (`expo-web-browser`, alertes Dependabot, source de la position).
+- **Décision de l'utilisateur (2026-11-12) : une seule build `preview`, après avoir traité tous les retours.** Spec 034 livrée (aide qui pulse quand le voyageur reste perdu, rappels en pause pendant l'aide). Reste avant la build : ménage natif (`expo-web-browser`, mises à jour Expo, alertes Dependabot, source de la position).
 - Ensuite : point 5 (lieux absents au dézoom), qui demande le téléphone branché en USB.
 - Seuil d'arrivée passé de 25 m à 15 m (point 2, décision de l'utilisateur le 2026-11-12, spec 021 révisée). À vérifier sur le terrain : l'écran d'arrivée s'ouvre bien devant la bonne porte.
 - Un build `preview` est nécessaire pour tester ces correctifs sur le téléphone (dont le point 6, vu sur la photo `defauts_icons.jpg` d'une build antérieure au correctif).
@@ -244,7 +244,7 @@ Points en suspens après la build : point 2 (icônes à l'ajout d'un lieu) et co
 
 **Retours terrain du 2026-11-10** (6 points, autonomie donnée par l'utilisateur ; bugs d'abord, specs ensuite) :
 
-1. [x] Erreur de trajet : spec 032 validée et livrée (alerte à 15 m sur 2 positions, sans attente ; recalcul à plus de 30 m à vol d'oiseau de l'endroit de l'alerte ; retour à 10 m). À vérifier sur le terrain : fausses alertes à 15 m (sinon repasser à 20 m, une constante) ; nouveau trajet qui arrive en marchant sur réseau lent (requête plus coupée à chaque position). Suggestion UX ouverte : faire pulser l'aide au 2e ou 3e rappel d'alerte, pour un voyageur arrêté.
+1. [x] Erreur de trajet : spec 032 validée et livrée (alerte à 15 m sur 2 positions, sans attente ; recalcul à plus de 30 m à vol d'oiseau de l'endroit de l'alerte ; retour à 10 m). À vérifier sur le terrain : fausses alertes à 15 m (sinon repasser à 20 m, une constante) ; nouveau trajet qui arrive en marchant sur réseau lent (requête plus coupée à chaque position). Suggestion UX retenue par l'utilisateur et livrée : spec 034 (aide qui pulse au 2e rappel, 60 s ; relue par `ux-sans-texte-reviewer` ; pas vérifiée à l'écran, l'état « perdu depuis 60 s » ne se simule pas dans le navigateur).
 2. Arrivée au 24 au lieu du 26, photo de l'entrée à 30 m.
    - [x] Photo : Panoramax ne trie pas sa réponse par distance (vérifié sur des points publics : 6, 10, 8 m…), l'app prenait la première photo tournée vers le lieu. Elle prend maintenant la plus proche, parmi 20 candidates au lieu de 10.
    - Arrivée : conforme à la spec 021 (écran d'arrivée à 25 m du bout du trajet ; deux numéros voisins sont à 10-20 m). Le bout du trajet est le point sur la rue, pas la porte, et le GPS en ville dérive de 10-20 m. Seuil réduit à 15 m le 2026-11-12 (choix de l'utilisateur, spec 021 révisée, constante `ARRIVED_METERS`).
