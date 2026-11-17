@@ -2,6 +2,7 @@ import { placesOnMap } from '@/domain/place';
 import {
   initialTripPlan,
   placeFromDraft,
+  placeFromEdit,
   tripPlanReducer,
   type TripPlanState,
 } from '../trip-plan-reducer';
@@ -136,5 +137,42 @@ describe('tripPlanReducer', () => {
       mode: 'transit',
       customPlaces: [{ id: 'custom-1', icon: 'home' }],
     });
+  });
+});
+
+describe('changing a saved place (spec 037)', () => {
+  const school = {
+    id: 'p-school',
+    icon: 'school',
+    photo: 'file:///a.jpg',
+    point: [5.38, 43.3],
+  } as const;
+  const chosen: TripPlanState = {
+    ...initialTripPlan,
+    customPlaces: [{ ...school }],
+    originId: 'here',
+    destinationId: 'p-school',
+  };
+
+  test('the changed place replaces the old one and keeps the trip as chosen', () => {
+    const state = tripPlanReducer(
+      tripPlanReducer(chosen, { type: 'startEdit', place: { ...school } }),
+      { type: 'updatePlace', place: { ...school, icon: 'park' } },
+    );
+
+    expect(state.customPlaces).toEqual([{ ...school, icon: 'park' }]);
+    expect(state.destinationId).toBe('p-school');
+    expect(state.draft).toBeUndefined();
+  });
+
+  test('placeFromEdit changes only the pictogram and the photo', () => {
+    const draft = { source: 'edit', editing: { ...school }, icon: 'park' } as const;
+
+    expect(placeFromEdit({ ...school }, draft, 'file:///b.jpg')).toEqual({
+      ...school,
+      icon: 'park',
+      photo: 'file:///b.jpg',
+    });
+    expect(placeFromEdit({ ...school }, draft)).not.toHaveProperty('photo');
   });
 });

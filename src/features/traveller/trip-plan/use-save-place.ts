@@ -56,6 +56,29 @@ export function useRemovePlace(): (placeId: string) => Promise<boolean> {
 }
 
 /**
+ * Saves a changed place on the phone in place of the one with its id (spec 037), then keeps
+ * it in the app. False when the file could not be written or the place is gone: nothing
+ * changes.
+ */
+export function useUpdatePlace(): (place: Place) => Promise<boolean> {
+  const { dispatch } = useTripPlan();
+  const places = useLatestPlaces();
+  return (place) =>
+    inLine(async () => {
+      const all = places();
+      if (!all.some((each) => each.id === place.id)) return false;
+      const text = encodePlaces(
+        all.map((each) => (each.id === place.id ? place : each)),
+        PHOTO_NAMES,
+      );
+      const saved =
+        text.length > MAX_STORED_PLACES_CHARS ? { ok: false } : await writePlacesFile(text);
+      if (saved.ok) dispatch({ type: 'updatePlace', place });
+      return saved.ok;
+    });
+}
+
+/**
  * Saves one more place on the phone, then keeps it in the app (spec 015). One save at a time:
  * a second call while the file is written waits for the first.
  */

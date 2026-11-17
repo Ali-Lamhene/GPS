@@ -10,7 +10,10 @@ export type TripEnd = 'origin' | 'destination';
  * or address (companion). Once saved it is only kept, never chosen for the trip.
  */
 export type PlaceDraft = {
-  source: 'position' | 'address';
+  /** `edit`: a saved place whose pictogram and photo change (spec 037). */
+  source: 'position' | 'address' | 'edit';
+  /** The saved place being changed, as it was: its id, point and address stay (spec 037). */
+  editing?: Place;
   /** Where the place is, when known: the traveller's position for E27. */
   point?: LngLat;
   icon?: PlaceIcon;
@@ -42,7 +45,11 @@ export type TripPlanAction =
   | { type: 'clearDestination' }
   | { type: 'chooseMode'; mode: TravelMode }
   | { type: 'goToStep'; index: number }
-  | { type: 'startPlace'; source: PlaceDraft['source']; point?: LngLat }
+  | { type: 'startPlace'; source: 'position' | 'address'; point?: LngLat }
+  /** Long press on a saved place: change its pictogram and photo (spec 037). */
+  | { type: 'startEdit'; place: Place }
+  /** The changed place, saved on the phone: it replaces the one with the same id. */
+  | { type: 'updatePlace'; place: Place }
   | { type: 'setDraftIcon'; icon: PlaceIcon }
   | { type: 'setDraftName'; helpName: string }
   | { type: 'setDraftAddress'; helpName: string; address?: string; point: LngLat; send: boolean }
@@ -86,6 +93,26 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
       return {
         ...state,
         draft: { source: action.source, point: action.point },
+      };
+    case 'startEdit':
+      return {
+        ...state,
+        draft: {
+          source: 'edit',
+          editing: action.place,
+          point: action.place.point,
+          icon: action.place.icon,
+          helpName: action.place.helpName,
+          address: action.place.address,
+        },
+      };
+    case 'updatePlace':
+      return {
+        ...state,
+        customPlaces: state.customPlaces.map((place) =>
+          place.id === action.place.id ? action.place : place,
+        ),
+        draft: undefined,
       };
     case 'setDraftIcon':
       return state.draft ? { ...state, draft: { ...state.draft, icon: action.icon } } : state;
@@ -132,6 +159,17 @@ export function tripPlanReducer(state: TripPlanState, action: TripPlanAction): T
       return unknown;
     }
   }
+}
+
+/**
+ * The saved place once changed (spec 037): only its pictogram and photo; its id, point,
+ * address, help name and date stay. `photo` undefined removes the photo.
+ */
+export function placeFromEdit(original: Place, draft: PlaceDraft, photo?: string): Place {
+  const changed: Place = { ...original, icon: draft.icon ?? original.icon, photo };
+  // No empty key left in the file for a removed photo.
+  if (photo === undefined) delete changed.photo;
+  return changed;
 }
 
 /** The place a finished draft becomes, once saved; `id` and `createdAt` come from the caller. */
