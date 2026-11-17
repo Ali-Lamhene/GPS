@@ -110,6 +110,17 @@ export function HomeScreen() {
     setSheet(null);
   };
 
+  // A long press on a saved place, pin or sheet tile, changes its pictogram and photo (spec
+  // 037): felt and heard like the end of a hold, then the pictogram screen.
+  const editPlace = (placeId: string) => {
+    const place = plan.customPlaces.find((each) => each.id === placeId);
+    if (!place) return;
+    playCue('hold');
+    dispatch({ type: 'startEdit', place });
+    setSheet(null);
+    router.push('/add-place/pictogram');
+  };
+
   const createPlace = (source: 'position' | 'address') => {
     if (source === 'position' && !position) {
       positionUnavailable();
@@ -194,6 +205,7 @@ export function HomeScreen() {
           places={sheet === 'origin' ? plan.originChoices : plan.destinationChoices}
           excludedId={sheet === 'destination' ? origin?.id : destination?.id}
           onPick={(place) => choose(sheet, place.id)}
+          onEdit={(place) => editPlace(place.id)}
           onAdd={() => createPlace('position')}
           hereUnavailable={hereUnavailable}
           onClose={() => setSheet(null)}

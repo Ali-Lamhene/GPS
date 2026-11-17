@@ -30,6 +30,8 @@ type PlaceSheetProps = {
   /** Place that cannot be picked here: the start, when choosing the arrival. */
   excludedId?: string;
   onPick: (place: Place) => void;
+  /** Long press on a saved place: change it (spec 037). « Here » cannot be changed. */
+  onEdit?: (place: Place) => void;
   /** No place to offer: the only tile opens « new place here » (spec 015). */
   onAdd: () => void;
   /** No usable position (spec 017): « here » and « + » greyed. */
@@ -46,6 +48,7 @@ export function PlaceSheet({
   places,
   excludedId,
   onPick,
+  onEdit,
   onAdd,
   hereUnavailable,
   onClose,
@@ -105,6 +108,9 @@ export function PlaceSheet({
                     disabled={place.id === excludedId}
                     unavailable={place.id === CURRENT_POSITION.id ? hereUnavailable : undefined}
                     onPress={() => onPick(place)}
+                    onLongPress={
+                      onEdit && place.id !== CURRENT_POSITION.id ? () => onEdit(place) : undefined
+                    }
                   />
                 ))}
               </>

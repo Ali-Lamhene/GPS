@@ -10,6 +10,8 @@ type SheetPlaceTileProps = {
   place: Place;
   size: number;
   onPress: () => void;
+  /** A long press changes the saved place (spec 037); never a choice as well. */
+  onLongPress?: () => void;
   disabled?: boolean;
   /** « Here » without a usable position (spec 017): greyed, still touchable to ask again. */
   unavailable?: HereUnavailable;
@@ -20,6 +22,7 @@ export function SheetPlaceTile({
   place,
   size,
   onPress,
+  onLongPress,
   disabled = false,
   unavailable,
 }: SheetPlaceTileProps) {
@@ -31,6 +34,7 @@ export function SheetPlaceTile({
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
+      onLongPress={onLongPress}
       style={({ pressed }) => [
         styles.tile,
         { width: size, height: size },
