@@ -53,9 +53,9 @@ function glyph(icon: IconName, size: number, color: string, outlined = false): H
 }
 
 /** The traveller: an emerald dot ringed in white, in a pale emerald halo (spec 009). */
-export function createTravellerDot(): HTMLElement {
+export function createTravellerDot(onPress?: () => void): HTMLElement {
   // No inline position: MapLibre's marker class keeps the root absolute, on its spot.
-  const root = box({ width: '68px', height: '68px', pointerEvents: 'none' });
+  const root = box({ width: '68px', height: '68px', pointerEvents: onPress ? 'auto' : 'none' });
   root.append(
     box({
       position: 'absolute',
@@ -82,6 +82,37 @@ export function createTravellerDot(): HTMLElement {
       boxShadow: '0 2px 6px rgba(0,0,0,.3)',
     }),
   );
+  if (onPress) {
+    // « Touch here » (spec 028): the dot chooses « here » as the start (spec 035).
+    root.style.cursor = 'pointer';
+    root.setAttribute('role', 'button');
+    root.setAttribute('aria-label', 'ma position');
+    const hand = box({
+      position: 'absolute',
+      right: '0',
+      bottom: '0',
+      width: '26px',
+      height: '26px',
+      borderRadius: '50%',
+      background: '#FFFFFF',
+      boxShadow: '0 2px 6px rgba(0,0,0,.3)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    });
+    hand.append(glyph('touch_app', 16, colors.ink));
+    root.append(hand);
+    // A drag of the map that starts and ends on the dot is not a touch on it.
+    let down = { x: 0, y: 0 };
+    root.addEventListener('pointerdown', (event) => {
+      down = { x: event.clientX, y: event.clientY };
+    });
+    root.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (Math.hypot(event.clientX - down.x, event.clientY - down.y) > 8) return;
+      onPress();
+    });
+  }
   return root;
 }
 

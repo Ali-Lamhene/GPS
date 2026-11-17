@@ -49,6 +49,8 @@ export type TripMapProps = {
   /** Arrow drawn at the next corner, pointing the way to turn. */
   maneuver?: { point: LngLat; heading: number };
   traveller?: { point: LngLat; heading?: number };
+  /** Makes the traveller's dot touchable, with a small hand on it: « here » as the start (spec 035). */
+  onTravellerPress?: () => void;
   /** Start of the trip when it is a saved place rather than where the traveller stands. */
   origin?: { point: LngLat; icon: IconName };
   destination?: { point: LngLat; icon: IconName };

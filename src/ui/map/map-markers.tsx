@@ -14,11 +14,17 @@ export { PlacePin };
 // Markers drawn over the phone's map, the same as the browser ones (map-markers.web.ts).
 
 /** The traveller: an emerald dot ringed in white, in a pale emerald halo (spec 009). */
-export function TravellerDot() {
+export function TravellerDot({ touchable = false }: { touchable?: boolean }) {
   return (
     <View pointerEvents="none" style={styles.dotArea}>
       <View style={styles.dotHalo} />
       <View style={styles.dot} />
+      {/* « Touch here » (spec 028): the dot chooses « here » as the start (spec 035). */}
+      {touchable && (
+        <View style={styles.dotHand}>
+          <Icon name="touch_app" size={16} color={colors.ink} />
+        </View>
+      )}
     </View>
   );
 }
@@ -135,6 +141,18 @@ const styles = StyleSheet.create({
     height: 68,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  dotHand: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 2px 6px rgba(0,0,0,.3)',
   },
   dotHalo: {
     position: 'absolute',

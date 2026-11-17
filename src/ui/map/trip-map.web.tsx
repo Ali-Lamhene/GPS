@@ -103,16 +103,19 @@ function addRouteLayers(map: MapLibreMap) {
 }
 
 type MarkerKind =
-  | { type: 'dot' }
+  | { type: 'dot'; touchable: boolean }
   | { type: 'cone' }
   | { type: 'maneuver' }
   | { type: 'destination'; icon: IconName }
   | { type: 'origin'; icon: IconName };
 
-function markerFor(kind: MarkerKind): Marker {
+function markerFor(kind: MarkerKind, onPress?: () => void): Marker {
   switch (kind.type) {
     case 'dot':
-      return new Marker({ element: createTravellerDot(), pitchAlignment: 'viewport' });
+      return new Marker({
+        element: createTravellerDot(kind.touchable ? onPress : undefined),
+        pitchAlignment: 'viewport',
+      });
     case 'cone':
       return new Marker({
         element: createTravellerCone(),
@@ -138,14 +141,20 @@ function useMarker(
   kind: MarkerKind,
   point: LngLat | undefined,
   rotation = 0,
+  onPress?: () => void,
 ) {
+  // The latest handler, so the marker is not rebuilt each time the screen renders.
+  const press = useRef(onPress);
+  useEffect(() => {
+    press.current = onPress;
+  }, [onPress]);
   const marker = useRef<Marker | null>(null);
   const kindKey = JSON.stringify(kind);
   const [lon, lat] = point ?? [];
 
   useEffect(() => {
     if (!map) return;
-    const instance = markerFor(JSON.parse(kindKey));
+    const instance = markerFor(JSON.parse(kindKey), () => press.current?.());
     marker.current = instance;
     return () => {
       instance.remove();
@@ -180,6 +189,7 @@ export function TripMap({
   recenterIcon = 'person_pin_circle',
   pins = [],
   onPinPress,
+  onTravellerPress,
 }: TripMapProps) {
   const container = useRef<HTMLDivElement | null>(null);
   const initial = useRef({
@@ -264,7 +274,13 @@ export function TripMap({
 
   const heading = traveller?.heading;
   useMarker(map, { type: 'cone' }, heading === undefined ? undefined : traveller?.point, heading);
-  useMarker(map, { type: 'dot' }, traveller?.point);
+  useMarker(
+    map,
+    { type: 'dot', touchable: onTravellerPress !== undefined },
+    traveller?.point,
+    0,
+    onTravellerPress,
+  );
   useMarker(map, { type: 'maneuver' }, maneuver?.point, maneuver?.heading);
   useMarker(map, { type: 'destination', icon: destination?.icon ?? 'flag' }, destination?.point);
   useMarker(map, { type: 'origin', icon: origin?.icon ?? 'location_on' }, origin?.point);

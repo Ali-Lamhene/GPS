@@ -72,8 +72,8 @@ describe('<HomeScreen />', () => {
 
     expect(button('Départ')).toBeSelected();
     expect(button('Arrivée')).not.toBeSelected();
-    // « Here » is no pin: it only lives in the sheet, so it is not on the home any more.
-    expect(screen.queryByRole('button', { name: 'ma position' })).toBeNull();
+    // « Here » is no tile any more: only the traveller's own dot on the map offers it.
+    expect(screen.getAllByRole('button', { name: 'ma position' })).toHaveLength(1);
     expect(screen.queryByRole('button', { name: 'Continuer' })).toBeNull();
     // The rail of shortcuts is gone: nothing scrolls sideways.
     expect(JSON.stringify(screen.toJSON())).not.toContain('"horizontal"');
@@ -91,6 +91,37 @@ describe('<HomeScreen />', () => {
 
     await fireEvent.press(button('Continuer'));
     expect(router.push).toHaveBeenCalledWith('/mode');
+  });
+
+  test('a whole trip on the map alone from here: the dot, a pin, continue (spec 035)', async () => {
+    await renderHome();
+
+    await fireEvent.press(button('ma position'));
+    expect(button('Arrivée')).toBeSelected();
+    expect(playCue).toHaveBeenCalledWith('select');
+    // The start is chosen: the dot is no button any more.
+    expect(screen.queryByRole('button', { name: 'ma position' })).toBeNull();
+
+    await fireEvent.press(await pin('la plage du Prado'));
+    await fireEvent.press(button('Continuer'));
+
+    expect(router.push).toHaveBeenCalledWith('/mode');
+  });
+
+  test('the dot also gives the start when the arrival was chosen first', async () => {
+    await renderHome();
+    await fireEvent.press(button('Arrivée'));
+    await sheetPlace('la plage du Prado');
+
+    await fireEvent.press(button('ma position'));
+
+    expect(button('Continuer')).toBeOnTheScreen();
+  });
+
+  test('no position, no dot: nothing to touch on the map for « here »', async () => {
+    await renderWithProviders(<HomeScreen />, [], { kind: 'unavailable' });
+
+    expect(screen.queryByRole('button', { name: 'ma position' })).toBeNull();
   });
 
   test('the two ways mix: a pin for the start, the arrival from its end of the way', async () => {

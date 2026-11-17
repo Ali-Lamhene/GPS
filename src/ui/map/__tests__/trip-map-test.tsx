@@ -86,6 +86,25 @@ describe('<TripMap /> on the phone', () => {
     expect(onPinPress).toHaveBeenCalledWith('work');
   });
 
+  test("the traveller's dot is a button only when asked, and gives the touch (spec 035)", async () => {
+    const onTravellerPress = jest.fn();
+    const { rerender } = await render(
+      <TripMap camera={camera} traveller={{ point: [5.37, 43.29] }} />,
+    );
+    expect(screen.queryByRole('button', { name: 'ma position' })).toBeNull();
+
+    await rerender(
+      <TripMap
+        camera={camera}
+        traveller={{ point: [5.37, 43.29] }}
+        onTravellerPress={onTravellerPress}
+      />,
+    );
+    await fireEvent.press(await screen.findByRole('button', { name: 'ma position' }));
+
+    expect(onTravellerPress).toHaveBeenCalledTimes(1);
+  });
+
   test('the map credit stays folded behind ⓘ until touched (D9)', async () => {
     await render(<TripMap camera={camera} />);
     const credit = await screen.findByRole('button', { name: 'Crédit de la carte' });

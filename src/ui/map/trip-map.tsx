@@ -119,6 +119,7 @@ export function TripMap({
   recenterIcon = 'person_pin_circle',
   pins = [],
   onPinPress,
+  onTravellerPress,
 }: TripMapProps) {
   // Online tiles (spec 017): without network, the ground stays plain and routes and markers
   // are still drawn.
@@ -301,8 +302,21 @@ export function TripMap({
           </Marker>
         )}
         {traveller && (
-          <Marker lngLat={[traveller.point[0], traveller.point[1]]}>
-            <TravellerDot />
+          // Touchable like a pin: on Android the marker itself takes the press.
+          <Marker lngLat={[traveller.point[0], traveller.point[1]]} onPress={onTravellerPress}>
+            {onTravellerPress ? (
+              <View
+                accessible
+                accessibilityRole="button"
+                accessibilityLabel="ma position"
+                accessibilityActions={[{ name: 'activate' }]}
+                onAccessibilityAction={onTravellerPress}
+              >
+                <TravellerDot touchable />
+              </View>
+            ) : (
+              <TravellerDot />
+            )}
           </Marker>
         )}
       </MapView>
