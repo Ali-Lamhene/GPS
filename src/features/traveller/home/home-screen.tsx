@@ -101,6 +101,10 @@ export function HomeScreen() {
       positionUnavailable();
       return;
     }
+    // The other end's place is never taken: choosing it would silently empty that end, or
+    // play « select » for nothing (the arrival may be chosen first, spec 011).
+    const otherEnd = endToFill === 'origin' ? destination : origin;
+    if (placeId === otherEnd?.id) return;
     if (endToFill === 'origin') {
       dispatch({
         type: 'chooseOrigin',
@@ -155,8 +159,11 @@ export function HomeScreen() {
         // ⓘ at the bottom left above the way; recenter on top of the column of « + » and
         // companion, on the same axis (spec 013).
         controlsBottom={wayHeight + spacing.md}
+        // Both ends chosen: the column is gone (one decision left, ✓), recenter sits alone.
         recenterBottom={
-          wayHeight + spacing.md + ADD_BUTTON_SIZE + COLUMN_GAP + COMPANION_SIZE + COLUMN_GAP
+          calling === undefined
+            ? wayHeight + spacing.md
+            : wayHeight + spacing.md + ADD_BUTTON_SIZE + COLUMN_GAP + COMPANION_SIZE + COLUMN_GAP
         }
         recenterRight={spacing.gutter + (ADD_BUTTON_SIZE - RECENTER_SIZE) / 2}
       />
@@ -172,13 +179,16 @@ export function HomeScreen() {
         onHeight={setWayHeight}
       />
 
-      <View style={[styles.add, { bottom: wayHeight + spacing.md }]}>
-        <AddPlaceButton
-          onAddHere={() => createPlace('position')}
-          hereUnavailable={hereUnavailable}
-          onAddAddress={() => createPlace('address')}
-        />
-      </View>
+      {/* Once both ends are chosen, only ✓ is left to touch: « + » must not sit by it (spec 035). */}
+      {calling !== undefined && (
+        <View style={[styles.add, { bottom: wayHeight + spacing.md }]}>
+          <AddPlaceButton
+            onAddHere={() => createPlace('position')}
+            hereUnavailable={hereUnavailable}
+            onAddAddress={() => createPlace('address')}
+          />
+        </View>
+      )}
 
       {sheet && (
         <PlaceSheet

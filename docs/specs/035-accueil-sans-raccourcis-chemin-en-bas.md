@@ -18,7 +18,8 @@ L'encart de raccourcis de lieux (le carrousel de tuiles en bas de l'accueil) per
      Les deux façons se mélangent.
 3. Le bout qui appelle garde son halo émeraude et sa main qui tape (spec 028), maintenant en bas de l'écran, à portée de pouce.
 4. Une fois les deux bouts choisis, une rangée apparaît **au-dessus du chemin**, qui ne bouge pas : **✕** (rond blanc, annuler l'arrivée) à gauche, **✓** (pilule émeraude pleine, continuer vers le choix du transport) à droite. Toucher une pastille permet toujours de changer un bout.
-5. Le bouton **« + »** passe de 48 à **64 dp** (toujours émeraude plein, bas à droite au-dessus du chemin). Le bouton de l'accompagnant (36 dp) et le recentrage (40 dp) gardent leur taille et leur axe (spec 013).
+5. Le bouton **« + »** passe de 48 à **64 dp** (toujours émeraude plein, bas à droite au-dessus du chemin). Le bouton de l'accompagnant (36 dp) et le recentrage (40 dp) gardent leur taille et leur axe (spec 013). **Une fois les deux bouts choisis, « + » et le bouton de l'accompagnant disparaissent** (il ne reste qu'une décision, ✓, et un pouce qui la vise ne doit pas ouvrir « nouveau lieu ici ») ; le recentrage reste, juste au-dessus du chemin et de la rangée ✕ ✓.
+   5 bis. Toucher l'épingle de **l'autre bout** ne fait rien et ne joue aucun son (comme la feuille, qui grise le lieu de l'autre bout) : ni arrivée vidée par mégarde, ni faux signal de réussite.
 6. Le crédit ⓘ reste en bas à gauche, au-dessus du chemin ; le nuage barré (hors connexion) passe juste sous le haut de l'écran, le chemin n'y étant plus.
 
 ## Pourquoi cet emplacement
@@ -55,15 +56,19 @@ Aucun changement : aucune donnée, dépendance, permission ni appel réseau. Ce 
 
 ## Critères d'acceptation
 
-- [ ] Plus aucune tuile de raccourci à l'accueil ; plus de code mort (panneau, tuiles).
-- [ ] Un trajet complet (départ, arrivée, ✓) se fait par la carte seule (épingles), et par les pastilles seules.
-- [ ] Le chemin est en bas ; ✕ et ✓ apparaissent au-dessus, sans déplacer le chemin.
-- [ ] « + » de 64 dp ; la colonne (recentrage, accompagnant, « + ») ne recouvre ni le chemin ni la rangée ✕ ✓.
-- [ ] La carte se cadre au-dessus du chemin (et de la rangée ✕ ✓ quand elle est là).
-- [ ] Vérifié dans le navigateur (320 et 390 dp) et sur le téléphone ; relu par `ux-sans-texte-reviewer`.
+- [x] Plus aucune tuile de raccourci à l'accueil ; plus de code mort (panneau, tuiles).
+- [x] Un trajet complet (départ, arrivée, ✓) se fait par la carte seule (épingles), et par les pastilles seules (tests).
+- [x] Le chemin est en bas ; ✕ et ✓ apparaissent au-dessus, sans déplacer le chemin.
+- [x] « + » de 64 dp ; la colonne n'est là que tant qu'un bout appelle, donc jamais à côté de ✓.
+- [x] La carte se cadre au-dessus du chemin (et de la rangée ✕ ✓ quand elle est là).
+- [ ] Vérifié dans le navigateur (320 et 390 dp) et sur le téléphone. **Non fait** : Chrome et `adb` sont bloqués par le sandbox de cette session. Relu par `ux-sans-texte-reviewer` (fait, sur le code).
 
 ## Hypothèses (mode autonome)
 
 - ✕ et ✓ sont **au-dessus** du chemin, pas autour (quatre éléments ronds sur 320 dp ne laisseraient que des points trop courts entre les pastilles).
 - La pastille garde 56 dp ; la maquette ne dit rien d'autre.
+- ✕ garde sa place à gauche de la paire (spec 023), au-dessus de la pastille de départ, alors qu'il annule l'arrivée. Relecture UX : un non-lecteur peut lire « ✕ sur le départ ». Gardé pour que la paire s'apprenne une fois ; à tester sur le terrain.
+- « + » à 64 dp est un écart à D15 (voir D20) ; la relecture UX craint qu'il éclipse la pastille qui appelle. À observer.
+- Quand la rangée ✕ ✓ apparaît, la colonne de droite et ⓘ sautent de la hauteur de la rangée (≈ 68 dp), sans animation. À observer.
+- « ici » reste hors de la carte (le point de position n'est pas touchable) : départ depuis la position = 3 gestes. Voir « Décision demandée » du rapport.
 - Sans tuile, le premier lancement n'a pas de « + » pointillé dans l'accueil : le « + » rond, plus grand, et la main sur le départ suffisent. À observer sur le terrain.

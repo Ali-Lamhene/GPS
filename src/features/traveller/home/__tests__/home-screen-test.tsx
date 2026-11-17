@@ -142,6 +142,45 @@ describe('<HomeScreen />', () => {
     ).toBeDisabled();
   });
 
+  test('the pin of the other end is ignored, without a sound (spec 035)', async () => {
+    await renderHome();
+    await fireEvent.press(button('Arrivée'));
+    await sheetPlace('la plage du Prado');
+    jest.mocked(playCue).mockClear();
+
+    // The arrival is chosen, the start still calls: its pin must not empty the arrival.
+    await fireEvent.press(await pin('la plage du Prado'));
+
+    expect(playCue).not.toHaveBeenCalled();
+    expect(button('Départ')).toBeSelected();
+    expect(button('Arrivée')).not.toBeSelected();
+    await fireEvent.press(await pin('la mairie'));
+    expect(button('Continuer')).toBeOnTheScreen();
+  });
+
+  test('both ends chosen: the start pin changes nothing and stays silent', async () => {
+    await renderHome();
+    await fireEvent.press(await pin('la mairie'));
+    await fireEvent.press(await pin('la plage du Prado'));
+    jest.mocked(playCue).mockClear();
+
+    await fireEvent.press(await pin('la mairie'));
+
+    expect(playCue).not.toHaveBeenCalled();
+    expect(button('Continuer')).toBeOnTheScreen();
+  });
+
+  test('both ends chosen: « + » and the companion button are gone, ✓ is alone (spec 035)', async () => {
+    await renderHome();
+    expect(button('Ajouter un lieu')).toBeOnTheScreen();
+
+    await fireEvent.press(await pin('la mairie'));
+    await fireEvent.press(await pin('la plage du Prado'));
+
+    expect(screen.queryByRole('button', { name: 'Ajouter un lieu' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Ajouter une adresse (accompagnant)' })).toBeNull();
+  });
+
   test('cancel empties the arrival, which calls again', async () => {
     await renderHome();
     await fireEvent.press(await pin('la mairie'));
