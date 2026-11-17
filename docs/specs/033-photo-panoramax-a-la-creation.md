@@ -40,6 +40,7 @@ Retour de terrain du 2026-11-10 (point 4) : quand une photo de rue existe pour l
 | Photo plate                                         | Gardée recadrée en carré autour du lieu                                                                                                      |
 | Réencodage impossible                               | Rien n'est gardé, on reste sur E29 (comme une photo ratée)                                                                                   |
 | Retour arrière puis retour sur E29                  | Nouvelle recherche                                                                                                                           |
+| « Garder » échoue (précisé le 2026-11-17)           | Comme une photo ratée : l'aperçu se ferme, la vignette reste, caméra, galerie et « sans photo » restent actifs ; un toucher rouvre l'aperçu  |
 
 ## Données et confidentialité
 
@@ -62,6 +63,7 @@ Retour de terrain du 2026-11-10 (point 4) : quand une photo de rue existe pour l
 - [x] Roue pendant la recherche ; vignette si trouvée ; rien sinon (tests).
 - [x] Toucher la vignette garde la photo recadrée et enregistre le lieu (tests).
 - [x] Recadrage : quart de panorama tourné vers le lieu, photo plate carrée autour du lieu, bornés à l'image (tests).
+- [x] Les 3 choix (photo de rue, sa propre photo par caméra ou galerie, sans photo) marchent dans les deux parcours, « ici » et adresse ; le lieu enregistré porte la bonne photo (vérification du 2026-11-17, `photo-choices-test.tsx`, aucun écart de code).
 - [ ] Sur le téléphone, à une adresse de grande ville : la vignette apparaît, la tuile du lieu montre le bon bâtiment.
 
 ## Hypothèses
