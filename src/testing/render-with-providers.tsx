@@ -49,6 +49,6 @@ export function renderWithProviders(
 }
 
 /** Event payload for `fireEvent(element, 'layout', …)`. */
-export function layout(width: number, height: number) {
-  return { nativeEvent: { layout: { x: 0, y: 0, width, height } } };
+export function layout(width: number, height: number, y = 0) {
+  return { nativeEvent: { layout: { x: 0, y, width, height } } };
 }

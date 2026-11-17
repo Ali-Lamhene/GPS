@@ -13,6 +13,9 @@ export { PlacePin };
 
 // Markers drawn over the phone's map, the same as the browser ones (map-markers.web.ts).
 
+/** Side of the traveller's marker, halo included: what a touch on it covers. */
+export const TRAVELLER_DOT_SIZE = 68;
+
 /** The traveller: an emerald dot ringed in white, in a pale emerald halo (spec 009). */
 export function TravellerDot({ touchable = false }: { touchable?: boolean }) {
   return (
@@ -137,8 +140,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   dotArea: {
-    width: 68,
-    height: 68,
+    width: TRAVELLER_DOT_SIZE,
+    height: TRAVELLER_DOT_SIZE,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -10,6 +10,11 @@ export type PlacePinProps = {
   icon: IconName;
   photo: string | undefined;
   selected: boolean;
+  /**
+   * Side of the white disc that holds the pictogram over a photo (20 by default). Larger on
+   * the preview of E28, where a new pictogram must show at arm's length (spec 037).
+   */
+  badgeSize?: number;
 };
 
 /**
@@ -17,7 +22,7 @@ export type PlacePinProps = {
  * the emerald outlined pictogram, or the place's photo in its round head with the
  * pictogram in a small white disc. The chosen place is larger and solid emerald.
  */
-export function PlacePin({ icon, photo, selected }: PlacePinProps) {
+export function PlacePin({ icon, photo, selected, badgeSize = 20 }: PlacePinProps) {
   const width = pinWidth(selected);
   const face = pinFace(width, selected);
   const picture = photo !== undefined && isLocalPicture(photo) ? photo : undefined;
@@ -71,8 +76,25 @@ export function PlacePin({ icon, photo, selected }: PlacePinProps) {
         )}
       </View>
       {picture && (
-        <View style={[styles.pinBadge, { left: face.left - 4, top: face.top + face.size - 16 }]}>
-          <Icon name={icon} size={13} color={colors.emerald} variant="outlined" />
+        <View
+          testID="place-pin-badge"
+          style={[
+            styles.pinBadge,
+            {
+              width: badgeSize,
+              height: badgeSize,
+              borderRadius: badgeSize / 2,
+              left: face.left - 4 - (badgeSize - 20) / 2,
+              top: face.top + face.size - 16 - (badgeSize - 20) / 2,
+            },
+          ]}
+        >
+          <Icon
+            name={icon}
+            size={Math.round(badgeSize * 0.65)}
+            color={colors.emerald}
+            variant="outlined"
+          />
         </View>
       )}
     </View>
@@ -97,9 +119,6 @@ const styles = StyleSheet.create({
   },
   pinBadge: {
     position: 'absolute',
-    width: 20,
-    height: 20,
-    borderRadius: 10,
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',

@@ -65,6 +65,8 @@ export function PictogramScreen() {
             icon={icon ?? 'add_location_alt'}
             photo={draft?.editing?.photo}
             selected={!!icon}
+            // Over the photo, the pictogram chosen shows at arm's length (UX review, spec 037).
+            badgeSize={36}
           />
         </View>
         <PictogramGrid

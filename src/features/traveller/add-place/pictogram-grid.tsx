@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState, type ComponentRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import type { PlaceIcon } from '@/domain/place';
@@ -37,8 +37,26 @@ export function PictogramGrid({ selected, onSelect }: PictogramGridProps) {
   const { height } = useWindowDimensions();
   const tile = width > 0 ? (width - GAP * (COLUMNS - 1)) / COLUMNS : 0;
 
+  // A saved place being changed opens with its pictogram chosen (spec 037): the grid scrolls
+  // once, at once, to put it in the first row, else it may sit far below the cut (UX review).
+  const scroll = useRef<ComponentRef<typeof ScrollView>>(null);
+  const [initial] = useState(selected);
+  const where = useRef<{ family?: number; grid?: number; tile?: number; done?: boolean }>({});
+  const place = (part: 'family' | 'grid' | 'tile', y: number) => {
+    const known = where.current;
+    known[part] = y;
+    if (known.done || known.family === undefined || known.grid === undefined) return;
+    if (known.tile === undefined) return;
+    known.done = true;
+    scroll.current?.scrollTo({ y: known.family + known.grid + known.tile, animated: false });
+  };
+  const initialFamily = PICTOGRAM_CATALOGUE.find(({ pictograms }) =>
+    pictograms.some(({ icon }) => icon === initial),
+  )?.family;
+
   return (
     <ScrollView
+      ref={scroll}
       style={{ maxHeight: cutHeight(height * HEIGHT_SHARE, tile) }}
       contentContainerStyle={styles.families}
       showsVerticalScrollIndicator
@@ -50,14 +68,36 @@ export function PictogramGrid({ selected, onSelect }: PictogramGridProps) {
       >
         {tile > 0 &&
           PICTOGRAM_CATALOGUE.map(({ family, pictograms }, index) => (
-            <View key={family} style={styles.family} testID={`family-${family}`}>
+            <View
+              key={family}
+              style={styles.family}
+              testID={`family-${family}`}
+              onLayout={
+                family === initialFamily
+                  ? (event) => place('family', event.nativeEvent.layout.y)
+                  : undefined
+              }
+            >
               {index > 0 && <View style={styles.separator} />}
-              <View style={styles.grid}>
+              <View
+                style={styles.grid}
+                testID={family === initialFamily ? 'initial-family-grid' : undefined}
+                onLayout={
+                  family === initialFamily
+                    ? (event) => place('grid', event.nativeEvent.layout.y)
+                    : undefined
+                }
+              >
                 {pictograms.map(({ icon }) => {
                   const on = icon === selected;
                   return (
                     <Pressable
                       key={icon}
+                      onLayout={
+                        icon === initial
+                          ? (event) => place('tile', event.nativeEvent.layout.y)
+                          : undefined
+                      }
                       accessibilityRole="radio"
                       accessibilityLabel={pictogramName(icon)}
                       accessibilityState={{ checked: on }}

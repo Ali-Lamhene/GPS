@@ -144,6 +144,25 @@ describe('<TripMap /> on the phone', () => {
       expect(onPinLongPress).not.toHaveBeenCalled();
     });
 
+    test("the traveller's dot over a pin keeps the long press: « here » is not changed", async () => {
+      const onPinLongPress = jest.fn();
+      await render(
+        <TripMap
+          camera={camera}
+          pins={pins}
+          traveller={{ point: [5.38, 43.3] }}
+          onPinLongPress={onPinLongPress}
+        />,
+      );
+
+      await longPressAt([100, 75]);
+      expect(onPinLongPress).not.toHaveBeenCalled();
+
+      // The head of the other pin, away from the dot, still answers.
+      await longPressAt([150, 70]);
+      expect(onPinLongPress).toHaveBeenCalledWith('park');
+    });
+
     test('a screen reader can long press a pin too', async () => {
       const onPinPress = jest.fn();
       const onPinLongPress = jest.fn();

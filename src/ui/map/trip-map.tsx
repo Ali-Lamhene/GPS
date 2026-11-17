@@ -25,6 +25,7 @@ import {
   StopPin,
   TravellerCone,
   TravellerDot,
+  TRAVELLER_DOT_SIZE,
 } from './map-markers';
 import { MapCredit } from './map-texts';
 import { pinAtPoint } from './pin-hit';
@@ -137,7 +138,15 @@ export function TripMap({
           return { id: pin.id, x, y, selected: pin.selected ?? false };
         }),
       );
-      const id = pinAtPoint(point, projected);
+      // The traveller's dot (68 points wide, drawn above the pins) keeps its long press.
+      const dot = traveller
+        ? await map.project([traveller.point[0], traveller.point[1]])
+        : undefined;
+      const id = pinAtPoint(
+        point,
+        projected,
+        dot ? { x: dot[0], y: dot[1], radius: TRAVELLER_DOT_SIZE / 2 } : undefined,
+      );
       if (id) onPinLongPress(id);
     } catch {
       // The map went away meanwhile: nothing to change.

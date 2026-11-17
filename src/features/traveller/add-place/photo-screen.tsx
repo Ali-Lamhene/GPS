@@ -26,6 +26,9 @@ import { colors, radii } from '@/ui/theme';
 
 import { usePlaceDraft } from './use-place-draft';
 
+/** What the frame shows in place of the camera, with ✓ in place of the shutter. */
+type Preview = 'current' | 'street' | 'none';
+
 /** Dark camera backdrop of E29, also behind the system bars (spec 014). */
 const PHOTO_BACKGROUND = '#1B1C1A';
 
@@ -38,7 +41,8 @@ const PHOTO_BACKGROUND = '#1B1C1A';
  * thumbnail above the picker; a wheel turns while it is looked for. A first touch shows it in
  * the frame and the shutter becomes « keep »; a second touch on the thumbnail closes it.
  * Spec 037: a saved place being changed opens on its own photo with « keep »; its thumbnail,
- * above « no photo », opens or closes it; the three choices of the creation stay.
+ * above « no photo », opens or closes it; the three choices of the creation stay. Removing
+ * its own photo is first shown (the bare pictogram), then ✓.
  */
 export function PhotoScreen() {
   const insets = useSafeAreaInsets();
@@ -55,9 +59,13 @@ export function PhotoScreen() {
   // Spec 037: a saved place being changed opens on its own photo, kept by ✓.
   const original = draft?.editing?.photo;
   const current = original !== undefined && isLocalPicture(original) ? original : undefined;
-  const [preview, setPreview] = useState<'current' | 'street' | undefined>(
-    current ? 'current' : undefined,
-  );
+  // What the frame shows instead of the camera: the place's own photo, the street photo, or,
+  // before its own photo is removed, the place without photo (UX review of spec 037).
+  const [preview, setPreview] = useState<Preview | undefined>(current ? 'current' : undefined);
+  const previewRef = useRef(preview);
+  useEffect(() => {
+    previewRef.current = preview;
+  }, [preview]);
   useDarkSystemBars(PHOTO_BACKGROUND);
 
   // Copies left by an earlier visit (app closed halfway) may hold a photo with its position.
@@ -76,16 +84,21 @@ export function PhotoScreen() {
     findStreetPhoto([lng, lat], controller.signal).then((found) => {
       if (controller.signal.aborted) return;
       setStreet(found);
-      // Seen and heard: a soft note when the thumbnail comes.
-      if (found) playCue('select');
+      // Seen and heard: a soft note when the thumbnail comes; not while the place's own photo
+      // waits for ✓, where it would sound like a choice made (spec 037).
+      if (found && previewRef.current !== 'current') playCue('select');
     });
     return () => controller.abort();
   }, [lng, lat]);
 
-  // The camera window opens with the screen, once (Android's text, read by the companion).
+  // The camera only runs while its shutter shows: not behind a photo waiting for ✓, so a place
+  // changed for its pictogram alone never asks for the camera nor lights its sign (spec 037).
+  const shutterShown = preview === undefined;
+  // The camera window opens once the shutter shows, once (Android's text, read by the companion).
   useEffect(() => {
+    if (!shutterShown) return;
     if (permission && !permission.granted && permission.canAskAgain) void requestPermission();
-  }, [permission, requestPermission]);
+  }, [shutterShown, permission, requestPermission]);
 
   const cameraOn = permission?.granted === true;
   const locked = busy || working;
@@ -122,12 +135,25 @@ export function PhotoScreen() {
   const found = street && street !== 'searching' ? street : undefined;
   const shown = preview === 'street' ? found : undefined;
   const keepingCurrent = preview === 'current' && current !== undefined;
-  const toggle = (which: 'current' | 'street') =>
-    setPreview((open) => (open === which ? undefined : which));
+  const keepingNone = preview === 'none';
+  const toggle = (which: Preview) => setPreview((open) => (open === which ? undefined : which));
 
   return (
     <View style={styles.screen}>
-      {cameraOn && <CameraView ref={camera} style={StyleSheet.absoluteFill} facing="back" />}
+      {cameraOn && shutterShown && (
+        <CameraView ref={camera} style={StyleSheet.absoluteFill} facing="back" />
+      )}
+      {keepingNone && (
+        // The place as it will be: its pictogram, no photo; ✓ removes the photo (spec 037).
+        <View testID="no-photo-preview" style={[styles.frame, styles.preview, styles.bare]}>
+          <Icon
+            name={draft?.icon ?? draft?.editing?.icon ?? 'no_photography'}
+            size={120}
+            color={colors.emerald}
+            variant="outlined"
+          />
+        </View>
+      )}
       {shown && (
         <View testID="street-photo-preview" style={[styles.frame, styles.preview]}>
           <StreetPhotoView photo={shown} />
@@ -149,9 +175,12 @@ export function PhotoScreen() {
           <IconButton
             icon="arrow_back"
             label="Retour"
-            // Back closes a street photo opened by a touch (spec 033); the place's own photo,
-            // open from the start, is no step: back goes to the pictogram (spec 037).
-            onPress={() => (preview === 'street' ? setPreview(undefined) : router.back())}
+            // Back closes a preview opened by a touch (street photo, spec 033; no photo, spec
+            // 037); the place's own photo, open from the start, is no step: back goes to the
+            // pictogram (spec 037).
+            onPress={() =>
+              preview === 'street' || preview === 'none' ? setPreview(undefined) : router.back()
+            }
             tone="raised"
           />
         }
@@ -188,17 +217,35 @@ export function PhotoScreen() {
               </Pressable>
             </View>
           )}
+          {/* Removing its own photo destroys it: like the other choices, first seen, then ✓
+              (UX review of spec 037). Without a photo of its own, « no photo » finishes. */}
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Sans photo"
+            accessibilityState={{ selected: keepingNone, disabled: locked }}
             disabled={locked}
-            onPress={() => finish()}
-            style={[styles.side, locked && styles.busy]}
+            onPress={() => (current ? toggle('none') : finish())}
+            style={[styles.side, keepingNone && styles.sideOpen, locked && styles.busy]}
           >
             <Icon name="no_photography" size={28} color={colors.emerald} variant="outlined" />
           </Pressable>
         </View>
-        {keepingCurrent ? (
+        {keepingNone ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Garder sans photo"
+            accessibilityState={{ disabled: locked }}
+            disabled={locked}
+            onPress={() => finish()}
+            style={[styles.shutter, styles.keep, locked && styles.busy]}
+          >
+            {busy ? (
+              <ActivityIndicator color={colors.white} size="large" />
+            ) : (
+              <Icon name="check" size={48} color={colors.white} />
+            )}
+          </Pressable>
+        ) : keepingCurrent ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Garder la photo actuelle"
@@ -371,6 +418,18 @@ const styles = StyleSheet.create({
   preview: {
     overflow: 'hidden',
     backgroundColor: PHOTO_BACKGROUND,
+  },
+  // The place without photo: its pictogram on warm white, like a pin without photo.
+  bare: {
+    backgroundColor: colors.warmWhite,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  // « No photo » open: ringed in emerald and a little larger, like an open thumbnail.
+  sideOpen: {
+    borderWidth: 3,
+    borderColor: colors.emerald,
+    transform: [{ scale: 1.1 }],
   },
   keep: {
     backgroundColor: colors.emerald,

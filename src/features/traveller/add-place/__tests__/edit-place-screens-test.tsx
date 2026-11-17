@@ -1,6 +1,9 @@
 import { act, fireEvent, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
+import { ScrollView } from 'react-native';
+
+import { PICTOGRAM_CATALOGUE } from '@/domain/pictograms';
 import type { Place } from '@/domain/place';
 import { deletePhoto, keepPhoto, keepStreetPhoto, pickPhoto } from '@/services/photo';
 import { playCue } from '@/services/feedback';
@@ -84,6 +87,29 @@ describe('E28 when changing a place (spec 037)', () => {
     expect(screen.getByRole('radio', { name: 'école' })).toBeChecked();
     expect(screen.getByRole('button', { name: 'Continuer' })).toBeEnabled();
     expect(screen.getByTestId('place-pin-photo').props.source.uri).toBe(OLD);
+  });
+
+  test('the pictogram chosen shows large over the photo of the preview pin', async () => {
+    await renderWithProviders(<PictogramScreen />, editing(school));
+
+    expect(screen.getByTestId('place-pin-badge')).toHaveStyle({ width: 36, height: 36 });
+  });
+
+  test('the grid scrolls once to the place pictogram, without animation', async () => {
+    const scrollTo = jest.spyOn(ScrollView.prototype, 'scrollTo');
+    await renderWithProviders(<PictogramScreen />, editing(school));
+    await showGrid();
+    const family = PICTOGRAM_CATALOGUE.find(({ pictograms }) =>
+      pictograms.some(({ icon }) => icon === 'school'),
+    )?.family;
+
+    await fireEvent(screen.getByTestId(`family-${family}`), 'layout', layout(328, 600, 500));
+    await fireEvent(screen.getByTestId('initial-family-grid'), 'layout', layout(328, 200, 11));
+    await fireEvent(screen.getByRole('radio', { name: 'école' }), 'layout', layout(76, 76, 86));
+
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    expect(scrollTo).toHaveBeenCalledWith({ y: 597, animated: false });
+    scrollTo.mockRestore();
   });
 
   test('another pictogram, then on to the photo', async () => {
@@ -205,15 +231,57 @@ describe('E29 when changing a place (spec 037)', () => {
     expect(deletePhoto).toHaveBeenCalledWith(OLD);
   });
 
-  test('no photo removes it', async () => {
-    await render(editing(school));
+  test('no photo is first shown, the photo removed only by ✓', async () => {
+    await render([...editing(school), { type: 'setDraftIcon', icon: 'park' }]);
 
     await fireEvent.press(screen.getByRole('button', { name: 'Sans photo' }));
+    // Nothing removed yet: the place without photo is shown, ✓ in place of the shutter.
+    expect(writePlacesFile).not.toHaveBeenCalled();
+    expect(screen.getByTestId('no-photo-preview')).toBeOnTheScreen();
+    expect(screen.queryByTestId('current-photo-preview')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Sans photo' })).toBeSelected();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Garder sans photo' }));
     await act(async () => undefined);
 
     expect(seen).toBeDefined();
     expect(seen).not.toHaveProperty('photo');
+    expect(seen?.icon).toBe('park');
     expect(deletePhoto).toHaveBeenCalledWith(OLD);
+  });
+
+  test('no photo, then back or a second touch: nothing removed', async () => {
+    await render(editing(school));
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Sans photo' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Retour' }));
+    expect(router.back).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('no-photo-preview')).toBeNull();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Sans photo' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Sans photo' }));
+    expect(screen.queryByTestId('no-photo-preview')).toBeNull();
+    expect(writePlacesFile).not.toHaveBeenCalled();
+  });
+
+  test('a place without photo: « no photo » finishes at once, as at creation', async () => {
+    const bare: Place = { id: 'p-bare', icon: 'park', point: [5.4, 43.3], createdAt: 2 };
+    await render(editing(bare), bare.id);
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Sans photo' }));
+    await act(async () => undefined);
+
+    expect(writePlacesFile).toHaveBeenCalledTimes(1);
+    expect(router.dismissTo).toHaveBeenCalledWith('/');
+  });
+
+  test('its own photo open: no camera, and the street photo comes without a sound', async () => {
+    jest.mocked(findStreetPhoto).mockResolvedValue(STREET);
+    await render(editing(school));
+    await screen.findByRole('button', { name: 'Photo de rue du lieu' });
+
+    expect(playCue).not.toHaveBeenCalledWith('select');
+    expect(screen.queryByRole('button', { name: 'Prendre la photo' })).toBeNull();
   });
 
   test('a place without photo opens on the camera, with no thumbnail of its own', async () => {

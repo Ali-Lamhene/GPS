@@ -147,6 +147,11 @@ export function createPlacePin(
   });
   root.setAttribute('role', 'button');
   root.setAttribute('aria-label', label);
+  // A finger held on the pin changes its place (spec 037): no text bubble of the browser
+  // (« save image », Safari) and no selection over it.
+  root.style.setProperty('-webkit-touch-callout', 'none');
+  root.style.setProperty('-webkit-user-select', 'none');
+  root.style.setProperty('user-select', 'none');
   root.append(
     box({
       position: 'absolute',
