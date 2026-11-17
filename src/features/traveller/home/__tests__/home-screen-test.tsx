@@ -101,6 +101,18 @@ describe('<HomeScreen />', () => {
     expect(button('Départ')).toBeSelected();
   });
 
+  test('a whole trip by the ends of the way alone: start, arrival, continue (spec 007)', async () => {
+    await renderHome();
+
+    await fireEvent.press(button('Départ'));
+    await sheetPlace('ma position');
+    await fireEvent.press(button('Arrivée'));
+    await sheetPlace('la plage du Prado');
+
+    await fireEvent.press(button('Continuer'));
+    expect(router.push).toHaveBeenCalledWith('/mode');
+  });
+
   test('with the arrival chosen first, it is not offered as the start', async () => {
     await renderHome();
 
