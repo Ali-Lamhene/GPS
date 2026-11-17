@@ -8,8 +8,7 @@ import { layout, renderWithProviders } from '@/testing/render-with-providers';
 
 import { playCue } from '@/services/feedback';
 
-import { HomePanel } from '../home-panel';
-import { lastTileShown, tileLayout } from '../place-tile';
+import { HomeWay } from '../home-way';
 import { HomeScreen } from '../home-screen';
 import { LocationProvider } from '../../location/location-context';
 import { TripPlanProvider } from '../../trip-plan/trip-plan-context';
@@ -23,15 +22,43 @@ jest.mock('expo-router', () => ({
   useFocusEffect: (effect: () => void) => jest.requireActual('react').useEffect(effect, [effect]),
 }));
 jest.mock('@/services/feedback', () => ({ playCue: jest.fn() }));
+// The map draws its pins: like the native marker, the marker itself takes the press.
+jest.mock('@maplibre/maplibre-react-native', () => {
+  const React = jest.requireActual<typeof import('react')>('react');
+  const { Pressable, View } = jest.requireActual<typeof import('react-native')>('react-native');
+  const container = ({ children }: { children?: React.ReactNode }) =>
+    React.createElement(View, null, children);
+  const Camera = React.forwardRef((_props: object, ref: React.Ref<unknown>) => {
+    React.useImperativeHandle(ref, () => ({ easeTo: jest.fn(), fitBounds: jest.fn() }));
+    return null;
+  });
+  Camera.displayName = 'Camera';
+  const Marker = ({ children, onPress }: { children?: React.ReactNode; onPress?: () => void }) =>
+    React.createElement(Pressable, { onPress, disabled: !onPress }, children);
+  return {
+    Map: container,
+    Camera,
+    GeoJSONSource: container,
+    Layer: () => null,
+    Marker,
+    NetworkManager: { setConnected: jest.fn() },
+    LogManager: { setLogLevel: jest.fn(), onLog: jest.fn() },
+    TransformRequestManager: { addUrlTransform: jest.fn(), addHeader: jest.fn() },
+    OfflineManager: { clearAmbientCache: jest.fn(() => Promise.resolve()) },
+  };
+});
 
 async function renderHome() {
   await renderWithProviders(<HomeScreen />);
 }
 
 const button = (name: string) => screen.getByRole('button', { name });
+/** A pin of the map, found by the name of its place (the sheet must be closed). */
+const pin = (name: string) => screen.findByRole('button', { name });
 
-async function choose(name: string) {
-  await fireEvent.press(button(name));
+async function sheetPlace(name: string) {
+  await fireEvent(screen.getByTestId('place-grid'), 'layout', layout(320, 400));
+  await fireEvent.press(within(screen.getByTestId('place-grid')).getByRole('button', { name }));
 }
 
 describe('<HomeScreen />', () => {
@@ -40,24 +67,63 @@ describe('<HomeScreen />', () => {
     jest.mocked(playCue).mockClear();
   });
 
-  test('opens with nothing chosen: the start calls, here first among the cards', async () => {
+  test('opens with nothing chosen: the start calls, and no shortcut tiles (spec 035)', async () => {
     await renderHome();
 
     expect(button('Départ')).toBeSelected();
     expect(button('Arrivée')).not.toBeSelected();
-    const cards = screen.getAllByRole('button', { name: /^(ma position|mon |la |le |l')/ });
-    expect(cards[0]).toHaveProp('accessibilityLabel', 'ma position');
+    // « Here » is no pin: it only lives in the sheet, so it is not on the home any more.
+    expect(screen.queryByRole('button', { name: 'ma position' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Continuer' })).toBeNull();
+    // The rail of shortcuts is gone: nothing scrolls sideways.
+    expect(JSON.stringify(screen.toJSON())).not.toContain('"horizontal"');
   });
 
-  test('start, then arrival, then continue', async () => {
+  test('a whole trip on the map alone: a pin for the start, a pin for the arrival, continue', async () => {
     await renderHome();
 
-    await choose('ma position');
+    await fireEvent.press(await pin('la mairie'));
     expect(button('Arrivée')).toBeSelected();
     expect(playCue).toHaveBeenCalledWith('select');
 
-    await choose('la plage du Prado');
+    await fireEvent.press(await pin('la plage du Prado'));
+    expect(button('Arrivée')).not.toBeSelected();
+
+    await fireEvent.press(button('Continuer'));
+    expect(router.push).toHaveBeenCalledWith('/mode');
+  });
+
+  test('the two ways mix: a pin for the start, the arrival from its end of the way', async () => {
+    await renderHome();
+
+    await fireEvent.press(await pin('la mairie'));
+    await fireEvent.press(button('Arrivée'));
+    await sheetPlace('la plage du Prado');
+
+    await fireEvent.press(button('Continuer'));
+    expect(router.push).toHaveBeenCalledWith('/mode');
+  });
+
+  test('the start sheet offers « here » first', async () => {
+    await renderHome();
+
+    await fireEvent.press(button('Départ'));
+    await fireEvent(screen.getByTestId('place-grid'), 'layout', layout(320, 400));
+
+    const first = within(screen.getByTestId('place-grid')).getAllByRole('button')[0];
+    expect(first).toHaveProp('accessibilityLabel', 'ma position');
+  });
+
+  test('start, then arrival, then continue, by the ends of the way', async () => {
+    await renderHome();
+
+    await fireEvent.press(button('Départ'));
+    await sheetPlace('ma position');
+    expect(button('Arrivée')).toBeSelected();
+    expect(playCue).toHaveBeenCalledWith('select');
+
+    await fireEvent.press(button('Arrivée'));
+    await sheetPlace('la plage du Prado');
     expect(button('Arrivée')).not.toBeSelected();
 
     await fireEvent.press(button('Continuer'));
@@ -67,16 +133,19 @@ describe('<HomeScreen />', () => {
   test('the start is not offered again as the arrival', async () => {
     await renderHome();
 
-    await choose('mon domicile');
+    await fireEvent.press(await pin('la mairie'));
+    await fireEvent.press(button('Arrivée'));
+    await fireEvent(screen.getByTestId('place-grid'), 'layout', layout(320, 400));
 
-    expect(screen.queryByRole('button', { name: 'mon domicile' })).toBeNull();
-    expect(button('la plage du Prado')).toBeOnTheScreen();
+    expect(
+      within(screen.getByTestId('place-grid')).getByRole('button', { name: 'la mairie' }),
+    ).toBeDisabled();
   });
 
   test('cancel empties the arrival, which calls again', async () => {
     await renderHome();
-    await choose('ma position');
-    await choose('la plage du Prado');
+    await fireEvent.press(await pin('la mairie'));
+    await fireEvent.press(await pin('la plage du Prado'));
 
     await fireEvent.press(button('Annuler'));
 
@@ -84,10 +153,17 @@ describe('<HomeScreen />', () => {
     expect(screen.queryByRole('button', { name: 'Continuer' })).toBeNull();
   });
 
-  const sheetPlace = async (name: string) => {
-    await fireEvent(screen.getByTestId('place-grid'), 'layout', layout(320, 400));
-    await fireEvent.press(within(screen.getByTestId('place-grid')).getByRole('button', { name }));
-  };
+  test('cancel and continue sit above the way, which stays where it is (spec 035)', async () => {
+    await renderHome();
+    await fireEvent.press(await pin('la mairie'));
+    await fireEvent.press(await pin('la plage du Prado'));
+
+    const block = button('Départ').parent?.parent;
+    const order = within(block as never)
+      .getAllByRole('button')
+      .map((element) => element.props.accessibilityLabel as string);
+    expect(order).toEqual(['Annuler', 'Continuer', 'Départ', 'Arrivée']);
+  });
 
   test('touching an end opens every place for it; the choice fills that end', async () => {
     await renderHome();
@@ -99,18 +175,6 @@ describe('<HomeScreen />', () => {
     expect(playCue).toHaveBeenCalledWith('select');
     // The start, still empty, calls next.
     expect(button('Départ')).toBeSelected();
-  });
-
-  test('a whole trip by the ends of the way alone: start, arrival, continue (spec 007)', async () => {
-    await renderHome();
-
-    await fireEvent.press(button('Départ'));
-    await sheetPlace('ma position');
-    await fireEvent.press(button('Arrivée'));
-    await sheetPlace('la plage du Prado');
-
-    await fireEvent.press(button('Continuer'));
-    expect(router.push).toHaveBeenCalledWith('/mode');
   });
 
   test('with the arrival chosen first, it is not offered as the start', async () => {
@@ -129,8 +193,8 @@ describe('<HomeScreen />', () => {
 
   test('touching a chosen end lets the traveller change it', async () => {
     await renderHome();
-    await choose('ma position');
-    await choose('la plage du Prado');
+    await fireEvent.press(await pin('la mairie'));
+    await fireEvent.press(await pin('la plage du Prado'));
 
     await fireEvent.press(button('Départ'));
     await sheetPlace('mon domicile');
@@ -173,6 +237,12 @@ describe('« + » on the home', () => {
     expect(router.push).toHaveBeenCalledWith('/add-place/position');
   });
 
+  test("« + » is 64 dp, the traveller's main button (spec 035)", async () => {
+    await renderHome();
+
+    expect(button('Ajouter un lieu')).toHaveStyle({ width: 64, height: 64, borderRadius: 32 });
+  });
+
   test('the small button above it opens the address form for the companion', async () => {
     await renderHome();
 
@@ -193,7 +263,7 @@ describe('« + » on the home', () => {
 });
 
 describe('a place added with « + »', () => {
-  test('is offered among the cards; nothing gets chosen', async () => {
+  test('is offered in the place sheet; nothing gets chosen', async () => {
     await renderWithProviders(<HomeScreen />, [
       {
         type: 'addPlace',
@@ -201,8 +271,12 @@ describe('a place added with « + »', () => {
       },
     ]);
 
-    expect(button("l'hôpital Nord")).toBeOnTheScreen();
     expect(button('Départ')).toBeSelected();
+    await fireEvent.press(button('Arrivée'));
+    await fireEvent(screen.getByTestId('place-grid'), 'layout', layout(320, 400));
+    expect(
+      within(screen.getByTestId('place-grid')).getByRole('button', { name: "l'hôpital Nord" }),
+    ).toBeOnTheScreen();
   });
 });
 
@@ -238,65 +312,52 @@ describe('<WayCard />', () => {
   });
 });
 
-describe('<HomePanel />', () => {
-  const panel = (places: Parameters<typeof HomePanel>[0]['places']) => (
-    <HomePanel
-      choosing
-      places={places}
-      onChoose={jest.fn()}
-      onAdd={jest.fn()}
-      onCancel={jest.fn()}
-      onContinue={jest.fn()}
-    />
+describe('<HomeWay />', () => {
+  const way = (props: Partial<Parameters<typeof HomeWay>[0]> = {}) => (
+    <HomeWay onEnd={jest.fn()} onCancel={jest.fn()} onContinue={jest.fn()} {...props} />
   );
+  const gym = { id: 'gym', icon: 'fitness_center', helpName: 'la salle de sport' } as const;
+  const city = { id: 'city', icon: 'location_city', helpName: 'la mairie' } as const;
 
-  test('a card never shows the photo of a place hidden from the map', async () => {
-    await renderWithProviders(
-      panel([
-        { id: 'home', icon: 'home', photo: 'file:///home.jpg' },
-        { id: 'aunt', icon: 'family_home', photo: 'file:///aunt.jpg', hiddenOnMap: true },
-        { id: 'gym', icon: 'fitness_center', photo: 'file:///gym.jpg' },
-      ]),
-    );
+  test('with an end to fill: the way only, no cancel and no continue', async () => {
+    await renderWithProviders(way({ calling: 'origin' }));
 
-    const tree = JSON.stringify(screen.toJSON());
-    // Home is hidden by default, the other by choice; a place on the map keeps its photo.
-    expect(tree).not.toContain('file:///home.jpg');
-    expect(tree).not.toContain('file:///aunt.jpg');
-    expect(tree).toContain('file:///gym.jpg');
+    expect(screen.queryByRole('button', { name: 'Annuler' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Continuer' })).toBeNull();
+    expect(button('Départ')).toBeSelected();
   });
 
-  test('shows every place as a shortcut, and nothing after them', async () => {
-    const places = Array.from({ length: 10 }, (_, index) => ({
-      id: `place-${index}`,
-      icon: 'home' as const,
-      helpName: `lieu ${index}`,
-    }));
-    await renderWithProviders(panel(places));
+  test('both ends chosen: cancel and continue appear', async () => {
+    const onCancel = jest.fn();
+    const onContinue = jest.fn();
+    await renderWithProviders(way({ origin: gym, destination: city, onCancel, onContinue }));
 
-    expect(screen.getAllByRole('button')).toHaveLength(10);
+    await fireEvent.press(button('Annuler'));
+    await fireEvent.press(button('Continuer'));
+
+    expect(onCancel).toHaveBeenCalledTimes(1);
+    expect(onContinue).toHaveBeenCalledTimes(1);
   });
-});
 
-describe('tileLayout', () => {
-  // Visible rail width on a phone: screen width minus two gutters (14) and the rail padding (12).
-  test.each([320, 360, 390, 393, 412, 1000])(
-    'at %i dp, tiles of 56 to 64 dp and the last one cut between 40 and 65 percent (spec 012)',
-    (screen) => {
-      const visible = screen - 2 * 14 - 12;
-      const layout = tileLayout(visible);
-      expect(layout.size).toBeGreaterThanOrEqual(56);
-      expect(layout.size).toBeLessThanOrEqual(64);
-      expect(layout.gap).toBeGreaterThanOrEqual(8);
-      expect(layout.gap).toBeLessThanOrEqual(14);
-      const shown = lastTileShown(visible, layout);
-      expect(shown).toBeGreaterThanOrEqual(0.4);
-      expect(shown).toBeLessThanOrEqual(0.65);
-    },
-  );
+  test('a touch on an end gives that end, chosen or not', async () => {
+    const onEnd = jest.fn();
+    await renderWithProviders(way({ origin: gym, destination: city, onEnd }));
 
-  test('64 dp tiles at the reference width of 390 dp', () => {
-    expect(tileLayout(390 - 2 * 14 - 12).size).toBe(64);
+    await fireEvent.press(button('Départ'));
+    await fireEvent.press(button('Arrivée'));
+
+    expect(onEnd).toHaveBeenNthCalledWith(1, 'origin');
+    expect(onEnd).toHaveBeenNthCalledWith(2, 'destination');
+  });
+
+  test('reports the room it takes, so the map frames above it', async () => {
+    const onHeight = jest.fn();
+    await renderWithProviders(way({ calling: 'origin', onHeight }));
+
+    await fireEvent(button('Départ').parent?.parent as never, 'layout', layout(300, 72));
+
+    // 72 dp of way plus the 14 dp gutter under it (no inset in tests).
+    expect(onHeight).toHaveBeenCalledWith(86);
   });
 });
 
@@ -321,13 +382,20 @@ describe('home on the first start, without any place (spec 015)', () => {
   test('no demonstration place: only « here » for the start', async () => {
     await renderEmpty();
 
-    expect(button('ma position')).toBeOnTheScreen();
-    expect(screen.queryByRole('button', { name: 'la mairie' })).toBeNull();
+    await fireEvent.press(button('Départ'));
+    await fireEvent(screen.getByTestId('place-grid'), 'layout', layout(320, 400));
+
+    const grid = within(screen.getByTestId('place-grid'));
+    expect(grid.getByRole('button', { name: 'ma position' })).toBeOnTheScreen();
+    expect(grid.queryByRole('button', { name: 'la mairie' })).toBeNull();
   });
 
   test('the arrival offers one dashed « + » tile, which adds a place here', async () => {
     await renderEmpty();
-    await choose('ma position');
+    await fireEvent.press(button('Départ'));
+    await sheetPlace('ma position');
+    await fireEvent.press(button('Arrivée'));
+    await fireEvent(screen.getByTestId('place-grid'), 'layout', layout(320, 400));
 
     const tiles = screen.getAllByRole('button', { name: 'Ajouter un lieu' });
     expect(tiles).toHaveLength(2);
@@ -376,7 +444,8 @@ describe('home with the real position (spec 017)', () => {
       </SafeAreaProvider>,
     );
 
-    await choose('ma position');
+    await fireEvent.press(button('Départ'));
+    await sheetPlace('ma position');
     await fireEvent.press(button('Ajouter un lieu'));
 
     expect(retry).toHaveBeenCalledTimes(2);

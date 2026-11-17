@@ -1,6 +1,7 @@
 # 009 — Accueil « carte urbaine émeraude »
 
 - **Statut** : livré
+- **Révisée par** : spec 035 (2026-11-17) : plus de carrousel ni de tuiles à l'accueil, chemin en bas, ✕ et ✓ au-dessus du chemin, « + » à 64 dp
 - **Date** : 2026-11-03
 - **Persona** : voyageur
 - **Référence visuelle** : `docs/design/maquette-emeraude.png` (D15)

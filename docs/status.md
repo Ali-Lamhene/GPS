@@ -2,9 +2,15 @@
 
 Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dans le même commit. Lu automatiquement au démarrage de chaque session (hook `SessionStart`).
 
-**Dernière mise à jour** : 2026-11-12
+**Dernière mise à jour** : 2026-11-17
 
 ## Reprise (à lire en premier)
+
+**Lot du 2026-11-17 (mode autonome, 6 fiches, une session par fiche, avant la build `preview`).** Fiche 1/6 faite : accueil sans raccourcis (spec 035).
+
+- Fiche 1 livrée : plus de carrousel de tuiles ; le chemin est en bas ; ✕ et ✓ au-dessus du chemin quand les deux bouts sont choisis ; « + » à 64 dp. Trajet complet par les épingles seules ou par les pastilles seules (tests). **Pas vérifié à l'écran** (Chrome et `adb` bloqués par le sandbox) : à voir sur le téléphone.
+- Restent : fiche 2 (lever `hiddenOnMap`), 3 (photo visible partout), 4 (photo à la création), 5 (modifier un lieu), 6 (dézoom).
+- Question ouverte : toucher le point de position sur la carte pourrait choisir « ici » (aujourd'hui, « ici » n'existe que dans la feuille des lieux).
 
 **Dernière session : 2026-11-10, retours terrain en 6 points.** Le détail est dans la section « Retours terrain du 2026-11-10 », plus bas, sous « Prochaine étape (session suivante) ».
 

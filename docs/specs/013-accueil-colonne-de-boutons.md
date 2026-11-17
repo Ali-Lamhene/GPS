@@ -1,6 +1,7 @@
 # 013 — Accueil : colonne de boutons et crédit de carte plus discret
 
 - **Statut** : livré
+- **Révisée par** : spec 035 (2026-11-17) : plus de carrousel ni de tuiles à l'accueil, chemin en bas, ✕ et ✓ au-dessus du chemin, « + » à 64 dp
 - **Date** : 2026-11-04
 - **Persona** : voyageur (accueil), accompagnant (bouton d'adresse)
 - **Révise** : spec 011 (bouton de l'accompagnant collé au « + »), spec 009 (ⓘ de 34 dp)

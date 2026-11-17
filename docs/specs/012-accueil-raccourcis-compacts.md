@@ -1,6 +1,7 @@
 # 012 — Accueil : raccourcis de lieux plus petits
 
 - **Statut** : livré
+- **Révisée par** : spec 035 (2026-11-17) : plus de carrousel ni de tuiles à l'accueil, chemin en bas, ✕ et ✓ au-dessus du chemin, « + » à 64 dp
 - **Date** : 2026-11-04
 - **Persona** : voyageur
 - **Révise** : spec 011 (taille des tuiles du panneau du bas)

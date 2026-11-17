@@ -1,6 +1,7 @@
 # 011 — Accueil : retours d'usage et catalogue de pictogrammes
 
 - **Statut** : livré
+- **Révisée par** : spec 035 (2026-11-17) : plus de carrousel ni de tuiles à l'accueil, chemin en bas, ✕ et ✓ au-dessus du chemin, « + » à 64 dp
 - **Date** : 2026-11-03
 - **Persona** : voyageur (accueil), accompagnant (bouton d'adresse, choix du pictogramme)
 - **Révise** : spec 009 (tailles de l'accueil), spec 007 (appui de 3 s sur « + », tuile « … »), spec 005 (rouvrir un bout touché), spec 001 (liste des pictogrammes)

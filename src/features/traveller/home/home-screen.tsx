@@ -1,7 +1,6 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FRANCE_CENTER, FRANCE_ZOOM, pathsBounds, type LngLat } from '@/domain/geo';
@@ -22,12 +21,11 @@ import { positionPoint, useTravellerPosition } from '../location/location-contex
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import type { TripEnd } from '../trip-plan/trip-plan-reducer';
 import { ADD_BUTTON_SIZE, AddPlaceButton, COLUMN_GAP, COMPANION_SIZE } from './add-place-button';
-import { HomePanel } from './home-panel';
+import { HomeWay } from './home-way';
 import type { HereUnavailable } from './here-state';
 import { OfflineBadge } from './offline-badge';
 import { PlaceSheet } from './place-sheet';
 import { SaveFailedSignal } from './save-failed-signal';
-import { WayCard } from '../components/way-card';
 
 const STREET_ZOOM = 16;
 
@@ -38,11 +36,11 @@ function visiblePoint(place: Place | undefined, position: LngLat | undefined): L
 }
 
 /**
- * Home (E01-E05, spec 009): the cream map around the traveller with their places as
- * emerald pins, the way in a pill at the top and square place tiles at the bottom. Nothing is chosen at first: the
- * start calls, then the arrival; the cards fill the end that calls. Once both are chosen,
- * cancel or go on. The floating « + » adds a place; no help here, there is no trip yet
- * (D13 revised).
+ * Home (E01-E05, specs 009, 035): the cream map around the traveller with their places as
+ * emerald pins, and the way, start ····· arrival, in a pill at the bottom. Nothing is chosen
+ * at first: the start calls, then the arrival; a pin or a touch on an end (which opens the
+ * place sheet) fills the end that calls. Once both are chosen, cancel or go on. The floating
+ * « + » adds a place; no help here, there is no trip yet (D13 revised).
  */
 export function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -50,9 +48,8 @@ export function HomeScreen() {
   const { origin, destination, dispatch } = plan;
   const [sheet, setSheet] = useState<TripEnd | null>(null);
   const [wayHeight, setWayHeight] = useState(0);
-  const [panelHeight, setPanelHeight] = useState(0);
 
-  // The first end still empty calls; the tiles fill it (spec 011).
+  // The first end still empty calls; a pin fills it (spec 011).
   const calling: TripEnd | undefined = !origin
     ? 'origin'
     : !destination
@@ -127,12 +124,6 @@ export function HomeScreen() {
     router.push(source === 'position' ? '/add-place/position' : '/add-place/address');
   };
 
-  // The other end's place is never offered: choosing it would silently empty that end
-  // (the arrival may now be chosen first, spec 011).
-  const choices =
-    calling === 'origin'
-      ? plan.originChoices.filter((place) => place.id !== destination?.id)
-      : plan.destinationChoices.filter((place) => place.id !== origin?.id);
   const top = insets.top + spacing.md;
 
   return (
@@ -151,8 +142,8 @@ export function HomeScreen() {
           // Sides: room for half of the chosen pin, which stands over its spot; on the right,
           // no pin under the column of buttons, where a touch would open another screen.
           padding: {
-            top: top + wayHeight + spacing.lg,
-            bottom: panelHeight + spacing.lg,
+            top: top + spacing.lg,
+            bottom: wayHeight + spacing.lg,
             left: spacing.xxl,
             right: spacing.gutter + ADD_BUTTON_SIZE + spacing.sm,
           },
@@ -161,39 +152,27 @@ export function HomeScreen() {
         traveller={position ? { point: position } : undefined}
         pins={pins}
         onPinPress={(placeId) => choose(calling ?? 'destination', placeId)}
-        // ⓘ at the bottom left above the panel; recenter on top of the column of « + » and
+        // ⓘ at the bottom left above the way; recenter on top of the column of « + » and
         // companion, on the same axis (spec 013).
-        controlsBottom={panelHeight + spacing.md}
+        controlsBottom={wayHeight + spacing.md}
         recenterBottom={
-          panelHeight + spacing.md + ADD_BUTTON_SIZE + COLUMN_GAP + COMPANION_SIZE + COLUMN_GAP
+          wayHeight + spacing.md + ADD_BUTTON_SIZE + COLUMN_GAP + COMPANION_SIZE + COLUMN_GAP
         }
         recenterRight={spacing.gutter + (ADD_BUTTON_SIZE - RECENTER_SIZE) / 2}
       />
 
-      <Animated.View entering={FadeInUp.springify().damping(18)} style={[styles.way, { top }]}>
-        <WayCard
-          size="large"
-          origin={origin}
-          destination={destination}
-          calling={calling}
-          // Touching an end, empty or chosen, opens every place for it (spec 011).
-          onEnd={setSheet}
-          onLayout={(event) => setWayHeight(event.nativeEvent.layout.height)}
-        />
-      </Animated.View>
-
-      <HomePanel
-        choosing={calling !== undefined}
-        places={choices}
-        onChoose={(place) => choose(calling ?? 'destination', place.id)}
-        onAdd={() => createPlace('position')}
-        hereUnavailable={hereUnavailable}
+      <HomeWay
+        origin={origin}
+        destination={destination}
+        calling={calling}
+        // Touching an end, empty or chosen, opens every place for it (spec 035).
+        onEnd={setSheet}
         onCancel={() => dispatch({ type: 'clearDestination' })}
         onContinue={() => router.push('/mode')}
-        onHeight={setPanelHeight}
+        onHeight={setWayHeight}
       />
 
-      <View style={[styles.add, { bottom: panelHeight + spacing.md }]}>
+      <View style={[styles.add, { bottom: wayHeight + spacing.md }]}>
         <AddPlaceButton
           onAddHere={() => createPlace('position')}
           hereUnavailable={hereUnavailable}
@@ -213,7 +192,7 @@ export function HomeScreen() {
         />
       )}
 
-      {offline && <OfflineBadge top={top + wayHeight + spacing.sm} />}
+      {offline && <OfflineBadge top={top} />}
 
       {plan.saveFailed && <SaveFailedSignal onDone={() => dispatch({ type: 'clearSaveFailed' })} />}
     </View>
@@ -225,11 +204,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.mapGround,
     overflow: 'hidden',
-  },
-  way: {
-    position: 'absolute',
-    left: spacing.gutter,
-    right: spacing.gutter,
   },
   add: {
     position: 'absolute',

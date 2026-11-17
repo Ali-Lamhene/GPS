@@ -5,8 +5,8 @@ import { colors, shadows } from '@/ui/theme';
 
 import { hereIcon, type HereUnavailable } from './here-state';
 
-/** The size of the emerald mockup, without a larger touch area (D15). */
-export const ADD_BUTTON_SIZE = 48;
+/** Larger than the emerald mockup's 48 dp: with no shortcut tiles, « + » is the traveller's main button (spec 035). */
+export const ADD_BUTTON_SIZE = 64;
 /** The companion's button stays small beside the « + »: the traveller's action comes first. */
 export const COMPANION_SIZE = 36;
 /** Space between the buttons of the column (spec 013). */
@@ -48,7 +48,7 @@ export function AddPlaceButton({ onAddHere, hereUnavailable, onAddAddress }: Add
           pressed && styles.pressed,
         ]}
       >
-        <Icon name={hereIcon(hereUnavailable, 'add')} size={30} color={colors.white} />
+        <Icon name={hereIcon(hereUnavailable, 'add')} size={36} color={colors.white} />
       </Pressable>
     </View>
   );

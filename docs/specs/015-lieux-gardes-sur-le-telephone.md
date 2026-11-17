@@ -1,6 +1,7 @@
 # 015 — Lieux gardés sur le téléphone
 
 - **Statut** : livré
+- **Révisée par** : spec 035 (2026-11-17) : plus de carrousel ni de tuiles à l'accueil, chemin en bas, ✕ et ✓ au-dessus du chemin, « + » à 64 dp
 - **Date** : 2026-11-04
 - **Persona** : voyageur (accueil, nouveau lieu), accompagnant (adresse)
 - **Réalise** : spec 001, partie « stockage » (première étape de l'app fonctionnelle) ; révise l'accueil des specs 011 et 012 quand il n'y a aucun lieu
