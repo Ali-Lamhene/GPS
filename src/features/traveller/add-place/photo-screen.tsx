@@ -1,10 +1,11 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { isLocalPicture } from '@/domain/place';
 import type { StreetPhoto } from '@/domain/street-photo';
 import {
   clearPhotoCache,
@@ -36,6 +37,8 @@ const PHOTO_BACKGROUND = '#1B1C1A';
  * Spec 033: a Panoramax street photo of the place, when one faces it, is offered as a
  * thumbnail above the picker; a wheel turns while it is looked for. A first touch shows it in
  * the frame and the shutter becomes « keep »; a second touch on the thumbnail closes it.
+ * Spec 037: a saved place being changed opens on its own photo with « keep »; its thumbnail,
+ * above « no photo », opens or closes it; the three choices of the creation stay.
  */
 export function PhotoScreen() {
   const insets = useSafeAreaInsets();
@@ -49,7 +52,12 @@ export function PhotoScreen() {
   const [street, setStreet] = useState<StreetPhoto | 'searching' | undefined>(
     point ? 'searching' : undefined,
   );
-  const [previewing, setPreviewing] = useState(false);
+  // Spec 037: a saved place being changed opens on its own photo, kept by ✓.
+  const original = draft?.editing?.photo;
+  const current = original !== undefined && isLocalPicture(original) ? original : undefined;
+  const [preview, setPreview] = useState<'current' | 'street' | undefined>(
+    current ? 'current' : undefined,
+  );
   useDarkSystemBars(PHOTO_BACKGROUND);
 
   // Copies left by an earlier visit (app closed halfway) may hold a photo with its position.
@@ -92,7 +100,7 @@ export function PhotoScreen() {
     }
     const kept = await source();
     setWorking(false);
-    setPreviewing(false);
+    setPreview(undefined);
     // Nothing taken or chosen: stay, the traveller can try again or go without.
     if (!kept) return;
     // A photo of no place is never left behind (spec 020).
@@ -112,7 +120,10 @@ export function PhotoScreen() {
     picture ? keepPhoto(picture) : Promise.resolve(undefined);
 
   const found = street && street !== 'searching' ? street : undefined;
-  const shown = previewing ? found : undefined;
+  const shown = preview === 'street' ? found : undefined;
+  const keepingCurrent = preview === 'current' && current !== undefined;
+  const toggle = (which: 'current' | 'street') =>
+    setPreview((open) => (open === which ? undefined : which));
 
   return (
     <View style={styles.screen}>
@@ -122,13 +133,25 @@ export function PhotoScreen() {
           <StreetPhotoView photo={shown} />
         </View>
       )}
+      {keepingCurrent && (
+        <View style={[styles.frame, styles.preview]}>
+          <Image
+            testID="current-photo-preview"
+            source={{ uri: current }}
+            resizeMode="cover"
+            style={StyleSheet.absoluteFill}
+          />
+        </View>
+      )}
       <View style={styles.frame} pointerEvents="none" />
       <MapHeader
         left={
           <IconButton
             icon="arrow_back"
             label="Retour"
-            onPress={() => (previewing ? setPreviewing(false) : router.back())}
+            // Back closes a street photo opened by a touch (spec 033); the place's own photo,
+            // open from the start, is no step: back goes to the pictogram (spec 037).
+            onPress={() => (preview === 'street' ? setPreview(undefined) : router.back())}
             tone="raised"
           />
         }
@@ -137,16 +160,60 @@ export function PhotoScreen() {
       <View
         style={[styles.controls, { height: 190 + insets.bottom, paddingBottom: insets.bottom }]}
       >
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Sans photo"
-          disabled={locked}
-          onPress={() => finish()}
-          style={[styles.side, locked && styles.busy]}
-        >
-          <Icon name="no_photography" size={28} color={colors.emerald} variant="outlined" />
-        </Pressable>
-        {shown ? (
+        <View>
+          {/* The place's own photo (spec 037), above « no photo », like the street photo above
+              the picker: a touch opens or closes it in the frame. */}
+          {current && (
+            <View style={styles.above}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel="Photo actuelle du lieu"
+                accessibilityState={{ selected: keepingCurrent, disabled: locked }}
+                disabled={locked}
+                onPress={() => toggle('current')}
+                style={[styles.thumbnail, keepingCurrent && styles.thumbnailOpen]}
+              >
+                <View style={styles.thumbnailPhoto}>
+                  <Image
+                    source={{ uri: current }}
+                    resizeMode="cover"
+                    style={StyleSheet.absoluteFill}
+                  />
+                </View>
+                {draft?.editing && (
+                  <View style={styles.thumbnailBadge}>
+                    <Icon name={draft.editing.icon} size={14} color={colors.white} />
+                  </View>
+                )}
+              </Pressable>
+            </View>
+          )}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Sans photo"
+            disabled={locked}
+            onPress={() => finish()}
+            style={[styles.side, locked && styles.busy]}
+          >
+            <Icon name="no_photography" size={28} color={colors.emerald} variant="outlined" />
+          </Pressable>
+        </View>
+        {keepingCurrent ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Garder la photo actuelle"
+            accessibilityState={{ disabled: locked }}
+            disabled={locked}
+            onPress={() => finish(current)}
+            style={[styles.shutter, styles.keep, locked && styles.busy]}
+          >
+            {busy ? (
+              <ActivityIndicator color={colors.white} size="large" />
+            ) : (
+              <Icon name="check" size={48} color={colors.white} />
+            )}
+          </Pressable>
+        ) : shown ? (
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Garder la photo de rue"
@@ -185,10 +252,10 @@ export function PhotoScreen() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Photo de rue du lieu"
-                accessibilityState={{ selected: previewing, disabled: locked }}
+                accessibilityState={{ selected: preview === 'street', disabled: locked }}
                 disabled={locked}
-                onPress={() => setPreviewing((open) => !open)}
-                style={[styles.thumbnail, previewing && styles.thumbnailOpen]}
+                onPress={() => toggle('street')}
+                style={[styles.thumbnail, preview === 'street' && styles.thumbnailOpen]}
               >
                 <View style={styles.thumbnailPhoto}>
                   <StreetPhotoView photo={found} />

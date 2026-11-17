@@ -16,6 +16,7 @@ import { positionPoint, useTravellerPosition } from '../location/location-contex
 import { sendPlace } from './send-place';
 import { useTripPlan } from '../trip-plan/trip-plan-context';
 import { PictogramGrid } from './pictogram-grid';
+import { usePlaceDraft } from './use-place-draft';
 
 /**
  * E28: choose the pictogram of the new place, over the map of where it is; the preview
@@ -23,6 +24,7 @@ import { PictogramGrid } from './pictogram-grid';
  */
 export function PictogramScreen() {
   const { draft, dispatch } = useTripPlan();
+  const { cancel } = usePlaceDraft();
   const icon = draft?.icon;
   // The place's point, else the traveller's (companion's address), else France (spec 017).
   const { position } = useTravellerPosition();
@@ -49,7 +51,8 @@ export function PictogramScreen() {
             icon="arrow_back"
             label="Retour"
             tone="raised"
-            onPress={() => router.back()}
+            // Changing a saved place (spec 037): back home, nothing changes.
+            onPress={() => (draft?.editing ? cancel() : router.back())}
           />
         }
         right={<HelpButton onPress={() => router.push('/help')} />}
@@ -57,7 +60,12 @@ export function PictogramScreen() {
       <FloatingSheet gap={16} onHeight={setSheetHeight}>
         {/* The pin the new place will have on the map (spec 010). */}
         <View style={styles.preview}>
-          <PlacePin icon={icon ?? 'add_location_alt'} photo={undefined} selected={!!icon} />
+          {/* A saved place being changed shows its photo with the pictogram chosen (spec 037). */}
+          <PlacePin
+            icon={icon ?? 'add_location_alt'}
+            photo={draft?.editing?.photo}
+            selected={!!icon}
+          />
         </View>
         <PictogramGrid
           selected={icon}
