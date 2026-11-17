@@ -8,7 +8,7 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 
 **Lot du 2026-11-17 (mode autonome, 6 fiches, une session par fiche, avant la build `preview`).** Fiche 1/6 faite : accueil sans raccourcis (spec 035).
 
-- Fiche 1 livrée : plus de carrousel de tuiles ; le chemin est en bas ; ✕ et ✓ au-dessus du chemin quand les deux bouts sont choisis ; « + » à 64 dp. Trajet complet par les épingles seules ou par les pastilles seules (tests). **Pas vérifié à l'écran** (Chrome et `adb` bloqués par le sandbox) : à voir sur le téléphone.
+- Fiche 1 livrée : plus de carrousel de tuiles ; le chemin est en bas ; ✕ et ✓ au-dessus du chemin quand les deux bouts sont choisis ; « + » à 64 dp. Trajet complet par les épingles seules ou par les pastilles seules (tests). **Pas vérifié à l'écran** : `adb` et Chrome sont sortis du sandbox, mais Metro, lancé depuis une commande sandboxée, n'est pas joignable (réseau privé par commande, `ERR_CONNECTION_REFUSED`). Il faut lancer Metro hors du sandbox (`npx expo start --port 8081` dans un terminal d'Ali, ou `npx expo start *` dans `sandbox.excludedCommands`), puis capturer à 320 et 390 dp et sur le Galaxy S8 (`adb reverse tcp:8081 tcp:8081`).
 - Restent : fiche 2 (lever `hiddenOnMap`), 3 (photo visible partout), 4 (photo à la création), 5 (modifier un lieu), 6 (dézoom).
 - Décidé par Ali (2026-11-17) : le point de position est touchable tant que le départ appelle (choisit « ici ») ; « + » garde 64 dp émeraude.
 
