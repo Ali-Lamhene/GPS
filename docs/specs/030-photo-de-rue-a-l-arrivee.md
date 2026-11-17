@@ -1,5 +1,7 @@
 # 030 — Photo de rue du lieu d'arrivée (Panoramax)
 
+> **Remplacé en partie par D21 (2026-11-17)** : la photo de rue est proposée aussi pour un domicile ou un lieu sensible (la ligne « Aucune demande, aucune photo » est caduque). Panoramax reçoit alors le point d'arrivée à environ 10 m et l'IP, une fois par trajet, comme pour tout lieu (`securite.md`).
+
 - **Statut** : livré
 - **Date** : 2026-11-08
 - **Persona** : voyageur

@@ -1,5 +1,7 @@
 # 007 — Accueil « carte flottante » et bouton « + »
 
+> **Remplacé en partie par D21 (2026-11-17)** : la règle « lieu caché de la carte » est levée ; un lieu autrefois caché a son épingle et sa photo comme les autres. Le carrousel a de plus disparu (spec 035).
+
 - **Statut** : livré
 - **Révisée par** : spec 035 (2026-11-17) : plus de carrousel ni de tuiles à l'accueil, chemin en bas, ✕ et ✓ au-dessus du chemin, « + » à 64 dp
 - **Partie visuelle remplacée par** : D15, maquette émeraude (2026-11-03)

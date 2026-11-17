@@ -1,5 +1,7 @@
 # 008 — Refonte visuelle « clair premium »
 
+> **Remplacé en partie par D21 (2026-11-17)** : un lieu autrefois « caché de la carte » montre sa photo à l'accueil comme les autres.
+
 - **Statut** : livré
 - **Révisée par** : spec 035 (2026-11-17) : plus de carrousel ni de tuiles à l'accueil, chemin en bas, ✕ et ✓ au-dessus du chemin, « + » à 64 dp
 - **Partie visuelle remplacée par** : D15, maquette émeraude (2026-11-03)

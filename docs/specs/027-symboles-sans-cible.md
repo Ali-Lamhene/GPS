@@ -1,5 +1,7 @@
 # 027 — Plus aucune cible : « moi ici » et les vrais lieux sur le chemin du guidage
 
+> **Remplacé en partie par D21 (2026-11-17)** : un lieu autrefois « caché de la carte » (domicile, famille) montre sa photo sur le chemin comme les autres ; la ligne du tableau qui dit le contraire est caduque.
+
 - **Statut** : livré
 - **Date** : 2026-11-08
 - **Persona** : voyageur

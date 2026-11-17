@@ -1,5 +1,7 @@
 # 005 — Accueil sur la carte, formes plus sobres
 
+> **Remplacé en partie par D21 (2026-11-17)** : la règle « lieu caché de la carte » (`hiddenOnMap`) est levée. Tout lieu, maison et famille comprises, a son épingle et sa photo partout ; les passages ci-dessous qui décrivent la règle sont caducs.
+
 - **Statut** : validé
 - **Révisée par** : spec 035 (2026-11-17) : plus de carrousel ni de tuiles à l'accueil, chemin en bas, ✕ et ✓ au-dessus du chemin, « + » à 64 dp
 - **Date** : 2026-11-01

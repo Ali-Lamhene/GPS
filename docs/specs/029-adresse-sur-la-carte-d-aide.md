@@ -1,5 +1,7 @@
 # 029 — L'adresse du lieu sur la carte d'aide
 
+> **Remplacé en partie par D21 (2026-11-17)** : il n'y a plus de « lieu caché de la carte » ; tous les lieux ont leur adresse sur la carte d'aide et leur épingle sur l'accueil.
+
 - **Statut** : livré
 - **Date** : 2026-11-08
 - **Persona** : voyageur (carte d'aide montrée à un passant), accompagnant (création du lieu)

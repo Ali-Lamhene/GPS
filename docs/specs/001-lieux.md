@@ -1,5 +1,7 @@
 # 001 — Lieux : créer, partager, recevoir
 
+> **Remplacé en partie par D21 (2026-11-17)** : la règle « lieu caché de la carte » (`hiddenOnMap`) est levée. Aucune case « ne pas montrer sur la carte » ; tout lieu a son épingle et sa photo (`docs/product/decisions.md`).
+
 - **Statut** : validé
 - **Date** : 2026-10-29
 - **Persona** : travailleur social (et toute personne qui sait lire) pour la préparation ; voyageur pour l'accueil et la réception

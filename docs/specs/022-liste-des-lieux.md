@@ -1,5 +1,7 @@
 # 022 — Liste des lieux de l'accompagnant
 
+> **Remplacé en partie par D21 (2026-11-17)** : la liste montre la photo de tous les lieux, domicile compris. Question ouverte sur `FLAG_SECURE` tranchée par Ali (option A) : pas de blocage des captures pour la V1, risque accepté.
+
 - **Statut** : validé (autonomie donnée le 2026-11-04)
 - **Date** : 2026-11-04
 - **Persona** : accompagnant (texte autorisé, D8)

@@ -1,5 +1,7 @@
 # 033 — Photo Panoramax proposée à la création d'un lieu
 
+> **Remplacé en partie par D21 (2026-11-17)** : l'écart « lieu caché de la carte, recherche faite quand même » devient la règle générale ; la notion de lieu caché n'existe plus.
+
 - **Statut** : livré (réponses de l’utilisateur du 2026-11-10 ; détails tranchés en autonomie le 2026-11-12, listés dans « Hypothèses » ; à vérifier sur le téléphone)
 - **Date** : 2026-11-12
 - **Persona** : voyageur, et l'accompagnant qui crée le lieu sur son téléphone

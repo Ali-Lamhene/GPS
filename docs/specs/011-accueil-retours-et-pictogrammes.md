@@ -1,5 +1,7 @@
 # 011 — Accueil : retours d'usage et catalogue de pictogrammes
 
+> **Remplacé en partie par D21 (2026-11-17)** : plus aucun pictogramme n'est « caché de la carte par défaut » (maison, famille, chez un ami, hébergement, santé sensible). Le catalogue de pictogrammes reste valable.
+
 - **Statut** : livré
 - **Révisée par** : spec 035 (2026-11-17) : plus de carrousel ni de tuiles à l'accueil, chemin en bas, ✕ et ✓ au-dessus du chemin, « + » à 64 dp
 - **Date** : 2026-11-03
