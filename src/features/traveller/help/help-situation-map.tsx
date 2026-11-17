@@ -27,6 +27,7 @@ export function situationLayers(
   legs: readonly Leg[],
   step: Pick<GuidanceStep, 'legIndex' | 'legFraction'> | undefined,
   destinationIcon: IconName,
+  destinationPhoto?: string,
 ) {
   const legIndex = step?.legIndex ?? 0;
   const legFraction = step?.legFraction ?? 0;
@@ -46,13 +47,15 @@ export function situationLayers(
     // The part already walked would show where the trip started.
     lines: tripLines([leg], { legIndex: 0, legFraction }).filter(({ style }) => style !== 'done'),
     stops: [...tripStops([leg]), ...boarding],
-    destination: last ? { point: target, icon: destinationIcon } : undefined,
+    destination: last
+      ? { point: target, icon: destinationIcon, photo: destinationPhoto }
+      : undefined,
   };
 }
 
 /** Small still map of the situation on the help card, for the passer-by. */
 export function HelpSituationMap({ legs, step, destination }: HelpSituationMapProps) {
-  const layers = situationLayers(legs, step, destination?.icon ?? 'flag');
+  const layers = situationLayers(legs, step, destination?.icon ?? 'flag', destination?.photo);
   if (!layers) return null;
   return (
     <View style={styles.card}>

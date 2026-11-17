@@ -59,19 +59,19 @@ export function ManeuverArrow({ rotation }: { rotation: number }) {
 }
 
 /** Destination: the chosen place's solid emerald teardrop (spec 010). */
-export function DestinationPin({ icon }: { icon: IconName }) {
+export function DestinationPin({ icon, photo }: { icon: IconName; photo?: string }) {
   return (
     <View pointerEvents="none">
-      <PlacePin icon={icon} photo={undefined} selected />
+      <PlacePin icon={icon} photo={photo} selected />
     </View>
   );
 }
 
 /** Start of the trip when it is a saved place: a white teardrop edged in emerald. */
-export function OriginPin({ icon }: { icon: IconName }) {
+export function OriginPin({ icon, photo }: { icon: IconName; photo?: string }) {
   return (
     <View pointerEvents="none">
-      <PlacePin icon={icon} photo={undefined} selected={false} />
+      <PlacePin icon={icon} photo={photo} selected={false} />
     </View>
   );
 }

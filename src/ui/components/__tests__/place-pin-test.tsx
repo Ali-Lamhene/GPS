@@ -1,5 +1,7 @@
 import { render } from '@testing-library/react-native';
 
+import { GLYPHS } from '@/ui/icon/glyphs';
+
 import { PlacePin } from '../place-pin';
 
 describe('PlacePin', () => {
@@ -19,5 +21,17 @@ describe('PlacePin', () => {
     );
 
     expect(screen.queryByTestId('place-pin-photo')).toBeNull();
+  });
+});
+
+describe('PlacePin pictogram under the photo (spec 036)', () => {
+  test('keeps the big pictogram under the photo, for a slow or missing picture', async () => {
+    const screen = await render(
+      <PlacePin icon="home" photo="file:///data/photos/abc.jpg" selected={false} />,
+    );
+
+    // Once as the big pictogram under the photo, once in the small badge.
+    const glyph = String.fromCodePoint(GLYPHS.home);
+    expect(JSON.stringify(screen.toJSON()).split(glyph).length - 1).toBe(2);
   });
 });

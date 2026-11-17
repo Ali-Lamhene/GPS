@@ -47,7 +47,7 @@ export function ArrivedScreen() {
         <TripMap
           camera={{ center: end, zoom: 17.2, padding: { top: 0, bottom: sheetHeight } }}
           traveller={{ point: end }}
-          destination={{ point: end, icon }}
+          destination={{ point: end, icon, photo: destination?.photo }}
           controlsBottom={sheetHeight + 8}
         />
       )}

@@ -44,3 +44,16 @@ describe('situationLayers', () => {
     expect(points(layers)).not.toContainEqual(legs[1]?.path.at(-1));
   });
 });
+
+describe('situationLayers photo (spec 036)', () => {
+  test('the place to find carries its photo on the last stretch', () => {
+    const layers = situationLayers(
+      legs,
+      { legIndex: 4, legFraction: 0.2 },
+      'home',
+      'file:///h.jpg',
+    );
+
+    expect(layers?.destination).toMatchObject({ icon: 'home', photo: 'file:///h.jpg' });
+  });
+});

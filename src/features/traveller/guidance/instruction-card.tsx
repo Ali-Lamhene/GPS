@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import type { Place } from '@/domain/place';
 import { isAlert, type Instruction } from '@/domain/guidance';
+import { PlaceFace } from '@/ui/components/place-face';
 import { PulseRing } from '@/ui/components/pulse-ring';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii, shadows } from '@/ui/theme';
@@ -48,6 +49,7 @@ export function InstructionCard({
   const alert = offRoute !== undefined || isAlert(instruction);
   const symbol = mainSymbol(instruction);
   const next = offRoute ? undefined : nextSymbol(instruction, destination);
+  const photoNext = !!next && instruction.kind === 'walkToDestination' && !!destination?.photo;
   const leg = 'leg' in instruction ? instruction.leg : undefined;
   const turn = instruction.kind === 'walk' && instruction.turn !== 'straight';
 
@@ -97,8 +99,13 @@ export function InstructionCard({
           </View>
         )}
         {next && (
-          <View style={styles.next}>
-            <Icon name={next} size={30} color={colors.emerald} variant="outlined" />
+          <View style={[styles.next, photoNext && styles.nextPhoto]}>
+            {/* The arrival with a photo: its photo, as everywhere else (spec 036). */}
+            {photoNext && destination ? (
+              <PlaceFace place={destination} iconSize={30} badgeSize={28} />
+            ) : (
+              <Icon name={next} size={30} color={colors.emerald} variant="outlined" />
+            )}
           </View>
         )}
       </View>
@@ -208,7 +215,12 @@ const styles = StyleSheet.create({
     borderRadius: radii.control,
     opacity: 0.7,
     backgroundColor: colors.surfaceLow,
+    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  // A photo stays at full strength: faded, it cannot be recognised in the sun.
+  nextPhoto: {
+    opacity: 1,
   },
 });

@@ -46,8 +46,10 @@ export function TripOverviewMap({
       lines={lines}
       stops={tripStops(legs)}
       traveller={fromHere ? { point: start } : undefined}
-      origin={fromHere ? undefined : { point: start, icon: origin.icon }}
-      destination={end && { point: end, icon: destination?.icon ?? 'flag' }}
+      origin={fromHere ? undefined : { point: start, icon: origin.icon, photo: origin.photo }}
+      destination={
+        end && { point: end, icon: destination?.icon ?? 'flag', photo: destination?.photo }
+      }
       controlsBottom={bottom + 8}
       recenterIcon="fit_screen"
       interactive={interactive}

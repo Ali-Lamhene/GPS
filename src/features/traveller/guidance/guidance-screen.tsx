@@ -134,7 +134,7 @@ export function GuidanceScreen() {
           stops={tripStops(legs)}
           maneuver={nextManeuver(legs, step)}
           traveller={{ point: position.point, heading: position.heading }}
-          destination={end && { point: end, icon: destinationIcon }}
+          destination={end && { point: end, icon: destinationIcon, photo: destination?.photo }}
           controlsBottom={panelHeight + 8}
           // The street photo stands on the right above the pill: « recenter » goes above it.
           recenterBottom={

@@ -212,8 +212,8 @@ export function createPlacePin(
 }
 
 /** Destination: the chosen place's solid emerald teardrop (spec 010). */
-export function createDestinationPin(icon: IconName): HTMLElement {
-  const root = createPlacePin(icon, undefined, true, '');
+export function createDestinationPin(icon: IconName, photo?: string): HTMLElement {
+  const root = createPlacePin(icon, photo, true, '');
   root.removeAttribute('role');
   root.removeAttribute('aria-label');
   root.style.pointerEvents = 'none';
@@ -222,8 +222,8 @@ export function createDestinationPin(icon: IconName): HTMLElement {
 }
 
 /** Start of the trip when it is a saved place: a white teardrop edged in emerald. */
-export function createOriginPin(icon: IconName): HTMLElement {
-  const root = createPlacePin(icon, undefined, false, '');
+export function createOriginPin(icon: IconName, photo?: string): HTMLElement {
+  const root = createPlacePin(icon, photo, false, '');
   root.removeAttribute('role');
   root.removeAttribute('aria-label');
   root.style.pointerEvents = 'none';

@@ -52,8 +52,9 @@ export type TripMapProps = {
   /** Makes the traveller's dot touchable, with a small hand on it: « here » as the start (spec 035). */
   onTravellerPress?: () => void;
   /** Start of the trip when it is a saved place rather than where the traveller stands. */
-  origin?: { point: LngLat; icon: IconName };
-  destination?: { point: LngLat; icon: IconName };
+  origin?: { point: LngLat; icon: IconName; photo?: string };
+  /** The arrival's pin; with a photo, the pin shows it (spec 036). */
+  destination?: { point: LngLat; icon: IconName; photo?: string };
   /** Saved places, drawn as pins the traveller can touch. */
   pins?: readonly MapPin[];
   onPinPress?: (id: string) => void;

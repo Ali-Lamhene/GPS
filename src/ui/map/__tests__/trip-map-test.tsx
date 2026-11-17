@@ -117,3 +117,46 @@ describe('<TripMap /> on the phone', () => {
     ).toBeOnTheScreen();
   });
 });
+
+describe('<TripMap /> photos on the pins (spec 036)', () => {
+  const at = [5.38, 43.3] as const;
+
+  test('the arrival and start pins show the photo of their place', async () => {
+    await render(
+      <TripMap
+        camera={camera}
+        origin={{ point: at, icon: 'home', photo: 'file:///home.jpg' }}
+        destination={{ point: at, icon: 'school', photo: 'file:///school.jpg' }}
+      />,
+    );
+
+    const photos = await screen.findAllByTestId('place-pin-photo');
+    expect(photos.map((photo) => photo.props.source.uri)).toEqual([
+      'file:///home.jpg',
+      'file:///school.jpg',
+    ]);
+  });
+
+  test('without a photo the pins keep their pictogram', async () => {
+    await render(
+      <TripMap
+        camera={camera}
+        origin={{ point: at, icon: 'home' }}
+        destination={{ point: at, icon: 'school' }}
+      />,
+    );
+
+    expect(screen.queryByTestId('place-pin-photo')).toBeNull();
+  });
+
+  test('a saved place pin shows its photo on the map', async () => {
+    await render(
+      <TripMap
+        camera={camera}
+        pins={[{ id: 'a', point: at, icon: 'home', label: 'mon domicile', photo: 'file:///a.jpg' }]}
+      />,
+    );
+
+    expect((await screen.findByTestId('place-pin-photo')).props.source.uri).toBe('file:///a.jpg');
+  });
+});

@@ -49,7 +49,15 @@ export function PlacePin({ icon, photo, selected }: PlacePinProps) {
           },
         ]}
       >
-        {picture ? (
+        {/* The big pictogram stays under the photo: while the photo loads, or if it never
+            does, the pin still tells the place (spec 036). */}
+        <Icon
+          name={icon}
+          size={Math.round(face.size * 0.62)}
+          color={colors.emerald}
+          variant="outlined"
+        />
+        {picture && (
           // React Native's image, not expo-image: on Android a map marker is laid out off
           // screen, then moved onto the map, and expo-image's load got lost in the move (field
           // feedback, the pin showed its pictogram only). Fresco loads again on each attach.
@@ -59,13 +67,6 @@ export function PlacePin({ icon, photo, selected }: PlacePinProps) {
             source={{ uri: picture }}
             resizeMode="cover"
             style={StyleSheet.absoluteFill}
-          />
-        ) : (
-          <Icon
-            name={icon}
-            size={Math.round(face.size * 0.62)}
-            color={colors.emerald}
-            variant="outlined"
           />
         )}
       </View>

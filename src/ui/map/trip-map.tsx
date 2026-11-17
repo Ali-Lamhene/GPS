@@ -261,12 +261,12 @@ export function TripMap({
         ))}
         {origin && (
           <Marker lngLat={[origin.point[0], origin.point[1]]} anchor="bottom">
-            <OriginPin icon={origin.icon} />
+            <OriginPin icon={origin.icon} photo={origin.photo} />
           </Marker>
         )}
         {destination && (
           <Marker lngLat={[destination.point[0], destination.point[1]]} anchor="bottom">
-            <DestinationPin icon={destination.icon} />
+            <DestinationPin icon={destination.icon} photo={destination.photo} />
           </Marker>
         )}
         {pins.map((pin) => (

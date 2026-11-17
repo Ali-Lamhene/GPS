@@ -34,3 +34,30 @@ describe('<ProgressPanel /> (spec 027)', () => {
     ).toBeGreaterThan(0);
   });
 });
+
+describe('<ProgressPanel /> photos (spec 036)', () => {
+  const SCHOOL: Place = { id: 'school', icon: 'school', photo: 'file:///school.jpg' };
+  const HOME: Place = { id: 'home', icon: 'home', photo: 'file:///home.jpg' };
+
+  test('the start and arrival ends show the photo of their place', async () => {
+    await render(
+      <SafeAreaProvider initialMetrics={metrics}>
+        <ProgressPanel origin={HOME} destination={SCHOOL} progress={0.5} remainingMinutes={10} />
+      </SafeAreaProvider>,
+    );
+
+    const tree = JSON.stringify(screen.toJSON());
+    expect(tree).toContain('file:///home.jpg');
+    expect(tree).toContain('file:///school.jpg');
+  });
+
+  test('a place without a photo shows no picture', async () => {
+    await render(
+      <SafeAreaProvider initialMetrics={metrics}>
+        <ProgressPanel origin={BEACH} destination={BEACH} progress={0.5} remainingMinutes={10} />
+      </SafeAreaProvider>,
+    );
+
+    expect(JSON.stringify(screen.toJSON())).not.toContain('file://');
+  });
+});

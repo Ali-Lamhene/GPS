@@ -106,8 +106,8 @@ type MarkerKind =
   | { type: 'dot'; touchable: boolean }
   | { type: 'cone' }
   | { type: 'maneuver' }
-  | { type: 'destination'; icon: IconName }
-  | { type: 'origin'; icon: IconName };
+  | { type: 'destination'; icon: IconName; photo?: string }
+  | { type: 'origin'; icon: IconName; photo?: string };
 
 function markerFor(kind: MarkerKind, onPress?: () => void): Marker {
   switch (kind.type) {
@@ -129,9 +129,9 @@ function markerFor(kind: MarkerKind, onPress?: () => void): Marker {
         pitchAlignment: 'viewport',
       });
     case 'destination':
-      return new Marker({ element: createDestinationPin(kind.icon), anchor: 'bottom' });
+      return new Marker({ element: createDestinationPin(kind.icon, kind.photo), anchor: 'bottom' });
     case 'origin':
-      return new Marker({ element: createOriginPin(kind.icon), anchor: 'bottom' });
+      return new Marker({ element: createOriginPin(kind.icon, kind.photo), anchor: 'bottom' });
   }
 }
 
@@ -282,8 +282,16 @@ export function TripMap({
     onTravellerPress,
   );
   useMarker(map, { type: 'maneuver' }, maneuver?.point, maneuver?.heading);
-  useMarker(map, { type: 'destination', icon: destination?.icon ?? 'flag' }, destination?.point);
-  useMarker(map, { type: 'origin', icon: origin?.icon ?? 'location_on' }, origin?.point);
+  useMarker(
+    map,
+    { type: 'destination', icon: destination?.icon ?? 'flag', photo: destination?.photo },
+    destination?.point,
+  );
+  useMarker(
+    map,
+    { type: 'origin', icon: origin?.icon ?? 'location_on', photo: origin?.photo },
+    origin?.point,
+  );
 
   const stopsKey = JSON.stringify(stops);
   useEffect(() => {

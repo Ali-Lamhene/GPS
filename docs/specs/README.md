@@ -37,3 +37,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 033 | [Photo Panoramax proposée à la création d'un lieu](033-photo-panoramax-a-la-creation.md)                     | livré (à voir sur le téléphone)                        |
 | 034 | [Le bouton d'aide pulse quand le voyageur reste perdu](034-aide-qui-pulse-quand-perdu.md)                    | livré (à voir sur le terrain)                          |
 | 035 | [Accueil sans raccourcis : le chemin en bas, « + » plus grand](035-accueil-sans-raccourcis-chemin-en-bas.md) | livré en autonomie (à voir sur le téléphone)           |
+| 036 | [La photo d'un lieu, visible partout où le lieu apparaît](036-photo-visible-partout.md)                      | livré en autonomie (à voir sur le téléphone)           |
