@@ -1,6 +1,6 @@
 # 037 — Modifier un lieu après coup : pictogramme et photo
 
-- **Statut** : en cours (brief du 2026-11-17, fiche 5/6 validée par Ali ; mode autonome, pas de validation de spec attendue)
+- **Statut** : livré en autonomie (brief du 2026-11-17, fiche 5/6 validée par Ali ; mode autonome, pas de validation de spec attendue) ; à voir sur le téléphone, après une nouvelle build native
 - **Date** : 2026-11-17
 - **Persona** : voyageur et accompagnant (même entrée, même parcours)
 - **Révise** : spec 033 (« pas de remplacement plus tard », réponse du 2026-11-10), spec 020 (photo choisie seulement à la création), spec 001 (un lieu ne se modifie pas)
@@ -66,11 +66,13 @@ Renommer un lieu, le supprimer, changer son adresse ou son point. Modifier depui
 
 ## Critères d'acceptation
 
-- [ ] Spec écrite avec hypothèses ; relue par `ux-sans-texte-reviewer`.
-- [ ] Appui long sur une épingle (carte web et téléphone) et sur un lieu de la feuille ouvre E28 avec le lieu (tests).
-- [ ] L'appui long ne choisit pas le lieu ; le toucher court choisit toujours (tests).
-- [ ] Changer le pictogramme seul (photo gardée) ; les 3 choix de photo (rue, caméra ou galerie, sans photo) ; le lieu garde son identifiant, l'ancienne photo est effacée après l'enregistrement (tests).
-- [ ] Vérifié dans le navigateur et sur le Galaxy S8.
+- [x] Spec écrite avec hypothèses ; relue par `ux-sans-texte-reviewer` (bloquant et points « à corriger » traités) et par `security-reviewer` (rien de bloquant ; `securite.md` complété).
+- [x] Appui long sur une épingle (carte web : gestes du pointeur ; carte native : appui long de la carte et recherche de l'épingle sous le doigt ; lecteur d'écran) et sur un lieu de la feuille ouvre E28 avec le lieu (tests).
+- [x] L'appui long ne choisit pas le lieu ; le toucher court choisit toujours (tests).
+- [x] Changer le pictogramme seul (photo gardée) ; les 3 choix de photo (rue, caméra ou galerie, sans photo) ; le lieu garde son identifiant, l'ancienne photo est effacée après l'enregistrement (tests).
+- [ ] Vérifié dans le navigateur et sur le Galaxy S8. **Fait en partie (2026-11-17)** : navigateur à 390 dp, accueil avec 4 lieux enregistrés (`public/seed.html`) : rendu sans erreur. **Non vu** : épingles (carte web sans tuiles en Chrome sans fenêtre, comme aux fiches 1 à 4) ; l'appui long, E28 et E29 en modification (Chrome sans fenêtre ne fait que des captures, aucun geste ; E28 et E29 demandent un brouillon) ; téléphone : aucune build de dev installée, et le correctif MapLibre demande une nouvelle build native.
+
+À voir sur le téléphone (build de dev ou `preview` construite **après** `2ec6fb6`) : appui long sur une épingle (vibration, E28) sans que le lieu soit aussi choisi au relâchement ; toucher court inchangé ; appui long sur le point de position posé sur un lieu (rien) ; appui long sur une tuile de la feuille ; E28 qui défile jusqu'au pictogramme actuel et pastille de 36 dp sur la photo ; E29 qui s'ouvre sur la photo actuelle sans fenêtre de permission caméra ; ✓ ; vignette de la photo actuelle ; « sans photo » puis ✓ ; photo de rue, caméra, galerie ; le lieu changé partout (épingle, pastilles, feuille, liste de l'accompagnant).
 
 ## Hypothèses (mode autonome)
 

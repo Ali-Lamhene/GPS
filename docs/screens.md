@@ -123,6 +123,8 @@ Les identifiants `E01` à `E26` sont stables pour les tickets, spécifications e
 
 **État initial** : seul le départ appelle une interaction. Un toucher ouvre E02 **sans quitter l'accueil**. Après sélection, la modal se ferme et l'icône/photo du lieu remplace le marqueur initial. L'arrivée devient alors sélectionnable. E04 s'ouvre comme modal et ne montre que les lieux enregistrés. Après sélection, les deux choix restent modifiables par toucher avant ou pendant la préparation du trajet, sous réserve de recalculer l'itinéraire.
 
+**Modifier un lieu (spec 037, D22)** : un appui long sur l'épingle d'un lieu ou sur sa tuile dans E02 ou E04 ouvre E28 puis E29 pour changer son pictogramme et sa photo. Le toucher court reste le choix du lieu.
+
 **Cas particuliers à prévoir** : aucun lieu enregistré, géolocalisation refusée ou indisponible, image manquante, lieu supprimé, lieux de départ et d'arrivée identiques.
 
 ### 4.2 Choix du transport et recalcul du résumé
