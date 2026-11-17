@@ -9,11 +9,6 @@ type PlaceFaceProps = {
   place: Place;
   /** Size of the emerald pictogram on white. */
   iconSize: number;
-  /**
-   * Whether the photo may show. Required: a place kept off the map (home, family) must
-   * never show its facade on the home, so every screen decides explicitly.
-   */
-  showPhoto: boolean;
   /** Size of the white disc that carries the pictogram over a photo; none hides it. */
   badgeSize?: number;
   /** « Here » without a usable position (spec 017): grey ground, grey pictogram, still sharp. */
@@ -26,14 +21,8 @@ type PlaceFaceProps = {
  * bottom-left corner. Fills its parent, which sets the size, the shape and
  * `overflow: 'hidden'`.
  */
-export function PlaceFace({
-  place,
-  iconSize,
-  showPhoto,
-  badgeSize,
-  muted = false,
-}: PlaceFaceProps) {
-  const photo = showPhoto && place.photo && isLocalPicture(place.photo) ? place.photo : undefined;
+export function PlaceFace({ place, iconSize, badgeSize, muted = false }: PlaceFaceProps) {
+  const photo = place.photo && isLocalPicture(place.photo) ? place.photo : undefined;
   if (!photo) {
     return (
       <View style={[StyleSheet.absoluteFill, styles.plain, muted && styles.muted]}>

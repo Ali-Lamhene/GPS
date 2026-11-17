@@ -1,3 +1,4 @@
+import { placesOnMap } from '@/domain/place';
 import {
   initialTripPlan,
   placeFromDraft,
@@ -52,7 +53,6 @@ describe('tripPlanReducer', () => {
         photo: 'file:///photo.jpg',
         helpName: undefined,
         point: undefined,
-        hiddenOnMap: false,
         createdAt: 1000,
       },
     ]);
@@ -95,7 +95,7 @@ describe('tripPlanReducer', () => {
     expect(initialTripPlan.destinationId).toBeUndefined();
   });
 
-  test('a new home or family place stays off the home map', () => {
+  test('a new home or family place is a place like the others, with its pin', () => {
     let state = tripPlanReducer(withOrigin, {
       type: 'startPlace',
       source: 'address',
@@ -103,7 +103,10 @@ describe('tripPlanReducer', () => {
     state = tripPlanReducer(state, { type: 'setDraftIcon', icon: 'family_home' });
     state = finish(state);
 
-    expect(state.customPlaces[0]?.hiddenOnMap).toBe(true);
+    expect(state.customPlaces[0]).not.toHaveProperty('hiddenOnMap');
+    expect(
+      placesOnMap(state.customPlaces.map((place) => ({ ...place, point: [5, 43] }))),
+    ).toHaveLength(1);
   });
 
   test('a place that cannot be saved is dropped, and the home is told (spec 015)', () => {

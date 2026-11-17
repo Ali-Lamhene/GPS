@@ -58,7 +58,7 @@ export function PlacesScreen() {
         renderItem={({ item }) => (
           <View style={styles.row}>
             <View style={styles.thumb}>
-              <PlaceFace place={item} iconSize={28} showPhoto />
+              <PlaceFace place={item} iconSize={28} />
             </View>
             <Text style={styles.name} numberOfLines={2}>
               {item.helpName ?? pictogramName(item.icon)}

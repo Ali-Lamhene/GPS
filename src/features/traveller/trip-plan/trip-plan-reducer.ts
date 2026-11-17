@@ -1,5 +1,5 @@
 import type { LngLat } from '@/domain/geo';
-import { hiddenOnMapByDefault, type Place, type PlaceIcon } from '@/domain/place';
+import { type Place, type PlaceIcon } from '@/domain/place';
 import type { TravelMode } from '@/domain/trip';
 
 /** Which end of the trip a place is being chosen or created for. */
@@ -145,7 +145,6 @@ export function placeFromDraft(
   }: { id: string; createdAt: number; photo?: string; address?: string },
 ): Place {
   const icon = draft.icon ?? 'push_pin';
-  const hiddenOnMap = hiddenOnMapByDefault(icon);
   return {
     id,
     icon,
@@ -153,7 +152,6 @@ export function placeFromDraft(
     helpName: draft.helpName,
     address,
     point: draft.point,
-    hiddenOnMap,
     createdAt,
   };
 }

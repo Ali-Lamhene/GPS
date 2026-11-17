@@ -253,7 +253,7 @@ describe('<HomeScreen />', () => {
     await fireEvent.press(button('Arrivée'));
     await sheetPlace('mon domicile');
 
-    expect(screen.queryByRole('button', { name: 'mon domicile' })).toBeNull();
+    expect(screen.queryByTestId('place-grid')).toBeNull();
     await fireEvent.press(button('Départ'));
     await fireEvent(screen.getByTestId('place-grid'), 'layout', layout(320, 400));
     expect(
@@ -367,7 +367,7 @@ describe('place sheet and Android back', () => {
 });
 
 describe('<WayCard />', () => {
-  test('a chosen place kept off the map never shows its photo on the home', async () => {
+  test('a chosen home shows its photo on the home like any place (hiddenOnMap lifted, 2026-11-17)', async () => {
     await renderWithProviders(
       <WayCard
         origin={{ id: 'home', icon: 'home', photo: 'file:///home.jpg' }}
@@ -377,7 +377,7 @@ describe('<WayCard />', () => {
     );
 
     const tree = JSON.stringify(screen.toJSON());
-    expect(tree).not.toContain('file:///home.jpg');
+    expect(tree).toContain('file:///home.jpg');
     expect(tree).toContain('file:///gym.jpg');
   });
 });

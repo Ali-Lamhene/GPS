@@ -29,7 +29,6 @@ type StoredPlace = {
   point?: [number, number];
   helpName?: string;
   address?: string;
-  hiddenOnMap?: boolean;
   createdAt: number;
 };
 
@@ -48,7 +47,6 @@ export function encodePlaces(places: readonly Place[], photos: PhotoNames): stri
     point: place.point ? [place.point[0], place.point[1]] : undefined,
     helpName: place.helpName,
     address: place.address,
-    hiddenOnMap: place.hiddenOnMap,
     createdAt: place.createdAt ?? 0,
   }));
   return JSON.stringify({ version: STORED_PLACES_VERSION, places: stored });
@@ -83,7 +81,8 @@ export function decodePlaces(text: string, photos: PhotoNames): DecodedPlaces {
 
 function decodePlace(entry: unknown, photos: PhotoNames): Place | undefined {
   if (!isRecord(entry)) return undefined;
-  const { id, icon, photo, point, helpName, address, hiddenOnMap, createdAt } = entry;
+  const { id, icon, photo, point, helpName, address, createdAt } = entry;
+  // The old `hiddenOnMap` field (removed 2026-11-17, D-hiddenOnMap) is ignored, whatever it holds.
   if (typeof id !== 'string' || !/^[A-Za-z0-9_-]+$/.test(id) || id.length > MAX_ID_LENGTH) {
     return undefined;
   }
@@ -103,7 +102,6 @@ function decodePlace(entry: unknown, photos: PhotoNames): Place | undefined {
     typeof address === 'string' && address.length <= MAX_HELP_NAME_LENGTH
       ? clean(address) || undefined
       : undefined;
-  if (hiddenOnMap !== undefined && typeof hiddenOnMap !== 'boolean') return undefined;
   // A damaged photo address drops the photo, not the place.
   const keptPhoto = typeof photo === 'string' ? photos.toUri(photo) : undefined;
 
@@ -115,7 +113,6 @@ function decodePlace(entry: unknown, photos: PhotoNames): Place | undefined {
     point: point === undefined ? undefined : [point[0], point[1]],
     helpName,
     address: keptAddress,
-    hiddenOnMap,
     createdAt,
   };
 }

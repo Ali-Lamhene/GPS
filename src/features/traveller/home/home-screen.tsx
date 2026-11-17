@@ -4,13 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { FRANCE_CENTER, FRANCE_ZOOM, pathsBounds, type LngLat } from '@/domain/geo';
-import {
-  CURRENT_POSITION,
-  homeFraming,
-  isHiddenOnMap,
-  placesOnMap,
-  type Place,
-} from '@/domain/place';
+import { CURRENT_POSITION, homeFraming, placesOnMap, type Place } from '@/domain/place';
 import { playCue } from '@/services/feedback';
 import { useIsOffline } from '@/services/network';
 import { TripMap } from '@/ui/map/trip-map';
@@ -29,10 +23,10 @@ import { SaveFailedSignal } from './save-failed-signal';
 
 const STREET_ZOOM = 16;
 
-/** Where a place shows on the map, unless it is kept off it (spec 005). */
+/** Where a place shows on the map, (spec 005). */
 function visiblePoint(place: Place | undefined, position: LngLat | undefined): LngLat | undefined {
   if (place?.id === CURRENT_POSITION.id) return position;
-  return place && !isHiddenOnMap(place) ? place.point : undefined;
+  return place ? place.point : undefined;
 }
 
 /**

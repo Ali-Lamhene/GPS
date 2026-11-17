@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { LngLat } from '@/domain/geo';
 import { pictogramName } from '@/domain/pictograms';
-import { hiddenOnMapByDefault } from '@/domain/place';
 import { receivedPlaceCamera } from '@/domain/received-place';
 import { decodeShareLink, findSamePlace } from '@/domain/share-link';
 import { reverseAddress } from '@/services/address-search';
@@ -103,7 +102,6 @@ export function ReceivePlaceScreen() {
   useEffect(() => {
     if (answer !== 'yes' || started.current || !shared || known) return;
     started.current = true;
-    const hiddenOnMap = hiddenOnMapByDefault(shared.icon);
     // The link carries no address: asked once to Photon, for the help card (spec 029).
     const address = reverseAddress(shared.point);
     void address
@@ -116,7 +114,6 @@ export function ReceivePlaceScreen() {
             // The link carries no name: the help card reads the pictogram's (spec 019).
             helpName: pictogramName(shared.icon),
             address: found,
-            hiddenOnMap,
             createdAt: Date.now(),
           },
           { keepDraft: true },

@@ -20,14 +20,12 @@ const hospital: Place = {
   icon: 'local_hospital',
   point: [5.38, 43.29],
   helpName: "l'hôpital Nord",
-  hiddenOnMap: false,
   createdAt: 2000,
 };
 const home: Place = {
   id: 'p2',
   icon: 'home',
   point: [5.37, 43.28],
-  hiddenOnMap: true,
   createdAt: 1000,
 };
 
@@ -85,13 +83,25 @@ describe('stored places (spec 015)', () => {
       { ...home, id: '../etc', createdAt: 5 },
       { ...home, id: 'p5', createdAt: -1 },
       { ...home, id: 'p6', helpName: 'x'.repeat(201) },
-      { ...home, id: 'p7', hiddenOnMap: 'yes' },
       { ...home, id: 'p8', icon: 12 },
       'not a place',
       home,
     ]);
 
     expect(read(text).map((place) => place.id)).toEqual(['p2', 'p1']);
+  });
+
+  test('the old hiddenOnMap field is ignored, whatever it holds, and not written back', () => {
+    const [kept, odd] = read(
+      file([
+        { ...home, id: 'old', hiddenOnMap: true },
+        { ...home, id: 'odd', hiddenOnMap: 'yes', createdAt: 3000 },
+      ]),
+    );
+
+    expect(kept).toEqual({ ...home, id: 'old' });
+    expect(odd?.id).toBe('odd');
+    expect(encodePlaces([kept as Place])).not.toContain('hiddenOnMap');
   });
 
   test('a pictogram from a newer version becomes « autre lieu »', () => {

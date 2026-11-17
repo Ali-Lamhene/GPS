@@ -1,7 +1,6 @@
 import type { LngLat } from '../geo';
 import {
   CURRENT_POSITION,
-  hiddenOnMapByDefault,
   homeFraming,
   isLocalPicture,
   placeOrder,
@@ -16,32 +15,24 @@ const far: LngLat = [5.37, 43.26];
 describe('placesOnMap', () => {
   const places: Place[] = [
     CURRENT_POSITION,
-    { id: 'home', icon: 'home', point: near, hiddenOnMap: true },
+    { id: 'home', icon: 'home', point: near },
     { id: 'school', icon: 'school', point: near },
     { id: 'work', icon: 'work' },
     { id: 'shop', icon: 'shopping_bag', point: far },
   ];
 
-  test('keeps located places that are not hidden', () => {
-    expect(placesOnMap(places).map((place) => place.id)).toEqual(['school', 'shop']);
+  test('keeps every located place, homes included (hiddenOnMap lifted, 2026-11-17)', () => {
+    expect(placesOnMap(places).map((place) => place.id)).toEqual(['home', 'school', 'shop']);
   });
 
-  test('a home that does not say whether to hide stays hidden', () => {
-    const home: Place = { id: 'home-2', icon: 'home', point: near };
+  test('a place read with the old hiddenOnMap field still has its pin', () => {
+    const legacy = { id: 'old', icon: 'psychology', point: near, hiddenOnMap: true } as Place;
 
-    expect(placesOnMap([home])).toEqual([]);
+    expect(placesOnMap([legacy]).map((place) => place.id)).toEqual(['old']);
   });
 
   test('leaves out the start of the trip', () => {
-    expect(placesOnMap(places, 'school').map((place) => place.id)).toEqual(['shop']);
-  });
-});
-
-describe('hiddenOnMapByDefault', () => {
-  test('hides home and family, shows the rest', () => {
-    expect(hiddenOnMapByDefault('home')).toBe(true);
-    expect(hiddenOnMapByDefault('family_home')).toBe(true);
-    expect(hiddenOnMapByDefault('school')).toBe(false);
+    expect(placesOnMap(places, 'school').map((place) => place.id)).toEqual(['home', 'shop']);
   });
 });
 

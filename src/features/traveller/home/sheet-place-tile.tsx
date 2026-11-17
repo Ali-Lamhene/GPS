@@ -38,12 +38,10 @@ export function SheetPlaceTile({
         pressed && styles.pressed,
       ]}
     >
-      {/* The sheet may show it: the place is being chosen (spec 005). */}
       <PlaceFace
         place={shown}
         iconSize={Math.round(size * 0.42)}
         badgeSize={28}
-        showPhoto
         muted={unavailable !== undefined}
       />
     </Pressable>

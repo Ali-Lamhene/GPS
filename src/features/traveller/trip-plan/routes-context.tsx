@@ -12,7 +12,7 @@ import type { LngLat } from '@/domain/geo';
 
 import { buildGuidance } from '@/domain/guidance-plan';
 import type { GuidanceStep } from '@/domain/guidance';
-import { CURRENT_POSITION, isHiddenOnMap, isLocalPicture } from '@/domain/place';
+import { CURRENT_POSITION, isLocalPicture } from '@/domain/place';
 import type { StreetPhoto } from '@/domain/street-photo';
 import type { Leg, TravelMode } from '@/domain/trip';
 import { findRoute } from '@/services/routing';
@@ -132,11 +132,8 @@ export function RoutesProvider({
   }, [fixture, key]);
 
   // Once per pair of ends, with the first trip request: never for every end tried on the
-  // home, never for a home or a place the traveller photographed (spec 030).
-  const wantsPhoto =
-    !!destination &&
-    !isHiddenOnMap(destination) &&
-    !(destination.photo && isLocalPicture(destination.photo));
+  // home, never for a place the traveller photographed (spec 030).
+  const wantsPhoto = !!destination && !(destination.photo && isLocalPicture(destination.photo));
   useEffect(() => {
     if (fixture || !end || !key || !wantsPhoto || photo?.ends === ends) return;
     const controller = new AbortController();

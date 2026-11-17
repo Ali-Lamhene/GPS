@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
-import { isHiddenOnMap, isLocalPicture } from '@/domain/place';
+import { isLocalPicture } from '@/domain/place';
 
 import { FloatingSheet } from '@/ui/components/floating-sheet';
 import { HelpButton } from '@/ui/components/help-button';
@@ -34,9 +34,9 @@ export function ArrivedScreen() {
   const goHome = useGoHome();
   useCueOnEnter('arrival');
   const { legs, streetPhoto } = useRoutes();
-  // The traveller's own photo first; else the street photo, never for a hidden place.
+  // The traveller's own photo first; else the street photo.
   const ownPhoto = !!destination?.photo && isLocalPicture(destination.photo);
-  const street = destination && !ownPhoto && !isHiddenOnMap(destination) ? streetPhoto : undefined;
+  const street = destination && !ownPhoto ? streetPhoto : undefined;
   const end = legs.at(-1)?.path.at(-1);
   const icon = destination?.icon ?? 'flag';
   const [sheetHeight, setSheetHeight] = useState(280);
@@ -71,11 +71,7 @@ export function ArrivedScreen() {
                   </View>
                 </>
               ) : destination ? (
-                <PlaceFace
-                  place={destination}
-                  iconSize={72}
-                  showPhoto={!isHiddenOnMap(destination)}
-                />
+                <PlaceFace place={destination} iconSize={72} />
               ) : (
                 <Icon name="flag" size={72} color={colors.emerald} variant="outlined" />
               )}

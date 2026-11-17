@@ -1,6 +1,6 @@
 import { GLYPHS } from '@/ui/icon/glyphs';
 
-import { hiddenOnMapByDefault, PICTOGRAM_CHOICES } from '../place';
+import { PICTOGRAM_CHOICES } from '../place';
 import {
   PICTOGRAM_CATALOGUE,
   pictogramFamily,
@@ -40,16 +40,6 @@ describe('pictogram catalogue (spec 011)', () => {
     expect(pictogramName('balance')).toBe('avocat');
     expect(pictogramName('visibility')).toBe('ophtalmologue');
     expect(pictogramFamily('stethoscope')).toBe('health');
-  });
-
-  test('homes and sensitive health places stay off the home map by default', () => {
-    expect(hiddenOnMapByDefault('home')).toBe(true);
-    expect(hiddenOnMapByDefault('family_home')).toBe(true);
-    expect(hiddenOnMapByDefault('group')).toBe(true);
-    expect(hiddenOnMapByDefault('night_shelter')).toBe(true);
-    expect(hiddenOnMapByDefault('psychology')).toBe(true);
-    expect(hiddenOnMapByDefault('mosque')).toBe(false);
-    expect(hiddenOnMapByDefault('balance')).toBe(false);
   });
 
   test('an unknown pictogram from a newer link becomes « autre lieu »', () => {

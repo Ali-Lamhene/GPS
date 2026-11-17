@@ -15,7 +15,6 @@ export const DEMO_PLACES: readonly Place[] = [
     icon: 'home',
     helpName: 'mon domicile',
     point: [5.3834, 43.2944],
-    hiddenOnMap: true,
   },
   { id: 'work', icon: 'work', helpName: 'mon lieu de travail', point: [5.3806, 43.3027] },
   {

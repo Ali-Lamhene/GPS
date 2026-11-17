@@ -10,7 +10,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { CURRENT_POSITION, isHiddenOnMap, type Place } from '@/domain/place';
+import { CURRENT_POSITION, type Place } from '@/domain/place';
 import { PlaceFace } from '@/ui/components/place-face';
 import { Icon, type IconName } from '@/ui/icon/icon';
 import { colors, shadows, spacing } from '@/ui/theme';
@@ -79,12 +79,8 @@ export function EndDisc({ end, place, calling, onPress, size }: EndDiscProps) {
       {place ? (
         <View key="place" style={[styles.disc, round]}>
           <View style={[styles.clip, { borderRadius: size / 2 }]}>
-            {/* Seen as soon as the app opens: a hidden place shows no facade (spec 005). */}
-            <PlaceFace
-              place={endPlace(place)}
-              iconSize={iconSize}
-              showPhoto={!isHiddenOnMap(place)}
-            />
+            {/* Seen as soon as the app opens: each place shows its photo (spec 005). */}
+            <PlaceFace place={endPlace(place)} iconSize={iconSize} />
           </View>
           {/* The end stays known by its symbol, not its side (spec 006). */}
           <View style={styles.badge}>
