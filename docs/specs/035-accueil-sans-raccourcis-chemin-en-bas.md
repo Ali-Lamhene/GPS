@@ -61,7 +61,7 @@ Aucun changement : aucune donnée, dépendance, permission ni appel réseau. Ce 
 - [x] « + » de 64 dp ; la colonne n'est là que tant qu'un bout appelle, donc jamais à côté de ✓.
 - [x] La carte se cadre au-dessus du chemin (et de la rangée ✕ ✓ quand elle est là).
 - [x] Le point de position est touchable tant que le départ appelle, et choisit « ici » (tests, carte web et téléphone).
-- [ ] Vérifié dans le navigateur (320 et 390 dp) et sur le téléphone. **Non fait** : Chrome et `adb` sont bloqués par le sandbox de cette session. Relu par `ux-sans-texte-reviewer` (fait, sur le code).
+- [ ] Vérifié à l'écran. **Fait en partie (2026-11-17)** : navigateur à 390 et 320 dp, accueil vide : chemin en bas, « + » (64 dp, grisé sans position) et bouton accompagnant au-dessus, aucune tuile, main sur le départ : conforme. **Reste à voir** : épingles, point de position touchable, rangée ✕ ✓ (carte web sans tuiles en Chrome sans fenêtre, pas de position) ; téléphone (aucune build de dev installée). Relu par `ux-sans-texte-reviewer` (sur le code).
 
 ## Hypothèses (mode autonome)
 
