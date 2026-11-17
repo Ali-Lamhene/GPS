@@ -31,7 +31,7 @@
 
 ## À trancher
 
-- Photos des lieux cachés de la carte (domicile, famille) : plus parlantes que des coordonnées en cas de fouille. Les déconseiller, ou ne pas les proposer ?
+- ~~Photos des lieux cachés de la carte~~ : tranché le 2026-11-17 (D21). Montrées comme les autres ; risque accepté par Ali.
 
 ## Hors périmètre
 

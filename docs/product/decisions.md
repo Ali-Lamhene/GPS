@@ -153,3 +153,14 @@ Le carrousel de tuiles de lieux est retiré de l'accueil : il doublait la carte 
 - **Écart assumé à D15** : « + » passe de 48 à 64 dp (D15 : boutons à la taille de la maquette). Demande de l'utilisateur (brief du 2026-11-17) : sans tuiles, « + » est l'action propre à l'accueil et doit se toucher sans viser. La couleur reste l'émeraude plein de la maquette. Risque relevé par la relecture UX : « + » plus saillant que la pastille qui appelle ; gardé tel quel par Ali (2026-11-17), à juger sur le terrain.
 - **« ici » depuis la carte** (décision d'Ali, 2026-11-17) : tant que le départ appelle, le point de position est touchable (petite main) et choisit « ici » comme départ.
 - Hypothèses prises en autonomie, à confirmer : ✕ et ✓ gardent la paire commune aux autres écrans (✕ à gauche, ✓ à droite, spec 023), donc le ✕ est au-dessus de la pastille de départ alors qu'il annule l'arrivée ; la rangée ✕ ✓ fait sauter la colonne de boutons et le recentrage de la hauteur de la rangée à son apparition.
+
+## D21. Levée de la règle « lieu caché de la carte » (2026-11-17, fiche 2/6)
+
+Décision d'Ali : la règle `hiddenOnMap` tombe. Maison, famille, hébergement et santé sensible ont leur **épingle** sur la carte d'accueil, leur **photo** partout (pastille, feuille des lieux, arrivée), et la photo de rue de l'arrivée (spec 030) leur est proposée comme aux autres. L'option « ne pas montrer sur la carte » n'a jamais eu de case à cocher dans l'app ; l'attribut est supprimé du modèle.
+
+- **Risque accepté par Ali** : un lieu sensible et sa photo deviennent visibles à quiconque voit l'écran ouvert. La menace « téléphone pris ou fouillé » ne compte plus sur ce garde-fou.
+- **Lieux déjà enregistrés** : le champ `hiddenOnMap` du fichier est **ignoré à la lecture** (quelle que soit sa valeur, même mal formée) et n'est plus écrit ; pas de changement de version du fichier. Le lieu s'affiche comme les autres.
+- **Conséquence réseau** : `api.panoramax.xyz` reçoit désormais, une fois par trajet, le point d'arrivée à environ 10 m aussi quand c'est un domicile (déjà vrai à la création, spec 033). À déclarer dans `securite.md`.
+- Le lien de partage ne transporte toujours pas la photo (spec 019, inchangé).
+- `PlaceFace` n'a plus de réglage `showPhoto` : la photo d'un lieu s'affiche toujours (toujours une image locale, `isLocalPicture`).
+- Les passages des specs 001, 005, 007, 008, 009, 011, 012, 015, 020, 022, 027, 029, 030, 033 qui décrivent la règle sont caducs ; la spec 035 est mise à jour.

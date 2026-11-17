@@ -37,7 +37,7 @@ Inchangés (specs 009, 011, 028) : bout à remplir par halo, main et contour ép
 | Situation                                     | Comportement attendu                                                                                                                                                       |
 | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Aucun lieu enregistré (premier lancement)     | épingles absentes ; le départ appelle ; la feuille propose « ici » ; pour l'arrivée, la feuille ne propose que la tuile « + » en pointillés (spec 015), et le « + » est là |
-| Lieu caché de la carte (maison, famille)      | pas d'épingle ; atteignable par la pastille et la feuille des lieux (la règle `hiddenOnMap` est revue par une autre fiche)                                                 |
+| Lieu caché de la carte (maison, famille)      | épingle comme les autres : la règle `hiddenOnMap` est levée (D21, 2026-11-17)                                                                                              |
 | Position inconnue (pas de point sur la carte) | « ici » grisé dans la feuille, un toucher la redemande (spec 017) ; « + » grisé                                                                                            |
 | Les deux bouts choisis, toucher une épingle   | l'arrivée est remplacée (comportement inchangé)                                                                                                                            |
 | Petit écran (320 × 640)                       | chemin (≈ 72 dp) + rangée ✕ ✓ (56 dp) en bas : la carte garde plus de la moitié de l'écran ; la colonne de droite reste au-dessus sans toucher la rangée                   |
@@ -50,7 +50,7 @@ Aucun changement : aucune donnée, dépendance, permission ni appel réseau. Ce 
 
 ## Hors périmètre
 
-- La règle `hiddenOnMap` et les épingles des lieux cachés (fiche 2).
+- ~~La règle `hiddenOnMap`~~ : levée par la fiche 2 (D21).
 - La photo des lieux (fiches 3 à 5).
 
 ## Critères d'acceptation

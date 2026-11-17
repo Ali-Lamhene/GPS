@@ -9,7 +9,8 @@ Fichier de passation entre sessions. Mis à jour à la fin de chaque tâche, dan
 **Lot du 2026-11-17 (mode autonome, 6 fiches, une session par fiche, avant la build `preview`).** Fiche 1/6 faite : accueil sans raccourcis (spec 035).
 
 - Fiche 1 livrée : plus de carrousel de tuiles ; le chemin est en bas ; ✕ et ✓ au-dessus du chemin quand les deux bouts sont choisis ; « + » à 64 dp. Trajet complet par les épingles seules ou par les pastilles seules (tests). **Vérifié à l'écran en partie (2026-11-17)** : navigateur à 390 et 320 dp, accueil vide (chemin en bas, colonne « + » et accompagnant au-dessus, aucune tuile) : conforme. Non vu : épingles, point de position, rangée ✕ ✓ (la carte web ne se charge pas sans réseau dans Chrome sans fenêtre, pas de position) ; téléphone : aucune build de dev installée (seul `io.github.alilamhene.yalla` est présent, sans Metro). À voir sur une build de dev ou `preview`.
-- Restent : fiche 2 (lever `hiddenOnMap`), 3 (photo visible partout), 4 (photo à la création), 5 (modifier un lieu), 6 (dézoom).
+- **Fiche 2 livrée (2026-11-17, D21)** : `hiddenOnMap` supprimé du modèle ; tout lieu (maison comprise) a épingle et photo partout ; champ ancien ignoré à la lecture du fichier ; `PlaceFace` sans `showPhoto` ; photo de rue proposée aussi pour un domicile. Tests adaptés, suite verte (362). **En attente** : mise à jour de `docs/engineering/securite.md` (bloquée par le garde-fou, voir rapport) ; non vérifié à l'écran.
+- Restent : fiche 3 (photo visible partout), 4 (photo à la création), 5 (modifier un lieu), 6 (dézoom).
 - Décidé par Ali (2026-11-17) : le point de position est touchable tant que le départ appelle (choisit « ici ») ; « + » garde 64 dp émeraude.
 
 **Dernière session : 2026-11-10, retours terrain en 6 points.** Le détail est dans la section « Retours terrain du 2026-11-10 », plus bas, sous « Prochaine étape (session suivante) ».
