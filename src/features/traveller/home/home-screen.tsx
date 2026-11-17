@@ -23,7 +23,7 @@ import { SaveFailedSignal } from './save-failed-signal';
 
 const STREET_ZOOM = 16;
 
-/** Where a place shows on the map, (spec 005). */
+/** Where a place shows on the map (spec 005). */
 function visiblePoint(place: Place | undefined, position: LngLat | undefined): LngLat | undefined {
   if (place?.id === CURRENT_POSITION.id) return position;
   return place ? place.point : undefined;

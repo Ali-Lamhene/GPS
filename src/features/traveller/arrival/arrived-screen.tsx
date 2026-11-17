@@ -53,8 +53,7 @@ export function ArrivedScreen() {
       )}
       <MapHeader right={<HelpButton onPress={() => router.push('/help')} />} />
       <FloatingSheet gap={14} onHeight={setSheetHeight}>
-        {/* The place reached is the hero (spec 010): its pictogram, or its photo unless it is
-            private (home, family), in a large emerald-edged disc, then the seal. */}
+        {/* The place reached is the hero (spec 010): its pictogram, or its photo, in a large emerald-edged disc, then the seal. */}
         <View style={styles.hero}>
           <View style={styles.halo}>
             <View style={styles.disc}>
