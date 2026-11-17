@@ -58,6 +58,8 @@ export type TripMapProps = {
   /** Saved places, drawn as pins the traveller can touch. */
   pins?: readonly MapPin[];
   onPinPress?: (id: string) => void;
+  /** A finger held on a pin: change its place (spec 037). Never also a press. */
+  onPinLongPress?: (id: string) => void;
   /** Background only (home): softened and without gestures. */
   backdrop?: boolean;
   /** False keeps the map still, under content pinned to its centre (new place). */

@@ -161,6 +161,8 @@ export function HomeScreen() {
         traveller={position ? { point: position } : undefined}
         pins={pins}
         onPinPress={(placeId) => choose(calling ?? 'destination', placeId)}
+        // A finger held on a pin changes its place (spec 037).
+        onPinLongPress={editPlace}
         // While the start calls, the traveller's own dot chooses « here » (spec 035).
         onTravellerPress={
           calling === 'origin' && position ? () => choose('origin', CURRENT_POSITION.id) : undefined

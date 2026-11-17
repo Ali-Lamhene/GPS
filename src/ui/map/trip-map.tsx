@@ -6,6 +6,7 @@ import {
   Marker,
   type CameraRef,
   type LngLatBounds,
+  type MapRef,
 } from '@maplibre/maplibre-react-native';
 import type { FeatureCollection } from 'geojson';
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -26,6 +27,7 @@ import {
   TravellerDot,
 } from './map-markers';
 import { MapCredit } from './map-texts';
+import { pinAtPoint } from './pin-hit';
 import { buildMapStyle } from './map-style';
 import { RECENTER_SIZE, type MapLine, type TripMapProps } from './trip-map-types';
 
@@ -119,8 +121,28 @@ export function TripMap({
   recenterIcon = 'person_pin_circle',
   pins = [],
   onPinPress,
+  onPinLongPress,
   onTravellerPress,
 }: TripMapProps) {
+  const mapRef = useRef<MapRef>(null);
+  // A long press on a marker reaches the map, not the marker (patched library, spec 037):
+  // the pin under the finger is found from where each pin stands on the screen.
+  const findLongPressedPin = async (point: readonly [number, number]) => {
+    const map = mapRef.current;
+    if (!map || !onPinLongPress) return;
+    try {
+      const projected = await Promise.all(
+        pins.map(async (pin) => {
+          const [x, y] = await map.project([pin.point[0], pin.point[1]]);
+          return { id: pin.id, x, y, selected: pin.selected ?? false };
+        }),
+      );
+      const id = pinAtPoint(point, projected);
+      if (id) onPinLongPress(id);
+    } catch {
+      // The map went away meanwhile: nothing to change.
+    }
+  };
   // Online tiles (spec 017): without network, the ground stays plain and routes and markers
   // are still drawn.
   const mapStyle = useMemo(() => buildMapStyle(MAP_TILES_URL, MAP_CREDIT), []);
@@ -205,7 +227,13 @@ export function TripMap({
   return (
     <View style={[StyleSheet.absoluteFill, styles.ground]}>
       <MapView
+        ref={mapRef}
         style={StyleSheet.absoluteFill}
+        onLongPress={
+          onPinLongPress && pins.length > 0
+            ? (event) => void findLongPressedPin(event.nativeEvent.point)
+            : undefined
+        }
         mapStyle={mapStyle}
         // A texture draws inside the view tree: a GL surface shows black until its first
         // frame and while screens slide over it.
@@ -284,8 +312,12 @@ export function TripMap({
               accessible
               accessibilityRole="button"
               accessibilityLabel={pin.label}
-              accessibilityActions={[{ name: 'activate' }]}
-              onAccessibilityAction={() => onPinPress?.(pin.id)}
+              accessibilityActions={[{ name: 'activate' }, { name: 'longpress' }]}
+              onAccessibilityAction={(event) =>
+                event.nativeEvent.actionName === 'longpress'
+                  ? onPinLongPress?.(pin.id)
+                  : onPinPress?.(pin.id)
+              }
             >
               <PlacePin icon={pin.icon} photo={pin.photo} selected={pin.selected ?? false} />
             </View>
