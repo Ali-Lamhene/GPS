@@ -15,7 +15,7 @@ Read `docs/product/personas.md`, `docs/product/principes.md` and `docs/product/d
 `docs/status.md` is the handoff between sessions: where we are, next step, open product questions, what waits on the user. A `SessionStart` hook injects it with the recent git log.
 
 - When the user says "reprenons" (or "on reprend", "où en est-on"), answer from that context: where we are, the next step, the open questions that block it. Then propose to start the next step. Do not re-explore the repo to rebuild that picture.
-- Update `docs/status.md` at the end of every task, in the same commit: move done items, set the next step, add or close open questions and pending user actions.
+- Update `docs/status.md` at the end of every task, in the same commit: move done items, set the next step, add or close open questions and pending user actions. Keep `docs/status.md` a short resume (6 KB max); move history and past details to `docs/historique.md` (archive, read on demand with grep).
 
 ## Workflow
 
