@@ -165,3 +165,13 @@ Décision d'Ali : la règle `hiddenOnMap` tombe. Maison, famille, hébergement e
 - Le lien de partage ne transporte toujours pas la photo (spec 019, inchangé).
 - `PlaceFace` n'a plus de réglage `showPhoto` : la photo d'un lieu s'affiche toujours (toujours une image locale, `isLocalPicture`).
 - Les passages des specs 001, 005, 007, 008, 009, 011, 012, 015, 020, 022, 027, 029, 030, 033 qui décrivent la règle sont caducs ; la spec 035 est mise à jour.
+
+## D22. Un lieu se modifie après coup : pictogramme et photo (2026-11-17, fiche 5/6, spec 037)
+
+Révise la réponse du 2026-11-10 (spec 033, « pas de remplacement plus tard ») et la spec 020 (photo choisie seulement à la création). Décision d'Ali : le pictogramme et la photo d'un lieu enregistré se changent après coup, par le voyageur comme par l'accompagnant.
+
+- **Entrée** (Ali, 2026-11-17) : appui long sur l'épingle du lieu ou sur le lieu dans la feuille des lieux. Le toucher court reste le choix du trajet (spec 035).
+- **Parcours** : les écrans de la création, E28 (pictogramme actuel déjà choisi) puis E29 (photo actuelle en grand, ✓ pour la garder ; photo de rue, caméra, galerie ou sans photo pour la changer).
+- Le lieu garde son identifiant, son point, son adresse et son nom pour le passant. L'ancienne photo est effacée après l'enregistrement réussi.
+- Hors périmètre : renommer, supprimer, changer l'adresse.
+- **Android** : MapLibre Native 11.5.1 ne transmet pas l'appui long fait sur un marqueur ; un correctif de deux lignes est appliqué à la bibliothèque à l'installation (`scripts/patch-maplibre-long-press.js`). Il demande une nouvelle build native.

@@ -1,6 +1,8 @@
 # 033 — Photo Panoramax proposée à la création d'un lieu
 
 > **Remplacé en partie par D21 (2026-11-17)** : l'écart « lieu caché de la carte, recherche faite quand même » devient la règle générale ; la notion de lieu caché n'existe plus.
+>
+> **Révisé par D22 (2026-11-17, spec 037)** : la photo d'un lieu se remplace après coup (appui long sur son épingle ou sur sa tuile, puis E28 et E29). « Pas de remplacement plus tard » ne vaut plus.
 
 - **Statut** : livré (réponses de l’utilisateur du 2026-11-10 ; détails tranchés en autonomie le 2026-11-12, listés dans « Hypothèses » ; à vérifier sur le téléphone)
 - **Date** : 2026-11-12
@@ -53,7 +55,7 @@ Retour de terrain du 2026-11-10 (point 4) : quand une photo de rue existe pour l
 
 ## Hors périmètre
 
-- Remplacer la photo d'un lieu existant.
+- ~~Remplacer la photo d'un lieu existant.~~ Fait par la spec 037 (D22).
 - Plusieurs photos proposées, choix dans un panorama, zoom.
 - Crédit par photo (à revoir avant les stores, comme pour la spec 030).
 
@@ -78,7 +80,7 @@ Retour de terrain du 2026-11-10 (point 4) : quand une photo de rue existe pour l
 
 ## Questions / réponses (2026-11-10)
 
-- Quand ? À la création du lieu seulement, sur E29 ; pas de remplacement plus tard.
+- Quand ? À la création du lieu seulement, sur E29 ; pas de remplacement plus tard. **Révisé le 2026-11-17 (D22, spec 037) : aussi en modifiant le lieu.**
 - Lieux cachés de la carte ? Proposer quand même.
 - Affichage ? Vignette à toucher en bas de E29, à côté du déclencheur et de la galerie ; roue pendant la recherche ; rien trouvé, pas de vignette.
 - Combien ? La meilleure seule, la plus proche tournée vers le lieu.
