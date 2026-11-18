@@ -6,6 +6,11 @@ import {
 import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { TripMap } from '../trip-map';
+import { boundsPadding } from '../trip-map-types';
+
+// What the screen asks the native camera: its first framing, and every later one.
+const mockCameraProps = jest.fn();
+const mockFitBounds = jest.fn();
 
 // The phone's map, with MapLibre Native replaced by views that draw their children.
 jest.mock('@maplibre/maplibre-react-native', () => {
@@ -13,8 +18,9 @@ jest.mock('@maplibre/maplibre-react-native', () => {
   const { Pressable, View } = jest.requireActual<typeof import('react-native')>('react-native');
   const container = ({ children }: { children?: React.ReactNode }) =>
     React.createElement(View, null, children);
-  const Camera = React.forwardRef((_props: object, ref: React.Ref<unknown>) => {
-    React.useImperativeHandle(ref, () => ({ easeTo: jest.fn(), fitBounds: jest.fn() }));
+  const Camera = React.forwardRef((props: object, ref: React.Ref<unknown>) => {
+    React.useImperativeHandle(ref, () => ({ easeTo: jest.fn(), fitBounds: mockFitBounds }));
+    mockCameraProps(props);
     return null;
   });
   Camera.displayName = 'Camera';
@@ -22,10 +28,18 @@ jest.mock('@maplibre/maplibre-react-native', () => {
   const Marker = ({ children, onPress }: { children?: React.ReactNode; onPress?: () => void }) =>
     React.createElement(Pressable, { onPress, disabled: !onPress }, children);
   // A host view keeps any prop: the test reads what the app gives the map.
-  const Map = ({ children, onLongPress }: { children?: React.ReactNode; onLongPress?: unknown }) =>
+  const Map = ({
+    children,
+    onLongPress,
+    onDidFinishLoadingMap,
+  }: {
+    children?: React.ReactNode;
+    onLongPress?: unknown;
+    onDidFinishLoadingMap?: unknown;
+  }) =>
     React.createElement(
       View,
-      { testID: 'map', onLongPress } as React.ComponentProps<typeof View>,
+      { testID: 'map', onLongPress, onDidFinishLoadingMap } as React.ComponentProps<typeof View>,
       children,
     );
   return {
@@ -152,6 +166,52 @@ describe('<TripMap /> on the phone', () => {
     expect(
       screen.getByText('© OpenFreeMap © OpenMapTiles © OpenStreetMap · Trajets : Transitous'),
     ).toBeOnTheScreen();
+  });
+});
+
+describe('<TripMap /> framing a box (spec 005)', () => {
+  const box: [readonly [number, number], readonly [number, number]] = [
+    [5.36, 43.29],
+    [5.39, 43.31],
+  ];
+  const padding = { top: 100, bottom: 200, left: 40, right: 90 };
+
+  test('room for the pins: the margins of the screen plus room above and around', () => {
+    expect(boundsPadding(padding)).toEqual({ top: 164, bottom: 224, left: 72, right: 122 });
+    expect(boundsPadding(undefined)).toEqual({ top: 64, bottom: 24, left: 32, right: 32 });
+  });
+
+  test('the first framing keeps the same margins as the later ones: no pin cut at the edge', async () => {
+    mockCameraProps.mockClear();
+    mockFitBounds.mockClear();
+    await render(<TripMap camera={{ ...camera, bounds: [...box], padding }} />);
+
+    const first = mockCameraProps.mock.calls[0]?.[0] as { initialViewState: object };
+    expect(first.initialViewState).toEqual({
+      bounds: [5.36, 43.29, 5.39, 43.31],
+      padding: boundsPadding(padding),
+    });
+    expect(mockFitBounds).toHaveBeenCalledWith(
+      [5.36, 43.29, 5.39, 43.31],
+      expect.objectContaining({ padding: boundsPadding(padding) }),
+    );
+  });
+
+  test('once loaded, the map frames again with the margins measured since (bottom bar)', async () => {
+    const { rerender } = await render(
+      <TripMap camera={{ ...camera, bounds: [...box], padding: { top: 100, bottom: 0 } }} />,
+    );
+    // The bottom bar is measured after the first image; the native map is not loaded yet.
+    await rerender(<TripMap camera={{ ...camera, bounds: [...box], padding }} />);
+    mockFitBounds.mockClear();
+
+    await fireEvent(screen.getByTestId('map'), 'didFinishLoadingMap');
+
+    expect(mockFitBounds).toHaveBeenCalledTimes(1);
+    expect(mockFitBounds).toHaveBeenCalledWith(
+      [5.36, 43.29, 5.39, 43.31],
+      expect.objectContaining({ padding: boundsPadding(padding) }),
+    );
   });
 });
 

@@ -72,5 +72,21 @@ export type TripMapProps = {
   recenterIcon?: IconName;
 };
 
+type Padding = NonNullable<TripMapProps['camera']['padding']>;
+
+/**
+ * Margins around a framed box: the screen's own, plus room for the pins, which stand above
+ * their point. The first framing and every later one use the same (spec 005): on the phone
+ * the map ignores a framing asked before it is ready, so the first one must carry them.
+ */
+export function boundsPadding(padding: Padding | undefined): Required<Padding> {
+  return {
+    top: (padding?.top ?? 0) + 64,
+    bottom: (padding?.bottom ?? 0) + 24,
+    left: (padding?.left ?? 0) + 32,
+    right: (padding?.right ?? 0) + 32,
+  };
+}
+
 /** Side of the round recenter button of the map. */
 export const RECENTER_SIZE = 40;

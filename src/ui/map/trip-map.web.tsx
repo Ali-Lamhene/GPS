@@ -30,7 +30,7 @@ import {
   injectMapCss,
 } from './map-markers.web';
 import { buildMapStyle } from './map-style';
-import { RECENTER_SIZE, type MapLine, type TripMapProps } from './trip-map-types';
+import { boundsPadding, RECENTER_SIZE, type MapLine, type TripMapProps } from './trip-map-types';
 
 // Browser map of spec 002: MapLibre over the bundled Marseille tiles, without labels.
 
@@ -342,13 +342,12 @@ export function TripMap({
     const bounds = JSON.parse(boundsKey) as TripMapProps['camera']['bounds'] | null;
     if (bounds) {
       map.fitBounds([bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]], {
-        // Room for the pins, which stand above their point.
-        padding: {
-          top: paddingTop + 64,
-          bottom: paddingBottom + 24,
-          left: paddingLeft + 32,
-          right: paddingRight + 32,
-        },
+        padding: boundsPadding({
+          top: paddingTop,
+          bottom: paddingBottom,
+          left: paddingLeft,
+          right: paddingRight,
+        }),
         bearing: 0,
         pitch: 0,
         maxZoom: 17,

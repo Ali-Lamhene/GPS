@@ -27,7 +27,7 @@ import {
 } from './map-markers';
 import { MapCredit } from './map-texts';
 import { buildMapStyle } from './map-style';
-import { RECENTER_SIZE, type MapLine, type TripMapProps } from './trip-map-types';
+import { boundsPadding, RECENTER_SIZE, type MapLine, type TripMapProps } from './trip-map-types';
 
 // Phone map of spec 002: MapLibre Native over the bundled Marseille tiles, without labels,
 // the same as the browser one (trip-map.web.tsx).
@@ -153,6 +153,9 @@ export function TripMap({
   const paddingBottom = camera.padding?.bottom ?? 0;
   const paddingLeft = camera.padding?.left ?? 0;
   const paddingRight = camera.padding?.right ?? 0;
+  // The native map ignores a move asked before it is loaded: the framing is asked again once
+  // it is, with the margins measured by then (the bottom bar of the home, spec 005).
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     const ref = cameraRef.current;
     if (!ref || !following) return;
@@ -160,13 +163,12 @@ export function TripMap({
     if (bounds) {
       const box: LngLatBounds = [bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]];
       ref.fitBounds(box, {
-        // Room for the pins, which stand above their point.
-        padding: {
-          top: paddingTop + 64,
-          bottom: paddingBottom + 24,
-          left: paddingLeft + 32,
-          right: paddingRight + 32,
-        },
+        padding: boundsPadding({
+          top: paddingTop,
+          bottom: paddingBottom,
+          left: paddingLeft,
+          right: paddingRight,
+        }),
         bearing: 0,
         pitch: 0,
         duration: MOVE_MS,
@@ -182,6 +184,7 @@ export function TripMap({
       duration: MOVE_MS,
     });
   }, [
+    loaded,
     following,
     boundsKey,
     centerLon,
@@ -231,6 +234,7 @@ export function TripMap({
         }}
         onRegionIsChanging={(event) => trackBearing(event.nativeEvent.bearing)}
         onRegionDidChange={(event) => setShownBearing(event.nativeEvent.bearing)}
+        onDidFinishLoadingMap={() => setLoaded(true)}
       >
         <Camera
           ref={cameraRef}
@@ -244,6 +248,7 @@ export function TripMap({
                     initial.bounds[1][0],
                     initial.bounds[1][1],
                   ],
+                  padding: boundsPadding(initial.padding),
                 }
               : {
                   center: [initial.center[0], initial.center[1]],
