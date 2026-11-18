@@ -17,7 +17,7 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 
 - D1 sécurité : aucun compte, aucune identité, aucun serveur à nous ; menace = lien entre identité et déplacements. Appels tiers sans clé acceptés si la spec déclare les données reçues (Transitous, OpenFreeMap, Photon, Panoramax).
 - D3 le lieu est l'objet central (photo, pictogramme, couleur) ; trajets composés départ + arrivée ; D4 calcul en ligne, trajets gardés sur le téléphone ; D2 à pied et transports (voiture retirée, spec 026).
-- D15 maquette émeraude (`docs/design/maquette-emeraude.png`) fait foi ; D21 tout lieu (maison comprise) a épingle et photo partout ; D22 appui long sur épingle ou tuile = changer pictogramme/photo ; le toucher court choisit le trajet.
+- D15 maquette émeraude (`docs/design/maquette-emeraude.png`) fait foi ; D21 tout lieu (maison comprise) a épingle et photo partout ; D22 appui long sur une tuile de la feuille des lieux = changer pictogramme/photo (l'appui long sur l'épingle de la carte et son correctif MapLibre sont retirés, 2026-11-18, fiche 7) ; le toucher court choisit le trajet.
 - Zéro texte dans l'interface : ESLint « zéro texte », sous-agent `ux-sans-texte-reviewer`, deux canaux de signal minimum. Plus aucune cible (spec 027) : épingle à personnage pour « moi ici ».
 - Arrivée à 15 m (`ARRIVED_METERS`) ; alerte hors chemin à 15 m sur 2 positions, nouveau trajet à plus de 30 m, retour à 10 m (spec 032) ; 6 recalculs max par trajet.
 - Photo de rue : Panoramax (la plus proche, 20 candidates), crédit à afficher ; proposée aussi pour un domicile (spec 033) ; la photo ne voyage pas dans le lien de partage.
@@ -39,7 +39,6 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 
 ## Pièges connus actifs
 
-- Correctif natif MapLibre 11.5.1 : `scripts/patch-maplibre-long-press.js` (via `postinstall`) rend l'appui long sur marqueur Android ; **build native depuis un commit contenant `2ec6fb6` obligatoire** ; `--ignore-scripts` le saute (un test le repère).
 - Épingle Android : image React Native (pas `expo-image`), sinon la photo ne se charge pas ; photo de l'épingle non vérifiée sur téléphone. L'image des épingles web n'a pas de repli si le fichier manque.
 - Sur le web, l'en-tête `no-store` bloque l'appel Panoramax par CORS (sans effet sur Android).
 - Carte web sans réseau dans Chrome sans fenêtre : épingles, position et gestes non testables au navigateur.
@@ -47,7 +46,7 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 
 ## En attente côté humain
 
-- Ali : build native (dev ou `preview`) depuis un commit contenant `2ec6fb6`, puis la liste « À voir sur le téléphone » de la spec 037 ; ancien APK de dev `org.gpssanstexte.app.dev` à désinstaller.
+- Ali : build (dev ou `preview`), puis la liste « À voir sur le téléphone » de la spec 037 ; ancien APK de dev `org.gpssanstexte.app.dev` à désinstaller.
 - Ali : retours du terrain restants (icônes à l'ajout d'un lieu, recherche Photon lente : combien de secondes ?), captures promises.
 
 Historique détaillé : docs/historique.md

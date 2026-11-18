@@ -170,8 +170,8 @@ Décision d'Ali : la règle `hiddenOnMap` tombe. Maison, famille, hébergement e
 
 Révise la réponse du 2026-11-10 (spec 033, « pas de remplacement plus tard ») et la spec 020 (photo choisie seulement à la création). Décision d'Ali : le pictogramme et la photo d'un lieu enregistré se changent après coup, par le voyageur comme par l'accompagnant.
 
-- **Entrée** (Ali, 2026-11-17) : appui long sur l'épingle du lieu ou sur le lieu dans la feuille des lieux. Le toucher court reste le choix du trajet (spec 035).
+- **Entrée** (Ali, 2026-11-17, révisée le 2026-11-18) : appui long sur le lieu dans la feuille des lieux, seule entrée. Le toucher court reste le choix du trajet (spec 035).
 - **Parcours** : les écrans de la création, E28 (pictogramme actuel déjà choisi) puis E29 (photo actuelle en grand, ✓ pour la garder ; photo de rue, caméra, galerie ou sans photo pour la changer).
 - Le lieu garde son identifiant, son point, son adresse et son nom pour le passant. L'ancienne photo est effacée après l'enregistrement réussi.
 - Hors périmètre : renommer, supprimer, changer l'adresse.
-- **Android** : MapLibre Native 11.5.1 ne transmet pas l'appui long fait sur un marqueur ; un correctif de deux lignes est appliqué à la bibliothèque à l'installation (`scripts/patch-maplibre-long-press.js`). Il demande une nouvelle build native.
+- **Retrait de l'appui long sur l'épingle de la carte (Ali, 2026-11-18)** : sur Android, MapLibre Native 11.5.1 ne transmet pas l'appui long fait sur un marqueur, et le faire marcher demandait un correctif appliqué au code natif de la bibliothèque à chaque installation. Motif : éviter de modifier du code tiers. Le correctif, son `postinstall`, `pin-hit.ts`, `pin-gesture.ts` et leurs tests sont supprimés ; le toucher court sur l'épingle est inchangé.

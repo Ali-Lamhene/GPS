@@ -110,8 +110,8 @@ export function HomeScreen() {
     setSheet(null);
   };
 
-  // A long press on a saved place, pin or sheet tile, changes its pictogram and photo (spec
-  // 037): felt and heard like the end of a hold, then the pictogram screen.
+  // A long press on a saved place of the sheet changes its pictogram and photo (spec 037):
+  // felt and heard like the end of a hold, then the pictogram screen.
   const editPlace = (placeId: string) => {
     const place = plan.customPlaces.find((each) => each.id === placeId);
     if (!place) return;
@@ -161,8 +161,6 @@ export function HomeScreen() {
         traveller={position ? { point: position } : undefined}
         pins={pins}
         onPinPress={(placeId) => choose(calling ?? 'destination', placeId)}
-        // A finger held on a pin changes its place (spec 037).
-        onPinLongPress={editPlace}
         // While the start calls, the traveller's own dot chooses « here » (spec 035).
         onTravellerPress={
           calling === 'origin' && position ? () => choose('origin', CURRENT_POSITION.id) : undefined

@@ -1,6 +1,6 @@
 # 037 — Modifier un lieu après coup : pictogramme et photo
 
-- **Statut** : livré en autonomie (brief du 2026-11-17, fiche 5/6 validée par Ali ; mode autonome, pas de validation de spec attendue) ; à voir sur le téléphone, après une nouvelle build native
+- **Statut** : livré en autonomie (brief du 2026-11-17, fiche 5/6 validée par Ali ; mode autonome, pas de validation de spec attendue) ; entrée par l'épingle de la carte retirée le 2026-11-18 (fiche 7) ; à voir sur le téléphone
 - **Date** : 2026-11-17
 - **Persona** : voyageur et accompagnant (même entrée, même parcours)
 - **Révise** : spec 033 (« pas de remplacement plus tard », réponse du 2026-11-10), spec 020 (photo choisie seulement à la création), spec 001 (un lieu ne se modifie pas)
@@ -11,7 +11,7 @@ Changer le **pictogramme** et la **photo** d'un lieu déjà enregistré : une ph
 
 ## Parcours
 
-1. **Entrée** (décision d'Ali, 2026-11-17) : **appui long** (environ une demi-seconde) sur l'**épingle** du lieu, sur la carte d'accueil, ou sur le **lieu dans la feuille des lieux** (ouverte par une pastille du chemin). Le téléphone vibre et joue le son « select » (signal `hold`, celui de la fin d'un appui tenu) ; l'écran du pictogramme s'ouvre.
+1. **Entrée** (décision d'Ali, 2026-11-17, **révisée le 2026-11-18**) : **appui long** (environ une demi-seconde) sur le **lieu dans la feuille des lieux** (ouverte par une pastille du chemin). L'appui long sur l'**épingle** de la carte d'accueil est **retiré** (voir « Retrait de l'entrée par la carte »). Le téléphone vibre et joue le son « select » (signal `hold`, celui de la fin d'un appui tenu) ; l'écran du pictogramme s'ouvre.
 2. **Pictogramme (E28, réutilisé)** : la carte est centrée sur le lieu ; la grille montre le **pictogramme actuel déjà choisi**, et défile d'elle-même, sans animation, pour le mettre dans la première rangée visible ; l'aperçu au-dessus de la grille montre l'épingle du lieu **avec sa photo actuelle** et le pictogramme choisi dans une **pastille agrandie** (36 dp au lieu de 20) pour que le changement se voie. Toucher un autre pictogramme change l'aperçu. ✓ continue vers la photo. ← revient à l'accueil sans rien changer.
 3. **Photo (E29, réutilisé)** :
    - Lieu **qui a une photo** : l'écran s'ouvre avec **sa photo actuelle en grand dans le cadre** et le rond émeraude ✓ à la place du déclencheur. Au-dessus de « sans photo », une vignette ronde de cette photo, cerclée d'émeraude, avec le **pictogramme du lieu** en badge. Toucher ✓ **garde la photo actuelle** (seul le pictogramme change). Toucher la vignette referme l'aperçu : la caméra revient, le déclencheur aussi ; un nouveau toucher rouvre l'aperçu.
@@ -24,8 +24,8 @@ Changer le **pictogramme** et la **photo** d'un lieu déjà enregistré : une ph
 
 ## Le toucher court ne change pas
 
-- Toucher court sur une épingle ou un lieu de la feuille : choix du trajet, comme avant (spec 035). Un appui long n'est **jamais** aussi un toucher court : ni lieu choisi, ni son « select » en plus.
-- Un doigt qui glisse (déplacer la carte) n'est pas un appui long.
+- Toucher court sur une épingle ou un lieu de la feuille : choix du trajet, comme avant (spec 035). Un appui long sur un lieu de la feuille n'est **jamais** aussi un toucher court : ni lieu choisi, ni son « select » en plus.
+- Sur la carte, un appui long sur une épingle ne fait rien de plus que ce qu'il faisait avant la spec 037.
 
 ## Signaux
 
@@ -39,40 +39,43 @@ Changer le **pictogramme** et la **photo** d'un lieu déjà enregistré : une ph
 
 ## Cas limites
 
-| Situation                                    | Comportement attendu                                                                                                                                                                                          |
-| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| « ici » (position actuelle)                  | Pas modifiable : aucun appui long sur le point de position ni sur la tuile « ici ». Le point de position, dessiné au-dessus des épingles, garde son appui long même quand le voyageur est sur un de ses lieux |
-| Doigt juste à côté d'une épingle             | Rien : la zone de l'appui long est le dessin de l'épingle, sans marge, comme le toucher court (D15)                                                                                                           |
-| Lieu de l'autre bout, grisé dans la feuille  | Rien (tuile inactive) ; on le modifie par son épingle                                                                                                                                                         |
-| Lieu reçu par lien (spec 023), sans photo    | Modifiable comme les autres ; la photo ajoutée reste sur ce téléphone, elle ne voyage jamais dans un lien                                                                                                     |
-| Lieu sans point                              | Pas d'épingle ; modifiable par la feuille ; E28 centrée sur la position du voyageur ; aucune photo de rue                                                                                                     |
-| Photo remplacée ou retirée                   | L'ancien fichier est effacé **après** l'enregistrement réussi, jamais avant                                                                                                                                   |
-| Photo actuelle gardée                        | Aucun fichier nouveau, aucun effacé                                                                                                                                                                           |
-| Enregistrement impossible (téléphone plein…) | Le lieu reste comme avant ; la nouvelle photo est effacée ; croix rouge à l'accueil (spec 015)                                                                                                                |
-| ← sur E28                                    | Retour à l'accueil, rien ne change                                                                                                                                                                            |
-| ← sur E29                                    | Retour à E28 (le pictogramme choisi reste) ; si l'aperçu d'une photo de rue ou de « sans photo » est ouvert, il se ferme d'abord                                                                              |
-| Les deux bouts choisis                       | L'appui long marche toujours (épingles et feuille)                                                                                                                                                            |
-| Adresse                                      | Jamais redemandée à Photon (changer l'adresse est hors périmètre)                                                                                                                                             |
+| Situation                                    | Comportement attendu                                                                                                             |
+| -------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| « ici » (position actuelle)                  | Pas modifiable : aucun appui long sur la tuile « ici »                                                                           |
+| Lieu de l'autre bout, grisé dans la feuille  | Rien (tuile inactive) ; on le modifie en ouvrant la feuille de l'autre bout                                                      |
+| Lieu reçu par lien (spec 023), sans photo    | Modifiable comme les autres ; la photo ajoutée reste sur ce téléphone, elle ne voyage jamais dans un lien                        |
+| Lieu sans point                              | Pas d'épingle ; modifiable par la feuille ; E28 centrée sur la position du voyageur ; aucune photo de rue                        |
+| Photo remplacée ou retirée                   | L'ancien fichier est effacé **après** l'enregistrement réussi, jamais avant                                                      |
+| Photo actuelle gardée                        | Aucun fichier nouveau, aucun effacé                                                                                              |
+| Enregistrement impossible (téléphone plein…) | Le lieu reste comme avant ; la nouvelle photo est effacée ; croix rouge à l'accueil (spec 015)                                   |
+| ← sur E28                                    | Retour à l'accueil, rien ne change                                                                                               |
+| ← sur E29                                    | Retour à E28 (le pictogramme choisi reste) ; si l'aperçu d'une photo de rue ou de « sans photo » est ouvert, il se ferme d'abord |
+| Les deux bouts choisis                       | L'appui long de la feuille marche toujours                                                                                       |
+| Adresse                                      | Jamais redemandée à Photon (changer l'adresse est hors périmètre)                                                                |
 
 ## Données et confidentialité
 
 - Rien de nouveau ne sort du téléphone, sauf la recherche de photo de rue de E29 (`api.panoramax.xyz` : le point du lieu à environ 10 m et l'IP, une fois par ouverture), **déjà déclarée** pour la création (spec 033) ; elle se fait aussi à la modification.
 - Photo : réencodée sans métadonnées, dans les documents privés hors sauvegarde (specs 016, 020) ; l'ancienne est effacée après l'enregistrement.
-- **Appui long sur une épingle, Android** : MapLibre Native 11.5.1 avale l'appui long fait sur un marqueur (`onMapLongClick` sort sans rien dire si le doigt est dans un marqueur). Un petit correctif est appliqué au code natif de la bibliothèque à l'installation (`scripts/patch-maplibre-long-press.js`, lancé par `postinstall`) : l'appui long est transmis à la carte, qui trouve l'épingle sous le doigt. **Il faut une nouvelle build native** (dev ou `preview`) pour qu'il marche sur le téléphone. Aucune dépendance ajoutée, aucune permission.
+- Aucune dépendance ajoutée, aucune permission, aucun code tiers modifié.
+
+## Retrait de l'entrée par la carte (2026-11-18, décision d'Ali)
+
+L'appui long sur l'épingle de la carte est **retiré**, sur le web et sur Android. Motif : sur Android, MapLibre Native 11.5.1 avale l'appui long fait sur un marqueur ; le faire marcher demandait un correctif appliqué au code natif de la bibliothèque à chaque installation (`scripts/patch-maplibre-long-press.js`, `postinstall`). On évite de modifier du code tiers. Supprimés : le script, le `postinstall` qui le lançait, `pin-hit.ts`, `pin-gesture.ts`, la propriété `onPinLongPress` de la carte et leurs tests. Le toucher court sur une épingle est inchangé. L'entrée par la feuille des lieux (appui long sur une tuile) reste la seule. Les pastilles du chemin (`EndDisc`) n'ont aucun appui long : elles ouvrent seulement la feuille (spec 035).
 
 ## Hors périmètre
 
-Renommer un lieu, le supprimer, changer son adresse ou son point. Modifier depuis la liste de l'accompagnant (spec 022).
+Renommer un lieu, le supprimer, changer son adresse ou son point. Modifier depuis la liste de l'accompagnant (spec 022). Modifier depuis l'épingle de la carte (retiré le 2026-11-18).
 
 ## Critères d'acceptation
 
 - [x] Spec écrite avec hypothèses ; relue par `ux-sans-texte-reviewer` (bloquant et points « à corriger » traités) et par `security-reviewer` (rien de bloquant ; `securite.md` complété).
-- [x] Appui long sur une épingle (carte web : gestes du pointeur ; carte native : appui long de la carte et recherche de l'épingle sous le doigt ; lecteur d'écran) et sur un lieu de la feuille ouvre E28 avec le lieu (tests).
+- [x] Appui long sur un lieu de la feuille ouvre E28 avec le lieu (tests). Épingle de la carte : plus d'appui long, la carte ne l'écoute pas et l'épingle n'a pas d'action `longpress` (tests, 2026-11-18).
 - [x] L'appui long ne choisit pas le lieu ; le toucher court choisit toujours (tests).
 - [x] Changer le pictogramme seul (photo gardée) ; les 3 choix de photo (rue, caméra ou galerie, sans photo) ; le lieu garde son identifiant, l'ancienne photo est effacée après l'enregistrement (tests).
-- [ ] Vérifié dans le navigateur et sur le Galaxy S8. **Fait en partie (2026-11-17)** : navigateur à 390 dp, accueil avec 4 lieux enregistrés (`public/seed.html`) : rendu sans erreur. **Non vu** : épingles (carte web sans tuiles en Chrome sans fenêtre, comme aux fiches 1 à 4) ; l'appui long, E28 et E29 en modification (Chrome sans fenêtre ne fait que des captures, aucun geste ; E28 et E29 demandent un brouillon) ; téléphone : aucune build de dev installée, et le correctif MapLibre demande une nouvelle build native.
+- [ ] Vérifié dans le navigateur et sur le Galaxy S8. **Fait en partie (2026-11-17)** : navigateur à 390 dp, accueil avec 4 lieux enregistrés (`public/seed.html`) : rendu sans erreur. **Non vu** : épingles (carte web sans tuiles en Chrome sans fenêtre, comme aux fiches 1 à 4) ; l'appui long, E28 et E29 en modification (Chrome sans fenêtre ne fait que des captures, aucun geste ; E28 et E29 demandent un brouillon) ; téléphone : aucune build de dev installée.
 
-À voir sur le téléphone (build de dev ou `preview` construite **après** `2ec6fb6`) : appui long sur une épingle (vibration, E28) sans que le lieu soit aussi choisi au relâchement ; toucher court inchangé ; appui long sur le point de position posé sur un lieu (rien) ; appui long sur une tuile de la feuille ; E28 qui défile jusqu'au pictogramme actuel et pastille de 36 dp sur la photo ; E29 qui s'ouvre sur la photo actuelle sans fenêtre de permission caméra ; ✓ ; vignette de la photo actuelle ; « sans photo » puis ✓ ; photo de rue, caméra, galerie ; le lieu changé partout (épingle, pastilles, feuille, liste de l'accompagnant).
+À voir sur le téléphone (build de dev ou `preview`) : toucher court sur une épingle inchangé ; appui long sur une tuile de la feuille (vibration, E28) ; E28 qui défile jusqu'au pictogramme actuel et pastille de 36 dp sur la photo ; E29 qui s'ouvre sur la photo actuelle sans fenêtre de permission caméra ; ✓ ; vignette de la photo actuelle ; « sans photo » puis ✓ ; photo de rue, caméra, galerie ; le lieu changé partout (épingle, pastilles, feuille, liste de l'accompagnant).
 
 ## Hypothèses (mode autonome)
 
@@ -81,8 +84,7 @@ Renommer un lieu, le supprimer, changer son adresse ou son point. Modifier depui
 - **Signal d'entrée** : `hold` (vibration de 150 ms et son « select »), celui de la fin d'un appui tenu.
 - **Vignette de la photo actuelle au-dessus de « sans photo »**, symétrique de la photo de rue au-dessus de la galerie, avec le pictogramme du lieu en badge (au lieu du paysage de la photo de rue) : elle dit « la photo de ce lieu ».
 - Sur E29, ← ferme l'aperçu d'une photo de rue (spec 033), mais pas celui de la photo actuelle, ouvert d'office : ← revient à E28.
-- La liste des lieux de l'accompagnant (spec 022) ne reçoit pas l'appui long : l'entrée décidée est l'épingle et la feuille.
-- iOS : l'appui long sur une épingle n'est pas vérifié (aucune build iOS).
+- La liste des lieux de l'accompagnant (spec 022) ne reçoit pas l'appui long : l'entrée décidée est la feuille des lieux (l'épingle a été retirée le 2026-11-18).
 
 ## Relecture `ux-sans-texte-reviewer` (2026-11-17)
 

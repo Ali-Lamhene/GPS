@@ -30,7 +30,6 @@ import {
   injectMapCss,
 } from './map-markers.web';
 import { buildMapStyle } from './map-style';
-import { createPinGesture } from './pin-gesture';
 import { RECENTER_SIZE, type MapLine, type TripMapProps } from './trip-map-types';
 
 // Browser map of spec 002: MapLibre over the bundled Marseille tiles, without labels.
@@ -190,7 +189,6 @@ export function TripMap({
   recenterIcon = 'person_pin_circle',
   pins = [],
   onPinPress,
-  onPinLongPress,
   onTravellerPress,
 }: TripMapProps) {
   const container = useRef<HTMLDivElement | null>(null);
@@ -306,37 +304,24 @@ export function TripMap({
     return () => markers.forEach((marker) => marker.remove());
   }, [map, stopsKey]);
 
-  // The latest handlers, so pins are not rebuilt each time the screen renders.
+  // The latest handler, so pins are not rebuilt each time the screen renders.
   const pinPress = useRef(onPinPress);
-  const pinLongPress = useRef(onPinLongPress);
   useEffect(() => {
     pinPress.current = onPinPress;
-    pinLongPress.current = onPinLongPress;
-  }, [onPinPress, onPinLongPress]);
+  }, [onPinPress]);
   const pinsKey = JSON.stringify(pins);
   useEffect(() => {
     if (!map) return;
     const markers = (JSON.parse(pinsKey) as typeof pins).map((pin) => {
       const element = createPlacePin(pin.icon, pin.photo, pin.selected ?? false, pin.label);
-      // A drag of the map that starts and ends on a pin is not a touch on it; a finger held
-      // still changes the place (spec 037), and is then no touch either.
-      let gesture = createPinGesture(undefined);
+      // A drag of the map that starts and ends on a pin is not a touch on it.
+      let down = { x: 0, y: 0 };
       element.addEventListener('pointerdown', (event) => {
-        const longPress = pinLongPress.current;
-        gesture = createPinGesture(longPress ? () => longPress(pin.id) : undefined);
-        gesture.down(event.clientX, event.clientY);
+        down = { x: event.clientX, y: event.clientY };
       });
-      element.addEventListener('pointermove', (event) =>
-        gesture.move(event.clientX, event.clientY),
-      );
-      element.addEventListener('pointerup', () => gesture.up());
-      element.addEventListener('pointercancel', () => gesture.up());
-      element.addEventListener('pointerleave', () => gesture.up());
-      // A held finger opens no menu of the browser over the pin.
-      element.addEventListener('contextmenu', (event) => event.preventDefault());
       element.addEventListener('click', (event) => {
         event.stopPropagation();
-        if (!gesture.isTouch(event.clientX, event.clientY)) return;
+        if (Math.hypot(event.clientX - down.x, event.clientY - down.y) > 8) return;
         pinPress.current?.(pin.id);
       });
       return new Marker({ element, anchor: 'bottom' })

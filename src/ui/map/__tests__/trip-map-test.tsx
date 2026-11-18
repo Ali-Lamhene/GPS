@@ -3,7 +3,7 @@ import {
   OfflineManager,
   TransformRequestManager,
 } from '@maplibre/maplibre-react-native';
-import { act, fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen } from '@testing-library/react-native';
 
 import { TripMap } from '../trip-map';
 
@@ -21,25 +21,13 @@ jest.mock('@maplibre/maplibre-react-native', () => {
   // Like the native marker: the marker itself takes the press, not its content.
   const Marker = ({ children, onPress }: { children?: React.ReactNode; onPress?: () => void }) =>
     React.createElement(Pressable, { onPress, disabled: !onPress }, children);
-  // The map hears long presses (patched library, spec 037) and places points on the screen:
-  // 10 000 points per degree, from 5.37° E and 43.31° N.
-  const Map = React.forwardRef(
-    (
-      { children, onLongPress }: { children?: React.ReactNode; onLongPress?: unknown },
-      ref: React.Ref<unknown>,
-    ) => {
-      React.useImperativeHandle(ref, () => ({
-        project: async ([lng, lat]: [number, number]) => [
-          (lng - 5.37) * 10000,
-          (43.31 - lat) * 10000,
-        ],
-      }));
-      // A host view keeps any prop: the test fires the map's long press on it.
-      const props = { testID: 'map', onLongPress } as React.ComponentProps<typeof View>;
-      return React.createElement(View, props, children);
-    },
-  );
-  Map.displayName = 'Map';
+  // A host view keeps any prop: the test reads what the app gives the map.
+  const Map = ({ children, onLongPress }: { children?: React.ReactNode; onLongPress?: unknown }) =>
+    React.createElement(
+      View,
+      { testID: 'map', onLongPress } as React.ComponentProps<typeof View>,
+      children,
+    );
   return {
     Map,
     Camera,
@@ -105,82 +93,17 @@ describe('<TripMap /> on the phone', () => {
     expect(onPinPress).toHaveBeenCalledWith('work');
   });
 
-  describe('a long press on a pin (spec 037)', () => {
-    // At 5.38° E, 43.30° N: its point is 100, 100 on the screen of the mocked map.
-    const pins = [
-      { id: 'work', point: [5.38, 43.3] as const, icon: 'work' as const, label: 'mon travail' },
-      { id: 'park', point: [5.385, 43.3] as const, icon: 'park' as const, label: 'le parc' },
-    ];
-    const longPressAt = (point: [number, number]) =>
-      act(async () => {
-        fireEvent(screen.getByTestId('map'), 'longPress', { nativeEvent: { point } });
-      });
+  test('the map and its pins offer no long press (spec 037 removed it, D22)', async () => {
+    await render(
+      <TripMap
+        camera={camera}
+        pins={[{ id: 'work', point: [5.38, 43.3], icon: 'work', label: 'mon travail' }]}
+      />,
+    );
 
-    test('gives the place of the pin under the finger, never a press', async () => {
-      const onPinPress = jest.fn();
-      const onPinLongPress = jest.fn();
-      await render(
-        <TripMap
-          camera={camera}
-          pins={pins}
-          onPinPress={onPinPress}
-          onPinLongPress={onPinLongPress}
-        />,
-      );
-
-      await longPressAt([100, 70]);
-      await longPressAt([150, 70]);
-
-      expect(onPinLongPress.mock.calls).toEqual([['work'], ['park']]);
-      expect(onPinPress).not.toHaveBeenCalled();
-    });
-
-    test('a long press on the map away from the pins gives nothing', async () => {
-      const onPinLongPress = jest.fn();
-      await render(<TripMap camera={camera} pins={pins} onPinLongPress={onPinLongPress} />);
-
-      await longPressAt([300, 300]);
-
-      expect(onPinLongPress).not.toHaveBeenCalled();
-    });
-
-    test("the traveller's dot over a pin keeps the long press: « here » is not changed", async () => {
-      const onPinLongPress = jest.fn();
-      await render(
-        <TripMap
-          camera={camera}
-          pins={pins}
-          traveller={{ point: [5.38, 43.3] }}
-          onPinLongPress={onPinLongPress}
-        />,
-      );
-
-      await longPressAt([100, 75]);
-      expect(onPinLongPress).not.toHaveBeenCalled();
-
-      // The head of the other pin, away from the dot, still answers.
-      await longPressAt([150, 70]);
-      expect(onPinLongPress).toHaveBeenCalledWith('park');
-    });
-
-    test('a screen reader can long press a pin too', async () => {
-      const onPinPress = jest.fn();
-      const onPinLongPress = jest.fn();
-      await render(
-        <TripMap
-          camera={camera}
-          pins={pins}
-          onPinPress={onPinPress}
-          onPinLongPress={onPinLongPress}
-        />,
-      );
-
-      const pin = await screen.findByRole('button', { name: 'le parc' });
-      await fireEvent(pin, 'accessibilityAction', { nativeEvent: { actionName: 'longpress' } });
-
-      expect(onPinLongPress).toHaveBeenCalledWith('park');
-      expect(onPinPress).not.toHaveBeenCalled();
-    });
+    expect(screen.getByTestId('map').props.onLongPress).toBeUndefined();
+    const pin = await screen.findByRole('button', { name: 'mon travail' });
+    expect(pin.props.accessibilityActions).toEqual([{ name: 'activate' }]);
   });
 
   test("the traveller's dot is a button only when asked, and gives the touch (spec 035)", async () => {

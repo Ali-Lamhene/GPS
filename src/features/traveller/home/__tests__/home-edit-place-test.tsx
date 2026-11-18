@@ -1,4 +1,4 @@
-import { act, fireEvent, screen, within } from '@testing-library/react-native';
+import { fireEvent, screen, within } from '@testing-library/react-native';
 import { router } from 'expo-router';
 
 import type { Place } from '@/domain/place';
@@ -13,9 +13,8 @@ jest.mock('expo-router', () => ({
   useFocusEffect: (effect: () => void) => jest.requireActual('react').useEffect(effect, [effect]),
 }));
 jest.mock('@/services/feedback', () => ({ playCue: jest.fn() }));
-// The map draws its pins, which take a short press like the native marker; the map itself
-// hears long presses (patched library) and places points on the screen at 10 000 points per
-// degree from 5.37° E and 43.31° N.
+// The map draws its pins, which take a short press like the native marker. A host view keeps
+// any prop: the test reads what the app gives the map.
 jest.mock('@maplibre/maplibre-react-native', () => {
   const React = jest.requireActual<typeof import('react')>('react');
   const { Pressable, View } = jest.requireActual<typeof import('react-native')>('react-native');
@@ -26,23 +25,12 @@ jest.mock('@maplibre/maplibre-react-native', () => {
     return null;
   });
   Camera.displayName = 'Camera';
-  const Map = React.forwardRef(
-    (
-      { children, onLongPress }: { children?: React.ReactNode; onLongPress?: unknown },
-      ref: React.Ref<unknown>,
-    ) => {
-      React.useImperativeHandle(ref, () => ({
-        project: async ([lng, lat]: [number, number]) => [
-          (lng - 5.37) * 10000,
-          (43.31 - lat) * 10000,
-        ],
-      }));
-      // A host view keeps any prop: the test fires the map's long press on it.
-      const props = { testID: 'map', onLongPress } as React.ComponentProps<typeof View>;
-      return React.createElement(View, props, children);
-    },
-  );
-  Map.displayName = 'Map';
+  const Map = ({ children, onLongPress }: { children?: React.ReactNode; onLongPress?: unknown }) =>
+    React.createElement(
+      View,
+      { testID: 'map', onLongPress } as React.ComponentProps<typeof View>,
+      children,
+    );
   const Marker = ({ children, onPress }: { children?: React.ReactNode; onPress?: () => void }) =>
     React.createElement(Pressable, { onPress, disabled: !onPress }, children);
   return {
@@ -58,7 +46,7 @@ jest.mock('@maplibre/maplibre-react-native', () => {
   };
 });
 
-// Far from the demo places: its pin stands alone at 1 300, 1 100 on the mocked screen.
+// Far from the demo places: its pin stands alone on the map.
 const school: Place = {
   id: 'p-school',
   icon: 'school',
@@ -67,8 +55,6 @@ const school: Place = {
   point: [5.5, 43.2],
   createdAt: 5,
 };
-/** Where the head of the school's pin stands on the mocked screen. */
-const SCHOOL_HEAD: [number, number] = [1300, 1070];
 
 /** What the home leaves in the plan: the draft started, and the ends of the trip. */
 let plan: ReturnType<typeof useTripPlan> | undefined;
@@ -168,27 +154,10 @@ describe('changing a place from the place sheet (spec 037)', () => {
   });
 });
 
-describe('changing a place from its pin (spec 037)', () => {
+describe('the map pin has no way to change a place (spec 037, D22)', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     plan = undefined;
-  });
-
-  const longPressAt = (point: [number, number]) =>
-    act(async () => {
-      fireEvent(screen.getByTestId('map'), 'longPress', { nativeEvent: { point } });
-    });
-
-  test('a finger held on the pin opens its pictogram screen, without choosing it', async () => {
-    await renderHome();
-
-    await longPressAt(SCHOOL_HEAD);
-
-    expect(router.push).toHaveBeenCalledWith('/add-place/pictogram');
-    expect(playCue).toHaveBeenCalledWith('hold');
-    expect(playCue).not.toHaveBeenCalledWith('select');
-    expect(plan?.draft).toMatchObject({ source: 'edit', editing: school });
-    expect(plan?.originId).toBeUndefined();
   });
 
   test('a short touch on the pin still chooses it (spec 035)', async () => {
@@ -201,22 +170,11 @@ describe('changing a place from its pin (spec 037)', () => {
     expect(router.push).not.toHaveBeenCalled();
   });
 
-  test('a long press on the map away from any pin does nothing', async () => {
+  test('the map hears no long press and the pin offers no long press action', async () => {
     await renderHome();
 
-    await longPressAt([1300, 1300]);
-
-    expect(router.push).not.toHaveBeenCalled();
-    expect(playCue).not.toHaveBeenCalled();
-  });
-
-  test('a screen reader long presses the pin too', async () => {
-    await renderHome();
-
+    expect(screen.getByTestId('map').props.onLongPress).toBeUndefined();
     const pin = await screen.findByRole('button', { name: 'le lycée' });
-    await fireEvent(pin, 'accessibilityAction', { nativeEvent: { actionName: 'longpress' } });
-
-    expect(router.push).toHaveBeenCalledWith('/add-place/pictogram');
-    expect(plan?.originId).toBeUndefined();
+    expect(pin.props.accessibilityActions).toEqual([{ name: 'activate' }]);
   });
 });
