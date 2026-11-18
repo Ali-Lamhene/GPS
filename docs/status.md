@@ -2,15 +2,14 @@
 
 Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise à jour à la fin de chaque tâche, dans le même commit. Le récit détaillé va dans `docs/historique.md`, pas ici.
 
-**Dernière mise à jour** : 2026-11-17
+**Dernière mise à jour** : 2026-11-18
 
 ## Où on en est
 
 - App « Yalla map » (Expo SDK 58, Expo Router, `src/app/`), repo `Ali-Lamhene/GPS`, travail direct sur `main`, une fonctionnalité = un commit. Méthode : spec d'abord (skill `/feature`, specs dans `docs/specs/`), puis code avec tests.
-- Lot du 2026-11-17 (mode autonome, 6 fiches, une session par fiche, avant la build `preview`) : fiches 1 à 5 livrées (accueil sans raccourcis spec 035 ; D21 `hiddenOnMap` supprimé, tout lieu a épingle et photo ; photo partout spec 036 ; vérification spec 033 ; appui long pour changer pictogramme et photo d'un lieu spec 037, D22). Suite de tests verte (442).
-- **Reste : fiche 6 (dézoom)**, puis build `preview` unique (décision d'Ali du 2026-11-12 : une seule build après tous les retours).
-- Rien de la fiche 1 à 5 n'est vérifié à l'écran sur téléphone (aucune build de dev installée). Listes « À voir sur le S8 » dans les specs 035 à 037.
-- Retour terrain 2026-11-10, point 5 (lieux absents au dézoom) : bug natif Android (vues des marqueurs), demande un téléphone branché en USB.
+- Lot du 2026-11-17 (mode autonome, 6 fiches) : **les 6 fiches sont livrées** (specs 035, 036, 037 ; D21, D22 ; vérification 033 ; dézoom). **Prêt pour la build `preview` unique**, à lancer par Ali.
+- Fiche 6, point 5 du terrain (2026-11-18, S8 en USB) : non reproduit. Dézoom du zoom de rue au zoom 6 : les lieux lointains apparaissent, avec ou sans photo. Cause probable du constat du 2026-11-10 : l'ancienne règle `hiddenOnMap` cachait les lieux privés à tout zoom (levée par D21). Défaut voisin corrigé : cadrage d'ouverture sans marges (épingles coupées, lieu sous la barre). À observer au terrain : le retour seul au cadrage 10 s après un geste (spec 028) peut faire croire à un lieu disparu. Détail : `docs/historique.md`.
+- Specs 035 à 037 : listes « À voir sur le S8 » en attente (vu en partie pendant la fiche 6).
 - Ensuite, en autonomie : trajets hors connexion (D5), métro sans GPS (`docs/recherche/metro-sans-gps.md`), spec 006 (droite à gauche, RTL), effacement rapide des lieux.
 
 ## Décisions en vigueur (détail : `docs/product/decisions.md`, `docs/engineering/securite.md`)
@@ -39,14 +38,16 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 
 ## Pièges connus actifs
 
-- Épingle Android : image React Native (pas `expo-image`), sinon la photo ne se charge pas ; photo de l'épingle non vérifiée sur téléphone. L'image des épingles web n'a pas de repli si le fichier manque.
+- Carte Android : caméra ignorée avant `onDidFinishLoadingMap` ; 1er cadrage par `initialViewState`.
+- S8, build de dev, position accordée : erreur « Uncaught (in promise, id: 0) java.lang.T… » non lue. À examiner.
+- Épingle Android : image React Native (pas `expo-image`), sinon pas de photo. L'image des épingles web n'a pas de repli si le fichier manque.
 - Sur le web, l'en-tête `no-store` bloque l'appel Panoramax par CORS (sans effet sur Android).
 - Carte web sans réseau dans Chrome sans fenêtre : épingles, position et gestes non testables au navigateur.
 - Spec 016 (rien dans les sauvegardes) : à vérifier sur la première APK `preview` (manifeste, `dataExtractionRules`, `allowBackup="false"`, `aapt dump permissions`, App Links vérifiés).
 
 ## En attente côté humain
 
-- Ali : build (dev ou `preview`), puis la liste « À voir sur le téléphone » de la spec 037 ; ancien APK de dev `org.gpssanstexte.app.dev` à désinstaller.
+- Ali : build `preview`, puis la liste « À voir sur le téléphone » de la spec 037. Sur le S8, l'app de dev `io.github.alilamhene.yalla.dev` contient 6 lieux de test et 3 photos posés pendant la fiche 6 (effacer ses données, ou la désinstaller) ; permission de position retirée. Ancien APK de dev `org.gpssanstexte.app.dev` à désinstaller s'il est encore là.
 - Ali : retours du terrain restants (icônes à l'ajout d'un lieu, recherche Photon lente : combien de secondes ?), captures promises.
 
 Historique détaillé : docs/historique.md

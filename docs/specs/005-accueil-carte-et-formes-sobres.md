@@ -102,6 +102,7 @@ Révision du 2026-11-01 (photos) : l'effet « jouet » vient aussi des seuls pic
 - En démo, chaque lieu reçoit une position réelle dans la zone embarquée de Marseille ; le trajet affiché ensuite reste le trajet de démo, quel que soit le lieu choisi.
 - Valeur par défaut de « ne pas montrer sur la carte » : activé pour un lieu au pictogramme « maison » ou « famille », désactivé pour les autres ; modifiable à la création. En démo, la maison n'est pas montrée.
 - Cadrage initial : la position et les lieux situés à moins d'environ 2 km, au zoom le plus proche qui les contient tous.
+  - Précision (2026-11-18, fiche 6, vérifié sur Galaxy S8) : dès la première image, ce cadrage laisse les mêmes marges que les recadrages suivants (contenu flottant de l'écran, plus de la place pour les épingles) ; une épingle n'est jamais coupée au bord ni cachée sous la barre du bas. Quand la carte du téléphone a fini de se charger, elle recadre avec les marges mesurées entre-temps. Les lieux plus loin restent sur la carte : ils apparaissent quand on dézoome. Tests : `src/ui/map/__tests__/trip-map-test.tsx`.
 - Les lieux du carrousel suivent l'ordre de la feuille des lieux (spec 001 : maison d'abord, puis du plus récent au plus ancien).
 - Le panneau n'a pas de poignée : il ne se tire pas, la feuille complète s'ouvre par « … » ou par les pastilles.
 - La pulsation est gardée seulement sur la case à remplir et sur l'alerte « descends ».
