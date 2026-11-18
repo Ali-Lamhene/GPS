@@ -77,6 +77,23 @@ describe('<TripMap /> on the phone', () => {
     expect(onPinPress).toHaveBeenCalledWith('work');
   });
 
+  test('every pin is drawn, however far from the framing: none is left out (field point 5)', async () => {
+    await render(
+      <TripMap
+        camera={camera}
+        pins={[
+          { id: 'work', point: [5.38, 43.3], icon: 'work', label: 'travail' },
+          { id: 'lyon', point: [4.835, 45.76], icon: 'family_home', label: 'famille' },
+          { id: 'paris', point: [2.35, 48.853], icon: 'local_hospital', label: 'hôpital' },
+        ]}
+      />,
+    );
+
+    for (const name of ['travail', 'famille', 'hôpital']) {
+      expect(await screen.findByRole('button', { name })).toBeOnTheScreen();
+    }
+  });
+
   test('a screen reader activating a pin gives its place', async () => {
     const onPinPress = jest.fn();
     await render(

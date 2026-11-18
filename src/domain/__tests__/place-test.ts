@@ -34,6 +34,12 @@ describe('placesOnMap', () => {
   test('leaves out the start of the trip', () => {
     expect(placesOnMap(places, 'school').map((place) => place.id)).toEqual(['home', 'shop']);
   });
+
+  test('keeps a place however far it is: the map shows it once zoomed out (field point 5)', () => {
+    const paris: Place = { id: 'paris', icon: 'family_home', point: [2.35, 48.853] };
+
+    expect(placesOnMap([...places, paris]).map((place) => place.id)).toContain('paris');
+  });
 });
 
 describe('homeFraming', () => {

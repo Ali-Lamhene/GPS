@@ -124,6 +124,20 @@ describe('<HomeScreen />', () => {
     expect(screen.queryByRole('button', { name: 'ma position' })).toBeNull();
   });
 
+  test('a place far from the traveller still gets its pin, even a private one (field point 5)', async () => {
+    const lyon = {
+      id: 'lyon',
+      icon: 'family_home',
+      helpName: 'ma famille à Lyon',
+      point: [4.835, 45.76],
+    } as const;
+    await renderWithProviders(<HomeScreen />, [{ type: 'addPlace', place: lyon }]);
+
+    // Out of the first framing (more than 2 km away), but on the map: zooming out shows it.
+    await fireEvent.press(await pin('ma famille à Lyon'));
+    expect(button('Arrivée')).toBeSelected();
+  });
+
   test('the two ways mix: a pin for the start, the arrival from its end of the way', async () => {
     await renderHome();
 
