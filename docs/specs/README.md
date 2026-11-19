@@ -38,3 +38,4 @@ Une spec par fonctionnalité, écrite avant le code à l'issue d'un entretien de
 | 034 | [Le bouton d'aide pulse quand le voyageur reste perdu](034-aide-qui-pulse-quand-perdu.md)                    | livré (à voir sur le terrain)                          |
 | 035 | [Accueil sans raccourcis : le chemin en bas, « + » plus grand](035-accueil-sans-raccourcis-chemin-en-bas.md) | livré en autonomie (à voir sur le téléphone)           |
 | 036 | [La photo d'un lieu, visible partout où le lieu apparaît](036-photo-visible-partout.md)                      | livré en autonomie (à voir sur le téléphone)           |
+| 038 | [Un écran qui explique la permission avant la fenêtre du système](038-ecran-avant-les-permissions.md)        | validé                                                 |

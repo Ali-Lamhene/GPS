@@ -4,6 +4,7 @@ import * as SystemUI from 'expo-system-ui';
 import { useEffect } from 'react';
 
 import { LocationProvider } from '@/features/traveller/location/location-context';
+import { PermissionIntroHost } from '@/features/traveller/permission/permission-intro-host';
 import { RoutesProvider } from '@/features/traveller/trip-plan/routes-context';
 import { TripPlanProvider } from '@/features/traveller/trip-plan/trip-plan-context';
 import { useStoredPlaces } from '@/features/traveller/trip-plan/use-stored-places';
@@ -41,6 +42,7 @@ export default function RootLayout() {
               {/* The help card opens over the current screen, as a full-screen dialog (E24). */}
               <Stack.Screen name="help" options={{ presentation: 'fullScreenModal' }} />
             </Stack>
+            <PermissionIntroHost />
           </SystemBarsFrame>
         </RoutesProvider>
       </TripPlanProvider>

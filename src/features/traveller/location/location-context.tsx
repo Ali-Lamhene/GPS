@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { AppState } from 'react-native';
 
 import type { LngLat } from '@/domain/geo';
+import { introAtStart, introOnRetry, type IntroMode } from '@/domain/permission-intro';
 import {
   currentLocationAccess,
   locationServicesOn,
@@ -23,8 +24,14 @@ export type TravellerPosition =
 
 type LocationValue = {
   position: TravellerPosition;
-  /** A touch on « here » crossed out: asks again, or opens the right settings. */
+  /** A touch on « here » crossed out: the screen before the permission window, or the switch. */
   retry: () => void;
+  /** Spec 038: the screen that explains the permission is up, and for which way out. */
+  intro: IntroMode | undefined;
+  /** ✓ goes on (the system window, or the settings); ✗ leaves « here » crossed out. */
+  answerIntro: (accept: boolean) => void;
+  /** The permission is still being read at the start: nothing to show yet, neither home nor screen. */
+  checking: boolean;
 };
 
 const LocationContext = createContext<LocationValue | null>(null);
@@ -46,7 +53,15 @@ export function LocationProvider({
 }) {
   if (fixed) {
     return (
-      <LocationContext.Provider value={{ position: fixed, retry: onRetry }}>
+      <LocationContext.Provider
+        value={{
+          position: fixed,
+          retry: onRetry,
+          intro: undefined,
+          answerIntro: () => undefined,
+          checking: false,
+        }}
+      >
         {children}
       </LocationContext.Provider>
     );
@@ -58,14 +73,18 @@ function PhoneLocationProvider({ children }: { children: ReactNode }) {
   const [access, setAccess] = useState<LocationAccess | 'unknown'>('unknown');
   const [servicesOn, setServicesOn] = useState(true);
   const [point, setPoint] = useState<LngLat | undefined>(undefined);
+  const [intro, setIntro] = useState<IntroMode | undefined>(undefined);
   // An unknown state at a cold start counts as in front: only the background stops it.
   const [active, setActive] = useState(AppState.currentState !== 'background');
 
-  // First start: the permission window opens at once, usually with the companion there.
+  // First start: the screen that explains the permission shows first, then its window opens,
+  // usually with the companion there (spec 038). Already given: nothing is asked.
   useEffect(() => {
     let current = true;
-    requestLocationAccess().then((result) => {
-      if (current) setAccess(result);
+    currentLocationAccess().then((result) => {
+      if (!current) return;
+      setAccess(result);
+      setIntro(introAtStart(result));
     });
     return () => {
       current = false;
@@ -82,7 +101,12 @@ function PhoneLocationProvider({ children }: { children: ReactNode }) {
         setPoint(undefined);
         return;
       }
-      currentLocationAccess().then(setAccess);
+      currentLocationAccess().then((result) => {
+        setAccess(result);
+        // Given meanwhile (the settings): the explanation has no more to say. Blocked meanwhile:
+        // its way out is the settings now, not the system window Android no longer opens.
+        setIntro((shown) => (shown ? introOnRetry(result) : shown));
+      });
       locationServicesOn().then(setServicesOn);
     });
     return () => subscription.remove();
@@ -112,14 +136,29 @@ function PhoneLocationProvider({ children }: { children: ReactNode }) {
           : { kind: 'searching' };
 
   const retry = () => {
-    if (access === 'blocked') openLocationSettings();
-    else if (access === 'granted' && !servicesOn) openLocationSwitch();
-    // Refused or approximate: Android asks again, for the precise position.
+    if (access === 'granted' && !servicesOn) {
+      openLocationSwitch();
+      return;
+    }
+    // Refused, approximate or blocked: the explanation again, for the right way out (spec 038).
+    if (access !== 'unknown') setIntro(introOnRetry(access));
+  };
+
+  const answerIntro = (accept: boolean) => {
+    const mode = intro;
+    setIntro(undefined);
+    if (!accept || !mode) return;
+    if (mode === 'settings') openLocationSettings();
+    // Android asks again, for the precise position.
     else requestLocationAccess().then(setAccess);
   };
 
   return (
-    <LocationContext.Provider value={{ position, retry }}>{children}</LocationContext.Provider>
+    <LocationContext.Provider
+      value={{ position, retry, intro, answerIntro, checking: access === 'unknown' }}
+    >
+      {children}
+    </LocationContext.Provider>
   );
 }
 

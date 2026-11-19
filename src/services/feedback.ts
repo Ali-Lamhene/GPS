@@ -16,7 +16,9 @@ export type Cue =
   /** End of the 3 second hold on the home « + » (spec 007): felt in the hand. */
   | 'hold'
   /** « Here » touched while the position is unknown (spec 017): two low notes, falling. */
-  | 'unavailable';
+  | 'unavailable'
+  /** The screen before a permission window opens (spec 038): a soft note and a short buzz. */
+  | 'permission';
 
 const SOUNDS: Record<Cue, number> = {
   select: require('../../assets/sounds/select.wav'),
@@ -29,6 +31,7 @@ const SOUNDS: Record<Cue, number> = {
   saved: require('../../assets/sounds/saved.wav'),
   hold: require('../../assets/sounds/select.wav'),
   unavailable: require('../../assets/sounds/unavailable.wav'),
+  permission: require('../../assets/sounds/select.wav'),
 };
 
 /** Vibration, then pause, then vibration… in milliseconds. */
@@ -41,6 +44,7 @@ const VIBRATIONS: Partial<Record<Cue, number[]>> = {
   saved: [80],
   hold: [150],
   unavailable: [60, 60, 60],
+  permission: [60],
 };
 
 const players = new Map<Cue, AudioPlayer>();

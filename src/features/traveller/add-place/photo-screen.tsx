@@ -5,6 +5,7 @@ import { ActivityIndicator, Image, Pressable, StyleSheet, View } from 'react-nat
 import Animated, { FadeIn } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { introForCamera } from '@/domain/permission-intro';
 import { isLocalPicture } from '@/domain/place';
 import type { StreetPhoto } from '@/domain/street-photo';
 import {
@@ -15,6 +16,7 @@ import {
   pickPhoto,
 } from '@/services/photo';
 import { playCue } from '@/services/feedback';
+import { openLocationSettings } from '@/services/location';
 import { findStreetPhoto } from '@/services/street-photo';
 import { HelpButton } from '@/ui/components/help-button';
 import { IconButton } from '@/ui/components/icon-button';
@@ -23,6 +25,8 @@ import { StreetPhotoView } from '@/ui/components/street-photo-view';
 import { useDarkSystemBars } from '@/ui/system-bars/system-bars-frame';
 import { Icon } from '@/ui/icon/icon';
 import { colors, radii } from '@/ui/theme';
+
+import { PermissionIntroScreen } from '../permission/permission-intro-screen';
 
 import { usePlaceDraft } from './use-place-draft';
 
@@ -94,11 +98,14 @@ export function PhotoScreen() {
   // The camera only runs while its shutter shows: not behind a photo waiting for ✓, so a place
   // changed for its pictogram alone never asks for the camera nor lights its sign (spec 037).
   const shutterShown = preview === undefined;
-  // The camera window opens once the shutter shows, once (Android's text, read by the companion).
-  useEffect(() => {
-    if (!shutterShown) return;
-    if (permission && !permission.granted && permission.canAskAgain) void requestPermission();
-  }, [shutterShown, permission, requestPermission]);
+  // Spec 038: before the camera window (Android's text, read by the companion), a screen
+  // without text explains it. ✓ goes on, ✗ leaves the shutter greyed out; either way it is not
+  // shown again while this screen lives, so a refusal does not bring it back at once.
+  const [introDone, setIntroDone] = useState(false);
+  const intro =
+    shutterShown && permission && !introDone
+      ? introForCamera(permission.granted, permission.canAskAgain)
+      : undefined;
 
   const cameraOn = permission?.granted === true;
   const locked = busy || working;
@@ -279,9 +286,15 @@ export function PhotoScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Prendre la photo"
-            accessibilityState={{ disabled: !cameraOn || locked }}
-            disabled={!cameraOn || locked}
-            onPress={() => finishWith(async () => keepTaken(await takePicture()))}
+            accessibilityState={{ disabled: locked }}
+            disabled={locked}
+            // Without the camera the shutter is greyed out, and a touch brings the explanation
+            // back (spec 038): there is always a way back to the permission.
+            onPress={() =>
+              cameraOn
+                ? finishWith(async () => keepTaken(await takePicture()))
+                : setIntroDone(false)
+            }
             style={[styles.shutter, (!cameraOn || locked) && styles.busy]}
           >
             <View style={styles.shutterDisc} />
@@ -324,6 +337,24 @@ export function PhotoScreen() {
           </Pressable>
         </View>
       </View>
+      {/* The permission is read in an instant: a plain cover, not the shutter, until then. */}
+      {shutterShown && !permission && (
+        <View style={[StyleSheet.absoluteFill, { backgroundColor: PHOTO_BACKGROUND }]} />
+      )}
+      {intro && (
+        <PermissionIntroScreen
+          kind="camera"
+          mode={intro}
+          placeIcon={draft?.icon}
+          onSkip={() => setIntroDone(true)}
+          onAccept={() => {
+            setIntroDone(true);
+            // The same page of the app's settings serves both permissions (securite.md).
+            if (intro === 'settings') openLocationSettings();
+            else void requestPermission();
+          }}
+        />
+      )}
     </View>
   );
 }

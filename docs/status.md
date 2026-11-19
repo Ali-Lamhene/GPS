@@ -7,10 +7,11 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 ## Où on en est
 
 - App « Yalla map » (Expo SDK 58, Expo Router, `src/app/`), repo `Ali-Lamhene/GPS`, travail direct sur `main`, une fonctionnalité = un commit. Méthode : spec d'abord (skill `/feature`, specs dans `docs/specs/`), puis code avec tests.
-- Lot du 2026-11-17 (mode autonome, 6 fiches) : **les 6 fiches sont livrées** (specs 035, 036, 037 ; D21, D22 ; vérification 033 ; dézoom). **Prêt pour la build `preview` unique**, à lancer par Ali.
-- Fiche 6, point 5 du terrain (2026-11-18, S8 en USB) : non reproduit. Dézoom du zoom de rue au zoom 6 : les lieux lointains apparaissent, avec ou sans photo. Cause probable du constat du 2026-11-10 : l'ancienne règle `hiddenOnMap` cachait les lieux privés à tout zoom (levée par D21). Défaut voisin corrigé : cadrage d'ouverture sans marges (épingles coupées, lieu sous la barre). À observer au terrain : le retour seul au cadrage 10 s après un geste (spec 028) peut faire croire à un lieu disparu. Détail : `docs/historique.md`.
-- Specs 035 à 037 : listes « À voir sur le S8 » en attente (vu en partie pendant la fiche 6).
-- Ensuite, en autonomie : trajets hors connexion (D5), métro sans GPS (`docs/recherche/metro-sans-gps.md`), spec 006 (droite à gauche, RTL), effacement rapide des lieux.
+- Lot du 2026-11-17 (mode autonome, 6 fiches) : **les 6 fiches sont livrées** (specs 035 à 037, D21, D22). **Prêt pour la build `preview` unique**, à lancer par Ali.
+- Point 5 du terrain (2026-11-18, S8) : dézoom non reproduit ; cause probable : l'ancienne règle `hiddenOnMap` (levée par D21). Cadrage d'ouverture avec marges corrigé. À observer : le retour au cadrage 10 s après un geste (spec 028) peut faire croire à un lieu disparu. Détail : `docs/historique.md`.
+- Specs 035 à 037 : listes « À voir sur le S8 » en attente.
+- Spec 038 (2026-11-19) : écran en pictogrammes avant les fenêtres de permission (position, appareil photo), livré et relu ; à voir sur le téléphone. Décisions d'Ali : voix gardée pour les noms de station seulement (à vérifier dans le code), pas de photos de démo, pas d'effacement rapide des lieux. S8 injoignable par adb (USB sans données) : erreur Java reportée.
+- Ensuite : trajets hors connexion (D5), métro sans GPS (`docs/recherche/metro-sans-gps.md`), spec 006 (RTL).
 
 ## Décisions en vigueur (détail : `docs/product/decisions.md`, `docs/engineering/securite.md`)
 
