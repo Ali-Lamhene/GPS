@@ -10,7 +10,7 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 - Lot du 2026-11-17 (mode autonome, 6 fiches) : **les 6 fiches sont livrées** (specs 035 à 037, D21, D22). **Prêt pour la build `preview` unique**, à lancer par Ali.
 - Point 5 du terrain (2026-11-18, S8) : dézoom non reproduit ; cause probable : l'ancienne règle `hiddenOnMap` (levée par D21). Cadrage d'ouverture avec marges corrigé. À observer : le retour au cadrage 10 s après un geste (spec 028) peut faire croire à un lieu disparu. Détail : `docs/historique.md`.
 - Specs 035 à 037 : listes « À voir sur le S8 » en attente.
-- Spec 038 (2026-11-19) : écran en pictogrammes avant les fenêtres de permission (position, appareil photo), livré et relu ; à voir sur le téléphone. Décisions d'Ali : voix gardée pour les noms de station (boutons d'écoute) et le message d'aide au passant, sans audios préenregistrés (vérifié dans le code), pas de photos de démo, pas d'effacement rapide des lieux. S8 injoignable par adb (USB sans données) : erreur Java reportée.
+- Spec 038 (2026-11-19) : écran en pictogrammes avant les fenêtres de permission (position, appareil photo), livré et relu ; à voir sur le téléphone. Voix gardée (noms de station, message d'aide) ; pas de photos de démo ni d'effacement rapide des lieux.
 - Ensuite : trajets hors connexion (D5), métro sans GPS (`docs/recherche/metro-sans-gps.md`), spec 006 (RTL).
 
 ## Décisions en vigueur (détail : `docs/product/decisions.md`, `docs/engineering/securite.md`)
@@ -31,7 +31,7 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 - Villes pilotes (zone France, D14) ? Source de tuiles pour cartes hors connexion ?
 - Recalcul quand le voyageur est perdu sans réseau ?
 - Moyen rapide d'effacer les lieux en cas de fouille (après le test terrain) ? Chiffrement au repos ?
-- Distribution : Play Store, App Store, APK par les associations ? Clé de signature (EAS seule ou Play App Signing, 2e empreinte dans `assetlinks.json`) ?
+- Distribution : décidée le 2026-11-19, bêta par `.aab` sur Google Play (12 testeurs pour le test fermé). Reste : clé de signature (Play App Signing, 2e empreinte dans `assetlinks.json`) ; App Store plus tard.
 - Licences des photos de démo / crédits avant diffusion ; marque « Yalla map » à revérifier sur TMview avant le Play Store.
 - Historique du navigateur : l'URL du lien de partage y reste (effacer demanderait un script). À trancher.
 - Alertes Dependabot : outils de build seulement, à fermer en « risque toléré » si Ali veut.
@@ -47,7 +47,7 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 
 ## En attente côté humain
 
-- Ali : build `preview`, puis la liste « À voir sur le téléphone » de la spec 037. Sur le S8, l'app de dev `io.github.alilamhene.yalla.dev` contient 6 lieux de test et 3 photos posés pendant la fiche 6 (effacer ses données, ou la désinstaller) ; permission de position retirée. Ancien APK de dev `org.gpssanstexte.app.dev` à désinstaller s'il est encore là.
+- Ali : pousser les commits (`git push origin main`, 3 en avance). Créer l'app « Yalla map » dans la Play Console (compte créé, app non) et finir ses tâches (confidentialité, sécurité des données, classification). Créer la clé de compte de service Google et la déposer dans EAS. Je prépare `eas.json` : profil `production` en `.aab`, `submit` piste `internal` (la doc Expo ne dit pas quelle piste est le test fermé : à vérifier). Puis les listes « À voir » des specs 035 à 038 sur le téléphone. Le S8 reste injoignable par adb (câble sans données) ; son app de dev `…yalla.dev` garde des lieux de test à effacer.
 - Ali : retours du terrain restants (icônes à l'ajout d'un lieu, recherche Photon lente : combien de secondes ?), captures promises.
 
 Historique détaillé : docs/historique.md
