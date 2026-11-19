@@ -31,7 +31,7 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 - Villes pilotes (zone France, D14) ? Source de tuiles pour cartes hors connexion ?
 - Recalcul quand le voyageur est perdu sans réseau ?
 - Moyen rapide d'effacer les lieux en cas de fouille (après le test terrain) ? Chiffrement au repos ?
-- Distribution : décidée le 2026-11-19, bêta par `.aab` sur Google Play (12 testeurs pour le test fermé). Reste : clé de signature (Play App Signing, 2e empreinte dans `assetlinks.json`) ; App Store plus tard.
+- Distribution : bêta par `.aab` sur Google Play, test fermé à 12 testeurs, envoi manuel du `.aab` dans la Console (pas de clé de compte de service, choix d'Ali 2026-11-19). `eas.json` prêt : profil `production` (`.aab`, `autoIncrement`), `submit` piste `alpha` (= test fermé) en `draft`, inutilisé tant qu'il n'y a pas de clé. Reste : 2e empreinte (clé Play App Signing) dans `assetlinks.json` ; App Store plus tard.
 - Licences des photos de démo / crédits avant diffusion ; marque « Yalla map » à revérifier sur TMview avant le Play Store.
 - Historique du navigateur : l'URL du lien de partage y reste (effacer demanderait un script). À trancher.
 - Alertes Dependabot : outils de build seulement, à fermer en « risque toléré » si Ali veut.
@@ -47,7 +47,7 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 
 ## En attente côté humain
 
-- Ali : pousser les commits (`git push origin main`, 3 en avance). Créer l'app « Yalla map » dans la Play Console (compte créé, app non) et finir ses tâches (confidentialité, sécurité des données, classification). Créer la clé de compte de service Google et la déposer dans EAS. Je prépare `eas.json` : profil `production` en `.aab`, `submit` piste `internal` (la doc Expo ne dit pas quelle piste est le test fermé : à vérifier). Puis les listes « À voir » des specs 035 à 038 sur le téléphone. Le S8 reste injoignable par adb (câble sans données) ; son app de dev `…yalla.dev` garde des lieux de test à effacer.
+- Ali : pousser les commits (`git push origin main`, 3 en avance). App « Yalla map » créée dans la Play Console (2026-11-19) ; finir ses tâches (fiche, confidentialité, sécurité des données, classification). Lancer `npx eas-cli@latest build -p android --profile production`, envoyer le `.aab` à la main en test fermé. Puis les listes « À voir » des specs 035 à 038 sur le téléphone. Le S8 reste injoignable par adb (câble sans données) ; son app de dev `…yalla.dev` garde des lieux de test à effacer.
 - Ali : retours du terrain restants (icônes à l'ajout d'un lieu, recherche Photon lente : combien de secondes ?), captures promises.
 
 Historique détaillé : docs/historique.md
