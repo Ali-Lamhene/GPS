@@ -10,7 +10,7 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 - Lot du 2026-11-17 (mode autonome, 6 fiches) : **les 6 fiches sont livrées** (specs 035 à 037, D21, D22). **Prêt pour la build `preview` unique**, à lancer par Ali.
 - Point 5 du terrain (2026-11-18, S8) : dézoom non reproduit ; cause probable : l'ancienne règle `hiddenOnMap` (levée par D21). Cadrage d'ouverture avec marges corrigé. À observer : le retour au cadrage 10 s après un geste (spec 028) peut faire croire à un lieu disparu. Détail : `docs/historique.md`.
 - Specs 035 à 037 : listes « À voir sur le S8 » en attente.
-- Spec 038 (2026-11-19) : écran en pictogrammes avant les fenêtres de permission (position, appareil photo), livré et relu ; à voir sur le téléphone. Décisions d'Ali : voix gardée pour les noms de station seulement (à vérifier dans le code), pas de photos de démo, pas d'effacement rapide des lieux. S8 injoignable par adb (USB sans données) : erreur Java reportée.
+- Spec 038 (2026-11-19) : écran en pictogrammes avant les fenêtres de permission (position, appareil photo), livré et relu ; à voir sur le téléphone. Décisions d'Ali : voix gardée pour les noms de station (boutons d'écoute) et le message d'aide au passant, sans audios préenregistrés (vérifié dans le code), pas de photos de démo, pas d'effacement rapide des lieux. S8 injoignable par adb (USB sans données) : erreur Java reportée.
 - Ensuite : trajets hors connexion (D5), métro sans GPS (`docs/recherche/metro-sans-gps.md`), spec 006 (RTL).
 
 ## Décisions en vigueur (détail : `docs/product/decisions.md`, `docs/engineering/securite.md`)
@@ -29,8 +29,7 @@ Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise 
 ## Questions ouvertes (une ligne chacune)
 
 - Villes pilotes (zone France, D14) ? Source de tuiles pour cartes hors connexion ?
-- Recalcul quand le voyageur est perdu sans réseau ? Voix : audios préenregistrés ou sons et vibrations seulement ?
-- Lecture à voix haute : durcir le natif, supprimer la lecture des noms, ou audios ; le message d'aide doit-il dire la destination ?
+- Recalcul quand le voyageur est perdu sans réseau ?
 - Moyen rapide d'effacer les lieux en cas de fouille (après le test terrain) ? Chiffrement au repos ?
 - Distribution : Play Store, App Store, APK par les associations ? Clé de signature (EAS seule ou Play App Signing, 2e empreinte dans `assetlinks.json`) ?
 - Licences des photos de démo / crédits avant diffusion ; marque « Yalla map » à revérifier sur TMview avant le Play Store.
