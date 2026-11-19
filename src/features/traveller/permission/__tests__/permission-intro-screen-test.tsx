@@ -73,7 +73,7 @@ describe('the screen before a permission window (spec 038)', () => {
 
   test('the Android back gesture is « not now », held here', async () => {
     const remove = jest.fn();
-    let pressed: (() => boolean) | undefined;
+    let pressed: Parameters<typeof BackHandler.addEventListener>[1] | undefined;
     jest.spyOn(BackHandler, 'addEventListener').mockImplementation((_event, handler) => {
       pressed = handler;
       return { remove };
@@ -83,7 +83,7 @@ describe('the screen before a permission window (spec 038)', () => {
       <PermissionIntroScreen kind="location" mode="ask" onAccept={jest.fn()} onSkip={onSkip} />,
     );
 
-    expect(pressed?.()).toBe(true);
+    expect(pressed?.({ type: 'hardwareBackPress', timeStamp: 0 })).toBe(true);
     expect(onSkip).toHaveBeenCalledTimes(1);
     await unmount();
     expect(remove).toHaveBeenCalled();
