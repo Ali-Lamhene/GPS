@@ -132,7 +132,8 @@
       ],
       "./plugins/with-no-data-extraction",
       "./plugins/with-no-camera-scanners",
-      "./plugins/with-no-link-from-history"
+      "./plugins/with-no-link-from-history",
+      "./plugins/with-portrait-optional"
     ],
     "experiments": {
       "typedRoutes": true,
