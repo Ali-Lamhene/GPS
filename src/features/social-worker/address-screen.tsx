@@ -112,8 +112,9 @@ export function AddressScreen() {
       <View style={styles.spacer} />
       <Text style={styles.note}>
         La recherche passe par Photon (OpenStreetMap), qui reçoit le texte tapé, la position
-        approximative du téléphone et son adresse IP. Le lien contient le lieu exact : préférez une
-        messagerie chiffrée (Signal, WhatsApp) au SMS.
+        approximative du téléphone, son adresse IP le nom de l’application et son adresse de
+        contact. Le lien contient le lieu exact : préférez une messagerie chiffrée (Signal,
+        WhatsApp) au SMS.
       </Text>
       {/* Spec 024: Transitous asks for a visible link to its sources; OpenStreetMap, its credit. */}
       <Text style={styles.note}>

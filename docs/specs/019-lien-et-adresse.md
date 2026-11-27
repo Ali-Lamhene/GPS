@@ -33,7 +33,7 @@
 
 ## Données et confidentialité
 
-- **Photon** (`photon.komoot.io`, HTTPS) reçoit le texte tapé, la position du téléphone arrondie à environ 1 km pour classer les résultats, et l'adresse IP. Seulement depuis E30 (accompagnant), jamais depuis les écrans du voyageur. Le champ de saisie interdit au clavier d'apprendre l'adresse.
+- **Photon** (`photon.komoot.io`, HTTPS) reçoit le texte tapé, la position du téléphone arrondie à environ 1 km pour classer les résultats, l'adresse IP et le nom de l'app avec l'adresse de contact neutre de D19 (en-tête `User-Agent` « YallaMap/1.0 », ajouté le 2026-11-27 : Photon refuse depuis le nom de client Android par défaut). Seulement depuis E30 (accompagnant), jamais depuis les écrans du voyageur. Le champ de saisie interdit au clavier d'apprendre l'adresse.
 - **Messagerie** : le lien entier (point à 1 m, pictogramme) passe par la messagerie choisie dans la feuille de partage ; par SMS, l'opérateur le lit en clair ; WhatsApp peut le garder dans sa sauvegarde. E30 conseille une messagerie chiffrée.
 - **Lien** : seul le contenu ci-dessus. Le lieu reçu ne porte pas de nom ; la carte d'aide utilise le nom du pictogramme.
 - **Liens entrants** : tous passent par `src/app/+native-intent.tsx`. Seul un lien de lieu atteint son écran ; il y est transmis une seule fois (jamais relu plus tard), puis validé. Un autre lien ouvre l'accueil au démarrage et ne change rien si l'app est déjà ouverte (un trajet en cours reste). Reçu pendant un trajet, l'écran revient au trajet après la coche.

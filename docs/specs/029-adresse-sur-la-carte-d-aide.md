@@ -33,7 +33,7 @@ Inchangés pour le voyageur : l'adresse est du texte en français pour le passan
 
 ## Données et confidentialité
 
-- **Photon** (`photon.komoot.io`, déjà utilisé pour la recherche, spec 019) reçoit, **nouveau** : le point du lieu à 4 décimales (environ 10 m), une fois par lieu créé ou accepté, avec l'adresse IP. Pour un lieu créé « ici » ou par photo, ce point est la **position du téléphone à ce moment** : Photon apprend que cette IP se trouve, à cette heure, à environ 10 m de ce point. Pour un lieu reçu par lien, il apprend que ce téléphone s'intéresse à ce lieu. Accepté par l'utilisateur (2026-11-08).
+- **Photon** (`photon.komoot.io`, déjà utilisé pour la recherche, spec 019) reçoit, **nouveau** : le point du lieu à 4 décimales (environ 10 m), une fois par lieu créé ou accepté, avec l'adresse IP, et le nom de l'app avec l'adresse de contact neutre de D19 (en-tête `User-Agent`, ajouté le 2026-11-27 : Photon refuse le client Android par défaut). Pour un lieu créé « ici » ou par photo, ce point est la **position du téléphone à ce moment** : Photon apprend que cette IP se trouve, à cette heure, à environ 10 m de ce point. Pour un lieu reçu par lien, il apprend que ce téléphone s'intéresse à ce lieu. Accepté par l'utilisateur (2026-11-08).
 - L'adresse est gardée dans le fichier des lieux (stockage privé, exclu des sauvegardes, spec 016). Elle n'est pas dans le lien de partage.
 - Aucune nouvelle dépendance ni permission.
 

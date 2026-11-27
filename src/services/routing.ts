@@ -2,14 +2,13 @@ import type { LngLat } from '@/domain/geo';
 import { readRoute } from '@/domain/route';
 import type { Leg, TravelMode } from '@/domain/trip';
 
-import { ROUTING_HOST } from './hosts';
+import { APP_USER_AGENT, ROUTING_HOST } from './hosts';
 
 // Spec 021 (D4, D17): a new trip is computed online from the traveller's phone, by
 // Transitous. It receives the two points (about 10 m), the time and the IP address. Its terms
 // ask for the app's name, its version and a contact (e-mail or website) in the User-Agent:
 // the commercial name only, and a mailbox that says nothing of what the app is for (D19).
 
-const USER_AGENT = 'YallaMap/1.0 (otakumi.factory@gmail.com)';
 /** Walking or driving longer than two hours is no trip for this app. */
 const MAX_DIRECT_SECONDS = 7200;
 /** No answer after this: treated as no network, never an endless wait. */
@@ -51,7 +50,7 @@ export async function findRoute(
   try {
     const response = await fetch(`https://${ROUTING_HOST}/api/v6/plan?${params.toString()}`, {
       // No HTTP cache: the address holds the start and the arrival.
-      headers: { 'User-Agent': USER_AGENT, 'Cache-Control': 'no-store' },
+      headers: { 'User-Agent': APP_USER_AGENT, 'Cache-Control': 'no-store' },
       signal: controller.signal,
     });
     if (!response.ok) return { ok: false, reason: 'service' };

@@ -93,7 +93,7 @@ Conforme à D1. Aucune donnée d'identité, aucun compte, aucun serveur à nous.
 - **Téléphone de l'accompagnateur** : rien n'est gardé après le partage.
 - **Lien** : contient seulement version du format, coordonnées, pictogramme, couleur, dans la partie après `#`. Cette partie n'est envoyée à aucun serveur, y compris la page web. L'aperçu de lien de WhatsApp ne la reçoit pas non plus.
 - **Services tiers** (uniquement dans la partie préparation) :
-  - recherche d'adresse : Photon (komoot, OpenStreetMap) — reçoit le texte tapé et l'adresse IP ;
+  - recherche d'adresse : Photon (komoot, OpenStreetMap) — reçoit ce que déclare la spec 019 (texte tapé, position à environ 1 km, IP, en-tête D19) ;
   - fond de carte : OpenFreeMap (tuiles OpenStreetMap) — reçoit la zone affichée et l'adresse IP ;
   - page web du lien : GitHub Pages — reçoit la visite (adresse IP), jamais le lieu.
 - L'accueil du voyageur n'appelle aucun service.

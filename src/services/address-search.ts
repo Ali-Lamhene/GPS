@@ -2,17 +2,19 @@ import { readPhotonAddress, readPhotonResults, type AddressResult } from '@/doma
 
 // Spec 001: address search for the companion only (never the traveller's screens), through
 // Photon (komoot, OpenStreetMap data). Photon receives the typed text, the phone's position
-// rounded to about 1 km (it only ranks the results), and the IP address.
+// rounded to about 1 km (it only ranks the results), the IP address and the app's name with
+// a contact (D19): Photon refuses Android's default client name with a 403.
 // HTTPS only, no key, no account.
 
-import { ADDRESS_SEARCH_HOST } from './hosts';
+import { ADDRESS_SEARCH_HOST, APP_USER_AGENT } from './hosts';
 const MIN_LENGTH = 3;
 /** A reverse lookup never holds a new place for long: without an answer, no address. */
 const REVERSE_TIMEOUT_MS = 5000;
 
 /**
  * The street address of a place (spec 029), asked once when the place is made, for the
- * help card. Photon receives the place's point to about 10 m and the IP address.
+ * help card. Photon receives the place's point to about 10 m, the IP address and
+ * `APP_USER_AGENT`.
  */
 export async function reverseAddress(
   point: readonly [number, number],
@@ -28,7 +30,7 @@ export async function reverseAddress(
   try {
     const response = await fetch(`https://${ADDRESS_SEARCH_HOST}/reverse?${params.toString()}`, {
       signal: controller.signal,
-      headers: { 'Cache-Control': 'no-store' },
+      headers: { 'User-Agent': APP_USER_AGENT, 'Cache-Control': 'no-store' },
     });
     if (!response.ok) return undefined;
     const body = await response.text();
@@ -62,7 +64,7 @@ export async function searchAddresses(
     const response = await fetch(`https://${ADDRESS_SEARCH_HOST}/api/?${params.toString()}`, {
       signal,
       // No HTTP cache: the address holds the typed text.
-      headers: { 'Cache-Control': 'no-store' },
+      headers: { 'User-Agent': APP_USER_AGENT, 'Cache-Control': 'no-store' },
     });
     if (!response.ok) return { ok: false, reason: 'offline' };
     const data: unknown = await response.json();

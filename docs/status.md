@@ -2,15 +2,15 @@
 
 Reprise courte, lue au démarrage de chaque session (hook `SessionStart`). Mise à jour à la fin de chaque tâche, dans le même commit. Le récit détaillé va dans `docs/historique.md`, pas ici.
 
-**Dernière mise à jour** : 2026-11-23
+**Dernière mise à jour** : 2026-11-27
 
 ## Où on en est
 
 - App « Yalla map » (Expo SDK 58, Expo Router, `src/app/`), repo `Ali-Lamhene/GPS`, travail direct sur `main`, une fonctionnalité = un commit. Méthode : spec d'abord (skill `/feature`, specs dans `docs/specs/`), puis code avec tests.
-- Lot du 2026-11-17 (mode autonome, 6 fiches) : **les 6 fiches sont livrées** (specs 035 à 037, D21, D22). **Prêt pour la build `preview` unique**, à lancer par Ali.
-- Point 5 du terrain (2026-11-18, S8) : dézoom non reproduit ; cause probable : l'ancienne règle `hiddenOnMap` (levée par D21). Cadrage d'ouverture avec marges corrigé. À observer : le retour au cadrage 10 s après un geste (spec 028) peut faire croire à un lieu disparu. Détail : `docs/historique.md`.
-- Specs 035 à 037 : listes « À voir sur le S8 » en attente.
-- Spec 038 (2026-11-19) : écran en pictogrammes avant les fenêtres de permission (position, appareil photo), livré et relu ; à voir sur le téléphone. Voix gardée (noms de station, message d'aide) ; pas de photos de démo ni d'effacement rapide des lieux.
+- Lot du 2026-11-17 (6 fiches, specs 035 à 037, D21, D22) livré.
+- Point 5 du terrain (dézoom) : non reproduit sur le S8 ; à observer (détail : `docs/historique.md`).
+- Specs 035 à 038 livrées ; listes « À voir » sur le téléphone en attente.
+- Correctif 2026-11-27 : Photon refuse le client `okhttp` (403, faux « Pas de connexion »). En-tête D19 envoyé à Photon. À voir sur le téléphone : recherche d'adresse, adresse de la carte d'aide.
 - Ensuite : trajets hors connexion (D5), métro sans GPS (`docs/recherche/metro-sans-gps.md`), spec 006 (RTL).
 
 ## Décisions en vigueur (détail : `docs/product/decisions.md`, `docs/engineering/securite.md`)

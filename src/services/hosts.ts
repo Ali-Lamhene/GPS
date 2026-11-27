@@ -2,12 +2,19 @@ import { SHARE_LINK_BASE } from '@/domain/share-link';
 
 // Every host the app or its links involve (securite.md §2): one list, read by the reviews.
 
+/**
+ * How the app names itself to Transitous and Photon (D19): the commercial name, its version
+ * and a mailbox that says nothing of what the app is for. Transitous's terms ask for it;
+ * Photon refuses Android's default client name (`okhttp`) with a 403 since 2026-11.
+ */
+export const APP_USER_AGENT = 'YallaMap/1.0 (otakumi.factory@gmail.com)';
+
 /** Map tiles (D16, spec 017): receives the IP address and the areas shown. */
 export const MAP_TILES_HOST = 'tiles.openfreemap.org';
 
 /**
  * Address search, companion area only (spec 019): receives the typed text, the phone's
- * position rounded to about 1 km, and the IP address.
+ * position rounded to about 1 km, the IP address and `APP_USER_AGENT`.
  */
 export const ADDRESS_SEARCH_HOST = 'photon.komoot.io';
 

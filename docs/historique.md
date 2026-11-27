@@ -326,3 +326,7 @@ Ensuite, en autonomie : trajets hors connexion (D5), métro sans GPS, spec 006 (
 - Vérifications sur appareil : le téléphone se connecte au serveur Metro par le Wi-Fi ou le partage de connexion (`EXPO_OFFLINE=1 REACT_NATIVE_PACKAGER_HOSTNAME=<ip> npx expo start --dev-client --host lan`, puis QR code `yalla-dev://expo-development-client/?url=…`). Pas d'adb sur la machine (`sudo apt install adb` pour l'adb sans fil).
 - Sauvegardes de l'ancien historique hors dépôt, à garder ou effacer : `../GPS-backup-20261105.git` et `../GPS-backup-20261105.tar.gz` (elles contiennent l'ancienne adresse).
 - Compte Apple développeur, quand on attaquera l'iPhone.
+
+## 2026-11-27 — Photon refuse le client Android par défaut
+
+La recherche d'adresse affichait « Pas de connexion ». Photon (`photon.komoot.io`) répond 403 au nom de client `okhttp/4.x` d'Android, pour `/api` et `/reverse` ; il accepte une requête sans nom ou avec `YallaMap/1.0`. L'en-tête D19 (`APP_USER_AGENT`, `src/services/hosts.ts`) est désormais envoyé à Photon comme à Transitous, adresse de contact comprise (choix d'Ali). Déclarations mises à jour : D19, specs 001, 019, 029, `securite.md`, note de E30.
